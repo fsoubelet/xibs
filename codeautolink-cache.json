@@ -1,0 +1,32 @@
+{
+  "index": [],
+  "modules/index": [],
+  "quickstart": [
+    {
+      "source": "import xibs\n\n# Start with examples\npass",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "basic-usage",
+        "headings": [
+          "Quickstart",
+          "Basic Usage"
+        ]
+      },
+      "doc_lineno": 16
+    },
+    {
+      "source": "# Start with examples importing each\npass",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "formalism-and-models",
+        "headings": [
+          "Quickstart",
+          "Formalism and Models"
+        ]
+      },
+      "doc_lineno": 32
+    }
+  ]
+}
