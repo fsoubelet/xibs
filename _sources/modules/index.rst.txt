@@ -11,6 +11,7 @@ API Reference
     :members:
     :noindex:
 
+
 .. automodule:: xibs.simple
     :members:
     :noindex:

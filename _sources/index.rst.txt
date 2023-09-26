@@ -7,8 +7,8 @@ It provides, through its various modules, functionality to compute relevant IBS 
 
 .. admonition:: **Package Scope**
 
-   This package only has as a goal to be a development prototype for an IBS implementation that will be integrated into `xsuite <https://xsuite.readthedocs.io/en/latest/>`_
-   As such, the API is meant to evolve quickly with feedback from colleagues, and integration into ``xsuite`` simulations will not be seamless.
+   This package only has as a goal to be a development prototype for an IBS implementation that will be integrated into `xsuite <https://xsuite.readthedocs.io/en/latest/>`_.
+   As such, the API is subject to quick changes based on feedback from colleagues, and integration into ``xsuite`` simulations will not be as seamless as other elements.
 
 
 Installation
