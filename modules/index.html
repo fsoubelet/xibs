@@ -24,6 +24,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reference bibliography" href="../bibliography.html" />
     <link rel="prev" title="Quickstart" href="../quickstart.html" /> 
 </head>
 
@@ -56,7 +57,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html#using-with-xsuite">Using with xsuite</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#analytical-nagaitsev-calculations">Analytical Nagaitsev Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analytical-ibs-calculations">Analytical IBS Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-kick-ibs-formalism">Simple Kick IBS Formalism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kinetic-ibs-formalism">Kinetic IBS Formalism</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference bibliography</a></li>
 </ul>
 
         </div>
@@ -86,6 +94,24 @@
              
   <section id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="analytical-nagaitsev-calculations">
+<span id="xibs-nagaitsev"></span><h2>Analytical Nagaitsev Calculations<a class="headerlink" href="#analytical-nagaitsev-calculations" title="Link to this heading"></a></h2>
+<p>Module with functionality to perform analytical calculations according to Nagaitsev’s formalism.
+A user-facing class is provided which computes the Nagaitsev integrals based on beam optics.
+The formalism from which formulas and calculations are implemented can be found in <span id="id1">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
+</section>
+<section id="analytical-ibs-calculations">
+<span id="xibs-analytical"></span><h2>Analytical IBS Calculations<a class="headerlink" href="#analytical-ibs-calculations" title="Link to this heading"></a></h2>
+<p>Module with user-facing API to compute IBS-induced emittance evolutions from Nagaitsev integrals.</p>
+</section>
+<section id="simple-kick-ibs-formalism">
+<span id="xibs-simple"></span><h2>Simple Kick IBS Formalism<a class="headerlink" href="#simple-kick-ibs-formalism" title="Link to this heading"></a></h2>
+<p>Module with user-facing API to compute simple IBS kicks from the Nagaitsev integrals and apply them to particles.</p>
+</section>
+<section id="kinetic-ibs-formalism">
+<span id="xibs-kinetic"></span><h2>Kinetic IBS Formalism<a class="headerlink" href="#kinetic-ibs-formalism" title="Link to this heading"></a></h2>
+<p>Module with user-facing API to compute diffusion and friction terms from the Nagaitsev integrals according to the kinetic formalism, as well as the corresponding kinetic IBS kicks and apply them to particles.</p>
+</section>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">xibs.version.</span></span><span class="sig-name descname"><span class="pre">version_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/xibs/version.html#version_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -99,6 +125,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../bibliography.html" class="btn btn-neutral float-right" title="Reference bibliography" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

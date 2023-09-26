@@ -34,6 +34,13 @@ Contents
 
    quickstart
    modules/index
+   bibliography
+
+
+License
+=======
+
+The package is licensed under the `Apache 2.0 license <https://github.com/fsoubelet/xibs/blob/master/LICENSE>`_. 
 
 
 Indices and tables
