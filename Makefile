@@ -15,7 +15,7 @@ P=\033[95m
 R=\033[31m
 Y=\033[33m
 
-.PHONY : help build clean docs format install lines lint typing tests
+.PHONY : help build clean docs format install lines lint typing tests testrepos
 
 all: install
 
@@ -30,6 +30,7 @@ help:
 	@echo "  $(R) lint $(E)  \t  to lint the packages' code though $(P)Ruff$(E)."
 	@echo "  $(R) typing $(E)  \t  to run type checking on the codebase with $(P)MyPy$(E)."
 	@echo "  $(R) tests $(E)  \t  to run the test suite with $(P)pytest$(E)."
+	@echo "  $(R) testrepos $(E)  \t  to $(P)git$(E) clone the necessary repositories for test files."
 
 
 # ----- Dev Tools Targets ----- #
@@ -94,6 +95,12 @@ typing: format
 
 tests:  # all tests not involving pyhdtoolkit.cpymadtools
 	@python -m pytest -v
+
+testrepos:  # git clone the necessary repos for tests files
+	@echo "Cloning acc-models-sps repo."
+	@git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1
+	@echo "Moving acc-models-sps repo to tests/inputs/"
+	@mv acc-models-sps tests/inputs/acc-models-sps/
 
 # Catch-all unknow targets without returning an error. This is a POSIX-compliant syntax.
 .DEFAULT:
