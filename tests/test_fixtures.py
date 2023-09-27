@@ -1,3 +1,6 @@
+"""
+Only to test for now.
+"""
 import pytest
 
 from helpers import get_madx_ibs_beam_size_growth_time

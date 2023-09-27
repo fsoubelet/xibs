@@ -1,3 +1,9 @@
+"""
+Additional tools for testing, all fixtures defined here are discovered by and available to all tests automatically.
+Throughout the tests, remember to only benchmark by comparing analytical quantities and not some evolution over
+many tracked turns, as the kinetic or simple kicks are applied with a random component and it will mess up any
+comparison.
+"""
 import pathlib
 
 import pytest
