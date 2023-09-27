@@ -6,6 +6,8 @@ import xtrack as xt
 from cpymad.madx import Madx
 from helpers import make_sps_thin, re_cycle_sequence
 
+from xibs.nagaitsev import BeamParameters
+
 # ----- Paths to inputs ----- #
 
 CURRENT_DIR = pathlib.Path(__file__).parent
@@ -22,7 +24,7 @@ SPS_LHC_IONS_BEAMS = ACC_MODELS_SPS / "beams" / "beam_lhc_ion_injection.madx"
 CLIC_DR_LINE_JSON = INPUTS_DIR / "chrom-corr_DR.newlattice_2GHz.json"
 CLIC_DR_SEQUENCE_MADX = INPUTS_DIR / "chrom-corr_DR.newlattice_2GHz.seq"
 
-# ----- Fixtures accessible to all tests ----- #
+# ----- Lines and Sequences Fixtures ----- #
 
 
 @pytest.fixture()
