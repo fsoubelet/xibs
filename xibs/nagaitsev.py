@@ -18,35 +18,7 @@ from numpy.typing import ArrayLike
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
 
-
-@dataclass
-class NagaitsevIntegrals:
-    """Container dataclass for Nagaitsev integrals results.
-
-    Args:
-        Ix (float): horizontal Nagaitsev integral.
-        Iy (float): vertical Nagaitsev integral.
-        Iz (float): longitudinal Nagaitsev integral.
-    """
-
-    Ix: float
-    Iy: float
-    Iz: float
-
-
-@dataclass
-class IBSGrowthRates:
-    """Container dataclass for IBS growth rates results.
-
-    Args:
-        Tx (float): horizontal IBS growth rate.
-        Ty (float): vertical IBS growth rate.
-        Tz (float): longitudinal IBS growth rate.
-    """
-
-    Tx: float
-    Ty: float
-    Tz: float
+# ----- Dataclasses for inputs to Nagaitsev class ----- #
 
 
 # TODO: maybe this should self-init from an xpart.Particles object?
@@ -156,6 +128,39 @@ class OpticsParameters:
         self._by_bar = quad(_byb, self.s[0], self.s[-1])[0] / self.circumference
         self._dx_bar = quad(_dxb, self.s[0], self.s[-1])[0] / self.circumference
         self._dy_bar = quad(_dyb, self.s[0], self.s[-1])[0] / self.circumference
+
+
+# ----- Dataclasses to store results ----- #
+
+
+@dataclass
+class NagaitsevIntegrals:
+    """Container dataclass for Nagaitsev integrals results.
+
+    Args:
+        Ix (float): horizontal Nagaitsev integral.
+        Iy (float): vertical Nagaitsev integral.
+        Iz (float): longitudinal Nagaitsev integral.
+    """
+
+    Ix: float
+    Iy: float
+    Iz: float
+
+
+@dataclass
+class IBSGrowthRates:
+    """Container dataclass for IBS growth rates results.
+
+    Args:
+        Tx (float): horizontal IBS growth rate.
+        Ty (float): vertical IBS growth rate.
+        Tz (float): longitudinal IBS growth rate.
+    """
+
+    Tx: float
+    Ty: float
+    Tz: float
 
 
 # ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
