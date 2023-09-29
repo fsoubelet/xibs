@@ -104,6 +104,9 @@ napoleon_use_admonition_for_references = True
 napoleon_preprocess_types = True
 napoleon_attr_annotations = True
 
+# Display the 'Attributes' our dataclasses' docstrings as its own section with the same style as parameters ('Args)
+napoleon_custom_sections = [("Attributes", "params_style")]
+
 # Configuration for sphinx.ext.todo
 todo_include_todos = True
 
