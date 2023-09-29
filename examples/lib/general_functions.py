@@ -1,41 +1,43 @@
+"""
+This shit was mostly from old tracking benchmarks from Michalis and not needed anymore.
+"""
 import numpy as np
 
-
-def Hi(beta, alpha, eta, eta_d):
-    """Go over with Michalis to figure out what this does."""
-    return (1 / beta) * (eta**2 + (beta * eta_d + alpha * eta) ** 2)
-
-
-def Phi(beta, alpha, eta, eta_d):
-    """Go over with Michalis to figure out what this does."""
-    return eta_d + alpha * eta / beta
+# def Hi(beta, alpha, eta, eta_d):
+#     """Go over with Michalis to figure out what this does."""
+#     return (1 / beta) * (eta**2 + (beta * eta_d + alpha * eta) ** 2)
 
 
-def mean2(numb):
-    """Go over with Michalis to figure out what this does."""
-    return np.mean((numb - np.mean(numb)) ** 2)
+# def Phi(beta, alpha, eta, eta_d):
+#     """Phi parameter of Eq 15 in Nagaitsev 2015 paper."""
+#     return eta_d + alpha * eta / beta
 
 
-def mean3(numbx, numbpx):
-    """Go over with Michalis to figure out what this does."""
-    return np.mean((numbx - np.mean(numbx)) * (numbpx - np.mean(numbpx)))
+# def mean2(numb):
+#     """Go over with Michalis to figure out what this does."""
+#     return np.mean((numb - np.mean(numb)) ** 2)
 
 
-def emittance(x, px):
-    """Go over with Michalis to figure out what this does."""
-    return np.sqrt(mean2(x) * mean2(px) - mean3(x, px) ** 2)
+# def mean3(numbx, numbpx):
+#     """Go over with Michalis to figure out what this does."""
+#     return np.mean((numbx - np.mean(numbx)) * (numbpx - np.mean(numbpx)))
 
 
-def Sigma(beta, emit, eta, Sigma_M):
-    """Go over with Michalis to figure out what this does."""
-    return np.sqrt(beta * emit + (eta * Sigma_M) ** 2)
+# def emittance(x, px):
+#     """Go over with Michalis to figure out what this does."""
+#     return np.sqrt(mean2(x) * mean2(px) - mean3(x, px) ** 2)
+
+
+# def Sigma(beta, emit, eta, Sigma_M):
+#     """Go over with Michalis to figure out what this does."""
+#     return np.sqrt(beta * emit + (eta * Sigma_M) ** 2)
 
 
 def BunchLength(
     Circumferance, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Energy_loss, Z
 ):
     """
-    Go over with Michalis to figure out what this does.
+    Analytical calculation for bunch length for protons / electrons (linear approximation -> particles are in the center of the bucket only).
     ~~~ from Wiedermanns book ~~~
     """
     return (
@@ -51,8 +53,8 @@ def BunchLength(
 
 def EnergySpread(Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z):
     """
-    Go over with Michalis to figure out what this does.
-    ~~~ from Wiedermanns book ~~~
+    Get energy spread from bunch length for ions, analytical, same caveats as above.
+    ~~~ from Wiedermanns book ~~~?????
     """
     return BL / (
         Circumferance
@@ -67,7 +69,10 @@ def EnergySpread(Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel,
 def ion_BunchLength(
     Circumference, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Energy_loss, Z
 ):
-    """Go over with Michalis to figure out what this does."""
+    """
+    Analytical calculation for bunch length for ions (doesn't work too well if the bucket is full).
+    Was used in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS). TBD :)
+    """
     return (
         Circumference
         / (2.0 * np.pi * Harmonic_Num)
@@ -82,7 +87,7 @@ def ion_BunchLength(
 def ion_EnergySpread(
     Circumference, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
 ):
-    """Go over with Michalis to figure out what this does."""
+    """Get energy spread from bunch length for ions, analytical, same caveats as above."""
     tau_phi = 2 * np.pi * Harmonic_Num * BL / Circumference  # bunch length in rad
     return np.sqrt(
         beta_rel**2
