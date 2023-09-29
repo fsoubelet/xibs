@@ -125,8 +125,18 @@ class MichailIBS:
 
     def RDiter(self, x, y, z):
         """
-        Go over with Michalis to figure out what this does.
-        Ask for reference equations, this looks like it can be much more optimized.
+        Elliptic integral calculation with iterative method.
+        This is the R_D calculation from Eq (4) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
+        This looks like it can be much more optimized. This is an implementation that was found by Michail (in Cpp and adapted).
+        Found in ref [5] of Nagaitsev paper (sues ref [4]), they give an iterative procedure to calculate Eq (4).
+        Some powerpoints from Michail in ABP group meeting mention how this is calculated.
+
+        Args:
+            x (float): the Lambda1 value in Nagaitsev paper. Eigen values of the A matrix in Eq (2) which comes from B&M. In B&M it is L matrix.
+            y (float): the Lambda2 value in Nagaitsev paper. Eigen values of the A matrix in Eq (2) which comes from B&M. In B&M it is L matrix.
+            z (float): the Lambda3 value in Nagaitsev paper. Eigen values of the A matrix in Eq (2) which comes from B&M. In B&M it is L matrix.
+        
+        This is because Nagaitsev shows we can calculate the R_D integral at 3 different specific points and have the whole.
         """
         R = []
         for i, j, k in zip(x, y, z):
@@ -186,11 +196,18 @@ class MichailIBS:
                 )
                 / (4**lim * mi ** (3 / 2.0))
             )
+        # This returns an array with one value per element in the lattice
+        # This is NOT the elliptic integral yet, it has to be integrated afterwards. It is the term in the integral in Eq (4) in Nagaitsev paper.
         return R
 
     # Run if you want the IBS growth rates
     def Nagaitsev_Integrals(self, Emit_x, Emit_y, Sig_M, BunchL) -> Tuple[float, float, float]:
-        """Computes the Nagaitsev integrals Ix, Iy and Ip, which are needed to determine the IBS growth rates."""
+        """Computes the Nagaitsev integrals Ix, Iy and Ip, which are needed to determine the IBS growth rates.
+        
+        -> Calculates the R_D terms with RDIter function
+        -> Plugs it into 
+        """
+        # Constants from Eq (18-21)
         const = self.CoulogConst(Emit_x, Emit_y, Sig_M, BunchL)
         sigx = np.sqrt(self.bet_x * Emit_x + (self.eta_x * Sig_M) ** 2)
         sigy = np.sqrt(self.bet_y * Emit_y + (self.eta_y * Sig_M) ** 2)
@@ -201,19 +218,23 @@ class MichailIBS:
         a2 = (ax - self.gammar**2 * a_s) / 2.0
         denom = np.sqrt(a2**2 + self.gammar**2 * ax**2 * self.phi_x**2)
         # --------------------------------------------------------------------------------
+        # This is from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
         l1 = ay
         l2 = a1 + denom
         l3 = a1 - denom
         # --------------------------------------------------------------------------------
+        # This is from Eq (25-27) in Nagaitsev paper
         R1 = self.RDiter(1 / l2, 1 / l3, 1 / l1) / l1
         R2 = self.RDiter(1 / l3, 1 / l1, 1 / l2) / l2
         R3 = 3 * np.sqrt(l1 * l2 / l3) - l1 * R1 / l3 - l2 * R2 / l3
         # --------------------------------------------------------------------------------
+        # This is Eq (33-25) in Nagaitsev paper - (partial?) growth rates
         Nagai_Sp = (2 * R1 - R2 * (1 - 3 * a2 / denom) - R3 * (1 + 3 * a2 / denom)) * 0.5 * self.gammar**2
         Nagai_Sx = (2 * R1 - R2 * (1 + 3 * a2 / denom) - R3 * (1 - 3 * a2 / denom)) * 0.5
         Nagai_Sxp = 3 * self.gammar**2 * self.phi_x**2 * ax * (R3 - R2) / denom
         # --------------------------------------------------------------------------------
         # TODO: THIS IS THE INTEGRALS, USED BELOW TO CALCULATE THE GROWTH RATES
+        # This is Eq (30-32) then directly plugged into Eq (28) in Nagaitsev paper
         Ixi = (
             self.bet_x
             / (self.Circu * sigx * sigy)
@@ -222,6 +243,7 @@ class MichailIBS:
         Iyi = self.bet_y / (self.Circu * sigx * sigy) * (R2 + R3 - 2 * R1)
         Ipi = Nagai_Sp / (self.Circu * sigx * sigy)
         # --------------------------------------------------------------------------------
+        # This is were we plug the last part in Eq (28) -> division by the emittance
         Ix = np.sum(Ixi[:-1] * np.diff(self.posit)) * const / Emit_x
         Iy = np.sum(Iyi[:-1] * np.diff(self.posit)) * const / Emit_y
         Ip = np.sum(Ipi[:-1] * np.diff(self.posit)) * const / Sig_M**2
@@ -229,7 +251,7 @@ class MichailIBS:
         # Ix = integrate.simps(Ixi, self.posit) * const / Emit_x
         # Iy = integrate.simps(Iyi, self.posit) * const / Emit_y
         # Ip = integrate.simps(Ipi, self.posit) * const / Sig_M**2
-        # TODO: THIS IS THE GROWTH RATES
+        # TODO: THIS IS THE GROWTH RATES!!!!!!
         return Ix, Iy, Ip
 
     # Run to calculate and save the growth rates; used for the emittance evolution
