@@ -39,7 +39,8 @@ class MichailIBS:
         E0p = physical_constants["proton mass energy equivalent in MeV"][0] * 1e-3
         particle_mass_GEV = particles.mass0 * 1e-9
         mi = (particle_mass_GEV * scipy.constants.m_p) / E0p
-        self.c_rad = (particles.q0 * scipy.constants.e) ** 2 / (  # classical radius, can get from xpart.Particles now
+        # classical radius, can get from xpart.Particles now
+        self.c_rad = (particles.q0 * scipy.constants.e) ** 2 / (
             4 * np.pi * scipy.constants.epsilon_0 * scipy.constants.c**2 * mi
         )
 
@@ -76,7 +77,7 @@ class MichailIBS:
     def CoulogConst(self, Emit_x, Emit_y, Sig_M, BunchL):
         """
         This is the full constant factor (building on Coulomb Log (constant) from Eq 9 in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`).
-        Calculates Coulog constant, then log and returns multiplied by  """
+        Calculates Coulog constant, then log and returns multiplied by ???"""
         Etrans = 5e8 * (self.gammar * self.EnTot - self.E_rest) * (Emit_x / self.bx_bar)
         TempeV = 2.0 * Etrans
         sigxcm = 100 * np.sqrt(Emit_x * self.bx_bar + (self.dx_bar * Sig_M) ** 2)
@@ -135,7 +136,7 @@ class MichailIBS:
             x (float): the Lambda1 value in Nagaitsev paper. Eigen values of the A matrix in Eq (2) which comes from B&M. In B&M it is L matrix.
             y (float): the Lambda2 value in Nagaitsev paper. Eigen values of the A matrix in Eq (2) which comes from B&M. In B&M it is L matrix.
             z (float): the Lambda3 value in Nagaitsev paper. Eigen values of the A matrix in Eq (2) which comes from B&M. In B&M it is L matrix.
-        
+
         This is because Nagaitsev shows we can calculate the R_D integral at 3 different specific points and have the whole.
         """
         R = []
@@ -202,10 +203,13 @@ class MichailIBS:
 
     # Run if you want the IBS growth rates
     def Nagaitsev_Integrals(self, Emit_x, Emit_y, Sig_M, BunchL) -> Tuple[float, float, float]:
-        """Computes the Nagaitsev integrals Ix, Iy and Ip, which are needed to determine the IBS growth rates.
-        
-        -> Calculates the R_D terms with RDIter function
-        -> Plugs it into 
+        """Computes the Nagaitsev integrals Ix, Iy and Ip, and then the IBS growth rates.
+
+        -> Calculates various constants from Eq (18-21) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`
+        -> Calculates the R_D terms with `RDIter` function
+        -> Plugs it into Eq (33-25) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`
+        -> Computes the Nagaitsev integral terms - Eq (30-32)
+        -> Computes the IBS growth rates - Eq (28) (integrate the terms, multiply by Coulomb log and divide by emittance)
         """
         # Constants from Eq (18-21)
         const = self.CoulogConst(Emit_x, Emit_y, Sig_M, BunchL)
@@ -257,13 +261,13 @@ class MichailIBS:
     # Run to calculate and save the growth rates; used for the emittance evolution
     def calculate_integrals(self, Emit_x, Emit_y, Sig_M, BunchL) -> None:
         # TODO: THIS IS THE GROWTH RATE IN THE END!
-        """Computes the Nagaitsev integrals Ix, Iy and Ip, and stores them in the instance itself."""
+        """Computes the Nagaitsev GROWTH RATES HERE Ixx, Iyy and Ipp, and stores them in the instance itself."""
         # TODO: this is growth rates!
         self.Ixx, self.Iyy, self.Ipp = self.Nagaitsev_Integrals(Emit_x, Emit_y, Sig_M, BunchL)
 
     # Run if you want to evaluate the emittance evolution using Nagaitsev's Integrals.
     def emit_evol(self, Emit_x, Emit_y, Sig_M, BunchL, dt) -> Tuple[float, float, float]:
-        """Computes the emittance evolutions in 3D from the Nagaitsev integrals."""
+        """Computes the emittance evolutions in 3D from the Nagaitsev integrals and resulting growth rates."""
         Evolemx = Emit_x * np.exp(dt * float(self.Ixx))
         Evolemy = Emit_y * np.exp(dt * float(self.Iyy))
         EvolsiM = Sig_M * np.exp(dt * float(0.5 * self.Ipp))
