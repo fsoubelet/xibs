@@ -39,7 +39,7 @@ class MichailIBS:
         E0p = physical_constants["proton mass energy equivalent in MeV"][0] * 1e-3
         particle_mass_GEV = particles.mass0 * 1e-9
         mi = (particle_mass_GEV * scipy.constants.m_p) / E0p
-        self.c_rad = (particles.q0 * scipy.constants.e) ** 2 / (
+        self.c_rad = (particles.q0 * scipy.constants.e) ** 2 / (  # classical radius, can get from xpart.Particles now
             4 * np.pi * scipy.constants.epsilon_0 * scipy.constants.c**2 * mi
         )
 
@@ -54,24 +54,29 @@ class MichailIBS:
         self.bet_y = twiss["bety"]
         self.alf_x = twiss["alfx"]
         self.alf_y = twiss["alfy"]
-        self.eta_x = twiss["dx"]
+        self.eta_x = twiss["dx"]  # eta_x because notations from old papers
         self.eta_dx = twiss["dpx"]
         self.eta_y = twiss["dy"]
         self.eta_dy = twiss["dpy"]
         self.slip = twiss["slip_factor"]
         self.phi_x = self._Phi(twiss["betx"], twiss["alfx"], twiss["dx"], twiss["dpx"])
         self.frev = self.betar * c / self.Circu
+        # Interpolated functions for the calculation below
         bx_b = interp1d(twiss["s"], twiss["betx"])
         by_b = interp1d(twiss["s"], twiss["bety"])
         dx_b = interp1d(twiss["s"], twiss["dx"])
         dy_b = interp1d(twiss["s"], twiss["dy"])
+        # Below is the average beta and dispersion functions - better here than a simple np.mean calculation because the latter doesn't take in consideration element lengths etc
+        # These are ONLY USED in the CoulogConst function
         self.bx_bar = integrate.quad(bx_b, twiss["s"][0], twiss["s"][-1])[0] / self.Circu
         self.by_bar = integrate.quad(by_b, twiss["s"][0], twiss["s"][-1])[0] / self.Circu
         self.dx_bar = integrate.quad(dx_b, twiss["s"][0], twiss["s"][-1])[0] / self.Circu
         self.dy_bar = integrate.quad(dy_b, twiss["s"][0], twiss["s"][-1])[0] / self.Circu
 
     def CoulogConst(self, Emit_x, Emit_y, Sig_M, BunchL):
-        """Go over with Michalis to figure out what this does. Calculates Coulog constant, which is???"""
+        """
+        This is the full constant factor (building on Coulomb Log (constant) from Eq 9 in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`).
+        Calculates Coulog constant, then log and returns multiplied by  """
         Etrans = 5e8 * (self.gammar * self.EnTot - self.E_rest) * (Emit_x / self.bx_bar)
         TempeV = 2.0 * Etrans
         sigxcm = 100 * np.sqrt(Emit_x * self.bx_bar + (self.dx_bar * Sig_M) ** 2)
@@ -89,7 +94,13 @@ class MichailIBS:
         return Ncon * coulog
 
     def line_density(self, n_slices, particles):
-        """Go over with Michalis to figure out what this does. Calculates line density, which is???"""
+        """Calculates line density, implementation from Michail and Hannes. Idea came from Eq 8 in https://journals.aps.org/prab/abstract/10.1103/PhysRevSTAB.13.091001 (TODO: CITE)
+        -> Get particles coordinates
+        -> Determine binning of coordinates for histogram (getting bin edges and centers)
+        -> Calculate the rms bunch length as the standard deviation of the distribution
+        -> Does an interpolation of the histogram with wanted number of bins and returns an interpolated function to apply kicks later on.
+        Weigths are applied heavier at the center of the interpolated array so that for kicks particles at the center of the distribution are more affected.
+        """
         zeta = particles.zeta[particles.state > 0]
         z_cut_head = np.max(zeta)
         z_cut_tail = np.min(zeta)
@@ -225,6 +236,7 @@ class MichailIBS:
     def calculate_integrals(self, Emit_x, Emit_y, Sig_M, BunchL) -> None:
         # TODO: THIS IS THE GROWTH RATE IN THE END!
         """Computes the Nagaitsev integrals Ix, Iy and Ip, and stores them in the instance itself."""
+        # TODO: this is growth rates!
         self.Ixx, self.Iyy, self.Ipp = self.Nagaitsev_Integrals(Emit_x, Emit_y, Sig_M, BunchL)
 
     # Run if you want to evaluate the emittance evolution using Nagaitsev's Integrals.
