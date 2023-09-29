@@ -202,6 +202,7 @@ class MichailIBS:
         Nagai_Sx = (2 * R1 - R2 * (1 + 3 * a2 / denom) - R3 * (1 - 3 * a2 / denom)) * 0.5
         Nagai_Sxp = 3 * self.gammar**2 * self.phi_x**2 * ax * (R3 - R2) / denom
         # --------------------------------------------------------------------------------
+        # TODO: THIS IS THE INTEGRALS, USED BELOW TO CALCULATE THE GROWTH RATES
         Ixi = (
             self.bet_x
             / (self.Circu * sigx * sigy)
@@ -217,10 +218,12 @@ class MichailIBS:
         # Ix = integrate.simps(Ixi, self.posit) * const / Emit_x
         # Iy = integrate.simps(Iyi, self.posit) * const / Emit_y
         # Ip = integrate.simps(Ipi, self.posit) * const / Sig_M**2
+        # TODO: THIS IS THE GROWTH RATES
         return Ix, Iy, Ip
 
     # Run to calculate and save the growth rates; used for the emittance evolution
     def calculate_integrals(self, Emit_x, Emit_y, Sig_M, BunchL) -> None:
+        # TODO: THIS IS THE GROWTH RATE IN THE END!
         """Computes the Nagaitsev integrals Ix, Iy and Ip, and stores them in the instance itself."""
         self.Ixx, self.Iyy, self.Ipp = self.Nagaitsev_Integrals(Emit_x, Emit_y, Sig_M, BunchL)
 
