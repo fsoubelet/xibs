@@ -10,10 +10,9 @@ import xpart as xp
 import xtrack as xt
 
 from cpymad.madx import Madx
-from loguru import logger
-
 from lib.general_functions import BunchLength
 from lib.IBSfunctions import NagaitsevIBS
+from loguru import logger
 
 
 @dataclass
