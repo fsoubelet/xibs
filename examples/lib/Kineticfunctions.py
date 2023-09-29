@@ -1,3 +1,6 @@
+"""
+This is a very old implementation (much slower) using BJORKEN & MTINGWA (Zenkevich model using BM) model.
+"""
 import numpy as np
 import scipy.integrate as integrate
 
