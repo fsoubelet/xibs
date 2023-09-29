@@ -10,7 +10,7 @@ The formalism from which formulas and calculations are implemented can be found 
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 
 import numpy as np
 
@@ -21,11 +21,32 @@ from scipy.interpolate import interp1d
 
 @dataclass
 class NagaitsevIntegrals:
-    """Container dataclass for Nagaitsev integrals results."""
+    """Container dataclass for Nagaitsev integrals results.
+
+    Args:
+        Ix (float): horizontal Nagaitsev integral.
+        Iy (float): vertical Nagaitsev integral.
+        Iz (float): longitudinal Nagaitsev integral.
+    """
 
     Ix: float
     Iy: float
     Iz: float
+
+
+@dataclass
+class IBSGrowthRates:
+    """Container dataclass for IBS growth rates results.
+
+    Args:
+        Tx (float): horizontal IBS growth rate.
+        Ty (float): vertical IBS growth rate.
+        Tz (float): longitudinal IBS growth rate.
+    """
+
+    Tx: float
+    Ty: float
+    Tz: float
 
 
 # TODO: maybe this should self-init from an xpart.Particles object?
@@ -62,67 +83,82 @@ class BeamParameters:
     c_rad: float  # classical radius, to be computed from the previous
 
 
-# TODO: maybe this should self-init from an xtrack.twiss.TwissTable object?
 @dataclass
 class OpticsParameters:
-    """Container dataclass for necessary optics parameters.
+    """Container dataclass for necessary optics parameters. It is initiated from
+    the results of a ``TWISS`` command with an ``xsuite``.
 
     Args:
-        s (ArrayLike): longitudinal positions of the machine elements in [m]. If
-            initiating atfer a TWISS result, this is `twiss.s`.
-        circumference (float): machine circumference in [m]. If initiating after
-            a TWISS result, this is `twiss.s[-1]`.
-        slip_factor (float): slip factor of the machine. If initiating after a line
-            twiss from ``xsuite``, this is `twiss["slip_factor"]`.
+        twiss (xtrack.twiss.TwissTable): the resulting table of a ``TWISS`` call
+            on the line in ``xsuite``.
         revolution_frequency (float): revolution frequency of the machine in [Hz].
-        betx (ArrayLike): horizontal beta functions in [m]. If initiating after a
-            TWISS result, this is `twiss.betx`.
-        bety (ArrayLike): vertical beta functions in [m]. If initiating after a
-            TWISS result, this is `twiss.bety`.
-        alfx (ArrayLike): horizontal alpha functions. If initiating after a TWISS
-            result, this is `twiss.alfx`.
-        alfy (ArrayLike): vertical alpha functions. If initiating after a TWISS
-            result, this is `twiss.alfy`.
-        dx (ArrayLike): horizontal dispersion functions in [m]. If initiating after
-            a TWISS result, this is `twiss.dx`.
-        dy (ArrayLike): vertical dispersion functions in [m]. If initiating after
-            a TWISS result, this is `twiss.dy`.
-        dpx (ArrayLike): horizontal dispersion derivative functions. If initiating
-            after a TWISS result, this is `twiss.dpx`.
-        dpy (ArrayLike): vertical dispersion derivative functions. If initiating
-            after a TWISS result, this is `twiss.dpy`.
+            If initiating after from ``xsuite`` elements, this can be obtained with
+            `particle_ref.beta0[0] * scipy.constants.c / twiss.s[-1]`.
+
+    Attributes:
+        revolution_frequency (float): revolution frequency of the machine in [Hz].
+        s (ArrayLike): longitudinal positions of the machine elements in [m].
+        circumference (float): machine circumference in [m].
+        slip_factor (float): slip factor of the machine.
+        betx (ArrayLike): horizontal beta functions in [m].
+        bety (ArrayLike): vertical beta functions in [m].
+        alfx (ArrayLike): horizontal alpha functions.
+        alfy (ArrayLike): vertical alpha functions.
+        dx (ArrayLike): horizontal dispersion functions in [m].
+        dy (ArrayLike): vertical dispersion functions in [m].
+        dpx (ArrayLike): horizontal dispersion (d px / d delta).
+        dpy (ArrayLike): horizontal dispersion (d px / d delta).
     """
 
-    s: ArrayLike
-    circumference: float
-    slip_factor: float
+    # ----- To be provided at initialization ----- #
+    twiss: InitVar["xtrack.twiss.TwissTable"]  # Needed to initialize, almost all else is derived from there
     revolution_frequency: float
-    betx: ArrayLike
-    bety: ArrayLike
-    alfx: ArrayLike
-    alfy: ArrayLike
-    dx: ArrayLike  # this is eta_x in michail's code
-    dy: ArrayLike  # this is eta_y in michail's code
-    dpx: ArrayLike  # this is eta_dx in michail's code
-    dpy: ArrayLike  # this is eta_dy in michail's code
-    bx_bar: ArrayLike = field(init=False)
-    by_bar: ArrayLike = field(init=False)
-    dx_bar: ArrayLike = field(init=False)
-    dy_bar: ArrayLike = field(init=False)
+    # ----- Below are attributes derived from the twiss table ----- #
+    s: ArrayLike = field(init=False)
+    circumference: float = field(init=False)
+    slip_factor: float = field(init=False)
+    betx: ArrayLike = field(init=False)
+    bety: ArrayLike = field(init=False)
+    alfx: ArrayLike = field(init=False)
+    alfy: ArrayLike = field(init=False)
+    # The following four are eta_x, eta_y, eta_dx and eta_dy in michail's code
+    dx: ArrayLike = field(init=False)
+    dy: ArrayLike = field(init=False)
+    dpx: ArrayLike = field(init=False)
+    dpy: ArrayLike = field(init=False)
+    # Below are ONLY USED in the CoulogConst function -> extract? Kept private for now
+    _bx_bar: ArrayLike = field(init=False)
+    _by_bar: ArrayLike = field(init=False)
+    _dx_bar: ArrayLike = field(init=False)
+    _dy_bar: ArrayLike = field(init=False)
 
-    def __post_init__(self):
-        # Interpolated functions for the calculation below
-        bxb = interp1d(self.s, self.betx)
-        byb = interp1d(self.s, self.bety)
-        dxb = interp1d(self.s, self.dx)
-        dyb = interp1d(self.s, self.dy)
-        # Below is the average beta and dispersion functions - better here than a simple
-        # np.mean calculation because the latter doesn't take in consideration element lengths
-        # These are ONLY USED in the CoulogConst function -> can be extracted there, in time
-        self.bx_bar = quad(bxb, self.s[0], self.s[-1])[0] / self.circumference
-        self.by_bar = quad(byb, self.s[0], self.s[-1])[0] / self.circumference
-        self.dx_bar = quad(dxb, self.s[0], self.s[-1])[0] / self.circumference
-        self.dy_bar = quad(dyb, self.s[0], self.s[-1])[0] / self.circumference
+    def __post_init__(self, twiss: "xtrack.twiss.TwissTable"):
+        # Attributes derived from the TwissTable
+        self.s = twiss.s
+        self.circumference = twiss.s[-1]
+        self.slip_factor = twiss["slip_factor"]
+        self.betx = twiss.betx
+        self.bety = twiss.bety
+        self.alfx = twiss.alfx
+        self.alfy = twiss.alfy
+        self.dx = twiss.dx
+        self.dy = twiss.dy
+        self.dpx = twiss.dpx
+        self.dpy = twiss.dpy
+        # Interpolated beta and dispersion functions for the calculation below
+        _bxb = interp1d(self.s, self.betx)
+        _byb = interp1d(self.s, self.bety)
+        _dxb = interp1d(self.s, self.dx)
+        _dyb = interp1d(self.s, self.dy)
+        # Computing "average" of these functions - better here than a simple np.mean
+        # calculation because the latter doesn't take in consideration element lengths
+        self._bx_bar = quad(_bxb, self.s[0], self.s[-1])[0] / self.circumference
+        self._by_bar = quad(_byb, self.s[0], self.s[-1])[0] / self.circumference
+        self._dx_bar = quad(_dxb, self.s[0], self.s[-1])[0] / self.circumference
+        self._dy_bar = quad(_dyb, self.s[0], self.s[-1])[0] / self.circumference
+
+
+# ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
 
 
 class Nagaitsev:
