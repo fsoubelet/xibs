@@ -256,3 +256,16 @@ Temporary Items
 # ----- Test files and repos ----- #
 tests/inputs/acc-models-sps/
 */*/acc-models-sps/
+
+
+### macOS template
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
