@@ -21,38 +21,47 @@ from scipy.interpolate import interp1d
 # ----- Dataclasses for inputs to Nagaitsev class ----- #
 
 
-# TODO: maybe this should self-init from an xpart.Particles object?
 @dataclass
 class BeamParameters:
-    """Container dataclass for necessary beam parameters.
+    """Container dataclass for necessary beam parameters. It is initiated from
+    the `xpart.Particles` object to track in your line with ``xsuite``.
 
     Args:
+        particles (xpart.Particles): the generates particles to be tracked or used
+            in the line.
+
+    Attributes:
         n_part (int): number of simulated particles.
-        particle_charge (int): particle charge in elementary. If generating particles
-            with ``xsuite``, this is `particles.q0`.
-        particle_mass_GeV (float): particle mass in [GeV]. If generating particles with
-            ``xsuite``, this is `particles.mass0 * 1e-9`.
-        particle_classical_radius (float): particle classical radius in [???]. It can be
-            taken from constants in ``scipy`` or computed manually by the user.
-        total_energy_GeV (float): total energy of the simulated particles in [GeV]. If
-            generating particles with ``xsuite``, this is
-            `np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2) * 1e-9`.
-        gamma_rel (float): relativistic gamma of the simulated particles. If generating
-            particles with ``xsuite``, this is `particles.gamma0[0]`.
-        beta_rel (float): relativistic beta of the simulated particles. If generating
-            particles with ``xsuite``, this is `particles.beta0[0]`.
-        c_rad (float): classical radius of the simulated particles. If generating
-            particles with ``xsuite``, this is obtained with `particles.get_classical_particle_radius0()`.
+        particle_charge (int): elementary particle charge, in # of Coulomb charges (for
+            instance 1 for electron or proton).
+        particle_mass_GeV (float): particle mass in [GeV].
+        total_energy_GeV (float): total energy of the simulated particles in [GeV].
+        gamma_rel (float): relativistic gamma of the simulated particles.
+        beta_rel (float): relativistic beta of the simulated particles.
+        particle_classical_radius_m (float): the particles' classical radius in [m].
     """
 
-    n_part: int
-    particle_charge: int  # this is particles.q0 from xsuite
-    particle_mass_GeV: float  # in GeV, so this is particles.mass0 * 1e-9 from xsuite
-    particle_classical_radius: float  # clasiscal radius, can be taken from scipy physical constants or computed manually by user
-    total_energy_GeV: float  # why does Michail calculate as np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2) * 1e-9 ??
-    gamma_rel: float  # relativistic gamma, this is particles.gamma0[0] from xsuite
-    beta_rel: float  # relativistic beta, this is particles.beta0[0] from xsuite
-    c_rad: float  # classical radius, to be computed from the previous
+    # ----- To be provided at initialization ----- #
+    particles: InitVar["xpart.Particles"]  # Almost all is derived from there, this is not kept!
+    # ----- Below are attributes derived from the Particles object ----- #
+    # The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michail's code
+    n_part: int = field(init=False)
+    particle_charge: int = field(init=False)
+    particle_mass_GeV: float = field(init=False)
+    total_energy_GeV: float = field(init=False)
+    gamma_rel: float = field(init=False)
+    beta_rel: float = field(init=False)
+    particle_classical_radius_m: float = field(init=False)
+
+    def __post_init__(self, particles: "xpart.Particles"):
+        # Attributes derived from the Particles object
+        self.n_part = particles.weight[0] * particles.gamma0.shape[0]
+        self.particle_charge = particles.q0
+        self.particle_mass_GeV = particles.mass0 * 1e-9
+        self.total_energy_GeV = np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2) * 1e-9
+        self.gamma_rel = particles.gamma0[0]
+        self.beta_rel = particles.beta0[0]
+        self.particle_classical_radius_m = particles.get_classical_particle_radius0()
 
 
 @dataclass
@@ -83,7 +92,7 @@ class OpticsParameters:
     """
 
     # ----- To be provided at initialization ----- #
-    twiss: InitVar["xtrack.twiss.TwissTable"]  # Needed to initialize, almost all else is derived from there
+    twiss: InitVar["xtrack.twiss.TwissTable"]  # Almost all is derived from there, this is not kept!
     revolution_frequency: float
     # ----- Below are attributes derived from the twiss table ----- #
     s: ArrayLike = field(init=False)
