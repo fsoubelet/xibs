@@ -22,6 +22,11 @@ API Reference
     :noindex:
 
 
+.. automodule:: xibs.utils
+    :members:
+    :noindex:
+
+
 .. automodule:: xibs.version
     :members:
     :noindex:
