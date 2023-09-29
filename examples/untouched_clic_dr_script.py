@@ -14,12 +14,12 @@ import xpart as xp
 import xtrack as xt
 
 from cpymad.madx import Madx
-from scipy.constants import e as qe
-from scipy.constants import m_e, m_p
 
 # from lib.Xsuite_eval_emit_sig import *
 # from lib.general_functions import *
 from lib.IBSfunctions import *
+from scipy.constants import e as qe
+from scipy.constants import m_e, m_p
 
 ## Read a MAD-X Sequence
 n_slice_per_element = 4
