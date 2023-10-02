@@ -15,6 +15,7 @@ from dataclasses import InitVar, dataclass, field
 import numpy as np
 
 from numpy.typing import ArrayLike
+from scipy.constants import hbar
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
 
@@ -179,3 +180,43 @@ class Nagaitsev:
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         self.beam_parameters = beam_params
         self.optics = optics
+
+    def _coulomb_log_constant(
+        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
+    ):
+        """
+        This is the full constant factor (building on Coulomb Log (constant) from Eq (9) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`).
+        Calculates Coulog constant, then log and returns it multiplied by sthe rest of the constant term in the equation.
+        Michail might have gotten this from MAD-X?
+
+        For a good resource on the Coulomb Log, see: https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): bunch length in [m].
+        """
+        # TODO: figure this all out by finding source (MAD-X IBS?), give proper variable names and document the calculation.
+        Etrans = (
+            5e8 * (self.gammar * self.EnTot - self.E_rest) * (geom_epsx / self.bx_bar)
+        )  # who the fuck are you?
+        TempeV = 2.0 * Etrans
+        sigxcm = 100 * np.sqrt(geom_epsx * self.bx_bar + (self.dx_bar * sigma_delta) ** 2)
+        sigycm = 100 * np.sqrt(geom_epxy * self.by_bar + (self.dy_bar * sigma_delta) ** 2)
+        sigtcm = 100 * bunch_length
+        volume = 8.0 * np.sqrt(np.pi**3) * sigxcm * sigycm * sigtcm
+        densty = self.Npart / volume
+        debyul = 743.4 * np.sqrt(TempeV / densty) / self.Ncharg
+        rmincl = 1.44e-7 * self.Ncharg**2 / TempeV
+        rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.E_rest))
+        rmin = max(rmincl, rminqm)
+        rmax = min(sigxcm, debyul)
+        coulog = np.log(rmax / rmin)
+        Ncon = (
+            self.Npart
+            * self.c_rad**2
+            * c
+            / (12 * np.pi * self.betar**3 * self.gammar**5 * bunch_length)
+        )
+        return Ncon * coulog
