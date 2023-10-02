@@ -1,11 +1,13 @@
 """
 .. _xibs-utils:
 
-Utilities
+Formulary
 ---------
 
-Module with convenience functions to compute quantities of interest needed in the rest of the package.
+Module with commonly used formulae to compute quantities of interest needed in the rest of the package.
 """
+from __future__ import annotations  # important for sphinx to alias ArrayLike
+
 from numpy.typing import ArrayLike
 
 
