@@ -15,7 +15,7 @@ from dataclasses import InitVar, dataclass, field
 import numpy as np
 
 from numpy.typing import ArrayLike
-from scipy.constants import hbar
+from scipy.constants import c, hbar
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
 
@@ -197,26 +197,30 @@ class Nagaitsev:
             sigma_delta (float): momentum spread.
             bunch_length (float): bunch length in [m].
         """
-        # TODO: figure this all out by finding source (MAD-X IBS?), give proper variable names and document the calculation.
-        Etrans = (
-            5e8 * (self.gammar * self.EnTot - self.E_rest) * (geom_epsx / self.bx_bar)
-        )  # who the fuck are you?
+        # TODO: figure this all out by finding source (MAD-X IBS?), give proper variable names and document the calculation in docstring.
+        # fmt: off
+        Etrans = (  # who the fuck are you?
+            5e8 * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV) * (geom_epsx / self.optics._bx_bar)
+        )
+        # fmt: on
         TempeV = 2.0 * Etrans
-        sigxcm = 100 * np.sqrt(geom_epsx * self.bx_bar + (self.dx_bar * sigma_delta) ** 2)
-        sigycm = 100 * np.sqrt(geom_epxy * self.by_bar + (self.dy_bar * sigma_delta) ** 2)
+        sigxcm = 100 * np.sqrt(geom_epsx * self.optics._bx_bar + (self.optics._dx_bar * sigma_delta) ** 2)
+        sigycm = 100 * np.sqrt(geom_epxy * self.optics._by_bar + (self.optics._dy_bar * sigma_delta) ** 2)
         sigtcm = 100 * bunch_length
         volume = 8.0 * np.sqrt(np.pi**3) * sigxcm * sigycm * sigtcm
-        densty = self.Npart / volume
-        debyul = 743.4 * np.sqrt(TempeV / densty) / self.Ncharg
-        rmincl = 1.44e-7 * self.Ncharg**2 / TempeV
-        rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.E_rest))
+        densty = self.beam_parameters.n_part / volume
+        debyul = 743.4 * np.sqrt(TempeV / densty) / self.beam_parameters.particle_charge
+        rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
+        rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_GeV))
         rmin = max(rmincl, rminqm)
         rmax = min(sigxcm, debyul)
         coulog = np.log(rmax / rmin)
+        # fmt: off
         Ncon = (
-            self.Npart
-            * self.c_rad**2
-            * c
-            / (12 * np.pi * self.betar**3 * self.gammar**5 * bunch_length)
+            self.beam_parameters.n_part
+            * self.beam_parameters.particle_classical_radius_m**2
+            * c 
+            / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
         )
+        # fmt: on
         return Ncon * coulog
