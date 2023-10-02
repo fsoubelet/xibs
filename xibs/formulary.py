@@ -70,8 +70,7 @@ def bunch_length(
         sigma_e
         * circumference
         * np.sqrt(
-            abs(slip_factor)
-            * total_energy_GeV
+            abs(slip_factor) * total_energy_GeV
             / (2 * np.pi * beta_rel * harmonic_number * np.sqrt(particle_charge**2 * rf_voltage**2 - energy_loss**2))
         )
     )
@@ -113,8 +112,7 @@ def energy_spread(
     return bunch_length / (
         circumference
         * np.sqrt(
-            abs(slip_factor)
-            * total_energy_GeV
+            abs(slip_factor) * total_energy_GeV
             / (2 * np.pi * beta_rel * harmonic_number * np.sqrt(particle_charge**2 * rf_voltage**2 - energy_loss**2))
         )
     )
