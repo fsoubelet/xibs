@@ -94,36 +94,6 @@ class MichailIBS:
         Ncon = self.Npart * self.c_rad**2 * c / (12 * np.pi * self.betar**3 * self.gammar**5 * BunchL)
         return Ncon * coulog
 
-    def line_density(self, n_slices, particles):
-        """Calculates line density, implementation from Michail and Hannes. Idea came from Eq 8 in https://journals.aps.org/prab/abstract/10.1103/PhysRevSTAB.13.091001 (TODO: CITE)
-        -> Get particles coordinates
-        -> Determine binning of coordinates for histogram (getting bin edges and centers)
-        -> Calculate the rms bunch length as the standard deviation of the distribution
-        -> Does an interpolation of the histogram with wanted number of bins and returns an interpolated function to apply kicks later on.
-        Weigths are applied heavier at the center of the interpolated array so that for kicks particles at the center of the distribution are more affected.
-        """
-        zeta = particles.zeta[particles.state > 0]
-        z_cut_head = np.max(zeta)
-        z_cut_tail = np.min(zeta)
-        slice_width = (z_cut_head - z_cut_tail) / float(n_slices)
-
-        bin_edges = np.linspace(
-            z_cut_tail - 1e-7 * slice_width,
-            z_cut_head + 1e-7 * slice_width,
-            num=n_slices + 1,
-            dtype=np.float64,
-        )
-        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.0
-
-        bunch_length_rms = np.std(zeta)
-        factor_distribution = bunch_length_rms * 2 * np.sqrt(np.pi)
-
-        counts_normed, bin_edges = np.histogram(zeta, bin_edges, density=True)
-        Rho_normed = np.interp(zeta, bin_centers, counts_normed * factor_distribution)
-        # kick_factor_normed = np.mean(Rho_normed)
-
-        return Rho_normed
-
     def RDiter(self, x, y, z):
         """
         Elliptic integral calculation with iterative method.
@@ -299,6 +269,36 @@ class MichailIBS:
         )
 
         return Evolemx, Evolemy, EvolsiM
+
+    def line_density(self, n_slices, particles):
+        """Calculates line density, implementation from Michail and Hannes. Idea came from Eq 8 in https://journals.aps.org/prab/abstract/10.1103/PhysRevSTAB.13.091001 (TODO: CITE)
+        -> Get particles coordinates
+        -> Determine binning of coordinates for histogram (getting bin edges and centers)
+        -> Calculate the rms bunch length as the standard deviation of the distribution
+        -> Does an interpolation of the histogram with wanted number of bins and returns an interpolated function to apply kicks later on.
+        Weigths are applied heavier at the center of the interpolated array so that for kicks particles at the center of the distribution are more affected.
+        """
+        zeta = particles.zeta[particles.state > 0]
+        z_cut_head = np.max(zeta)
+        z_cut_tail = np.min(zeta)
+        slice_width = (z_cut_head - z_cut_tail) / float(n_slices)
+
+        bin_edges = np.linspace(
+            z_cut_tail - 1e-7 * slice_width,
+            z_cut_head + 1e-7 * slice_width,
+            num=n_slices + 1,
+            dtype=np.float64,
+        )
+        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.0
+
+        bunch_length_rms = np.std(zeta)
+        factor_distribution = bunch_length_rms * 2 * np.sqrt(np.pi)
+
+        counts_normed, bin_edges = np.histogram(zeta, bin_edges, density=True)
+        Rho_normed = np.interp(zeta, bin_centers, counts_normed * factor_distribution)
+        # kick_factor_normed = np.mean(Rho_normed)
+
+        return Rho_normed
 
     # ! ~~~~~~~~~~~~~~~~ Simple Kicks ~~~~~~~~~~~~~~~~~~ !
     def emit_evol_simple_kicks(self, particles) -> Tuple[float, float, float]:
