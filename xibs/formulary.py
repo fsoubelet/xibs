@@ -53,7 +53,7 @@ def bunch_length(
         harmonic_number (int): harmonic number of the RF system.
         total_energy_GeV (float): total energy of the simulated particles in [GeV].
         slip_factor (float): slip factor of the machine.
-        sigma_e (float): energy spread of the particles? TODO: check with Michail and in Wiedermann book.
+        sigma_e (float): energy spread of the particles. TODO: check with Michail and in Wiedermann book.
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
         energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
@@ -67,6 +67,51 @@ def bunch_length(
     return (
         sigma_e
         * circumference
+        * np.sqrt(
+            abs(slip_factor)
+            * total_energy_GeV
+            / (2 * np.pi * beta_rel * harmonic_number * np.sqrt(particle_charge**2 * rf_voltage**2 - energy_loss**2))
+        )
+    )
+    # fmt: on
+
+
+# This is EnergySpread from Michail's code, in general_functions.py
+# The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
+def energy_spread(
+    circumference: float,
+    harmonic_number: int,
+    total_energy_GeV: float,
+    slip_factor: float,
+    bunch_length: float,
+    beta_rel: float,
+    rf_voltage: float,
+    energy_loss: float,
+    particle_charge: int,
+) -> float:
+    """Counterpart of the `bunch_length` function, analytically calculates for bunch length for protons / electrons.
+
+    The same caveats than in `bunch_length` apply here.
+    ~~~ from Wiedermanns book ~~~
+
+    Args:
+        circumference (float): machine circumference in [m].
+        harmonic_number (int): harmonic number of the RF system.
+        total_energy_GeV (float): total energy of the simulated particles in [GeV].
+        slip_factor (float): slip factor of the machine.
+        bunch_length (float): bunch length in [m].
+        beta_rel (float): relativistic beta of the simulated particles.
+        rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
+        energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
+        particle_charge (int): elementary particle charge, in # of Coulomb charges (for
+            instance 1 for electron or proton).
+
+    Returns:
+        The analytically calculated dimensionless energy spread.
+    """
+    # fmt: off
+    return bunch_length / (
+        circumference
         * np.sqrt(
             abs(slip_factor)
             * total_energy_GeV
