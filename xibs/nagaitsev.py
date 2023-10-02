@@ -234,3 +234,48 @@ class Nagaitsev:
         )
         # fmt: on
         return Ncon * coulog
+
+
+    def coulomb_log(
+            self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
+        ) -> float:
+            """
+            Calculates the Coulomb logarithm based on the beam parameters and optics the class
+            was initiated with. For a good introductory resource on the Coulomb Log, see:
+            https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html
+
+            .. note::
+                This is a copy-paste of the body from `coulomb_log_constant` (initially
+                `CoulogConst` in Michail's code, but stopping and returning as soon as
+                the Coulomb logarithm is calculated. For now this is a duplicate but in
+                the future this might be the sole implementation, with the caller left
+                to calculate the rest of the constant term in Eq (9) in
+                :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
+
+            Args:
+                epsx (float): horizontal geometric emittance in [m].
+                epxy (float): vertical geometric emittance in [m].
+                sigma_delta (float): momentum spread.
+                bunch_length (float): bunch length in [m].
+
+            Returns:
+                The dimensionless Coulomb logarithm :math:`\ln\\left(Λ\\right)`.
+            """
+            # TODO: figure this all out by finding source (MAD-X IBS?), give proper variable names and document the calculation in docstring.
+            # fmt: off
+            Etrans = (  # who the fuck are you?
+                5e8 * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV) * (geom_epsx / self.optics._bx_bar)
+            )
+            # fmt: on
+            TempeV = 2.0 * Etrans
+            sigxcm = 100 * np.sqrt(geom_epsx * self.optics._bx_bar + (self.optics._dx_bar * sigma_delta) ** 2)
+            sigycm = 100 * np.sqrt(geom_epxy * self.optics._by_bar + (self.optics._dy_bar * sigma_delta) ** 2)
+            sigtcm = 100 * bunch_length
+            volume = 8.0 * np.sqrt(np.pi**3) * sigxcm * sigycm * sigtcm
+            densty = self.beam_parameters.n_part / volume
+            debyul = 743.4 * np.sqrt(TempeV / densty) / self.beam_parameters.particle_charge
+            rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
+            rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_GeV))
+            rmin = max(rmincl, rminqm)
+            rmax = min(sigxcm, debyul)
+            return np.log(rmax / rmin)  # THIS is the Coulomb logarithm, could return here and take care of the rest below in the calling function
