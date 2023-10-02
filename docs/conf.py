@@ -209,7 +209,9 @@ latex_elements["babel"] = r"\usepackage{babel}"
 # Font configuration
 # Fix fontspec converting " into right curly quotes in PDF
 # cf https://github.com/sphinx-doc/sphinx/pull/6888/
-latex_elements["fontenc"] = r"""
+latex_elements[
+    "fontenc"
+] = r"""
 \usepackage{fontspec}
 \defaultfontfeatures[\rmfamily,\sffamily,\ttfamily]{}
 """
