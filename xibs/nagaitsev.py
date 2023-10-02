@@ -190,7 +190,7 @@ class Nagaitsev:
     def coulomb_log(
         self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
     ) -> float:
-        """
+        r"""
         Calculates the Coulomb logarithm based on the beam parameters and optics the class
         was initiated with. For a good introductory resource on the Coulomb Log, see:
         https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html
@@ -212,7 +212,7 @@ class Nagaitsev:
             bunch_length (float): bunch length in [m].
 
         Returns:
-            The dimensionless Coulomb logarithm :math:`\ln\\left(Λ\\right)`.
+            The dimensionless Coulomb logarithm :math:`\ln \left( Λ \right)`.
         """
         # fmt: off
         Etrans = (  # who the fuck are you?
@@ -273,3 +273,103 @@ class Nagaitsev:
         )
         # fmt: on
         return Ncon * coulomb_logarithm
+
+    def RDiter(self, x, y, z):
+        r"""Computes the terms inside the elliptic integral in Eq (4) of
+        :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
+
+        This is an iterative method implementation that was found by Michail (in ``C++``
+        then adapted). The implementation is found in ref [5] (uses ref [4] too) of the
+        same paper: :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
+        
+        .. note::
+            This is for now a copy-paste of the `RDiter` method in Michail's code.
+            Some PowerPoints from Michail in an old ABP group meeting mention how this
+            calculation works. Can look into this for details and documentation.
+        
+        .. todo::
+            This is the most time-consuming part of the class's integrals computing. For
+            optimization, since this doesn't call any internal attributes of the class
+            it could be moved out (into `xibs.formulary`?) and potentially JIT-compiled with
+            ``numba``. Then we import directly from the right module and call it in the
+            integrals calculations.
+
+        .. todo::
+            Go through the old scripts in debugging mode and inspect what is passed in
+            and then out to get a better idea of the function signature.
+            
+        Args:
+            x (float?): the :math:`\lambda_1` value in Nagaitsev paper? Eigen values of
+                the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
+                it is :math:`\bf{L}` matrix (ref?).
+            y (float?): the :math:`\lambda_2` value in Nagaitsev paper? Eigen values of
+                the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
+                it is :math:`\bf{L}` matrix (ref?).
+            z (float?): the :math:`\lambda_3` value in Nagaitsev paper? Eigen values of
+                the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
+                it is :math:`\bf{L}` matrix (ref?).
+
+        This is because Nagaitsev shows we can calculate the R_D integral at 2 different
+        specific points and have the third one figured out by relation to the first two.
+        """
+        R = []
+        for i, j, k in zip(x, y, z):
+            x0 = i
+            y0 = j
+            z0 = k
+            if (x0 < 0) and (y0 <= 0) and (z0 <= 0):
+                print("Elliptic Integral Calculation Failed. Wrong input values!")
+                return
+            x = x0
+            y = y0
+            z = [z0]
+            li = []
+            Sn = []
+            differ = 10e-4
+            for n in range(0, 1000):
+                xi = x
+                yi = y
+                li.append(np.sqrt(xi * yi) + np.sqrt(xi * z[n]) + np.sqrt(yi * z[n]))
+                x = (xi + li[n]) / 4.0
+                y = (yi + li[n]) / 4.0
+                z.append((z[n] + li[n]) / 4.0)
+                if (
+                    (abs(x - xi) / x0 < differ)
+                    and (abs(y - yi) / y0 < differ)
+                    and (abs(z[n] - z[n + 1]) / z0 < differ)
+                ):
+                    break
+            lim = n
+            mi = (xi + yi + 3 * z[lim]) / 5.0
+            Cx = 1 - (xi / mi)
+            Cy = 1 - (yi / mi)
+            Cz = 1 - (z[n] / mi)
+            En = max(Cx, Cy, Cz)
+            if En >= 1:
+                print("Something went wrong with En")
+                return
+            summ = 0
+            for m in range(2, 6):
+                Sn.append((Cx**m + Cy**m + 3 * Cz**m) / (2 * m))
+            for m in range(0, lim):
+                summ += 1 / (np.sqrt(z[m]) * (z[m] + li[m]) * 4**m)
+
+            # Ern = 3 * En**6 / (1 - En) ** (3 / 2.0)
+            rn = -Sn[2 - 2] ** 3 / 10.0 + 3 * Sn[3 - 2] ** 2 / 10.0 + 3 * Sn[2 - 2] * Sn[4 - 2] / 5.0
+            R.append(
+                3 * summ
+                + (
+                    1
+                    + 3 * Sn[2 - 2] / 7.0
+                    + Sn[3 - 2] / 3.0
+                    + 3 * Sn[2 - 2] ** 2 / 22.0
+                    + 3 * Sn[4 - 2] / 11.0
+                    + 3 * Sn[2 - 2] * Sn[3 - 2] / 13.0
+                    + 3 * Sn[5 - 2] / 13.0
+                    + rn
+                )
+                / (4**lim * mi ** (3 / 2.0))
+            )
+        # This returns an array with one value per element in the lattice
+        # This is NOT the elliptic integral yet, it has to be integrated afterwards. It is the term in the integral in Eq (4) in Nagaitsev paper.
+        return R
