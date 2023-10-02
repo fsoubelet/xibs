@@ -16,7 +16,9 @@ from numpy.typing import ArrayLike
 def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> ArrayLike:
     """Phi parameter of Eq (15) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
-    TODO: figure out exactly who's what here, and why the calculation is not as Eq (15)
+    .. todo::
+        Figure out exactly who's what here, and why the calculation is not as Eq (15).
+
     Args:
         beta (ArrayLike): beta-functions through the machine.
         alpha (ArrayLike): alpha-functions through the machine.
@@ -42,12 +44,13 @@ def bunch_length(
     energy_loss: float,
     particle_charge: int,
 ) -> float:
-    """Analytical calculation for bunch length for protons / electrons.
+    """Analytical calculation for bunch length for protons / electrons (from Wiedermann's book).
 
     This is a linear approximation which assumes that particles are in the center of the bucket only / mostly.
-    ~~~ from Wiedermanns book ~~~
 
-    TODO: figure out exactly the formula that was implemented here and reference / document it in the docstring.
+    .. todo::
+        Figure out exactly the formula that was implemented here and reference / document it in the docstring.
+
     Args:
         circumference (float): machine circumference in [m].
         harmonic_number (int): harmonic number of the RF system.
@@ -57,8 +60,7 @@ def bunch_length(
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
         energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
-        particle_charge (int): elementary particle charge, in # of Coulomb charges (for
-            instance 1 for electron or proton).
+        particle_charge (int): elementary particle charge, in # of Coulomb charges (for instance 1 for electron or proton).
 
     Returns:
         The analytically calculated bunch length in [m].
@@ -89,10 +91,9 @@ def energy_spread(
     energy_loss: float,
     particle_charge: int,
 ) -> float:
-    """Counterpart of the `bunch_length` function, analytically calculates for bunch length for protons / electrons.
+    """Counterpart of the `bunch_length` function, analytically calculates for bunch length for protons / electrons (from Wiedermann's book).
 
     The same caveats than in `bunch_length` apply here.
-    ~~~ from Wiedermanns book ~~~
 
     Args:
         circumference (float): machine circumference in [m].
@@ -103,8 +104,7 @@ def energy_spread(
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
         energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
-        particle_charge (int): elementary particle charge, in # of Coulomb charges (for
-            instance 1 for electron or proton).
+        particle_charge (int): elementary particle charge, in # of Coulomb charges (for instance 1 for electron or proton).
 
     Returns:
         The analytically calculated dimensionless energy spread for the particle bunch.
@@ -133,12 +133,14 @@ def ion_bunch_length(
     rf_voltage: float,
     particle_charge: int,
 ):
-    """Analytical calculation for bunch length for ions.
+    """Analytical calculation for bunch length for ions (from Wiedermann's book).
 
     This calculation does not work too well if the bucket is full. Implementation so far as I
     can tell is as used in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS).
 
-    TODO: figure out exactly the formula that was implemented here and reference / document it in the docstring.
+    .. todo::
+        Figure out exactly the formula that was implemented here and reference / document it in the docstring.
+
     Args:
         circumference (float): machine circumference in [m].
         harmonic_number (int): harmonic number of the RF system.
@@ -164,7 +166,7 @@ def ion_bunch_length(
 
 # This is ionEnergySpread from Michail's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
-def ion_EnergySpread(
+def ion_energy_spread(
     circumference: float,
     harmonic_number: int,
     total_energy_GeV: float,
@@ -177,7 +179,6 @@ def ion_EnergySpread(
     """Counterpart of the `ion_bunch_length` function, analytically calculates for bunch length for protons / electrons.
 
     The same caveats than in `ion_bunch_length` apply here.
-    ~~~ from Wiedermanns book ~~~
 
     Args:
         circumference (float): machine circumference in [m].
