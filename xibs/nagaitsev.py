@@ -28,7 +28,7 @@ class BeamParameters:
     the `xpart.Particles` object to track in your line with ``xsuite``.
 
     Args:
-        particles (xpart.Particles): the generates particles to be tracked or used
+        particles (xpart.Particles): the generated particles to be tracked or used
             in the line.
 
     Attributes:
@@ -177,13 +177,20 @@ class IBSGrowthRates:
 
 
 class Nagaitsev:
+    """
+    A single class to compute Nagaitsev integrals (see
+    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
+    and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
+    """
+
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         self.beam_parameters = beam_params
         self.optics = optics
 
-    def _coulomb_log_constant(
+    # TODO: split in two? Have a function for just the coulog, and then one for the rest?
+    def coulomb_log_constant(
         self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
-    ):
+    ) -> float:
         """
         This is the full constant factor (building on Coulomb Log (constant) from Eq (9) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`).
         Calculates Coulog constant, then log and returns it multiplied by sthe rest of the constant term in the equation.
@@ -196,6 +203,9 @@ class Nagaitsev:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): bunch length in [m].
+
+        Returns:
+            The dimensionless Coulomb logarithm :math:`\ln\\left(Λ\\right)` multiplied by the rest of the constant term in Eq (9) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
         """
         # TODO: figure this all out by finding source (MAD-X IBS?), give proper variable names and document the calculation in docstring.
         # fmt: off
@@ -214,7 +224,7 @@ class Nagaitsev:
         rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_GeV))
         rmin = max(rmincl, rminqm)
         rmax = min(sigxcm, debyul)
-        coulog = np.log(rmax / rmin)
+        coulog = np.log(rmax / rmin)  # THIS is the Coulomb logarithm, could return here and take care of the rest below in the calling function
         # fmt: off
         Ncon = (
             self.beam_parameters.n_part
