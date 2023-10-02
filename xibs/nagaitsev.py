@@ -281,12 +281,12 @@ class Nagaitsev:
         This is an iterative method implementation that was found by Michail (in ``C++``
         then adapted). The implementation is found in ref [5] (uses ref [4] too) of the
         same paper: :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-        
+
         .. note::
             This is for now a copy-paste of the `RDiter` method in Michail's code.
             Some PowerPoints from Michail in an old ABP group meeting mention how this
             calculation works. Can look into this for details and documentation.
-        
+
         .. todo::
             This is the most time-consuming part of the class's integrals computing. For
             optimization, since this doesn't call any internal attributes of the class
@@ -297,7 +297,7 @@ class Nagaitsev:
         .. todo::
             Go through the old scripts in debugging mode and inspect what is passed in
             and then out to get a better idea of the function signature.
-            
+
         Args:
             x (float?): the :math:`\lambda_1` value in Nagaitsev paper? Eigen values of
                 the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
