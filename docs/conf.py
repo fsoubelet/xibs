@@ -63,9 +63,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "docs", "docker", "tests
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 
-# The reST default role (used for this markup: `text`) to use for all
-# documents.
-default_role = "obj"
+# The reST default role (used for this markup: `text`) to use for all documents.
+default_role = "py:obj"
 
 # -- Extensions Configuration ---------------------------------------------
 
@@ -144,7 +143,7 @@ html_context = {
     # the following are only needed if :github_url: is not set
     "github_user": author,
     "github_repo": project,
-    "github_version": "master/doc/",
+    "github_version": "main/docs/",
 }
 
 # A list of CSS files. The entry must be a filename string or a tuple containing the
@@ -210,9 +209,7 @@ latex_elements["babel"] = r"\usepackage{babel}"
 # Font configuration
 # Fix fontspec converting " into right curly quotes in PDF
 # cf https://github.com/sphinx-doc/sphinx/pull/6888/
-latex_elements[
-    "fontenc"
-] = r"""
+latex_elements["fontenc"] = r"""
 \usepackage{fontspec}
 \defaultfontfeatures[\rmfamily,\sffamily,\ttfamily]{}
 """
@@ -370,8 +367,7 @@ autodoc_mock_imports = [
 # -- Instersphinx Configuration ----------------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-# use in refs e.g:
-# :ref:`comparison manual <python:comparisons>`
+# use in refs e.g: :ref:`comparison manual <python:comparisons>`
 intersphinx_mapping = {
     "cpymad": ("https://hibtc.github.io/cpymad/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
