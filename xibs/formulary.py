@@ -107,7 +107,7 @@ def energy_spread(
             instance 1 for electron or proton).
 
     Returns:
-        The analytically calculated dimensionless energy spread.
+        The analytically calculated dimensionless energy spread for the particle bunch.
     """
     # fmt: off
     return bunch_length / (
@@ -160,3 +160,46 @@ def ion_bunch_length(
         * np.arccos(1 - (sigma_e**2 * total_energy_GeV * abs(slip_factor) * harmonic_number * np.pi) / (beta_rel**2 * particle_charge * rf_voltage))
     )
     # fmt: on
+
+
+# This is ionEnergySpread from Michail's code, in general_functions.py
+# The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
+def ion_EnergySpread(
+    circumference: float,
+    harmonic_number: int,
+    total_energy_GeV: float,
+    slip_factor: float,
+    bunch_length: float,
+    beta_rel: float,
+    rf_voltage: float,
+    particle_charge: int,
+) -> float:
+    """Counterpart of the `ion_bunch_length` function, analytically calculates for bunch length for protons / electrons.
+
+    The same caveats than in `ion_bunch_length` apply here.
+    ~~~ from Wiedermanns book ~~~
+
+    Args:
+        circumference (float): machine circumference in [m].
+        harmonic_number (int): harmonic number of the RF system.
+        total_energy_GeV (float): total energy of the simulated particles in [GeV].
+        slip_factor (float): slip factor of the machine.
+        bunch_length (float): ion bunch length in [m].
+        beta_rel (float): relativistic beta of the simulated particles.
+        rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
+        energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
+        particle_charge (int): elementary particle charge, in # of Coulomb charges (for
+            instance 1 for electron or proton).
+
+    Returns:
+        The analytically calculated dimensionless energy spread for an ion bunch.
+    """
+    # TODO: check implementation
+    tau_phi = 2 * np.pi * harmonic_number * bunch_length / circumference  # bunch length in rad?
+    return np.sqrt(
+        beta_rel**2
+        * particle_charge
+        * rf_voltage
+        * (-(np.cos(tau_phi) - 1))
+        / (total_energy_GeV * abs(slip_factor) * harmonic_number * np.pi)
+    )
