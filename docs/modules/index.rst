@@ -22,7 +22,7 @@ API Reference
     :noindex:
 
 
-.. automodule:: xibs.utils
+.. automodule:: xibs.formulary
     :members:
     :noindex:
 
