@@ -556,4 +556,23 @@ class Nagaitsev:
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
         """
-        pass
+        # ----------------------------------------------------------------------------------------------
+        # Check that the IBS growth rates have been computed beforehand
+        if self.ibs_growth_rates is None:
+            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
+            raise ValueError(
+                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
+                "Please call the `growth_rates` method first."
+            )
+        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Set the time step to 1 / frev if not provided
+        if dt is None:
+            LOGGER.debug("No time step provided, defaulting to 1 / frev")
+            dt = 1 / self.optics.revolution_frequency
+        # ----------------------------------------------------------------------------------------------
+        # Compute new emittances and return them. Here we multiply because T = 1 / tau
+        new_epsx = geom_epsx + np.exp(dt * self.ibs_growth_rates.Tx)
+        new_epsy = geom_epsy + np.exp(dt * self.ibs_growth_rates.Ty)
+        new_sigma_delta = sigma_delta + np.exp(dt * self.ibs_growth_rates.Tz / 2)
+        return new_epsx, new_epsy, new_sigma_delta
