@@ -522,6 +522,8 @@ class Nagaitsev:
         self.growth_rates = result
         return result
 
+    # This is 'emit_evol' from Michail's old code
+    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL (unused) and dt there
     def emittance_evolution(
         self, geom_epsx: float, geom_epsy: float, sigma_delta: float, dt: float = None
     ) -> Tuple[float, float, float]:
