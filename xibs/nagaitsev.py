@@ -33,7 +33,8 @@ class BeamParameters:
 
     Args:
         particles (xpart.Particles): the generated particles to be tracked or used
-            in the line.
+            in the line. This is an init-only parameter used for instanciation and
+            it will not be kept in the instance's attributes.
 
     Attributes:
         n_part (int): number of simulated particles.
@@ -77,7 +78,8 @@ class OpticsParameters:
 
     Args:
         twiss (xtrack.twiss.TwissTable): the resulting table of a ``TWISS`` call
-            on the line in ``xsuite``.
+            on the line in ``xsuite``. This is an init-only parameter used for
+            instanciation and it will not be kept in the instance's attributes.
         revolution_frequency (float): revolution frequency of the machine in [Hz].
             If initiating after from ``xsuite`` elements, this can be obtained with
             `particle_ref.beta0[0] * scipy.constants.c / twiss.s[-1]`.
