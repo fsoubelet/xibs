@@ -10,9 +10,9 @@ The formalism from which formulas and calculations are implemented can be found 
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
-import logging
-
 from dataclasses import InitVar, astuple, dataclass, field
+from logging import getLogger
+from typing import Tuple
 
 import numpy as np
 
@@ -23,7 +23,7 @@ from scipy.interpolate import interp1d
 
 from xibs.formulary import phi
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = getLogger(__name__)
 
 # ----- Dataclasses for inputs to Nagaitsev class ----- #
 
@@ -237,7 +237,7 @@ class Nagaitsev:
             bunch_length (float): bunch length in [m].
 
         Returns:
-            The dimensionless Coulomb logarithm :math:`\ln \left( Λ \right)`.
+            The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
         """
         LOGGER.debug("Computing Coulomb logarithm for definded beam and optics parameters")
         # fmt: off
