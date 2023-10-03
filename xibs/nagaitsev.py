@@ -461,7 +461,7 @@ class Nagaitsev:
     ) -> IBSGrowthRates:
         r"""Computes the ``IBS`` growth rates, named :math:`T_x, T_y` and :math:`T_z` in this code base, from Nagaitsev integrals.
 
-        These correspond to the :math:`\dfrac{1}{\tau}` term, for each plane, of Eq (28) in
+        These correspond to the :math:`1 / \tau` term, for each plane, of Eq (28) in
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
         The instance attribute `self.ibs_growth_rates` is automatically updated with
         the results of this method.
@@ -479,7 +479,7 @@ class Nagaitsev:
                 - Computes the Coulomb logarithm for the defined beam and optics parameters.
                 - Compute the rest of the constant term of Eq (30-32).
                 - Compute for each plane the full result of Eq (30-32), respectively.
-                - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_p^{2}` (as relevant) to get :math:`\dfrac{1}{\tau}`.
+                - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_{\delta}^{2}` (as relevant) to get :math:`1 / \tau`.
 
         Args:
             epsx (float): horizontal geometric emittance in [m].
