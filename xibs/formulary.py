@@ -8,9 +8,13 @@ Module with commonly used formulae to compute quantities of interest needed in t
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
+import logging
+
 import numpy as np
 
 from numpy.typing import ArrayLike
+
+LOGGER = logging.getLogger(__name__)
 
 
 def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> ArrayLike:
@@ -65,6 +69,7 @@ def bunch_length(
     Returns:
         The analytically calculated bunch length in [m].
     """
+    LOGGER.debug("Calculating bunch length analytically with linear approximation")
     # fmt: off
     return (
         sigma_e
@@ -108,6 +113,7 @@ def energy_spread(
     Returns:
         The analytically calculated dimensionless energy spread for the particle bunch.
     """
+    LOGGER.debug("Calculating energy spread analytically with linear approximation")
     # fmt: off
     return bunch_length / (
         circumference
@@ -153,6 +159,7 @@ def ion_bunch_length(
     Returns:
         The analytically calculated bunch length in [m].
     """
+    LOGGER.debug("Calculating bunch length for ions analytically")
     # fmt: off
     return (
         circumference
@@ -193,6 +200,7 @@ def ion_energy_spread(
     Returns:
         The analytically calculated dimensionless energy spread for an ion bunch.
     """
+    LOGGER.debug("Calculating energy spread for ions analytically")
     # TODO: check implementation
     tau_phi = 2 * np.pi * harmonic_number * bunch_length / circumference  # bunch length in rad?
     return np.sqrt(

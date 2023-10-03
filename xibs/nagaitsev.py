@@ -10,6 +10,8 @@ The formalism from which formulas and calculations are implemented can be found 
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
+import logging
+
 from dataclasses import InitVar, dataclass, field
 
 import numpy as np
@@ -18,6 +20,8 @@ from numpy.typing import ArrayLike
 from scipy.constants import c, hbar
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
+
+LOGGER = logging.getLogger(__name__)
 
 # ----- Dataclasses for inputs to Nagaitsev class ----- #
 
@@ -56,6 +60,7 @@ class BeamParameters:
 
     def __post_init__(self, particles: "xpart.Particles"):
         # Attributes derived from the Particles object
+        LOGGER.debug("Initializing BeamParameters from Particles object")
         self.n_part = particles.weight[0] * particles.gamma0.shape[0]
         self.particle_charge = particles.q0
         self.particle_mass_GeV = particles.mass0 * 1e-9
@@ -116,6 +121,7 @@ class OpticsParameters:
 
     def __post_init__(self, twiss: "xtrack.twiss.TwissTable"):
         # Attributes derived from the TwissTable
+        LOGGER.debug("Initializing OpticsParameters from TwissTable object")
         self.s = twiss.s
         self.circumference = twiss.s[-1]
         self.slip_factor = twiss["slip_factor"]
@@ -127,7 +133,9 @@ class OpticsParameters:
         self.dy = twiss.dy
         self.dpx = twiss.dpx
         self.dpy = twiss.dpy
+
         # Interpolated beta and dispersion functions for the calculation below
+        LOGGER.debug("Interpolating beta and dispersion functions")
         _bxb = interp1d(self.s, self.betx)
         _byb = interp1d(self.s, self.bety)
         _dxb = interp1d(self.s, self.dx)
@@ -214,6 +222,7 @@ class Nagaitsev:
         Returns:
             The dimensionless Coulomb logarithm :math:`\ln \left( Λ \right)`.
         """
+        LOGGER.debug("Computing Coulomb logarithm for definded beam and optics parameters")
         # fmt: off
         Etrans = (  # who the fuck are you?
             5e8 * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV) * (geom_epsx / self.optics._bx_bar)
@@ -312,6 +321,7 @@ class Nagaitsev:
         This is because Nagaitsev shows we can calculate the R_D integral at 2 different
         specific points and have the third one figured out by relation to the first two.
         """
+        LOGGER.debug("Iteratively computing elliptic integral RD term")
         R = []
         for i, j, k in zip(x, y, z):
             x0 = i
