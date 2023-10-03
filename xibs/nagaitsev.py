@@ -194,8 +194,11 @@ class Nagaitsev:
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        self.beam_parameters = beam_params
-        self.optics = optics
+        self.beam_parameters: BeamParameters = beam_params
+        self.optics: OpticsParameters = optics
+        # The following start as None and can (by default) self-update
+        self.elliptic_integrals: NagaitsevIntegrals = None
+        self.growth_rates: IBSGrowthRates = None
 
     def coulomb_log(
         self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
@@ -389,3 +392,4 @@ class Nagaitsev:
         # This returns an array with one value per element in the lattice
         # This is NOT the elliptic integral yet, it has to be integrated afterwards. It is the term in the integral in Eq (4) in Nagaitsev paper.
         return R
+
