@@ -138,21 +138,6 @@ class OpticsParameters:
         self.dpx = twiss.dpx
         self.dpy = twiss.dpy
 
-        # Interpolated beta and dispersion functions for the calculation below
-        # TODO: this is only needed in the coulomb logarithm calculation, could be moved there?
-        # This way users don't have to see the scipy.integrate.quad warnings when instantiating
-        LOGGER.debug("Interpolating beta and dispersion functions")
-        _bxb = interp1d(self.s, self.betx)
-        _byb = interp1d(self.s, self.bety)
-        _dxb = interp1d(self.s, self.dx)
-        _dyb = interp1d(self.s, self.dy)
-        # Computing "average" of these functions - better here than a simple np.mean
-        # calculation because the latter doesn't take in consideration element lengths
-        self._bx_bar = quad(_bxb, self.s[0], self.s[-1])[0] / self.circumference
-        self._by_bar = quad(_byb, self.s[0], self.s[-1])[0] / self.circumference
-        self._dx_bar = quad(_dxb, self.s[0], self.s[-1])[0] / self.circumference
-        self._dy_bar = quad(_dyb, self.s[0], self.s[-1])[0] / self.circumference
-
 
 # ----- Dataclasses to store results ----- #
 
@@ -240,27 +225,44 @@ class Nagaitsev:
             The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
         """
         LOGGER.debug("Computing Coulomb logarithm for definded beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Interpolated beta and dispersion functions for the calculation below
+        LOGGER.debug("Interpolating beta and dispersion functions")
+        _bxb = interp1d(self.optics.s, self.optics.betx)
+        _byb = interp1d(self.optics.s, self.optics.bety)
+        _dxb = interp1d(self.optics.s, self.optics.dx)
+        _dyb = interp1d(self.optics.s, self.optics.dy)
+        # ----------------------------------------------------------------------------------------------
+        # Computing "average" of these functions - better here than a simple np.mean
+        # calculation because the latter doesn't take in consideration element lengths
+        _bx_bar = quad(_bxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+        _by_bar = quad(_byb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+        _dx_bar = quad(_dxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+        _dy_bar = quad(_dyb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+        # ----------------------------------------------------------------------------------------------
+        # TODO: who the fuck are those?
         # fmt: off
-        Etrans = (  # who the fuck are you?
-            5e8 * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV) * (geom_epsx / self.optics._bx_bar)
+        Etrans = (  
+            5e8 * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV) * (geom_epsx / _bx_bar)
         )
         # fmt: on
         TempeV = 2.0 * Etrans
-
+        # ----------------------------------------------------------------------------------------------
         # TODO: computing sigmas, why?
-        sigma_x_cm = 100 * np.sqrt(geom_epsx * self.optics._bx_bar + (self.optics._dx_bar * sigma_delta) ** 2)
-        sigma_y_cm = 100 * np.sqrt(geom_epxy * self.optics._by_bar + (self.optics._dy_bar * sigma_delta) ** 2)
+        sigma_x_cm = 100 * np.sqrt(geom_epsx * _bx_bar + (_dx_bar * sigma_delta) ** 2)
+        sigma_y_cm = 100 * np.sqrt(geom_epxy * _by_bar + (_dy_bar * sigma_delta) ** 2)
         sigma_t_cm = 100 * bunch_length
-
+        # ----------------------------------------------------------------------------------------------
         # TODO: computing volume, density and maybe Debye length?
         volume = 8.0 * np.sqrt(np.pi**3) * sigma_x_cm * sigma_y_cm * sigma_t_cm
         density = self.beam_parameters.n_part / volume
         debyul = 743.4 * np.sqrt(TempeV / density) / self.beam_parameters.particle_charge  # Debye length?
-
+        # ----------------------------------------------------------------------------------------------
+        # TODO: Computing ???
         rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
         rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_GeV))
-
-        # Now compute the impact parameters and Coulomb logarithm
+        # ----------------------------------------------------------------------------------------------
+        # Now compute the impact parameters and finally Coulomb logarithm
         bmin = max(rmincl, rminqm)
         bmax = min(sigma_x_cm, debyul)
         return np.log(bmax / bmin)
@@ -372,12 +374,7 @@ class Nagaitsev:
 
     # This is 'Nagaitsev_Integrals' from Michail's old code but it stops a bit earlier and really returns the integrals
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
-    def integrals(
-        self,
-        geom_epsx: float,
-        geom_epsy: float,
-        sigma_delta: float,
-    ) -> NagaitsevIntegrals:
+    def integrals(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> NagaitsevIntegrals:
         r"""Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_z` in this code base.
 
         These correspond to the integrals inside of Eq (32), (31) and (30) in
