@@ -117,11 +117,6 @@ class OpticsParameters:
     dy: ArrayLike = field(init=False)
     dpx: ArrayLike = field(init=False)
     dpy: ArrayLike = field(init=False)
-    # Below are ONLY USED in the CoulogConst function -> extract? Kept private for now
-    _bx_bar: ArrayLike = field(init=False)
-    _by_bar: ArrayLike = field(init=False)
-    _dx_bar: ArrayLike = field(init=False)
-    _dy_bar: ArrayLike = field(init=False)
 
     def __post_init__(self, twiss: "xtrack.twiss.TwissTable"):
         # Attributes derived from the TwissTable
