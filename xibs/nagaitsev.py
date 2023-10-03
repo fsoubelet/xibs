@@ -201,7 +201,7 @@ class Nagaitsev:
         optics (OpticsParameters): the optics parameters to use for the calculations.
         elliptic_integrals (NagaitsevIntegrals): the computed elliptic integrals. This
             self-updates when they are computed with the `integrals` method.
-        growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
+        ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
             when they are computed with the `growth_rates` method.
     """
 
@@ -210,7 +210,7 @@ class Nagaitsev:
         self.optics: OpticsParameters = optics
         # These self-update when they are computed, but can be overwritten by the user
         self.elliptic_integrals: NagaitsevIntegrals = None
-        self.growth_rates: IBSGrowthRates = None
+        self.ibs_growth_rates: IBSGrowthRates = None
 
     def coulomb_log(
         self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
@@ -498,7 +498,7 @@ class Nagaitsev:
 
         These correspond to the :math:`\dfrac{1}{\tau}` term, for each plane, of Eq (28) in
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
-        The instance attribute `self.growth_rates` is automatically updated with
+        The instance attribute `self.ibs_growth_rates` is automatically updated with
         the results of this method.
 
         .. warning::
