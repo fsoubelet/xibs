@@ -12,8 +12,6 @@ import xtrack as xt
 from cpymad.madx import Madx
 from helpers import make_sps_thin, re_cycle_sequence
 
-from xibs.nagaitsev import BeamParameters
-
 # ----- Paths to inputs ----- #
 
 CURRENT_DIR = pathlib.Path(__file__).parent
