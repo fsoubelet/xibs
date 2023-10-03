@@ -504,12 +504,12 @@ class Nagaitsev:
         coulomb_logarithm = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length)
         # Then the rest of the constant term in the equation
         # fmt: off
-        Ncon = (
+        rest_of_constant_term = (
             self.beam_parameters.n_part * self.beam_parameters.particle_classical_radius_m**2 * c 
             / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
         )
         # fmt: on
-        full_constant_term = Ncon * coulomb_logarithm
+        full_constant_term = rest_of_constant_term * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
         # Check that the Nagaitsev integrals have been computed beforehand
         full_constant_term = self.coulomb_log_full_constant(geom_epsx, geom_epsy, sigma_delta, bunch_length)
