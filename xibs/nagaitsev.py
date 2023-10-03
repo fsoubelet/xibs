@@ -139,6 +139,8 @@ class OpticsParameters:
         self.dpy = twiss.dpy
 
         # Interpolated beta and dispersion functions for the calculation below
+        # TODO: this is only needed in the coulomb logarithm calculation, could be moved there?
+        # This way users don't have to see the scipy.integrate.quad warnings when instantiating
         LOGGER.debug("Interpolating beta and dispersion functions")
         _bxb = interp1d(self.s, self.betx)
         _byb = interp1d(self.s, self.bety)
@@ -411,7 +413,7 @@ class Nagaitsev:
         geom_epsy: float,
         sigma_delta: float,
     ) -> NagaitsevIntegrals:
-        r"""Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_p` in this code base.
+        r"""Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_z` in this code base.
 
         These correspond to the integrals inside of Eq (32), (31) and (30) of
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
@@ -479,8 +481,8 @@ class Nagaitsev:
         # Integrating the integrands above accross the ring to get the desired results
         Ix: float = np.sum(Ix_integrand[:-1] * np.diff(self.optics.s))
         Iy: float = np.sum(Iy_integrand[:-1] * np.diff(self.optics.s))
-        Ip: float = np.sum(Ip_integrand[:-1] * np.diff(self.optics.s))
-        result = NagaitsevIntegrals(Ix, Iy, Ip)
+        Iz: float = np.sum(Ip_integrand[:-1] * np.diff(self.optics.s))
+        result = NagaitsevIntegrals(Ix, Iy, Iz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
