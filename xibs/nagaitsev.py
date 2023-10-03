@@ -12,7 +12,7 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 import logging
 
-from dataclasses import InitVar, dataclass, field
+from dataclasses import InitVar, astuple, dataclass, field
 
 import numpy as np
 
@@ -20,6 +20,8 @@ from numpy.typing import ArrayLike
 from scipy.constants import c, hbar
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
+
+from xibs.formulary import phi
 
 LOGGER = logging.getLogger(__name__)
 
@@ -191,12 +193,20 @@ class Nagaitsev:
     A single class to compute Nagaitsev integrals (see
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
     and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
+
+    Attributes:
+        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
+        optics (OpticsParameters): the optics parameters to use for the calculations.
+        elliptic_integrals (NagaitsevIntegrals): the computed elliptic integrals. This
+            self-updates when they are computed with the `integrals` method.
+        growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
+            when they are computed with the `growth_rates` method.
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
-        # The following start as None and can (by default) self-update
+        # These self-update when they are computed, but can be overwritten by the user
         self.elliptic_integrals: NagaitsevIntegrals = None
         self.growth_rates: IBSGrowthRates = None
 
@@ -393,3 +403,86 @@ class Nagaitsev:
         # This is NOT the elliptic integral yet, it has to be integrated afterwards. It is the term in the integral in Eq (4) in Nagaitsev paper.
         return R
 
+    # This is 'Nagaitsev_Integrals' from Michail's old code but it stops a bit earlier and really returns the integrals
+    # The arguments used to be Emit_x, Emit_y, Sig_M, BunchL
+    def integrals(
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+    ) -> NagaitsevIntegrals:
+        r"""Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_p` in this code base.
+
+        These correspond to the integrals inside of Eq (32), (31) and (30) of
+        :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
+        The instance attribute `self.elliptic_integrals` is automatically updated
+        with the results of this method. It is used for other calculations.
+
+        .. tip::
+            The calculation is done following the steps below, relating to different equations
+            in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:
+
+                - Computes various intermediate terms and then :math:`a_x, a_y, a_s, a_1` and :math:`a_2` constants from Eq (18-21).
+                - Computes the eigenvalues :math:`\lambda_1, \lambda_2` of the :math:`\bf{A}` matrix (:math:`\bf{L}` matrix in B&M) from Eq (22-24).
+                - Iteratively computes the :math:`R_1, R_2` and :math:`R_3` terms from Eq (25-27) with the forms of Eq (5-6).
+                - Computes the :math:`S_p, S_x` and :math:`S_{xp}` terms from Eq (33-35).
+                - Computes and return the integrals terms in Eq (30-32).
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+
+        Returns:
+            A `NagaitsevIntegrals` object with the computed integrals for each plane.
+        """
+        LOGGER.info("Computing Nagaitsev integrals for defined beam and optics parameters")
+        # fmt: off
+        # All of the following (when type annotated as np.ndarray), hold one value per element in the lattice
+        # ----------------------------------------------------------------------------------------------
+        # Computing necessary intermediate terms for the following lines
+        sigx: np.ndarray = np.sqrt(self.optics.betx * geom_epsx + (self.optics.dx * sigma_delta) ** 2)
+        sigy: np.ndarray = np.sqrt(self.optics.bety * geom_epsy + (self.optics.dy * sigma_delta) ** 2)
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, self.optics.dx, self.optics.dpx)
+        # Computing the constants from Eq (18-21) in Nagaitsev paper
+        ax: np.ndarray = self.optics.betx / geom_epsx
+        ay: np.ndarray = self.optics.bety / geom_epsy
+        a_s: np.ndarray = ax * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + 1 / sigma_delta**2
+        a1: np.ndarray = (ax + self.beam_parameters.gamma_rel**2 * a_s) / 2.0
+        a2: np.ndarray = (ax - self.beam_parameters.gamma_rel**2 * a_s) / 2.0
+        sqrt_term = np.sqrt(a2**2 + self.beam_parameters.gamma_rel**2 * ax**2 * phix**2)  # square root term in Eq (22-23) and Eq (33-35)
+        # ----------------------------------------------------------------------------------------------
+        # These are from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
+        lambda_1: np.ndarray = ay
+        lambda_2: np.ndarray = a1 + sqrt_term
+        lambda_3: np.ndarray = a1 - sqrt_term
+        # ----------------------------------------------------------------------------------------------
+        # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper
+        R1: np.ndarray = self.iterative_RD(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
+        R2: np.ndarray = self.iterative_RD(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
+        R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
+        # ----------------------------------------------------------------------------------------------
+        # This are the terms from Eq (33-35) in Nagaitsev paper
+        Sp: np.ndarray = (2 * R1 - R2 * (1 - 3 * a2 / sqrt_term) - R3 * (1 + 3 * a2 / sqrt_term)) * 0.5 * self.beam_parameters.gamma_rel**2
+        Sx: np.ndarray = (2 * R1 - R2 * (1 + 3 * a2 / sqrt_term) - R3 * (1 - 3 * a2 / sqrt_term)) * 0.5
+        Sxp: np.ndarray = 3 * self.beam_parameters.gamma_rel**2 * phix**2 * ax * (R3 - R2) / sqrt_term
+        # ----------------------------------------------------------------------------------------------
+        # These are the integrands of the integrals in Eq (30-32) in Nagaitsev paper
+        Ix_integrand = (
+            self.optics.betx
+            / (self.optics.circumference * sigx * sigy)
+            * (Sx + Sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + Sxp)
+        )
+        Iy_integrand = self.optics.bety / (self.optics.circumference * sigx * sigy) * (R2 + R3 - 2 * R1)
+        Ip_integrand = Sp / (self.optics.circumference * sigx * sigy)
+        # ----------------------------------------------------------------------------------------------
+        # Integrating the integrands above accross the ring to get the desired results
+        Ix: float = np.sum(Ix_integrand[:-1] * np.diff(self.optics.s))
+        Iy: float = np.sum(Iy_integrand[:-1] * np.diff(self.optics.s))
+        Ip: float = np.sum(Ip_integrand[:-1] * np.diff(self.optics.s))
+        result = NagaitsevIntegrals(Ix, Iy, Ip)
+        # fmt: on
+        # ----------------------------------------------------------------------------------------------
+        # Self-update the instance's attributes and then return the results
+        self.elliptic_integrals = result
+        return result
