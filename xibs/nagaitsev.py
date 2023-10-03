@@ -285,7 +285,7 @@ class Nagaitsev:
         # fmt: on
         return Ncon * coulomb_logarithm
 
-    def RDiter(self, x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
+    def iterative_RD(self, x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
         r"""Computes the terms inside the elliptic integral in Eq (4) of
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
