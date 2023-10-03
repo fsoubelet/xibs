@@ -7,11 +7,6 @@ API Reference
     :noindex:
 
 
-.. automodule:: xibs.evolutions
-    :members:
-    :noindex:
-
-
 .. automodule:: xibs.simple
     :members:
     :noindex:
