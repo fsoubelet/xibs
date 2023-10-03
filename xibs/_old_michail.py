@@ -1,6 +1,8 @@
 """
 This is the old implementation of Michail, kept here as a private module to benchmark against in tests.
 """
+import warnings
+
 from typing import Tuple
 
 import numpy as np
@@ -10,7 +12,10 @@ import scipy.integrate as integrate
 from scipy.constants import c, hbar, physical_constants
 from scipy.interpolate import interp1d
 
-# TODO: import from xsuite (in PyIBS) for type hints, and add actual type hints
+warnings.warn(
+    "You should not be using this module unless you are a developper "
+    "of this package and know what you are doing."
+)
 
 
 class MichailIBS:
