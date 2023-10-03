@@ -522,3 +522,39 @@ class Nagaitsev:
         # Self-update the instance's attributes and then return the results
         self.growth_rates = result
         return result
+
+    def emittance_evolution(
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, dt: float
+    ) -> Tuple[float, float, float]:
+        r"""Analytically computes the new emittances at turn :math:`N+1` from
+        those at turn :math:`N` based on the ``IBS`` growth rates.
+
+        .. warning::
+            This calculation is done by building on the ``IBS`` growth rates. If the
+            latter have not been computed yet, this method will raise an error. Please
+            remember to call the instance's `growth_rates` method first.
+
+        .. tip::
+            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
+            according to:
+
+            .. math::
+
+                T_{x,y,z} &= 1 / \tau_{x,y,z}
+
+                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} + e^{t / \tau_{x,y}}
+
+                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} + e^{t / 2 \tau_{z}}
+
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            dt (float): the time interval to use. Default to the inverse
+                of the revolution frequency, :math:`1 / f_{rev}`.
+
+        Returns:
+            An `IBSGrowthRates` object with the computed growth rates for each plane.
+        """
+        pass
