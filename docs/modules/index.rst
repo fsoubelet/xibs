@@ -2,7 +2,7 @@ API Reference
 =============
 
 
-.. automodule:: xibs.nagaitsev
+.. automodule:: xibs.analytical
     :members:
     :noindex:
 

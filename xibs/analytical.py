@@ -1,5 +1,5 @@
 """
-.. _xibs-nagaitsev:
+.. _xibs-analytical:
 
 Analytical Calculations
 -----------------------
