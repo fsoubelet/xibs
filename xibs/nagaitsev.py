@@ -283,7 +283,7 @@ class Nagaitsev:
         # fmt: on
         return Ncon * coulomb_logarithm
 
-    def RDiter(self, x, y, z):
+    def RDiter(self, x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
         r"""Computes the terms inside the elliptic integral in Eq (4) of
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
@@ -308,18 +308,22 @@ class Nagaitsev:
             and then out to get a better idea of the function signature.
 
         Args:
-            x (float?): the :math:`\lambda_1` value in Nagaitsev paper? Eigen values of
+            x (ArrayLike): the :math:`\lambda_1` values in Nagaitsev paper? Eigen values of
                 the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-                it is :math:`\bf{L}` matrix (ref?).
-            y (float?): the :math:`\lambda_2` value in Nagaitsev paper? Eigen values of
+                it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
+                element in the lattice.
+            y (ArrayLike): the :math:`\lambda_2` values in Nagaitsev paper? Eigen values of
                 the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-                it is :math:`\bf{L}` matrix (ref?).
-            z (float?): the :math:`\lambda_3` value in Nagaitsev paper? Eigen values of
+                it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
+                element in the lattice.
+            z (ArrayLike): the :math:`\lambda_3` values in Nagaitsev paper? Eigen values of
                 the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-                it is :math:`\bf{L}` matrix (ref?).
+                it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
+                element in the lattice.
 
-        This is because Nagaitsev shows we can calculate the R_D integral at 2 different
-        specific points and have the third one figured out by relation to the first two.
+        Returns:
+            An array with the result of the calculation for each element in the lattice. This
+            is NOT the elliptic integral yet, it has to be integrated afterwards.
         """
         LOGGER.debug("Iteratively computing elliptic integral RD term")
         R = []

@@ -182,7 +182,8 @@ class MichailIBS:
         -> Computes the IBS growth rates - Eq (28) (integrate the terms, multiply by Coulomb log and divide by emittance)
         """
         # Constants from Eq (18-21)
-        const = self.CoulogConst(Emit_x, Emit_y, Sig_M, BunchL)
+        const = self.CoulogConst(Emit_x, Emit_y, Sig_M, BunchL)  # this is a float
+        # For each of the following (until denom), they are an np.ndarray with one value per element in the lattice
         sigx = np.sqrt(self.bet_x * Emit_x + (self.eta_x * Sig_M) ** 2)
         sigy = np.sqrt(self.bet_y * Emit_y + (self.eta_y * Sig_M) ** 2)
         ax = self.bet_x / Emit_x
@@ -193,21 +194,25 @@ class MichailIBS:
         denom = np.sqrt(a2**2 + self.gammar**2 * ax**2 * self.phi_x**2)
         # --------------------------------------------------------------------------------
         # This is from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
+        # Similarly these are each an np.ndarray with one value per element in the lattice
         l1 = ay
         l2 = a1 + denom
         l3 = a1 - denom
         # --------------------------------------------------------------------------------
         # This is from Eq (25-27) in Nagaitsev paper
+        # Once again these are each an np.ndarray with one value per element in the lattice
         R1 = self.RDiter(1 / l2, 1 / l3, 1 / l1) / l1
         R2 = self.RDiter(1 / l3, 1 / l1, 1 / l2) / l2
         R3 = 3 * np.sqrt(l1 * l2 / l3) - l1 * R1 / l3 - l2 * R2 / l3
         # --------------------------------------------------------------------------------
-        # This is Eq (33-25) in Nagaitsev paper - (partial?) growth rates
+        # This is Eq (33-35) in Nagaitsev paper - (partial?) growth rates
+        # These are each an np.ndarray with one value per element in the lattice
         Nagai_Sp = (2 * R1 - R2 * (1 - 3 * a2 / denom) - R3 * (1 + 3 * a2 / denom)) * 0.5 * self.gammar**2
         Nagai_Sx = (2 * R1 - R2 * (1 + 3 * a2 / denom) - R3 * (1 - 3 * a2 / denom)) * 0.5
         Nagai_Sxp = 3 * self.gammar**2 * self.phi_x**2 * ax * (R3 - R2) / denom
         # --------------------------------------------------------------------------------
         # TODO: THIS IS THE INTEGRALS, USED BELOW TO CALCULATE THE GROWTH RATES
+        # Actually these are still the integrands, the integration is done at the next step
         # This is Eq (30-32) then directly plugged into Eq (28) in Nagaitsev paper
         Ixi = (
             self.bet_x
@@ -218,10 +223,13 @@ class MichailIBS:
         Ipi = Nagai_Sp / (self.Circu * sigx * sigy)
         # --------------------------------------------------------------------------------
         # This is were we plug the last part in Eq (28) -> division by the emittance
-        Ix = np.sum(Ixi[:-1] * np.diff(self.posit)) * const / Emit_x
-        Iy = np.sum(Iyi[:-1] * np.diff(self.posit)) * const / Emit_y
-        Ip = np.sum(Ipi[:-1] * np.diff(self.posit)) * const / Sig_M**2
+        # TODO: technically the first part of the calculation are the Nagaitsev Integrals
+        # The growth rates are Ix, Iy, Ip computed with the constant factor and the emittances
+        Ix: float = np.sum(Ixi[:-1] * np.diff(self.posit)) * const / Emit_x
+        Iy: float = np.sum(Iyi[:-1] * np.diff(self.posit)) * const / Emit_y
+        Ip: float = np.sum(Ipi[:-1] * np.diff(self.posit)) * const / Sig_M**2
         # TODO: figure out with Michalis why the integration is commented out
+        # This is to save time, as it is so much move intensive
         # Ix = integrate.simps(Ixi, self.posit) * const / Emit_x
         # Iy = integrate.simps(Iyi, self.posit) * const / Emit_y
         # Ip = integrate.simps(Ipi, self.posit) * const / Sig_M**2
