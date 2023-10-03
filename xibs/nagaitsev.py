@@ -511,8 +511,7 @@ class Nagaitsev:
         # fmt: on
         full_constant_term = rest_of_constant_term * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
-        # Check that the Nagaitsev integrals have been computed beforehand
-        full_constant_term = self.coulomb_log_full_constant(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        # Compute the full result of Eq (30-32) for each plane
         Ix, Iy, Iz = astuple(self.elliptic_integrals)
         Tx: float = Ix * full_constant_term / geom_epsx
         Ty: float = Iy * full_constant_term / geom_epsy
@@ -524,7 +523,7 @@ class Nagaitsev:
         return result
 
     def emittance_evolution(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, dt: float
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, dt: float = None
     ) -> Tuple[float, float, float]:
         r"""Analytically computes the new emittances at turn :math:`N+1` from
         those at turn :math:`N` based on the ``IBS`` growth rates.
@@ -551,7 +550,7 @@ class Nagaitsev:
             epsx (float): horizontal geometric emittance in [m].
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
-            dt (float): the time interval to use. Default to the inverse
+            dt (float, optional): the time interval to use. Default to the inverse
                 of the revolution frequency, :math:`1 / f_{rev}`.
 
         Returns:
