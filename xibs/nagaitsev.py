@@ -406,7 +406,7 @@ class Nagaitsev:
         return R
 
     # This is 'Nagaitsev_Integrals' from Michail's old code but it stops a bit earlier and really returns the integrals
-    # The arguments used to be Emit_x, Emit_y, Sig_M, BunchL
+    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def integrals(
         self,
         geom_epsx: float,
@@ -415,14 +415,14 @@ class Nagaitsev:
     ) -> NagaitsevIntegrals:
         r"""Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_z` in this code base.
 
-        These correspond to the integrals inside of Eq (32), (31) and (30) of
+        These correspond to the integrals inside of Eq (32), (31) and (30) in
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
         The instance attribute `self.elliptic_integrals` is automatically updated
         with the results of this method. It is used for other calculations.
 
         .. tip::
-            The calculation is done following the steps below, relating to different equations
-            in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:
+            The calculation is done according to the following steps, which are related to different
+            equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:
 
                 - Computes various intermediate terms and then :math:`a_x, a_y, a_s, a_1` and :math:`a_2` constants from Eq (18-21).
                 - Computes the eigenvalues :math:`\lambda_1, \lambda_2` of the :math:`\bf{A}` matrix (:math:`\bf{L}` matrix in B&M) from Eq (22-24).
@@ -487,4 +487,64 @@ class Nagaitsev:
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
         self.elliptic_integrals = result
+        return result
+
+    # This is the end of the calculations in 'Nagaitsev_Integrals' from Michail's old code (the last 3 lines essentially)
+    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
+    def growth_rates(
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float
+    ) -> IBSGrowthRates:
+        r"""Computes the ``IBS`` growth rates, named :math:`T_x, T_y` and :math:`T_z` in this code base, from Nagaitsev integrals.
+
+        These correspond to the :math:`\dfrac{1}{\tau}` term, for each plane, of Eq (28) in
+        :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
+        The instance attribute `self.growth_rates` is automatically updated with
+        the results of this method.
+
+        .. warning::
+            This calculation is done by building on the Nagaitsev integrals. If the
+            latter have not been computed yet, this method will raise an error. Please
+            remember to call the instance's `integrals` method first.
+
+        .. tip::
+            The calculation is done according to the following steps, which are related to different
+            equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:
+
+                - Get the Nagaitsev integrals from the instance attributes (integrals of Eq (30-32)).
+                - Computes the Coulomb logarithm for the defined beam and optics parameters.
+                - Compute the rest of the constant term of Eq (30-32).
+                - Compute for each plane the full result of Eq (30-32), respectively.
+                - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_p^{2}` (as relevant) to get :math:`\dfrac{1}{\tau}`.
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): the bunch length in [m].
+
+        Returns:
+            An `IBSGrowthRates` object with the computed growth rates for each plane.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Check that the Nagaitsev integrals have been computed beforehand
+        if self.elliptic_integrals is None:
+            LOGGER.error("Attempted to compute growth rates without having computed Nagaitsev integrals.")
+            raise ValueError(
+                "Nagaitsev integrals have not been computed yet, cannot compute growth rates.\n"
+                "Please call the `integrals` method first."
+            )
+        LOGGER.info(
+            "Computing IBS growth rates from Nagaitsev integrals for defined beam and optics parameters"
+        )
+        # ----------------------------------------------------------------------------------------------
+        # Check that the Nagaitsev integrals have been computed beforehand
+        full_constant_term = self.coulomb_log_full_constant(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        Ix, Iy, Iz = astuple(self.elliptic_integrals)
+        Tx: float = Ix * full_constant_term / geom_epsx
+        Ty: float = Iy * full_constant_term / geom_epsy
+        Tz: float = Iz * full_constant_term / sigma_delta**2
+        result = IBSGrowthRates(Tx, Ty, Tz)
+        # ----------------------------------------------------------------------------------------------
+        # Self-update the instance's attributes and then return the results
+        self.growth_rates = result
         return result
