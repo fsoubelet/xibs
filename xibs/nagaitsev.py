@@ -265,41 +265,6 @@ class Nagaitsev:
         bmax = min(sigma_x_cm, debyul)
         return np.log(bmax / bmin)
 
-    def coulomb_log_full_constant(
-        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
-    ) -> float:
-        """
-        This is the full constant factor (building on Coulomb log, see the `coulomb_log` method)
-        from Eq (9) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`. This returns
-        the same as what is returned by the `CoulogConst` method in Michail's code.
-
-        .. todo::
-            Check the calculation for the rest of the constant term, the expression
-            in Eq (9) seems to have been massaged quite a bit.
-
-        Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
-            bunch_length (float): bunch length in [m].
-
-        Returns:
-            The dimensionless Coulomb logarithm :math:`\ln\\left(Λ\\right)` multiplied by the rest
-            of the constant term in Eq (9) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-        """
-        # First get the coulomb logarithm from the dedicated method
-        coulomb_logarithm = self.coulomb_log(geom_epsx, geom_epxy, sigma_delta, bunch_length)
-        # Then the rest of the constant term in the equation
-        # fmt: off
-        Ncon = (
-            self.beam_parameters.n_part
-            * self.beam_parameters.particle_classical_radius_m**2
-            * c 
-            / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
-        )
-        # fmt: on
-        return Ncon * coulomb_logarithm
-
     def iterative_RD(self, x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
         r"""Computes the terms inside the elliptic integral in Eq (4) of
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
@@ -533,9 +498,18 @@ class Nagaitsev:
                 "Nagaitsev integrals have not been computed yet, cannot compute growth rates.\n"
                 "Please call the `integrals` method first."
             )
-        LOGGER.info(
-            "Computing IBS growth rates from Nagaitsev integrals for defined beam and optics parameters"
+        LOGGER.info("Computing IBS growth rates for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Get the Coulomb logarithm and the rest of the constant term in Eq (30-32)
+        coulomb_logarithm = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        # Then the rest of the constant term in the equation
+        # fmt: off
+        Ncon = (
+            self.beam_parameters.n_part * self.beam_parameters.particle_classical_radius_m**2 * c 
+            / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
         )
+        # fmt: on
+        full_constant_term = Ncon * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
         # Check that the Nagaitsev integrals have been computed beforehand
         full_constant_term = self.coulomb_log_full_constant(geom_epsx, geom_epsy, sigma_delta, bunch_length)
