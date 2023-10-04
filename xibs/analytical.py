@@ -204,6 +204,7 @@ class Nagaitsev:
         lambda_3: np.ndarray = a1 - sqrt_term
         # ----------------------------------------------------------------------------------------------
         # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper
+        LOGGER.debug("Iteratively computing elliptic integral RD term")
         R1: np.ndarray = iterative_RD(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
         R2: np.ndarray = iterative_RD(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
         R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
