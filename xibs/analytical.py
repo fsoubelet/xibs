@@ -10,13 +10,12 @@ The formalism from which formulas and calculations are implemented can be found 
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
-from dataclasses import InitVar, astuple, dataclass, field
+from dataclasses import astuple, dataclass
 from logging import getLogger
 from typing import Tuple
 
 import numpy as np
 
-from numpy.typing import ArrayLike
 from scipy.constants import c, hbar
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
