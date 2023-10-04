@@ -18,6 +18,7 @@ from logging import getLogger
 import numpy as np
 
 from numpy.typing import ArrayLike
+from scipy.constants import c
 
 LOGGER = getLogger(__name__)
 
@@ -78,15 +79,12 @@ class OpticsParameters:
         twiss (xtrack.twiss.TwissTable): the resulting table of a ``TWISS`` call
             on the line in ``xsuite``. This is an init-only parameter used for
             instanciation and it will not be kept in the instance's attributes.
-        revolution_frequency (float): revolution frequency of the machine in [Hz].
-            If initiating after from ``xsuite`` elements, this can be obtained with
-            `particle_ref.beta0[0] * scipy.constants.c / twiss.s[-1]`.
 
     Attributes:
-        revolution_frequency (float): revolution frequency of the machine in [Hz].
         s (ArrayLike): longitudinal positions of the machine elements in [m].
         circumference (float): machine circumference in [m].
         slip_factor (float): slip factor of the machine.
+        revolution_frequency (float): revolution frequency of the machine in [Hz].
         betx (ArrayLike): horizontal beta functions in [m].
         bety (ArrayLike): vertical beta functions in [m].
         alfx (ArrayLike): horizontal alpha functions.
@@ -99,11 +97,11 @@ class OpticsParameters:
 
     # ----- To be provided at initialization ----- #
     twiss: InitVar["xtrack.twiss.TwissTable"]  # Almost all is derived from there, this is not kept!
-    revolution_frequency: float
     # ----- Below are attributes derived from the twiss table ----- #
     s: ArrayLike = field(init=False)
     circumference: float = field(init=False)
     slip_factor: float = field(init=False)
+    revolution_frequency: float = field(init=False)
     betx: ArrayLike = field(init=False)
     bety: ArrayLike = field(init=False)
     alfx: ArrayLike = field(init=False)
@@ -120,6 +118,7 @@ class OpticsParameters:
         self.s = twiss.s
         self.circumference = twiss.s[-1]
         self.slip_factor = twiss["slip_factor"]
+        self.revolution_frequency = twiss.beta0 * c / self.circumference
         self.betx = twiss.betx
         self.bety = twiss.bety
         self.alfx = twiss.alfx
