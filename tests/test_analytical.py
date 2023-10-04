@@ -73,7 +73,7 @@ def test_CLIC_DR_growth_rates(madx_CLIC_damping_ring, xsuite_line_CLIC_damping_r
     # --------------------------------------------------------------------
     # Get the growth rates from the analytical module (xibs.analytical)
     beamparams = BeamParameters(particles)
-    optics = OpticsParameters(twiss, OLDIBS.frev)
+    optics = OpticsParameters(twiss)
     NEWIBS = Nagaitsev(beamparams, optics)
     integrals = NEWIBS.integrals(geom_epsx, geom_epsy, sig_delta)
     new_rates = NEWIBS.growth_rates(geom_epsx, geom_epsy, sig_delta, bunch_length)
