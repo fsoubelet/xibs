@@ -245,7 +245,6 @@ def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
         An array with the result of the calculation for each element in the lattice. This
         is NOT the elliptic integral yet, it has to be integrated afterwards.
     """
-    LOGGER.debug("Iteratively computing elliptic integral RD term")
     R = []
     for i, j, k in zip(x, y, z):
         x0 = i
