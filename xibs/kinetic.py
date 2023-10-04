@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from xibs.analytical import BeamParameters, OpticsParameters
+from xibs.inputs import BeamParameters, OpticsParameters
 
 # ----- Dataclasses to store results ----- #
 
