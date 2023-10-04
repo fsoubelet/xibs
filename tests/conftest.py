@@ -100,7 +100,6 @@ def madx_CLIC_damping_ring() -> Madx:
     lattice.
     """
     with Madx(stdout=False) as madx:
-        madx = Madx(stdout=False)
         madx.call(str(CLIC_DR_SEQUENCE_MADX.absolute()))
         # Makethin on RING sequence
         n_slice_per_element = 4
