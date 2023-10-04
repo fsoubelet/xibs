@@ -49,7 +49,6 @@ class FrictionCoefficients:
 
 
 # It does not seem like any of the calculations in here need Nagaitsev results.
-# Can simply move the iterative_RD function to formulary (and JIT it) to import here and compute
 class KineticIBS:
     """
     A single class to compute the IBS diffusion and friction coefficients according
