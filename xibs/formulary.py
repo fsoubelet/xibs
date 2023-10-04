@@ -251,7 +251,6 @@ def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
         y0 = j
         z0 = k
         if (x0 < 0) and (y0 <= 0) and (z0 <= 0):
-            print("Elliptic Integral Calculation Failed. Wrong input values!")
             return
         x = x0
         y = y0
@@ -279,7 +278,6 @@ def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
         Cz = 1 - (z[n] / mi)
         En = max(Cx, Cy, Cz)
         if En >= 1:
-            print("Something went wrong with En")
             return
         summ = 0
         for m in range(2, 6):
