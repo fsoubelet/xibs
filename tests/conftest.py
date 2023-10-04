@@ -77,7 +77,19 @@ def xsuite_line_CLIC_damping_ring() -> xt.Line:
     A loaded xt.Line of the CLIC DR with chroma corrected, as used in
     scripts from Michail to benchmark against.
     """
-    return xt.Line.from_json(str(CLIC_DR_LINE_JSON.absolute()))
+    # Load the line
+    line = xt.Line.from_json(str(CLIC_DR_LINE_JSON.absolute()))
+    # Simplify the line
+    line.remove_inactive_multipoles(inplace=True)
+    line.remove_zero_length_drifts(inplace=True)
+    line.merge_consecutive_drifts(inplace=True)
+    line.merge_consecutive_multipoles(inplace=True)
+    # Build tracker (default context)
+    line.build_tracker(extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
+    # Activate the cavities
+    for cavity in [element for element in line.elements if isinstance(element, xt.Cavity)]:
+        cavity.lag = 180
+    return line
 
 
 @pytest.fixture()
