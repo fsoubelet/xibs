@@ -48,5 +48,28 @@ class FrictionCoefficients:
 # ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
 
 
+# It does not seem like any of the calculations in here need Nagaitsev results.
+# Can simply move the iterative_RD function to formulary (and JIT it) to import here and compute
 class KineticIBS:
-    pass
+    """
+    A single class to compute the IBS diffusion and friction coefficients according
+    to the kinetic IBS formalism (TODO: see ref?).
+    The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
+
+    Attributes:
+        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
+        optics (OpticsParameters): the optics parameters to use for the calculations.
+        diffusion_coeffs (DiffusionCoefficients): the computed diffusion coefficients. This
+            self-updates when they are computed with the `diffusion_coefficients` method.
+        friction_coeffs (FrictionCoefficients): the computed friction coefficients. This
+            self-updates when they are computed with the `growth_rates` method.
+    """
+
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+        self.beam_parameters: BeamParameters = beam_params
+        self.optics: OpticsParameters = optics
+        # These self-update when they are computed, but can be overwritten by the user
+        self.diffusion_coeffs: DiffusionCoefficients = None
+        self.friction_coeffs: FrictionCoefficients = None
+
+    # TODO: go over with Michail on his old code and determine what is being done before porting it
