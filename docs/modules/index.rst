@@ -1,6 +1,10 @@
 API Reference
 =============
 
+.. automodule:: xibs.inputs
+    :members:
+    :noindex:
+
 
 .. automodule:: xibs.analytical
     :members:
