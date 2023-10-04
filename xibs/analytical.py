@@ -21,7 +21,7 @@ from scipy.constants import c, hbar
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
 
-from xibs.formulary import phi
+from xibs.formulary import iterative_RD, phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -155,111 +155,6 @@ class Nagaitsev:
         bmax = min(sigma_x_cm, debyul)
         return np.log(bmax / bmin)
 
-    def iterative_RD(self, x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
-        r"""Computes the terms inside the elliptic integral in Eq (4) of
-        :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-
-        This is an iterative method implementation that was found by Michail (in ``C++``
-        then adapted). The implementation is found in ref [5] (uses ref [4] too) of the
-        same paper: :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-
-        .. note::
-            This is for now a copy-paste of the `RDiter` method in Michail's code.
-            Some PowerPoints from Michail in an old ABP group meeting mention how this
-            calculation works. Can look into this for details and documentation.
-
-        .. todo::
-            This is the most time-consuming part of the class's integrals computing. For
-            optimization, since this doesn't call any internal attributes of the class
-            it could be moved out (into `xibs.formulary`?) and potentially JIT-compiled with
-            ``numba``. Then we import directly from the right module and call it in the
-            integrals calculations.
-
-        .. todo::
-            Go through the old scripts in debugging mode and inspect what is passed in
-            and then out to get a better idea of the function signature.
-
-        Args:
-            x (ArrayLike): the :math:`\lambda_1` values in Nagaitsev paper? Eigen values of
-                the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-                it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
-                element in the lattice.
-            y (ArrayLike): the :math:`\lambda_2` values in Nagaitsev paper? Eigen values of
-                the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-                it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
-                element in the lattice.
-            z (ArrayLike): the :math:`\lambda_3` values in Nagaitsev paper? Eigen values of
-                the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-                it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
-                element in the lattice.
-
-        Returns:
-            An array with the result of the calculation for each element in the lattice. This
-            is NOT the elliptic integral yet, it has to be integrated afterwards.
-        """
-        LOGGER.debug("Iteratively computing elliptic integral RD term")
-        R = []
-        for i, j, k in zip(x, y, z):
-            x0 = i
-            y0 = j
-            z0 = k
-            if (x0 < 0) and (y0 <= 0) and (z0 <= 0):
-                print("Elliptic Integral Calculation Failed. Wrong input values!")
-                return
-            x = x0
-            y = y0
-            z = [z0]
-            li = []
-            Sn = []
-            differ = 10e-4
-            for n in range(0, 1000):
-                xi = x
-                yi = y
-                li.append(np.sqrt(xi * yi) + np.sqrt(xi * z[n]) + np.sqrt(yi * z[n]))
-                x = (xi + li[n]) / 4.0
-                y = (yi + li[n]) / 4.0
-                z.append((z[n] + li[n]) / 4.0)
-                if (
-                    (abs(x - xi) / x0 < differ)
-                    and (abs(y - yi) / y0 < differ)
-                    and (abs(z[n] - z[n + 1]) / z0 < differ)
-                ):
-                    break
-            lim = n
-            mi = (xi + yi + 3 * z[lim]) / 5.0
-            Cx = 1 - (xi / mi)
-            Cy = 1 - (yi / mi)
-            Cz = 1 - (z[n] / mi)
-            En = max(Cx, Cy, Cz)
-            if En >= 1:
-                print("Something went wrong with En")
-                return
-            summ = 0
-            for m in range(2, 6):
-                Sn.append((Cx**m + Cy**m + 3 * Cz**m) / (2 * m))
-            for m in range(0, lim):
-                summ += 1 / (np.sqrt(z[m]) * (z[m] + li[m]) * 4**m)
-
-            # Ern = 3 * En**6 / (1 - En) ** (3 / 2.0)
-            rn = -Sn[2 - 2] ** 3 / 10.0 + 3 * Sn[3 - 2] ** 2 / 10.0 + 3 * Sn[2 - 2] * Sn[4 - 2] / 5.0
-            R.append(
-                3 * summ
-                + (
-                    1
-                    + 3 * Sn[2 - 2] / 7.0
-                    + Sn[3 - 2] / 3.0
-                    + 3 * Sn[2 - 2] ** 2 / 22.0
-                    + 3 * Sn[4 - 2] / 11.0
-                    + 3 * Sn[2 - 2] * Sn[3 - 2] / 13.0
-                    + 3 * Sn[5 - 2] / 13.0
-                    + rn
-                )
-                / (4**lim * mi ** (3 / 2.0))
-            )
-        # This returns an array with one value per element in the lattice
-        # This is NOT the elliptic integral yet, it has to be integrated afterwards. It is the term in the integral in Eq (4) in Nagaitsev paper.
-        return R
-
     # This is 'Nagaitsev_Integrals' from Michail's old code but it stops a bit earlier and really returns the integrals
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def integrals(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> NagaitsevIntegrals:
@@ -310,8 +205,8 @@ class Nagaitsev:
         lambda_3: np.ndarray = a1 - sqrt_term
         # ----------------------------------------------------------------------------------------------
         # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper
-        R1: np.ndarray = self.iterative_RD(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
-        R2: np.ndarray = self.iterative_RD(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
+        R1: np.ndarray = iterative_RD(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
+        R2: np.ndarray = iterative_RD(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
         R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
         # ----------------------------------------------------------------------------------------------
         # This are the terms from Eq (33-35) in Nagaitsev paper
