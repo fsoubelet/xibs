@@ -2,10 +2,10 @@
 xibs package
 ~~~~~~~~~~~~
 xibs is a prototype library for an IBS implementation in Python.
-It builds on 
+It provides both an analytical and kick-based approach to IBS modelling. 
 
-:copyright: (c) 2019-2020 by Felix Soubelet.
-:license: MIT, see LICENSE for more details.
+:copyright: (c) 2023 Felix Soubelet.
+:license: Apache-2.0, see LICENSE file for more details.
 """
 from .analytical import Nagaitsev
 from .inputs import BeamParameters, OpticsParameters
