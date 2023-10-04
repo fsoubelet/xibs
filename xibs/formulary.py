@@ -10,6 +10,7 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 import logging
 
+import numba
 import numpy as np
 
 from numpy.typing import ArrayLike
@@ -212,7 +213,7 @@ def ion_energy_spread(
     )
 
 
-# TODO: can @numba.njit this for easy crazy gains
+@numba.njit()
 def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
     r"""Computes the terms inside the elliptic integral in Eq (4) of
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
@@ -222,20 +223,9 @@ def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
     same paper: :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
     .. note::
-        This is for now a copy-paste of the `RDiter` method in Michail's code.
-        Some PowerPoints from Michail in an old ABP group meeting mention how this
-        calculation works. Can look into this for details and documentation.
-
-    .. todo::
-        This is the most time-consuming part of the class's integrals computing. For
-        optimization, since this doesn't call any internal attributes of the class
-        it could be moved out (into `xibs.formulary`?) and potentially JIT-compiled with
-        ``numba``. Then we import directly from the right module and call it in the
-        integrals calculations.
-
-    .. todo::
-        Go through the old scripts in debugging mode and inspect what is passed in
-        and then out to get a better idea of the function signature.
+        This is for now a copy-paste of the `NagaitsevIBSRDiter` method in Michail's
+        code. Some PowerPoints from Michail in an old ABP group meeting mention how
+        this calculation works. Can look into this for details and documentation.
 
     Args:
         x (ArrayLike): the :math:`\lambda_1` values in Nagaitsev paper? Eigen values of
