@@ -224,9 +224,9 @@ class Nagaitsev:
         Ip_integrand = Sp / (self.optics.circumference * sigx * sigy)
         # ----------------------------------------------------------------------------------------------
         # Integrating the integrands above accross the ring to get the desired results
-        Ix: float = np.sum(Ix_integrand[:-1] * np.diff(self.optics.s))
-        Iy: float = np.sum(Iy_integrand[:-1] * np.diff(self.optics.s))
-        Iz: float = np.sum(Ip_integrand[:-1] * np.diff(self.optics.s))
+        Ix = float(np.sum(Ix_integrand[:-1] * np.diff(self.optics.s)))
+        Iy = float(np.sum(Iy_integrand[:-1] * np.diff(self.optics.s)))
+        Iz = float(np.sum(Ip_integrand[:-1] * np.diff(self.optics.s)))
         result = NagaitsevIntegrals(Ix, Iy, Iz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
@@ -291,11 +291,11 @@ class Nagaitsev:
         # fmt: on
         full_constant_term = rest_of_constant_term * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
-        # Compute the full result of Eq (30-32) for each plane
+        # Compute the full result of Eq (30-32) for each plane | make sure to convert back to float
         Ix, Iy, Iz = astuple(self.elliptic_integrals)
-        Tx: float = Ix * full_constant_term / geom_epsx
-        Ty: float = Iy * full_constant_term / geom_epsy
-        Tz: float = Iz * full_constant_term / sigma_delta**2
+        Tx = float(Ix * full_constant_term / geom_epsx)
+        Ty = float(Iy * full_constant_term / geom_epsy)
+        Tz = float(Iz * full_constant_term / sigma_delta**2)
         result = IBSGrowthRates(Tx, Ty, Tz)
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
