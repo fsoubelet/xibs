@@ -45,7 +45,7 @@ class FrictionCoefficients:
     Fz: float
 
 
-# ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
+# ----- Main class to compute kinetic coefficients and apply kicks ----- #
 
 
 # It does not seem like any of the calculations in here need Nagaitsev results.
