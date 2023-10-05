@@ -92,6 +92,9 @@ def xsuite_line_CLIC_damping_ring() -> xt.Line:
     return line
 
 
+# TODO: DO NOT MAKETHIN FOR MAD-X AS THE IBS MODULE DOES NOT LIKE IT
+# CHECK WITH AND WITHOUT AND SEE THAT IT IS INDEED THE REASON
+# ALSO NEED TO PROPERLY DEFINE THE EMITTANCES IN THE BEAM COMMAND OR MAD-X IBS FAILS 
 @pytest.fixture()
 def madx_CLIC_damping_ring() -> Madx:
     """
