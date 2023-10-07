@@ -9,8 +9,7 @@ It provides both an analytical and kick-based approach to IBS modelling.
 """
 from .analytical import Nagaitsev
 from .inputs import BeamParameters, OpticsParameters
-from .kinetic import KineticIBS
-from .simple import SimpleIBS
+from .kicks import KineticIBS, SimpleIBS
 from .version import VERSION
 
 __title__ = "xibs"
