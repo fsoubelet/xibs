@@ -11,12 +11,12 @@ API Reference
     :noindex:
 
 
-.. automodule:: xibs.simple
+.. automodule:: xibs.kicks.simple
     :members:
     :noindex:
 
 
-.. automodule:: xibs.kinetic
+.. automodule:: xibs.kicks.kinetic
     :members:
     :noindex:
 
