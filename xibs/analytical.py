@@ -299,7 +299,7 @@ class NagaitsevIBS:
         result = IBSGrowthRates(Tx, Ty, Tz)
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
-        self.growth_rates = result
+        self.ibs_growth_rates = result
         return result
 
     # This is 'emit_evol' from Michail's old code
