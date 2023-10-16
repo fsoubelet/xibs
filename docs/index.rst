@@ -37,6 +37,16 @@ Contents
    bibliography
 
 
+Acknowledgments
+===============
+
+The following people have contributed to the development of this package by contributing code, documentation, benchmarks, comments and/or ideas:
+
+* :user:`Felix Soubelet <fsoubelet>`
+* :user:`Michalis Zampetakis <MichZampetakis>`
+* :user:`Elias Waagaard <ewaagaard>`
+
+
 License
 =======
 
