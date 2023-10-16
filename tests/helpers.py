@@ -78,21 +78,21 @@ def get_madx_setup_from_config(madx: Madx, config: Dict) -> None:
     """Takes values from loaded yaml config and sets up the MAD-X lattice, sequence and beam."""
     # Define beam parameters
     sequence = config["sequence"]  # TODO: relative paths here, needs fix or assume it's already called
-    energy = config["energy"]  # beam energy in [GeV]
+    energy_GeV = config["energy"]  # beam energy in [GeV]
     norm_epsx = config["emit_x"] * 1e-6  # norm emit x in [m]
     norm_epsy = config["emit_y"] * 1e-6  # norm emit y in [m]
-    RF_voltage = config["V0max"] * 1e-3  # RF voltage in [kV] (MV * 1e-3)
-    harm_number = config["h"]  # RF harmonic number
-    cc_name_knobs = config["cc_name_knobs"]  # MAD-X knobs for RF cavities
     bunch_intensity = config["bunch_intensity"]  # number of particles per bunch
+    rf_knobs = config["cc_name_knobs"]  # MAD-X knobs for RF cavities
+    rf_voltage = config["V0max"] * 1e-3  # RF voltage in [kV] (MV * 1e-3)
+    harmonic_number = config["h"]  # RF harmonic number
     particle = config["particle"]  # particle type
     sequence_name = config["sequence_name"]  # accelerator sequence to use
-    mass = config["mass"]  # particle rest mass in [GeV]
-    radius = config["radius"]  # classical particle radius
-    nc = config["charge"]
+    particle_mass_GeV = config["mass"]  # particle rest mass in [GeV]
+    particle_classical_radius_m = config["radius"]  # classical particle radius
+    particle_charge = config["charge"]  # particle charge in [e]
 
     # Sequence and beam
-    madx.command.beam(particle=particle, energy=energy, mass=mass, charge=nc)
+    madx.command.beam(particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge)
     madx.call(file=sequence)  # TODO: see above
     madx.use(sequence=sequence_name)
     madx.command.twiss()
@@ -100,43 +100,43 @@ def get_madx_setup_from_config(madx: Madx, config: Dict) -> None:
     # Get some parameters from MAD-X Twiss
     twiss = madx.table.twiss.dframe()
     summ = madx.table.summ.dframe()
-    RC = summ["length"].to_numpy()[0]  # ring circumference
-    gt = summ["gammatr"].to_numpy()[0]  # transition energy gamma
-    gamma = madx.table.twiss.summary.gamma  # relativistic gamma
-    etap = abs(1.0 / gt**2 - 1.0 / gamma**2)  # ???
-    betar = np.sqrt(1.0 - 1.0 / gamma**2)  # relativistic beta
-    En = madx.table.twiss.summary.energy  # beam energy in [GeV]
-    E0 = En / gamma  # rest mass energy in [GeV]
+    circumference = summ["length"].to_numpy()[0]  # ring circumference
+    gamma_transition = summ["gammatr"].to_numpy()[0]  # transition energy gamma
+    gamma_rel = madx.table.twiss.summary.gamma  # relativistic gamma
+    beta_rel = np.sqrt(1.0 - 1.0 / gamma_rel**2)  # relativistic beta
+    etap = abs(1.0 / gamma_transition**2 - 1.0 / gamma_rel**2)  # ???
+    beam_energy_GeV = madx.table.twiss.summary.energy  # beam energy in [GeV]
+    # E0 = beam_energy_GeV / gamma_rel  # rest mass energy in [GeV] | this is particle_mass_GeV
 
-    madx.input(f"{cc_name_knobs}={RF_voltage*1e3}*{nc};")
+    madx.input(f"{rf_knobs}={rf_voltage*1e3}*{particle_charge};")
     U0 = 0
-    bunch_length = config["blns"] * 1e-9 / 4.0 * (c * betar)  # bunch length in [m]
-    bunch_length_level = config["bl_lev"] * 1e-9 / 4.0 * (c * betar)  # ???
-    bl_i = bunch_length
-    geom_epsx = norm_epsx / (gamma * betar)  # geom emit x in [m]
-    geom_epsy = norm_epsy / (gamma * betar)  # geom emit y in [m]
+    bunch_length_m = config["blns"] * 1e-9 / 4.0 * (c * beta_rel)  # bunch length in [m]
+    # bunch_length_level = config["bl_lev"] * 1e-9 / 4.0 * (c * beta_rel)  # ???
+    # bl_i = bunch_length_m
+    geom_epsx = norm_epsx / (gamma_rel * beta_rel)  # geom emit x in [m]
+    geom_epsy = norm_epsy / (gamma_rel * beta_rel)  # geom emit y in [m]
 
-    frev = betar * c / RC  # revolution frequency in [Hz]
-    fRF = harm_number * frev  # RF cavity frequency in [Hz]
-    TRF = 1.0 / fRF  # RF period in [s]
+    revolution_frequency = beta_rel * c / circumference  # revolution frequency in [Hz]
+    rf_cavity_frequency = harmonic_number * revolution_frequency  # RF cavity frequency in [Hz]
+    rf_period = 1.0 / rf_cavity_frequency  # RF period in [s]
 
-    dpp = _bl_to_dpp(RC, En, nc, RF_voltage, U0, betar, harm_number, etap, bl_i)  # relative momentum spread
-    dee = dpp * betar**2  # relative energy spread
+    dpp = _bl_to_dpp(circumference, beam_energy_GeV, particle_charge, rf_voltage, U0, beta_rel, harmonic_number, etap, bunch_length_m)  # relative momentum spread
+    dee = dpp * beta_rel**2  # relative energy spread
 
     # Twiss sequence, this time with RF system on
     madx.use(sequence=sequence_name)
     madx.command.twiss()
-    twiss = madx.table.twiss.dframe()
+    # twiss = madx.table.twiss.dframe()
 
     # Set some properties for the beam
     madx.beam.ex = geom_epsx  # set the geom emit x (in [m])
     madx.beam.ey = geom_epsy  # set the geom emit y (in [m])
-    madx.beam.sigt = bunch_length  # set the bunch length (in [m])
+    madx.beam.sigt = bunch_length_m  # set the bunch length (in [m])
     madx.beam.sige = dee  # set the relative energy spread
     madx.beam.npart = bunch_intensity  # number of particles per bunch
 
     # TODO: why are we setting these to 0?
-    U0, taux, tauy, taul, ex0, ey0, sp0, ss0 = (0,) * 8
+    # U0, taux, tauy, taul, ex0, ey0, sp0, ss0 = (0,) * 8
     madx.command.twiss(centre=True)
 
     # TODO: is this necessary?
