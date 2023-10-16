@@ -78,17 +78,17 @@ def get_madx_setup_from_config(madx: Madx, config: Dict) -> None:
     """Takes values from loaded yaml config and sets up the MAD-X lattice, sequence and beam."""
     # Define beam parameters
     sequence = config["sequence"]  # TODO: relative paths here, needs fix or assume it's already called
-    energy = config["energy"]
-    exn = config["emit_x"] * 1e-6  # norm emit x in [m]
-    eyn = config["emit_y"] * 1e-6  # norm emit y in [m]
-    RF_voltage = config["V0max"] * 1e-3
-    harm_number = config["h"]
+    energy = config["energy"]  # beam energy in [GeV]
+    norm_epsx = config["emit_x"] * 1e-6  # norm emit x in [m]
+    norm_epsy = config["emit_y"] * 1e-6  # norm emit y in [m]
+    RF_voltage = config["V0max"] * 1e-3  # RF voltage in [kV] (MV * 1e-3)
+    harm_number = config["h"]  # RF harmonic number
     cc_name_knobs = config["cc_name_knobs"]  # MAD-X knobs for RF cavities
-    bunch_intensity = config["bunch_intensity"]
-    particle = config["particle"]
-    sequence_name = config["sequence_name"]
-    mass = config["mass"]
-    radius = config["radius"]
+    bunch_intensity = config["bunch_intensity"]  # number of particles per bunch
+    particle = config["particle"]  # particle type
+    sequence_name = config["sequence_name"]  # accelerator sequence to use
+    mass = config["mass"]  # particle rest mass in [GeV]
+    radius = config["radius"]  # classical particle radius
     nc = config["charge"]
 
     # Sequence and beam
@@ -113,8 +113,8 @@ def get_madx_setup_from_config(madx: Madx, config: Dict) -> None:
     bunch_length = config["blns"] * 1e-9 / 4.0 * (c * betar)  # bunch length in [m]
     bunch_length_level = config["bl_lev"] * 1e-9 / 4.0 * (c * betar)  # ???
     bl_i = bunch_length
-    exi = exn / (gamma * betar)  # geom emit x in [m]
-    eyi = eyn / (gamma * betar)  # geom emit y in [m]
+    geom_epsx = norm_epsx / (gamma * betar)  # geom emit x in [m]
+    geom_epsy = norm_epsy / (gamma * betar)  # geom emit y in [m]
 
     frev = betar * c / RC  # revolution frequency in [Hz]
     fRF = harm_number * frev  # RF cavity frequency in [Hz]
@@ -129,8 +129,8 @@ def get_madx_setup_from_config(madx: Madx, config: Dict) -> None:
     twiss = madx.table.twiss.dframe()
 
     # Set some properties for the beam
-    madx.beam.ex = exi  # set the geom emit x (in [m])
-    madx.beam.ey = eyi  # set the geom emit y (in [m])
+    madx.beam.ex = geom_epsx  # set the geom emit x (in [m])
+    madx.beam.ey = geom_epsy  # set the geom emit y (in [m])
     madx.beam.sigt = bunch_length  # set the bunch length (in [m])
     madx.beam.sige = dee  # set the relative energy spread
     madx.beam.npart = bunch_intensity  # number of particles per bunch
