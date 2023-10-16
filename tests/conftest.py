@@ -120,3 +120,19 @@ CONFIGS_DIR = INPUTS_DIR / "configs"
 #         # Yield, exits context manager only after the calling test is done
 #         yield madx
 
+
+@pytest.fixture()
+def madx_lhc_injection_protons_no_crossing() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHC sequence, protons at
+    injection energy,
+    """
+    with open(CONFIGS_DIR / "lhc_injection_protons_no_crossing.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        # This will set up sequence, beam and RF parameters
+        setup_madx_from_config(madx, config)
+
+        # Yield, exits context manager only after the calling test is done
+        yield madx
