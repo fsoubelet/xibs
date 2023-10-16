@@ -7,8 +7,10 @@ they are consistent.
 import numpy as np
 import pytest
 import xpart as xp
+import xtrack as xt
 
-from helpers import get_madx_ibs_beam_size_growth_time, setup_madx_from_config
+from cpymadtools import lhc
+from helpers import get_madx_ibs_beam_size_growth_time
 
 from xibs._old_michail import MichailIBS
 from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
@@ -85,3 +87,24 @@ from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
 #     # assert np.isclose(new_rates.Tx, mad_Tx)
 #     # assert np.isclose(new_rates.Ty, mad_Ty)
 #     # assert np.isclose(new_rates.Tz, mad_Tz)
+
+
+def test_lhc_injection_protons_no_crossing(madx_lhc_injection_protons_no_crossing):
+    # --------------------------------------------------------------------
+    # Get the growth rates from MAD-X
+    # madx = madx_lhc_injection_protons_no_crossing  # fully set up from the config file
+    # madx.command.twiss()  # needs to be called before IBS!
+    # mad_Tx, mad_Ty, mad_Tz = get_madx_ibs_beam_size_growth_time(madx)  # careful about the factor 2 in MAD-X
+    # # --------------------------------------------------------------------
+    # # Xsuite line, needs th MAKETHIN first
+    # lhc.make_lhc_thin(madx, sequence="lhcb1")
+    # line = xt.Line.from_madx_sequence(madx.sequence["lhcb1"])
+    # p0 = xp.Particles(mass0=madx.beam.mass * 1e9, q0=madx.beam.charge, p0c=madx.beam.pc * 1e9)
+    # twiss = line.twiss()
+    # --------------------------------------------------------------------
+    # Get the growth rates from the old code (xibs._old_michail)
+    # --------------------------------------------------------------------
+    # Get the growth rates from the analytical module (xibs.analytical)
+    # --------------------------------------------------------------------
+    # Compare the results and ensure they are consistent
+    pass
