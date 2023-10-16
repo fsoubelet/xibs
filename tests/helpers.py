@@ -74,7 +74,7 @@ def get_madx_ibs_beam_size_growth_time(madx: Madx) -> Tuple[float, float, float]
     return madx.globals.Tx, madx.globals.Ty, madx.globals.Tl
 
 
-def get_madx_setup_from_config(madx: Madx, config: Dict) -> None:
+def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     """Takes values from loaded yaml config and sets up the MAD-X lattice, sequence and beam."""
     # Define beam parameters
     sequence = config["sequence"]  # TODO: relative paths here, needs fix or assume it's already called
