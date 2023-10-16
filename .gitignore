@@ -254,8 +254,7 @@ Temporary Items
 
 
 # ----- Test files and repos ----- #
-tests/inputs/acc-models-sps/
-*/*/acc-models-sps/
+acc-models-sps/
 acc-models-lhc/
 
 ### macOS template
