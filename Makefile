@@ -99,8 +99,8 @@ tests:  # all tests not involving pyhdtoolkit.cpymadtools
 testrepos:  # git clone the necessary repos for tests files
 	@echo "Cloning acc-models-sps repo."
 	@git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1
-	@echo "Moving acc-models-sps repo to tests/inputs/"
-	@mv acc-models-sps tests/inputs/acc-models-sps/
+	@echo "Cloning acc-models-lhc repo."
+	@git clone -b 2022 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
 
 # Catch-all unknow targets without returning an error. This is a POSIX-compliant syntax.
 .DEFAULT:
