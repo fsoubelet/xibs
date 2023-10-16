@@ -98,9 +98,19 @@ def test_lhc_injection_protons_no_crossing(madx_lhc_injection_protons_no_crossin
     # # --------------------------------------------------------------------
     # # Xsuite line, needs th MAKETHIN first
     # lhc.make_lhc_thin(madx, sequence="lhcb1")
+    # madx.command.use(sequence="lhcb1")  # need to use the sequence again
     # line = xt.Line.from_madx_sequence(madx.sequence["lhcb1"])
     # p0 = xp.Particles(mass0=madx.beam.mass * 1e9, q0=madx.beam.charge, p0c=madx.beam.pc * 1e9)
-    # twiss = line.twiss()
+    # line.particle_ref = p0
+    # twiss = line.twiss(method="4d")
+    # particles = xp.generate_matched_gaussian_bunch(
+    #     line=line,
+    #     num_particles=madx.beam.npart,
+    #     total_intensity_particles=madx.beam.npart,
+    #     nemitt_x=madx.beam.exn,
+    #     nemitt_y=madx.beam.eyn,
+    #     sigma_z=madx.beam.sigt,
+    # )
     # --------------------------------------------------------------------
     # Get the growth rates from the old code (xibs._old_michail)
     # --------------------------------------------------------------------
