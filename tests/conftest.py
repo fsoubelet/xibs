@@ -11,7 +11,7 @@ import xtrack as xt
 import yaml
 
 from cpymad.madx import Madx
-from helpers import get_madx_setup_from_config, make_sps_thin, re_cycle_sequence
+from helpers import make_sps_thin, re_cycle_sequence, setup_madx_from_config
 
 # ----- Paths to inputs ----- #
 
@@ -119,5 +119,4 @@ CONFIGS_DIR = INPUTS_DIR / "configs"
 
 #         # Yield, exits context manager only after the calling test is done
 #         yield madx
-
 
