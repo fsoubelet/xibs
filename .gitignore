@@ -252,11 +252,6 @@ Temporary Items
 .ruff_cache
 .ruff_cache/
 
-
-# ----- Test files and repos ----- #
-acc-models-sps/
-acc-models-lhc/
-
 ### macOS template
 # General
 .DS_Store
@@ -268,3 +263,13 @@ Icon
 
 # Thumbnails
 ._*
+
+
+# Test files and repos
+acc-models-sps/
+acc-models-lhc/
+
+# Sphinx build directory and sphinx-gallery generated documents
+doc_build/
+docs/gallery/
+docs/gen_modules/
