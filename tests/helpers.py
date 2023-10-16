@@ -120,7 +120,11 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     rf_cavity_frequency = harmonic_number * revolution_frequency  # RF cavity frequency in [Hz]
     rf_period = 1.0 / rf_cavity_frequency  # RF period in [s]
 
-    dpp = _bl_to_dpp(circumference, beam_energy_GeV, particle_charge, rf_voltage, U0, beta_rel, harmonic_number, etap, bunch_length_m)  # relative momentum spread
+    # fmt: off
+    dpp = _bl_to_dpp(  # relative momentum spread
+        circumference, beam_energy_GeV, particle_charge, rf_voltage, U0, beta_rel, harmonic_number, etap, bunch_length_m
+    )
+    # fmt: on
     dee = dpp * beta_rel**2  # relative energy spread
 
     # Twiss sequence, this time with RF system on
