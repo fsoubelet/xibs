@@ -49,7 +49,7 @@ class FrictionCoefficients:
 
 
 # It does not seem like any of the calculations in here need Nagaitsev results.
-class KineticIBS:
+class KineticKickIBS:
     """
     A single class to compute the IBS diffusion and friction coefficients according
     to the kinetic IBS formalism (TODO: see ref?).

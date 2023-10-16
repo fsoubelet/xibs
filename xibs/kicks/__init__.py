@@ -1,4 +1,4 @@
-from .kinetic import KineticIBS
-from .simple import SimpleIBS
+from .kinetic import KineticKickIBS
+from .simple import SimpleKickIBS
 
-__all__ = [SimpleIBS, KineticIBS]
+__all__ = [SimpleKickIBS, KineticKickIBS]
