@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import xpart as xp
 
-from helpers import get_madx_ibs_beam_size_growth_time
+from helpers import get_madx_ibs_beam_size_growth_time, get_madx_setup_from_config
 
 from xibs._old_michail import MichailIBS
 from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
