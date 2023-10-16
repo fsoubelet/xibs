@@ -336,7 +336,8 @@ class NagaitsevIBS:
                 of the revolution frequency, :math:`1 / f_{rev}`.
 
         Returns:
-            An `IBSGrowthRates` object with the computed growth rates for each plane.
+            A tuple with the new horizontal & vertical geometric emittances as well as the new
+            momentum spread, after the time step has ellapsed.
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
