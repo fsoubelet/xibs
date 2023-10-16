@@ -9,7 +9,7 @@ import pytest
 import xpart as xp
 import xtrack as xt
 
-from cpymadtools import lhc
+# from cpymadtools import lhc
 from helpers import get_madx_ibs_beam_size_growth_time
 
 from xibs._old_michail import MichailIBS
