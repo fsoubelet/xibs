@@ -1,7 +1,8 @@
 Quickstart
 ==========
 
-This is currently under construction and will be developed along with the API.
+This page provides a quick overview of the package, with more usage detail given in the examples.
+Please note that the package is a prototype and the API is subject to change, though this documentation will be kept up-to-date.
 
 .. hint::
 
@@ -10,23 +11,32 @@ This is currently under construction and will be developed along with the API.
 Basic Usage
 -----------
 
-The package is imported as ``xibs``.
-Several modules give access to different functionalities calculating relevant IBS properties through different formalism.
+One can use the package simply by importing ``xibs``:
 
 .. code-block:: python
 
    import xibs
 
-   # Start with examples
-   pass
+This namespace exposes the main components / classes of ``xibs``, which will be expanded on below.
+Various submodules give access to different functionalities calculating relevant IBS properties through different formalism, which one can import on a per-need basis:
 
-Go over here the basic philosophy of the package: no matter the formalism used the API will work similarly.
-In time, a unified interface (e.g. `xibs.ibs(..., formalism="...")`)?
+.. code-block:: python
+
+   # Main IBS functionality (sub)modules
+   import xibs.analytical
+   import xibs.kicks.kinetic
+   import xibs.kicks.simple
+
+   # Other (sub)modules
+   import xibs.inputs
+   import xibs.formulary
+
 
 Formalism and Models
 --------------------
 
 Here will be an overview of the different formalism and models available in the package.
+For analytical calculations, one would use the ``xibs.analytical`` submodule and the provided `NagaitsevIBS` class:
 
 .. autolink-preface:: import xibs
 .. code-block:: python
@@ -34,10 +44,16 @@ Here will be an overview of the different formalism and models available in the 
    # Start with examples importing each
    pass
 
+.. todo::
+
+   Go over here the basic philosophy of the package: no matter the formalism used the API will work similarly.
+   In time, a unified interface (e.g. `xibs.ibs(..., formalism="...")`)?
 
 
 Using with xsuite
 -----------------
 
-An overview of how to integrate this into ``xsuite``.
-While this package is used it is a prototype and integration will not be seamless.
+.. todo::
+   
+   An overview of how to integrate this into ``xsuite``.
+   While this package is used it is a prototype and integration will not be seamless.
