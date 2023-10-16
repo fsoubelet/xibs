@@ -81,7 +81,7 @@ It is initialized as shown in the section above:
    IBS = NagaitsevIBS(beam_parameters, optics_parameters)
    # now compute IBS growth rates and new emittances
 
-One can find a detailed usage walkthrough of this in the :ref:`analytical example <xibs-analytical>`.
+One can find a detailed usage walkthrough of this in the :ref:`analytical example <demo-analytical>`.
 .. TODO: Change the link above to the example page once it has been built.
 
 Providing Kicks
