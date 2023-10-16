@@ -1,6 +1,7 @@
 """
 xibs package
 ~~~~~~~~~~~~
+
 xibs is a prototype library for an IBS implementation in Python.
 It provides both an analytical and kick-based approach to IBS modelling. 
 
