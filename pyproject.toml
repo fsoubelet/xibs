@@ -92,6 +92,8 @@ docs = [
   "sphinxcontrib-bibtex >= 2.4",
   "sphinx-prompt >= 1.5",
   "sphinx-codeautolink < 1.0",
+  "sphinx-panels < 1.0",
+  "sphinx-gallery < 1.0",
 ]
 
 [project.urls]
