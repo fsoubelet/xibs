@@ -62,7 +62,7 @@ class IBSGrowthRates:
 # ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
 
 
-class Nagaitsev:
+class NagaitsevIBS:
     """
     A single class to compute Nagaitsev integrals (see
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
