@@ -1,16 +1,10 @@
 # Activate/Deactivate flags
-flag_IBS: 1                 # If 1 calculate with IBS
-flag_SR: 0                  # If 1 calculate with SR
-
-ibs_lib_path: ../../master
-
-#duration: 1 #0.001425986        # Duration in seconds
 duration: 20        # Duration in seconds
 ibs_step: 1 #0.001 #1.4259865297332022e-05                # time step
 
 # Sequence to load
 sequence: "../../../000_sequences_and_XSlines/PS_injection_ions/PS_2022_Pb_ions_matched_with_RF.seq" 
-sequence_name: 'ps'
+sequence_name: "ps"
 
 # Beam parameters for PS ions - what is possible from Hannes' and Isabelle's report: https://cds.cern.ch/record/2749453/files/CERN-ACC-NOTE-2021-0003.pdf
 energy: 208.744939                          # energy in GeV
@@ -28,6 +22,3 @@ charge: 54
 V0max: 0.0380958                    # RF voltage in MV
 h: 16
 cc_name_knobs: "vrf400"    # not correct as of now
-
-# Save results
-save_to: ./IBS_output.parquet
