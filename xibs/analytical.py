@@ -355,7 +355,7 @@ class NagaitsevIBS:
             dt = 1 / self.optics.revolution_frequency
         # ----------------------------------------------------------------------------------------------
         # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        new_epsx = geom_epsx + np.exp(dt * self.ibs_growth_rates.Tx)
-        new_epsy = geom_epsy + np.exp(dt * self.ibs_growth_rates.Ty)
-        new_sigma_delta = sigma_delta + np.exp(dt * self.ibs_growth_rates.Tz / 2)
+        new_epsx = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
+        new_epsy = geom_epsy * np.exp(dt * self.ibs_growth_rates.Ty)
+        new_sigma_delta = sigma_delta * np.exp(dt * self.ibs_growth_rates.Tz / 2)
         return new_epsx, new_epsy, new_sigma_delta
