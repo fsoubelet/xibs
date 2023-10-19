@@ -12,7 +12,7 @@ import xtrack as xt
 # from cpymadtools import lhc
 from helpers import get_madx_ibs_beam_size_growth_time
 
-from xibs._old_Michalis import MichalisIBS
+from xibs._old_michalis import MichalisIBS
 from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
 
 # def test_sps_lhc_ions_growth_rates(matched_sps_lhc_ions_injection):
