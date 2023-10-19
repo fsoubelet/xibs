@@ -1,7 +1,7 @@
 """
 Tests in here are each for a different machine and configuration.
 We are computing the growth rates from MAD-X, from the old code
-of Michail and from the package's analytical module and ensure
+of Michalis and from the package's analytical module and ensure
 they are consistent.
 """
 import numpy as np
@@ -12,7 +12,7 @@ import xtrack as xt
 # from cpymadtools import lhc
 from helpers import get_madx_ibs_beam_size_growth_time
 
-from xibs._old_michail import MichailIBS
+from xibs._old_Michalis import MichalisIBS
 from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
 
 # def test_sps_lhc_ions_growth_rates(matched_sps_lhc_ions_injection):
@@ -22,7 +22,7 @@ from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
 #     madx.command.twiss()  # needs to be called before IBS!
 #     mad_Tx, mad_Ty, mad_Tz = get_madx_ibs_beam_size_growth_time(madx)
 #     # --------------------------------------------------------------------
-#     # Get the growth rates from the old code (xibs._old_michail)
+#     # Get the growth rates from the old code (xibs._old_Michalis)
 #     pass
 #     # --------------------------------------------------------------------
 #     # Get the growth rates from the analytical module (xibs.analytical)
@@ -66,8 +66,8 @@ from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
 #     geom_epsy = sig_y**2 / twiss["bety"][0]
 #     bunch_length = np.std(particles.zeta[particles.state > 0])
 #     # --------------------------------------------------------------------
-#     # Get the growth rates from the old code (xibs._old_michail)
-#     OLDIBS = MichailIBS()
+#     # Get the growth rates from the old code (xibs._old_Michalis)
+#     OLDIBS = MichalisIBS()
 #     OLDIBS.set_beam_parameters(particles)
 #     OLDIBS.set_optic_functions(twiss)
 #     OLDIBS.calculate_integrals(geom_epsx, geom_epsy, sig_delta, bunch_length)  # stored as .Ixx, .Iyy, .Ipp
@@ -79,7 +79,7 @@ from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
 #     integrals = NEWIBS.integrals(geom_epsx, geom_epsy, sig_delta)
 #     new_rates = NEWIBS.growth_rates(geom_epsx, geom_epsy, sig_delta, bunch_length)
 #     # --------------------------------------------------------------------
-#     # Compare the package's results to the ones from Michail's old code
+#     # Compare the package's results to the ones from Michalis's old code
 #     assert np.isclose(new_rates.Tx, float(OLDIBS.Ixx))  # float() to avoid xobjects LinkedArray
 #     assert np.isclose(new_rates.Ty, float(OLDIBS.Iyy))  # float() to avoid xobjects LinkedArray
 #     assert np.isclose(new_rates.Tz, float(OLDIBS.Ipp))  # float() to avoid xobjects LinkedArray
@@ -112,7 +112,7 @@ def test_lhc_injection_protons_no_crossing(madx_lhc_injection_protons_no_crossin
     #     sigma_z=madx.beam.sigt,
     # )
     # --------------------------------------------------------------------
-    # Get the growth rates from the old code (xibs._old_michail)
+    # Get the growth rates from the old code (xibs._old_Michalis)
     # --------------------------------------------------------------------
     # Get the growth rates from the analytical module (xibs.analytical)
     # --------------------------------------------------------------------

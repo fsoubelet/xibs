@@ -71,4 +71,4 @@ class KineticKickIBS:
         self.diffusion_coeffs: DiffusionCoefficients = None
         self.friction_coeffs: FrictionCoefficients = None
 
-    # TODO: go over with Michail on his old code and determine what is being done before porting it
+    # TODO: go over with Michalis on his old code and determine what is being done before porting it

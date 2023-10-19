@@ -49,7 +49,7 @@ class BeamParameters:
     # ----- To be provided at initialization ----- #
     particles: InitVar["xpart.Particles"]  # Almost all is derived from there, this is not kept!
     # ----- Below are attributes derived from the Particles object ----- #
-    # The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michail's code
+    # The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michalis's code
     n_part: int = field(init=False)
     particle_charge: int = field(init=False)
     particle_mass_GeV: float = field(init=False)
@@ -106,7 +106,7 @@ class OpticsParameters:
     bety: ArrayLike = field(init=False)
     alfx: ArrayLike = field(init=False)
     alfy: ArrayLike = field(init=False)
-    # The following four are eta_x, eta_y, eta_dx and eta_dy in michail's code
+    # The following four are eta_x, eta_y, eta_dx and eta_dy in Michalis's code
     dx: ArrayLike = field(init=False)
     dy: ArrayLike = field(init=False)
     dpx: ArrayLike = field(init=False)

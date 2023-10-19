@@ -153,7 +153,7 @@ class NagaitsevIBS:
         bmax = min(sigma_x_cm, debyul)
         return np.log(bmax / bmin)
 
-    # This is 'Nagaitsev_Integrals' from Michail's old code but it stops a bit earlier and really returns the integrals
+    # This is 'Nagaitsev_Integrals' from Michalis's old code but it stops a bit earlier and really returns the integrals
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def integrals(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> NagaitsevIntegrals:
         r"""Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_z` in this code base.
@@ -233,7 +233,7 @@ class NagaitsevIBS:
         self.elliptic_integrals = result
         return result
 
-    # This is the end of the calculations in 'Nagaitsev_Integrals' from Michail's old code (the last 3 lines essentially)
+    # This is the end of the calculations in 'Nagaitsev_Integrals' from Michalis's old code (the last 3 lines essentially)
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def growth_rates(
         self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float
@@ -301,7 +301,7 @@ class NagaitsevIBS:
         self.ibs_growth_rates = result
         return result
 
-    # This is 'emit_evol' from Michail's old code
+    # This is 'emit_evol' from Michalis's old code
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL (unused) and dt there
     def emittance_evolution(
         self, geom_epsx: float, geom_epsy: float, sigma_delta: float, dt: float = None

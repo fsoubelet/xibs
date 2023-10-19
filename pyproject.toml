@@ -33,7 +33,7 @@ description = "Prototype Intra-Beam Scattering implementation for Xsuite."
 authors = [
     {name = "Felix Soubelet", email = "felix.soubelet@cern.ch"},
     {name = "Elias Waagaard", email = "elias.walter.waagaard@cern.ch"},
-    {name = "Michail Zampetakis", email = "michail.zampetakis@cern.ch"},
+    {name = "Michalis Zampetakis", email = "Michalis.zampetakis@cern.ch"},
 ]
 license = {text = "Apache-2.0"}
 dynamic = ["version"]  # Dynamically look for the version info at build time

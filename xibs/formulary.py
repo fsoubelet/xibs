@@ -37,7 +37,7 @@ def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> Arr
     return dpx + alpha * dx / beta
 
 
-# This is BunchLength from Michail's code, in general_functions.py
+# This is BunchLength from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Energy_loss, Z
 @numba.njit()
 def bunch_length(
@@ -63,7 +63,7 @@ def bunch_length(
         harmonic_number (int): harmonic number of the RF system.
         total_energy_GeV (float): total energy of the simulated particles in [GeV].
         slip_factor (float): slip factor of the machine.
-        sigma_e (float): energy spread of the particles. TODO: check with Michail and in Wiedermann book.
+        sigma_e (float): energy spread of the particles. TODO: check with Michalis and in Wiedermann book.
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         energy_loss_GeV (float): The turn-by-turn oarticle energy loss in [GeV].
@@ -84,7 +84,7 @@ def bunch_length(
     # fmt: on
 
 
-# This is EnergySpread from Michail's code, in general_functions.py
+# This is EnergySpread from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
 @numba.njit()
 def energy_spread(
@@ -127,7 +127,7 @@ def energy_spread(
     # fmt: on
 
 
-# This is ion_BunchLength from Michail's code, in general_functions.py
+# This is ion_BunchLength from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Z
 @numba.njit()
 def ion_bunch_length(
@@ -153,7 +153,7 @@ def ion_bunch_length(
         harmonic_number (int): harmonic number of the RF system.
         total_energy_GeV (float): total energy of the simulated particles in [GeV].
         slip_factor (float): slip factor of the machine.
-        sigma_e (float): energy spread of the particles? TODO: check with Michail and in Wiedermann book.
+        sigma_e (float): energy spread of the particles? TODO: check with Michalis and in Wiedermann book.
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         particle_charge (int): elementary particle charge, in # of Coulomb charges (for
@@ -171,7 +171,7 @@ def ion_bunch_length(
     # fmt: on
 
 
-# This is ionEnergySpread from Michail's code, in general_functions.py
+# This is ionEnergySpread from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
 @numba.njit()
 def ion_energy_spread(
@@ -218,7 +218,7 @@ def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
     r"""Computes the terms inside the elliptic integral in Eq (4) of
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
-    This is an iterative method implementation that was found by Michail (in ``C++``
+    This is an iterative method implementation that was found by Michalis (in ``C++``
     then adapted). The implementation is found in ref [5] (uses ref [4] too) of the
     same paper: :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
