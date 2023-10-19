@@ -18,6 +18,7 @@ from numpy.typing import ArrayLike
 LOGGER = logging.getLogger(__name__)
 
 
+@numba.njit()
 def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> ArrayLike:
     """Phi parameter of Eq (15) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
@@ -38,6 +39,7 @@ def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> Arr
 
 # This is BunchLength from Michail's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Energy_loss, Z
+@numba.njit()
 def bunch_length(
     circumference: float,
     harmonic_number: int,
@@ -45,8 +47,8 @@ def bunch_length(
     slip_factor: float,
     sigma_e: float,
     beta_rel: float,
-    rf_voltage: float,
-    energy_loss: float,
+    rf_voltage_GV: float,
+    energy_loss_GeV: float,
     particle_charge: int,
 ) -> float:
     """Analytical calculation for bunch length for protons / electrons (from Wiedermann's book).
@@ -63,21 +65,20 @@ def bunch_length(
         slip_factor (float): slip factor of the machine.
         sigma_e (float): energy spread of the particles. TODO: check with Michail and in Wiedermann book.
         beta_rel (float): relativistic beta of the simulated particles.
-        rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
-        energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
+        rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
+        energy_loss_GeV (float): The turn-by-turn oarticle energy loss in [GeV].
         particle_charge (int): elementary particle charge, in # of Coulomb charges (for instance 1 for electron or proton).
 
     Returns:
         The analytically calculated bunch length in [m].
     """
-    LOGGER.debug("Calculating bunch length analytically with linear approximation")
     # fmt: off
     return (
         sigma_e
         * circumference
         * np.sqrt(
             abs(slip_factor) * total_energy_GeV
-            / (2 * np.pi * beta_rel * harmonic_number * np.sqrt(particle_charge**2 * rf_voltage**2 - energy_loss**2))
+            / (2 * np.pi * beta_rel * harmonic_number * np.sqrt(particle_charge**2 * rf_voltage_GV**2 - energy_loss_GeV**2))
         )
     )
     # fmt: on
@@ -85,6 +86,7 @@ def bunch_length(
 
 # This is EnergySpread from Michail's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
+@numba.njit()
 def energy_spread(
     circumference: float,
     harmonic_number: int,
@@ -92,8 +94,8 @@ def energy_spread(
     slip_factor: float,
     bunch_length: float,
     beta_rel: float,
-    rf_voltage: float,
-    energy_loss: float,
+    rf_voltage_GV: float,
+    energy_loss_GeV: float,
     particle_charge: int,
 ) -> float:
     """Counterpart of the `bunch_length` function, analytically calculates for bunch length for protons / electrons (from Wiedermann's book).
@@ -107,20 +109,19 @@ def energy_spread(
         slip_factor (float): slip factor of the machine.
         bunch_length (float): bunch length in [m].
         beta_rel (float): relativistic beta of the simulated particles.
-        rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
-        energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
+        rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
+        energy_loss_GeV (float): The turn-by-turn oarticle energy loss in [GeV].
         particle_charge (int): elementary particle charge, in # of Coulomb charges (for instance 1 for electron or proton).
 
     Returns:
         The analytically calculated dimensionless energy spread for the particle bunch.
     """
-    LOGGER.debug("Calculating energy spread analytically with linear approximation")
     # fmt: off
     return bunch_length / (
         circumference
         * np.sqrt(
             abs(slip_factor) * total_energy_GeV
-            / (2 * np.pi * beta_rel * harmonic_number * np.sqrt(particle_charge**2 * rf_voltage**2 - energy_loss**2))
+            / (2 * np.pi * beta_rel * harmonic_number * np.sqrt(particle_charge**2 * rf_voltage_GV**2 - energy_loss_GeV**2))
         )
     )
     # fmt: on
@@ -128,6 +129,7 @@ def energy_spread(
 
 # This is ion_BunchLength from Michail's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Z
+@numba.njit()
 def ion_bunch_length(
     circumference: float,
     harmonic_number: int,
@@ -135,7 +137,7 @@ def ion_bunch_length(
     slip_factor: float,
     sigma_e: float,
     beta_rel: float,
-    rf_voltage: float,
+    rf_voltage_GV: float,
     particle_charge: int,
 ):
     """Analytical calculation for bunch length for ions (from Wiedermann's book).
@@ -153,25 +155,25 @@ def ion_bunch_length(
         slip_factor (float): slip factor of the machine.
         sigma_e (float): energy spread of the particles? TODO: check with Michail and in Wiedermann book.
         beta_rel (float): relativistic beta of the simulated particles.
-        rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
+        rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         particle_charge (int): elementary particle charge, in # of Coulomb charges (for
             instance 1 for electron or proton).
 
     Returns:
         The analytically calculated bunch length in [m].
     """
-    LOGGER.debug("Calculating bunch length for ions analytically")
     # fmt: off
     return (
         circumference
         / (2.0 * np.pi * harmonic_number)
-        * np.arccos(1 - (sigma_e**2 * total_energy_GeV * abs(slip_factor) * harmonic_number * np.pi) / (beta_rel**2 * particle_charge * rf_voltage))
+        * np.arccos(1 - (sigma_e**2 * total_energy_GeV * abs(slip_factor) * harmonic_number * np.pi) / (beta_rel**2 * particle_charge * rf_voltage_GV))
     )
     # fmt: on
 
 
 # This is ionEnergySpread from Michail's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
+@numba.njit()
 def ion_energy_spread(
     circumference: float,
     harmonic_number: int,
@@ -179,7 +181,7 @@ def ion_energy_spread(
     slip_factor: float,
     bunch_length: float,
     beta_rel: float,
-    rf_voltage: float,
+    rf_voltage_GV: float,
     particle_charge: int,
 ) -> float:
     """Counterpart of the `ion_bunch_length` function, analytically calculates for bunch length for protons / electrons.
@@ -193,21 +195,19 @@ def ion_energy_spread(
         slip_factor (float): slip factor of the machine.
         bunch_length (float): ion bunch length in [m].
         beta_rel (float): relativistic beta of the simulated particles.
-        rf_voltage (float): RF voltage of the machine's cavities in [???]. TODO: check with Michail for the units.
-        energy_loss (float): ??? in [???]. TODO: check with Michail and in Wiedermann book.
+        rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         particle_charge (int): elementary particle charge, in # of Coulomb charges (for
             instance 1 for electron or proton).
 
     Returns:
         The analytically calculated dimensionless energy spread for an ion bunch.
     """
-    LOGGER.debug("Calculating energy spread for ions analytically")
     # TODO: check implementation
     tau_phi = 2 * np.pi * harmonic_number * bunch_length / circumference  # bunch length in rad?
     return np.sqrt(
         beta_rel**2
         * particle_charge
-        * rf_voltage
+        * rf_voltage_GV
         * (-(np.cos(tau_phi) - 1))
         / (total_energy_GeV * abs(slip_factor) * harmonic_number * np.pi)
     )
@@ -223,9 +223,9 @@ def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
     same paper: :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
     .. note::
-        This is for now a copy-paste of the `NagaitsevIBSRDiter` method in Michail's
-        code. Some PowerPoints from Michail in an old ABP group meeting mention how
-        this calculation works. Can look into this for details and documentation.
+        This calculation is taken from the `NagaitsevIBS.RDiter` method in Michalis's
+        old code. Some PowerPoints from him in an old ABP group meeting mention how
+        the calculation works. One can look into this for details and "documentation".
 
     Args:
         x (ArrayLike): the :math:`\lambda_1` values in Nagaitsev paper? Eigen values of
