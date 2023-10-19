@@ -16,6 +16,8 @@ from xibs.analytical import NagaitsevIBS
 from xibs.formulary import bunch_length
 from xibs.inputs import BeamParameters, OpticsParameters
 
+warnings.filterwarnings("ignore")  # scipy integration routines might warn
+
 # ----- File and parameters ----- #
 line_file = "../examples/lines/chrom-corr_DR.newlattice_2GHz.json"
 harmonic_number = 2852
@@ -72,6 +74,7 @@ MIBS.set_optic_functions(twiss)
 nturns = 1000  # number of turns to loop for
 ibs_step = 50  # frequency at which to re-compute the growth rates in [turns]
 dt = 1 / IBS.optics.revolution_frequency
+
 
 @dataclass
 class Records:
@@ -175,7 +178,7 @@ for turn in range(1, nturns):
             Sig_M=old_turn_by_turn.sig_delta[turn - 1],
             BunchL=old_turn_by_turn.bunch_length[turn - 1],
         )
- 
+
     # Compute the new emittances
     new_emit_x, new_emit_y, new_sig_delta = MIBS.emit_evol(
         Emit_x=old_turn_by_turn.epsilon_x[turn - 1],
@@ -184,7 +187,7 @@ for turn in range(1, nturns):
         BunchL=old_turn_by_turn.bunch_length[turn - 1],
         dt=dt,
     )
- 
+
     # Compute bunch length analytically as the Particles object hasn't changed
     sigma_e = new_sig_delta * MIBS.betar**2
     bunch_l = bunch_length(
@@ -198,7 +201,7 @@ for turn in range(1, nturns):
         energy_loss,  # in [GeV] but 0 is 0 in all units
         beam_params.particle_charge,
     )
- 
+
     # Update the records with the new values
     old_turn_by_turn.bunch_length[turn] = bunch_l
     old_turn_by_turn.sig_delta[turn] = new_sig_delta
