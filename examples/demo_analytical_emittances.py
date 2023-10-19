@@ -234,8 +234,8 @@ for turn in range(1, nturns):
         optics.slip_factor,
         sigma_e,
         beam_params.beta_rel,
-        rf_voltage * 1e-3,
-        energy_loss,
+        rf_voltage * 1e-3,  # has to be provided in [MV]
+        energy_loss,  # in [GeV] but 0 is 0 in all units
         beam_params.particle_charge,
     )
 
