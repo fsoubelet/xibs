@@ -18,6 +18,18 @@ from xibs.formulary import bunch_length
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")  # scipy integration routines might warn
+plt.rcParams.update(
+    {
+        "font.family": "serif",
+        "font.size": 18,
+        "axes.titlesize": 18,
+        "axes.labelsize": 18,
+        "xtick.labelsize": 18,
+        "ytick.labelsize": 18,
+        "legend.fontsize": 15,
+        "figure.titlesize": 18,
+    }
+)
 
 # ----- File and parameters ----- #
 line_file = "../examples/lines/chrom-corr_DR.newlattice_2GHz.json"
@@ -212,11 +224,12 @@ for turn in range(1, nturns):
     old_turn_by_turn.epsilon_y[turn] = new_emit_y
 end2 = time.time()
 
-print(f"\nNew code took {end1 - start1:.2f} seconds")
-print(f"Old code took {end2 - start2:.2f} seconds")
+print(f"\nNew code took {end1 - start1:.3f} seconds")
+print(f"Old code took {end2 - start2:.3f} seconds")
+print(f"New code was ~{(end2 - start2)/(end1 - start1):.1f} faster")
 
 # ----- Plot the results ----- #
-figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(10, 11))
+figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(7, 8))
 
 epsx.plot(1e10 * old_turn_by_turn.epsilon_x, "o", ms=2, label="Old")
 epsy.plot(1e13 * old_turn_by_turn.epsilon_y, "o", ms=2, label="Old")
