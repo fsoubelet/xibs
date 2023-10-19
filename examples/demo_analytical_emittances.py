@@ -13,7 +13,6 @@ We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
 for a positron beam.
 """
 # sphinx_gallery_thumbnail_number = 2
-import json
 import warnings
 
 from dataclasses import dataclass
@@ -195,8 +194,8 @@ turn_by_turn = Records(
 
 # Store the initial values
 turn_by_turn.bunch_length[0] = np.std(particles.zeta[particles.state > 0])
-turn_by_turn.sig_delta[0] = new_sig_delta
-turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * new_sig_delta) ** 2) / twiss["betx"][0]
+turn_by_turn.sig_delta[0] = sig_delta
+turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
 turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
 
 # We loop here now
