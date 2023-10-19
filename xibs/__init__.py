@@ -21,5 +21,6 @@ __author__ = "Felix Soubelet"
 __author_email__ = "felix.soubelet@cern.ch"
 __license__ = "Apache-2.0"
 
-# TODO: decide what to expose as top-level
+# Expose chosen elements at the top-level of the package
+# One can then directly import xibs.BeamParameters for instance
 __all__ = [BeamParameters, OpticsParameters, NagaitsevIBS, SimpleKickIBS, KineticKickIBS]
