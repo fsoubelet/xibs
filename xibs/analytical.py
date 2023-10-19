@@ -356,6 +356,6 @@ class NagaitsevIBS:
         # ----------------------------------------------------------------------------------------------
         # Compute new emittances and return them. Here we multiply because T = 1 / tau
         new_epsx = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
-        new_epsy = geom_epsy * np.exp(dt * self.ibs_growth_rates.Ty)
-        new_sigma_delta = sigma_delta * np.exp(dt * self.ibs_growth_rates.Tz / 2)
+        new_epsy = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
+        new_sigma_delta = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
         return new_epsx, new_epsy, new_sigma_delta
