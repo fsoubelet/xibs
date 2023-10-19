@@ -28,6 +28,18 @@ from xibs.formulary import bunch_length
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")  # scipy integration routines might warn
+plt.rcParams.update(
+    {
+        "font.family": "serif",
+        "font.size": 20,
+        "axes.titlesize": 20,
+        "axes.labelsize": 20,
+        "xtick.labelsize": 20,
+        "ytick.labelsize": 20,
+        "legend.fontsize": 15,
+        "figure.titlesize": 20,
+    }
+)
 
 ###############################################################################
 # Let's start by defining the line and particle information, as well as some
@@ -75,7 +87,7 @@ particles = xp.generate_matched_gaussian_bunch(
 # To have a look at the generated particles (see the `xsuite user guide 
 # <https://xsuite.readthedocs.io/en/latest/particlesmanip.html>`_ for more)
 
-fig, (axx, axy, axz) = plt.subplots(3, 1, figsize=(8, 11))
+fig, (axx, axy, axz) = plt.subplots(3, 1, figsize=(9, 11))
 
 axx.plot(1e6 * particles.x, 1e5 * particles.px, ".", ms=3)
 axy.plot(1e6 * particles.y, 1e6 * particles.py, ".", ms=3)
@@ -87,7 +99,7 @@ axy.set_xlabel(r"$y$ [$\mu$m]")
 axy.set_ylabel(r"$p_y$ [$10^{-3}$]")
 axz.set_xlabel(r"$z$ [$10^{-3}$]")
 axz.set_ylabel(r"$\delta$ [$10^{-3}$]")
-
+fig.align_ylabels([axx, axy, axz])
 plt.tight_layout()
 plt.show()
 
@@ -238,7 +250,7 @@ for turn in range(1, nturns):
 # of the IBS growth rates re-computation. After this is done running, we can plot
 # the evolutions across the turns:
 
-figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(8, 10))
+figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(10, 11))
 
 epsx.plot(1e10 * turn_by_turn.epsilon_x)
 epsy.plot(1e13 * turn_by_turn.epsilon_y)
@@ -248,7 +260,7 @@ epsx.set_ylabel(r"$\varepsilon_x$ [$10^{-10}$m]")
 epsy.set_ylabel(r"$\varepsilon_y$ [$10^{-13}$m]")
 sigdelta.set_ylabel(r"$\sigma_{\delta}$ [$10^{-3}$]")
 sigdelta.set_xlabel("Turn Number")
-
+figure.align_ylabels([epsx, epsy, sigdelta])
 plt.tight_layout()
 plt.show()
 
