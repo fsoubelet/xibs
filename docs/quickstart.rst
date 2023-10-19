@@ -82,7 +82,6 @@ It is initialized as shown in the section above:
    # now compute IBS growth rates and new emittances
 
 One can find a detailed usage walkthrough of this in the :ref:`analytical example <demo-analytical>`.
-.. TODO: Change the link above to the example page once it has been built.
 
 Providing Kicks
 ^^^^^^^^^^^^^^^
