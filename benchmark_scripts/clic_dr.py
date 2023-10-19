@@ -83,12 +83,8 @@ MIBS = MichalisIBS()
 MIBS.set_beam_parameters(particles)
 MIBS.set_optic_functions(twiss)
 
+
 # ----- Dataclasses to store results ----- #
-nturns = 1000  # number of turns to loop for
-ibs_step = 50  # frequency at which to re-compute the growth rates in [turns]
-dt = 1 / IBS.optics.revolution_frequency
-
-
 @dataclass
 class Records:
     """Dataclass to store (and update) important values through tracking."""
@@ -98,6 +94,10 @@ class Records:
     sig_delta: np.ndarray
     bunch_length: np.ndarray
 
+
+nturns = 1000  # number of turns to loop for
+ibs_step = 50  # frequency at which to re-compute the growth rates in [turns]
+dt = 1 / IBS.optics.revolution_frequency
 
 # For results of the new codes
 turn_by_turn = Records(
@@ -126,6 +126,26 @@ old_turn_by_turn.sig_delta[0] = sig_delta
 old_turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
 old_turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
 
+# ----- Quick check for equality of growth rates from initial values above ----- #
+
+IBS.integrals(turn_by_turn.epsilon_x[0], turn_by_turn.epsilon_y[0], turn_by_turn.sig_delta[0])
+IBS.growth_rates(
+    turn_by_turn.epsilon_x[0],
+    turn_by_turn.epsilon_y[0],
+    turn_by_turn.sig_delta[0],
+    turn_by_turn.bunch_length[0],
+)
+MIBS.calculate_integrals(
+    Emit_x=old_turn_by_turn.epsilon_x[0],
+    Emit_y=old_turn_by_turn.epsilon_y[0],
+    Sig_M=old_turn_by_turn.sig_delta[0],
+    BunchL=old_turn_by_turn.bunch_length[0],
+)
+
+assert np.isclose(MIBS.Ixx, IBS.ibs_growth_rates.Tx)
+assert np.isclose(MIBS.Iyy, IBS.ibs_growth_rates.Ty)
+assert np.isclose(MIBS.Ipp, IBS.ibs_growth_rates.Tz)
+print("Initial comparison of growth rates: Success!")
 
 # ---------------------------------------- #
 # ----- LOOP OVER TURNS FOR NEW CODE ----- #
