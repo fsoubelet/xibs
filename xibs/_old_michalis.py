@@ -22,7 +22,6 @@ class MichalisIBS:
     """A class to encapsulate IBS calculations according to the Nagaitsev formalism."""
 
     def __init__(self, *args, **kwargs):
-        # TODO: some work here, should probably initiate with a twiss or the line
         pass
 
     def _Phi(self, beta, alpha, eta, eta_d):
@@ -216,7 +215,7 @@ class MichalisIBS:
         Nagai_Sx = (2 * R1 - R2 * (1 + 3 * a2 / denom) - R3 * (1 - 3 * a2 / denom)) * 0.5
         Nagai_Sxp = 3 * self.gammar**2 * self.phi_x**2 * ax * (R3 - R2) / denom
         # --------------------------------------------------------------------------------
-        # TODO: THIS IS THE INTEGRALS, USED BELOW TO CALCULATE THE GROWTH RATES
+        # THIS IS THE INTEGRALS, USED BELOW TO CALCULATE THE GROWTH RATES
         # Actually these are still the integrands, the integration is done at the next step
         # This is Eq (30-32) then directly plugged into Eq (28) in Nagaitsev paper
         Ixi = (
@@ -228,24 +227,23 @@ class MichalisIBS:
         Ipi = Nagai_Sp / (self.Circu * sigx * sigy)
         # --------------------------------------------------------------------------------
         # This is were we plug the last part in Eq (28) -> division by the emittance
-        # TODO: technically the first part of the calculation are the Nagaitsev Integrals
+        # technically the first part of the calculation are the Nagaitsev Integrals
         # The growth rates are Ix, Iy, Ip computed with the constant factor and the emittances
         Ix: float = np.sum(Ixi[:-1] * np.diff(self.posit)) * const / Emit_x
         Iy: float = np.sum(Iyi[:-1] * np.diff(self.posit)) * const / Emit_y
         Ip: float = np.sum(Ipi[:-1] * np.diff(self.posit)) * const / Sig_M**2
-        # TODO: figure out with Michalis why the integration is commented out
+        # figure out with Michalis why the integration is commented out
         # This is to save time, as it is so much move intensive
         # Ix = integrate.simps(Ixi, self.posit) * const / Emit_x
         # Iy = integrate.simps(Iyi, self.posit) * const / Emit_y
         # Ip = integrate.simps(Ipi, self.posit) * const / Sig_M**2
-        # TODO: THIS IS THE GROWTH RATES!!!!!!
+        # THIS IS THE GROWTH RATES!!!!!!
         return Ix, Iy, Ip
 
     # Run to calculate and save the growth rates; used for the emittance evolution
     def calculate_integrals(self, Emit_x, Emit_y, Sig_M, BunchL) -> None:
-        # TODO: THIS IS THE GROWTH RATE IN THE END!
         """Computes the Nagaitsev GROWTH RATES HERE Ixx, Iyy and Ipp, and stores them in the instance itself."""
-        # TODO: this is growth rates!
+        # Remember: this is growth rates!
         self.Ixx, self.Iyy, self.Ipp = self.Nagaitsev_Integrals(Emit_x, Emit_y, Sig_M, BunchL)
 
     # Run if you want to evaluate the emittance evolution using Nagaitsev's Integrals.
@@ -284,7 +282,7 @@ class MichalisIBS:
         return Evolemx, Evolemy, EvolsiM
 
     def line_density(self, n_slices, particles):
-        """Calculates line density, implementation from Michalis and Hannes. Idea came from Eq 8 in https://journals.aps.org/prab/abstract/10.1103/PhysRevSTAB.13.091001 (TODO: CITE)
+        """Calculates line density, implementation from Michalis and Hannes. Idea came from Eq 8 in https://journals.aps.org/prab/abstract/10.1103/PhysRevSTAB.13.091001 (CITE)
         -> Get particles coordinates
         -> Determine binning of coordinates for histogram (getting bin edges and centers)
         -> Calculate the rms bunch length as the standard deviation of the distribution
@@ -415,7 +413,7 @@ class MichalisIBS:
         # Fy = np.sum(Fyi * self.dels) * const / Emit_y
         # Dz = np.sum(Dzi * self.dels) * const / Sig_M**2 #* 2. for coasting
         # Fz = np.sum(Fzi * self.dels) * const / Sig_M**2 #* 2. for coasting
-        # TODO: figure out why no integration calculation here either
+        # why no integration calculation here either
         Dx = np.sum(Dxi[:-1] * np.diff(self.posit)) * const / Emit_x
         Dy = np.sum(Dyi[:-1] * np.diff(self.posit)) * const / Emit_y
         Dz = np.sum(Dzi[:-1] * np.diff(self.posit)) * const / Sig_M**2
