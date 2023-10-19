@@ -26,7 +26,7 @@ from xibs.analytical import NagaitsevIBS
 from xibs.formulary import bunch_length
 from xibs.inputs import BeamParameters, OpticsParameters
 
-warnings.filterwarnings("ignore")  # scipy integration routines might warn
+warnings.filterwarnings("ignore")  # scipy integration routines might warn for subdivisions
 plt.rcParams.update(
     {
         "font.family": "serif",
