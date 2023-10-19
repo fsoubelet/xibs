@@ -75,11 +75,11 @@ particles = xp.generate_matched_gaussian_bunch(
 # To have a look at the generated particles (see the `xsuite user guide 
 # <https://xsuite.readthedocs.io/en/latest/particlesmanip.html>`_ for more)
 
-fig, (axx, axy, axz) = plt.subplots(3, 1, figsize=(8, 10))
+fig, (axx, axy, axz) = plt.subplots(3, 1, figsize=(8, 11))
 
-axx.plot(1e6 * particles.x, 1e5 * particles.px, ".", ms=2)
-axy.plot(1e6 * particles.y, 1e6 * particles.py, ".", ms=2)
-axz.plot(1e3 * particles.zeta, 1e3 * particles.delta, ".", ms=2)
+axx.plot(1e6 * particles.x, 1e5 * particles.px, ".", ms=3)
+axy.plot(1e6 * particles.y, 1e6 * particles.py, ".", ms=3)
+axz.plot(1e3 * particles.zeta, 1e3 * particles.delta, ".", ms=3)
 
 axx.set_xlabel(r"$x$ [$\mu$m]")
 axx.set_ylabel(r"$p_x$ [$10^{-5}$]")
@@ -234,7 +234,9 @@ for turn in range(1, nturns):
     turn_by_turn.epsilon_y[turn] = new_emit_y
 
 ###############################################################################
-# After this is done running, we can plot the evolutions across the turns:
+# Feel free to run this simulation for more turns, or with a different frequency
+# of the IBS growth rates re-computation. After this is done running, we can plot
+# the evolutions across the turns:
 
 figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(8, 10))
 
