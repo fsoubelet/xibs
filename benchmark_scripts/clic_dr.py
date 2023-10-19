@@ -2,6 +2,7 @@
 Benchmarking new code vs old code for analytical emittance evolutions
 in the CLIC DR (as in the analytical demo but comparing both)
 """
+import time
 import warnings
 
 from dataclasses import dataclass
@@ -118,10 +119,11 @@ old_turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
 # ----- LOOP OVER TURNS FOR NEW CODE ----- #
 # ---------------------------------------- #
 
+start1 = time.time()
 for turn in range(1, nturns):
     # Potentially re-compute the Nagaitsev integrals and growth rates
     if (turn % ibs_step == 0) or (turn == 1):
-        print(f"NEW CODE - Turn {turn}: re-computing the Nagaitsev integrals and growth rates")
+        print(f"New code - Turn {turn:>3}: re-computing the Nagaitsev integrals and growth rates")
         # We compute from values at the previous turn
         IBS.integrals(
             turn_by_turn.epsilon_x[turn - 1],
@@ -162,16 +164,17 @@ for turn in range(1, nturns):
     turn_by_turn.sig_delta[turn] = new_sig_delta
     turn_by_turn.epsilon_x[turn] = new_emit_x
     turn_by_turn.epsilon_y[turn] = new_emit_y
-
+end1 = time.time()
 
 # ---------------------------------------- #
 # ----- LOOP OVER TURNS FOR OLD CODE ----- #
 # ---------------------------------------- #
 
+start2 = time.time()
 for turn in range(1, nturns):
     # Potentially re-compute the Nagaitsev integrals and growth rates
     if (turn % ibs_step == 0) or (turn == 1):
-        print(f"OLD CODE - Turn {turn}: re-computing the Nagaitsev integrals and growth rates")
+        print(f"Old code - Turn {turn:>3}: re-computing the Nagaitsev integrals and growth rates")
         MIBS.calculate_integrals(
             Emit_x=old_turn_by_turn.epsilon_x[turn - 1],
             Emit_y=old_turn_by_turn.epsilon_y[turn - 1],
@@ -207,6 +210,10 @@ for turn in range(1, nturns):
     old_turn_by_turn.sig_delta[turn] = new_sig_delta
     old_turn_by_turn.epsilon_x[turn] = new_emit_x
     old_turn_by_turn.epsilon_y[turn] = new_emit_y
+end2 = time.time()
+
+print(f"\nNew code took {end1 - start1:.2f} seconds")
+print(f"Old code took {end2 - start2:.2f} seconds")
 
 # ----- Plot the results ----- #
 figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(10, 11))
