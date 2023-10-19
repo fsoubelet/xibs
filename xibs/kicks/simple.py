@@ -31,4 +31,4 @@ class SimpleKickIBS:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
 
-    # TODO: go over with Michail on his old code and determine what is being done before porting it
+    # TODO: go over with Michalis on his old code and determine what is being done before porting it

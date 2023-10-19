@@ -276,7 +276,7 @@ plt.show()
 
 ###############################################################################
 # TODO: remove below when this is resolved
-# I am comparing to the old code (xibs._old_michail) now and finding some (small)
+# I am comparing to the old code (xibs._old_Michalis) now and finding some (small)
 # differences. For instance:
 # | ----------------- | ------------------ |
 # | OLD CODE, IBS.Ixx | NEW CODE, IBS.ibs_growth_rates.Tx |
@@ -290,7 +290,7 @@ plt.show()
 # | ----------------- | ------------------ |
 # This may be due to the numba compiling of the iterative_RD method in the new
 # code, that in turn leads to a different numerical precision than the python
-# one in Michail's code? Literally same code but one is @jit()-ed
+# one in Michalis's code? Literally same code but one is @jit()-ed
 # Worthy to note that when doing a np.isclose() comparison, the assertions
 # resolve to `True`. I will check without the jit() decorator and report below
 # 

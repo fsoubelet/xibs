@@ -25,7 +25,7 @@ SPS_TOOLKIT = ACC_MODELS_SPS / "toolkit"
 SPS_LHC_IONS_OPTICS = ACC_MODELS_SPS / "strengths" / "lhc_ion.str"
 SPS_LHC_IONS_BEAMS = ACC_MODELS_SPS / "beams" / "beam_lhc_ion_injection.madx"
 
-# Files for CLIC Damping Ring used in Michail's scripts
+# Files for CLIC Damping Ring used in Michalis's scripts
 CLIC_DR_LINE_JSON = INPUTS_DIR / "chrom-corr_DR.newlattice_2GHz.json"
 CLIC_DR_SEQUENCE_MADX = INPUTS_DIR / "chrom-corr_DR.newlattice_2GHz.seq"
 
@@ -79,7 +79,7 @@ CONFIGS_DIR = INPUTS_DIR / "configs"
 # def xsuite_line_CLIC_damping_ring() -> xt.Line:
 #     """
 #     A loaded xt.Line of the CLIC DR with chroma corrected, as used in
-#     scripts from Michail to benchmark against.
+#     scripts from Michalis to benchmark against.
 #     """
 #     # Load the line
 #     line = xt.Line.from_json(str(CLIC_DR_LINE_JSON.absolute()))
@@ -103,7 +103,7 @@ CONFIGS_DIR = INPUTS_DIR / "configs"
 # def madx_CLIC_damping_ring() -> Madx:
 #     """
 #     A cpymad.Madx instance with loaded CLIC DR sequence file and optics,
-#     as used in scripts from Michail to benchmark against. It is a thin
+#     as used in scripts from Michalis to benchmark against. It is a thin
 #     lattice.
 #     """
 #     with Madx(stdout=False) as madx:

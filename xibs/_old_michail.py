@@ -1,5 +1,5 @@
 """
-This is the old implementation of Michail, kept here as a private module to benchmark against in tests.
+This is the old implementation of Michalis, kept here as a private module to benchmark against in tests.
 """
 import warnings
 
@@ -18,7 +18,7 @@ warnings.warn(
 )
 
 
-class MichailIBS:
+class MichalisIBS:
     """A class to encapsulate IBS calculations according to the Nagaitsev formalism."""
 
     def __init__(self, *args, **kwargs):
@@ -103,9 +103,9 @@ class MichailIBS:
         """
         Elliptic integral calculation with iterative method.
         This is the R_D calculation from Eq (4) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-        This looks like it can be much more optimized. This is an implementation that was found by Michail (in Cpp and adapted).
+        This looks like it can be much more optimized. This is an implementation that was found by Michalis (in Cpp and adapted).
         Found in ref [5] of Nagaitsev paper (sues ref [4]), they give an iterative procedure to calculate Eq (4).
-        Some powerpoints from Michail in ABP group meeting mention how this is calculated.
+        Some powerpoints from Michalis in ABP group meeting mention how this is calculated.
 
         Args:
             x (float): the Lambda1 value in Nagaitsev paper. Eigen values of the A matrix in Eq (2) which comes from B&M. In B&M it is L matrix.
@@ -284,7 +284,7 @@ class MichailIBS:
         return Evolemx, Evolemy, EvolsiM
 
     def line_density(self, n_slices, particles):
-        """Calculates line density, implementation from Michail and Hannes. Idea came from Eq 8 in https://journals.aps.org/prab/abstract/10.1103/PhysRevSTAB.13.091001 (TODO: CITE)
+        """Calculates line density, implementation from Michalis and Hannes. Idea came from Eq 8 in https://journals.aps.org/prab/abstract/10.1103/PhysRevSTAB.13.091001 (TODO: CITE)
         -> Get particles coordinates
         -> Determine binning of coordinates for histogram (getting bin edges and centers)
         -> Calculate the rms bunch length as the standard deviation of the distribution
