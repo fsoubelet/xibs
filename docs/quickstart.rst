@@ -108,8 +108,7 @@ Both follow the same usage pattern as the analytical formalism, and are initiali
    simple_ibs = SimpleKickIBS(beam_parameters, optics_parameters)
    # now compute kicks to apply to particles
 
-One can find a detailed usage walkthrough of these in the :ref:`kinetic example <xibs-kinetic>` and :ref:`simple example <xibs-simple>`.
-.. TODO: Change the links above to the example pages once they have been built.
+One can find a detailed usage walkthrough of these in the :ref:`kinetic example <demo-kinetic>` and :ref:`simple example <demo-simple>`.
 
 .. todo::
 
