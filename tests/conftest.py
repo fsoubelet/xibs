@@ -11,7 +11,7 @@ import xtrack as xt
 import yaml
 
 from cpymad.madx import Madx
-from helpers import make_sps_thin, re_cycle_sequence, setup_madx_from_config
+from helpers import setup_madx_from_config
 
 # ----- Paths to inputs ----- #
 
@@ -25,11 +25,7 @@ SPS_TOOLKIT = ACC_MODELS_SPS / "toolkit"
 SPS_LHC_IONS_OPTICS = ACC_MODELS_SPS / "strengths" / "lhc_ion.str"
 SPS_LHC_IONS_BEAMS = ACC_MODELS_SPS / "beams" / "beam_lhc_ion_injection.madx"
 
-# Files for CLIC Damping Ring used in Michalis's scripts
-CLIC_DR_LINE_JSON = INPUTS_DIR / "chrom-corr_DR.newlattice_2GHz.json"
-CLIC_DR_SEQUENCE_MADX = INPUTS_DIR / "chrom-corr_DR.newlattice_2GHz.seq"
-
-# Config files to load to create MAD-X setups
+# Location of config files to load to create MAD-X setups
 CONFIGS_DIR = INPUTS_DIR / "configs"
 
 # ----- MAD-X Sequences Fixtures ----- #
