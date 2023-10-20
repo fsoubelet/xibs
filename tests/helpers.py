@@ -27,7 +27,11 @@ def get_madx_ibs_growth_rates(madx: Madx) -> Tuple[float, float, float]:
 
 
 def setup_madx_from_config(madx: Madx, config: Dict) -> None:
-    """Takes values from loaded yaml config and sets up the MAD-X lattice, sequence and beam."""
+    """
+    Takes values from loaded yaml config file and sets up the MAD-X lattice,
+    sequence and beam so we can call IBS later on. This is machine / config
+    agnostic and will run the same (working) logic for whatever is provided.
+    """
     # Get values from the configuration (loaded from file)
     sequence = config["sequence"]  # TODO: relative paths here, needs fix or assume it's already called
     energy_GeV = config["energy"]  # beam energy in [GeV]
