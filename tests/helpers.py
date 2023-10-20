@@ -5,6 +5,7 @@ import math
 
 from typing import Dict, Tuple
 
+import numba
 import numpy as np
 
 from cpymad.madx import Madx
@@ -161,7 +162,18 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
 # ----- Private functions ----- #
 
 
-def _dpp_to_bl(RC, En, nc, RF_voltage, U0, betar, harm_number, etap, dpp):
+@numba.njit()
+def _dpp_to_bl(
+    RC: float,
+    En: float,
+    nc: int,
+    RF_voltage: float,
+    U0: float,
+    betar: float,
+    harm_number: int,
+    etap: float,
+    dpp: float,
+) -> float:
     """Get bunch length from dpp. Copied from old benchmark scripts of Sofia."""
     # fmt: off
     return (
@@ -175,7 +187,18 @@ def _dpp_to_bl(RC, En, nc, RF_voltage, U0, betar, harm_number, etap, dpp):
     # fmt: on
 
 
-def _bl_to_dpp(RC, En, nc, RF_voltage, U0, betar, harm_number, etap, bl_i):
+@numba.njit()
+def _bl_to_dpp(
+    RC: float,
+    En: float,
+    nc: int,
+    RF_voltage: float,
+    U0: float,
+    betar: float,
+    harm_number: int,
+    etap: float,
+    bl_i: float,
+) -> float:
     """Get dpp from bunch length. Copied from old benchmark scripts of Sofia."""
     return (
         np.sqrt(2 / np.pi)
