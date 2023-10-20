@@ -10,7 +10,7 @@ bunch_intensity: 1.8e11
 emit_x: 1.8
 emit_y: 1.8                         # ey in um
 blns: 1.2 
-bl_lev: 0.0                  
+bl_lev: 0.0                    # this is bunch length leveling thing
 particle: "proton"
 mass: 0.9382723
 radius: 1.534698e-18

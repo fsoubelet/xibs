@@ -104,12 +104,14 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     gamma_transition = summ["gammatr"].to_numpy()[0]  # transition energy gamma
     gamma_rel = madx.table.twiss.summary.gamma  # relativistic gamma
     beta_rel = np.sqrt(1.0 - 1.0 / gamma_rel**2)  # relativistic beta
-    etap = abs(1.0 / gamma_transition**2 - 1.0 / gamma_rel**2)  # ???
+    etap = abs(1.0 / gamma_transition**2 - 1.0 / gamma_rel**2)  # get the slip factor
     beam_energy_GeV = madx.table.twiss.summary.energy  # beam energy in [GeV]
     # E0 = beam_energy_GeV / gamma_rel  # rest mass energy in [GeV] | this is particle_mass_GeV
 
+    # In MAD-X there is a convention that RF cavity if we activate it we need to multiply
+    # the voltage by the particle charge (important for ions) -> MAD-X asks for q*V [now xsuite also does]
     madx.input(f"{rf_knobs}={rf_voltage*1e3}*{particle_charge};")
-    U0 = 0
+    U0 = 0  # this is the energy loss per turn
     bunch_length_m = config["blns"] * 1e-9 / 4.0 * (c * beta_rel)  # bunch length in [m]
     # bunch_length_level = config["bl_lev"] * 1e-9 / 4.0 * (c * beta_rel)  # ???
     # bl_i = bunch_length_m
@@ -121,11 +123,11 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     rf_period = 1.0 / rf_cavity_frequency  # RF period in [s]
 
     # fmt: off
-    dpp = _bl_to_dpp(  # relative momentum spread
+    dpp = _bl_to_dpp(  # relative momentum spread from bunch length
         circumference, beam_energy_GeV, particle_charge, rf_voltage, U0, beta_rel, harmonic_number, etap, bunch_length_m
     )
     # fmt: on
-    dee = dpp * beta_rel**2  # relative energy spread
+    dee = dpp * beta_rel**2  # relative energy spread [sigma_e in my codes]
 
     # Twiss sequence, this time with RF system on
     madx.use(sequence=sequence_name)
@@ -141,9 +143,9 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
 
     # TODO: why are we setting these to 0?
     # U0, taux, tauy, taul, ex0, ey0, sp0, ss0 = (0,) * 8
-    madx.command.twiss(centre=True)
+    madx.command.twiss(centre=True)  # TODO: does using center in TWISS matter for the IBS calculations?
 
-    # TODO: is this necessary?
+    # Not necessary for the tests but when doing evolutions we NEED to update the MAD-X beam
     # madx.input(
     #     f"""
     # init_ex = beam->Ex;
