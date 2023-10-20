@@ -93,7 +93,7 @@ def test_lhc_injection_protons_no_crossing(madx_lhc_injection_protons_no_crossin
     # --------------------------------------------------------------------
     # Get the growth rates from MAD-X
     # madx = madx_lhc_injection_protons_no_crossing  # fully set up from the config file
-    # madx.command.twiss()  # needs to be called before IBS!
+    # madx.command.twiss()  # needs to be called before IBS! TODO: does it need centre=True?
     # mad_Tx, mad_Ty, mad_Tz = get_madx_ibs_beam_size_growth_time(madx)  # careful about the factor 2 in MAD-X
     # # --------------------------------------------------------------------
     # # Xsuite line, needs th MAKETHIN first
@@ -103,14 +103,8 @@ def test_lhc_injection_protons_no_crossing(madx_lhc_injection_protons_no_crossin
     # p0 = xp.Particles(mass0=madx.beam.mass * 1e9, q0=madx.beam.charge, p0c=madx.beam.pc * 1e9)
     # line.particle_ref = p0
     # twiss = line.twiss(method="4d")
-    # particles = xp.generate_matched_gaussian_bunch(
-    #     line=line,
-    #     num_particles=madx.beam.npart,
-    #     total_intensity_particles=madx.beam.npart,
-    #     nemitt_x=madx.beam.exn,
-    #     nemitt_y=madx.beam.eyn,
-    #     sigma_z=madx.beam.sigt,
-    # )
+    # TODO: for analytical tests this is not needed, we can just give straight the values
+    # of the emittances for the integrals / growth rates calculations and dont need particles
     # --------------------------------------------------------------------
     # Get the growth rates from the old code (xibs._old_Michalis)
     # --------------------------------------------------------------------
