@@ -70,9 +70,7 @@ class BeamParameters:
         self.gamma_rel = particles.gamma0[0]
         self.beta_rel = particles.beta0[0]
         self.particle_classical_radius_m = particles.get_classical_particle_radius0()
-# TODO: make a documentation FAQ section for "Do I need the full particle distribution, matched etc?"
-# -> No you can use a single particle but we need 'n_part' and 'total_energy_GeV' to compute the
-# Coulomb logarithm so you would have to set it manually in the dataclass after initialization
+
 
 @dataclass
 class OpticsParameters:
