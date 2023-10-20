@@ -103,6 +103,7 @@ Contents
    quickstart
    gallery/index
    modules/index
+   faq
    bibliography
 
 
