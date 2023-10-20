@@ -75,7 +75,8 @@ class BeamParameters:
 @dataclass
 class OpticsParameters:
     """Container dataclass for necessary optics parameters. It is initiated from
-    the results of a ``TWISS`` command with an ``xsuite``.
+    the results of a `.twiss()` command with an `xtrack.Line`, or result of a ``TWISS``
+    call in ``MAD-X``, as a dataframe (as given by ``cpymad`` by default).
 
     Args:
         twiss (Union["xtrack.twiss.TwissTable", pd.DataFrame]): the resulting `TwissTable`
@@ -84,9 +85,9 @@ class OpticsParameters:
             initiating from a ``MAD-X`` twiss, the next two arguments are required. This
             is an init-only parameter used for instanciation and it will not be kept in
             the instance's attributes.
-        slipfactor (Optional[float]): the slip factor for the machine. Only required if
+        _slipfactor (Optional[float]): the slip factor for the machine. Only required if
             the ``twiss`` argument is a ``MAD-X`` twiss dataframe.
-        frev_hz (Optional[float]): the revolution frequency for the machine in [Hz].
+        _frev_hz (Optional[float]): the revolution frequency for the machine in [Hz].
             Only required if the ``twiss`` argument is a ``MAD-X`` twiss dataframe.
 
 
@@ -109,8 +110,8 @@ class OpticsParameters:
     twiss: InitVar[  # Almost all is derived from there, this is not kept!
         Union["xtrack.twiss.TwissTable", pd.DataFrame]
     ]
-    slipfactor: InitVar[Optional[float]] = None
-    frev_hz: InitVar[Optional[float]] = None
+    _slipfactor: InitVar[Optional[float]] = None
+    _frev_hz: InitVar[Optional[float]] = None
     # ----- Below are attributes derived from the twiss table ----- #
     s: ArrayLike = field(init=False)
     circumference: float = field(init=False)
@@ -130,8 +131,8 @@ class OpticsParameters:
         self,
         twiss: Union["xtrack.twiss.TwissTable", pd.DataFrame],
         # The following are only needed if we instanciate from MAD-X twiss
-        slip_factor: Optional[float] = None,
-        revolution_frequency: Optional[float] = None,
+        _slipfactor: Optional[float] = None,
+        _frev_hz: Optional[float] = None,
     ):
         # Attributes derived from the TwissTable
         self.s = np.array(twiss.s)
@@ -144,11 +145,11 @@ class OpticsParameters:
         self.dy = np.array(twiss.dy)
         self.dpx = np.array(twiss.dpx)
         self.dpy = np.array(twiss.dpy)
-        try:  # assume we have an xtrack.TwissTable
+        try:  # assume we have been given an xtrack.TwissTable
             self.slip_factor = twiss["slip_factor"]
             self.revolution_frequency = twiss.beta0 * c / self.circumference
             LOGGER.debug("Initialized OpticsParameters from TwissTable object")
-        except KeyError:  # we have a MAD-X twiss dataframe and we expect them given
-            self.slip_factor = slip_factor
-            self.revolution_frequency = revolution_frequency
+        except KeyError:  # then it is a MAD-X twiss dataframe and we need these 2 provided
+            self.slip_factor = _slipfactor
+            self.revolution_frequency = _frev_hz
             LOGGER.debug("Initialized OpticsParameters from MAD-X Twiss dataframe")
