@@ -32,93 +32,7 @@ CLIC_DR_SEQUENCE_MADX = INPUTS_DIR / "chrom-corr_DR.newlattice_2GHz.seq"
 # Config files to load to create MAD-X setups
 CONFIGS_DIR = INPUTS_DIR / "configs"
 
-# ----- Lines and Sequences Fixtures ----- #
-
-
-# @pytest.fixture()
-# def matched_sps_lhc_ions_injection() -> Madx:
-#     """
-#     A cpymad.Madx instance with loaded SPS sequence, lhc ions optics,
-#     and matched parameters. It is a thin lattice.
-#     """
-#     with Madx(stdout=False) as madx:
-#         # Parameters for matching later on
-#         qx, qy, dqx, dqy = 26.30, 26.25, -3.0e-9, -3.0e-9
-
-#         # Call sequence, optics and define beams
-#         madx.call(str(SPS_SEQUENCE.absolute()))
-#         madx.call(str(SPS_LHC_IONS_OPTICS.absolute()))
-#         madx.call(str(SPS_LHC_IONS_BEAMS.absolute()))
-#         madx.command.use(sequence="sps")
-#         madx.command.twiss()
-
-#         # Makethin, call some definition macros
-#         re_cycle_sequence(madx)  # TODO: could use cpymadtools for this
-#         madx.command.use(sequence="sps")
-#         make_sps_thin(madx, sequence="sps", slicefactor=5)
-#         madx.command.use(sequence="sps")
-#         madx.call(str((SPS_TOOLKIT / "macro.madx").absolute()))
-#         madx.exec(f"sps_match_tunes({qx},{qy});")  # TODO: could use cpymadtools for this
-#         madx.exec("sps_define_sext_knobs();")
-#         madx.exec("sps_set_chroma_weights_q26();")
-
-#         # Match chromas (TODO: could use cpymadtools for this)
-#         madx.command.match()
-#         madx.command.global_(dq1=dqx)
-#         madx.command.global_(dq2=dqy)
-#         madx.command.vary(name="qph_setvalue")
-#         madx.command.vary(name="qpv_setvalue")
-#         madx.command.jacobian(calls=50, tolerance=1e-25)
-#         madx.command.endmatch()
-
-#         # Yield, exits context manager only after the calling test is done
-#         yield madx
-
-
-# @pytest.fixture()
-# def xsuite_line_CLIC_damping_ring() -> xt.Line:
-#     """
-#     A loaded xt.Line of the CLIC DR with chroma corrected, as used in
-#     scripts from Michalis to benchmark against.
-#     """
-#     # Load the line
-#     line = xt.Line.from_json(str(CLIC_DR_LINE_JSON.absolute()))
-#     # Simplify the line
-#     line.remove_inactive_multipoles(inplace=True)
-#     line.remove_zero_length_drifts(inplace=True)
-#     line.merge_consecutive_drifts(inplace=True)
-#     line.merge_consecutive_multipoles(inplace=True)
-#     # Build tracker (default context)
-#     line.build_tracker(extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
-#     # Activate the cavities
-#     for cavity in [element for element in line.elements if isinstance(element, xt.Cavity)]:
-#         cavity.lag = 180
-#     return line
-
-
-# # TODO: DO NOT MAKETHIN FOR MAD-X AS THE IBS MODULE DOES NOT LIKE IT
-# # CHECK WITH AND WITHOUT AND SEE THAT IT IS INDEED THE REASON
-# # ALSO NEED TO PROPERLY DEFINE THE EMITTANCES IN THE BEAM COMMAND OR MAD-X IBS FAILS
-# @pytest.fixture()
-# def madx_CLIC_damping_ring() -> Madx:
-#     """
-#     A cpymad.Madx instance with loaded CLIC DR sequence file and optics,
-#     as used in scripts from Michalis to benchmark against. It is a thin
-#     lattice.
-#     """
-#     with Madx(stdout=False) as madx:
-#         madx.call(str(CLIC_DR_SEQUENCE_MADX.absolute()))
-#         # Makethin on RING sequence
-#         n_slice_per_element = 4
-#         madx.command.beam(particle="positron", energy=2.86, bunched=True)
-#         madx.command.use(sequence="RING")
-#         madx.command.select(flag="MAKETHIN", slice_=n_slice_per_element, thick=False)
-#         madx.command.select(flag="MAKETHIN", pattern="wig", slice_=1)
-#         madx.command.makethin(sequence="RING", makedipedge=True)
-#         madx.command.use(sequence="RING")
-
-#         # Yield, exits context manager only after the calling test is done
-#         yield madx
+# ----- MAD-X Sequences Fixtures ----- #
 
 
 @pytest.fixture()
@@ -136,3 +50,6 @@ def madx_lhc_injection_protons_no_crossing() -> Madx:
 
         # Yield, exits context manager only after the calling test is done
         yield madx
+
+
+# ----- Xtrack Lines Fixtures ----- #
