@@ -14,8 +14,10 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 from dataclasses import InitVar, dataclass, field
 from logging import getLogger
+from typing import Optional, Union
 
 import numpy as np
+import pandas as pd
 
 from numpy.typing import ArrayLike
 from scipy.constants import c
@@ -76,9 +78,17 @@ class OpticsParameters:
     the results of a ``TWISS`` command with an ``xsuite``.
 
     Args:
-        twiss (xtrack.twiss.TwissTable): the resulting table of a ``TWISS`` call
-            on the line in ``xsuite``. This is an init-only parameter used for
-            instanciation and it will not be kept in the instance's attributes.
+        twiss (Union["xtrack.twiss.TwissTable", pd.DataFrame]): the resulting `TwissTable`
+            of a `.twiss()` call on the `xtrack.Line`, **or** the ``TWISS`` table of the
+            ``MAD-X`` sequence as a `pandas.DataFrame`. Lowercase keys are expected. If
+            initiating from a ``MAD-X`` twiss, the next two arguments are required. This
+            is an init-only parameter used for instanciation and it will not be kept in
+            the instance's attributes.
+        slipfactor (Optional[float]): the slip factor for the machine. Only required if
+            the ``twiss`` argument is a ``MAD-X`` twiss dataframe.
+        frev_hz (Optional[float]): the revolution frequency for the machine in [Hz].
+            Only required if the ``twiss`` argument is a ``MAD-X`` twiss dataframe.
+
 
     Attributes:
         s (ArrayLike): longitudinal positions of the machine elements in [m].
@@ -96,7 +106,11 @@ class OpticsParameters:
     """
 
     # ----- To be provided at initialization ----- #
-    twiss: InitVar["xtrack.twiss.TwissTable"]  # Almost all is derived from there, this is not kept!
+    twiss: InitVar[  # Almost all is derived from there, this is not kept!
+        Union["xtrack.twiss.TwissTable", pd.DataFrame]
+    ]
+    slipfactor: InitVar[Optional[float]] = None
+    frev_hz: InitVar[Optional[float]] = None
     # ----- Below are attributes derived from the twiss table ----- #
     s: ArrayLike = field(init=False)
     circumference: float = field(init=False)
@@ -112,18 +126,29 @@ class OpticsParameters:
     dpx: ArrayLike = field(init=False)
     dpy: ArrayLike = field(init=False)
 
-    def __post_init__(self, twiss: "xtrack.twiss.TwissTable"):
+    def __post_init__(
+        self,
+        twiss: Union["xtrack.twiss.TwissTable", pd.DataFrame],
+        # The following are only needed if we instanciate from MAD-X twiss
+        slip_factor: Optional[float] = None,
+        revolution_frequency: Optional[float] = None,
+    ):
         # Attributes derived from the TwissTable
-        LOGGER.debug("Initializing OpticsParameters from TwissTable object")
-        self.s = twiss.s
+        self.s = np.array(twiss.s)
         self.circumference = twiss.s[-1]
-        self.slip_factor = twiss["slip_factor"]
-        self.revolution_frequency = twiss.beta0 * c / self.circumference
-        self.betx = twiss.betx
-        self.bety = twiss.bety
-        self.alfx = twiss.alfx
-        self.alfy = twiss.alfy
-        self.dx = twiss.dx
-        self.dy = twiss.dy
-        self.dpx = twiss.dpx
-        self.dpy = twiss.dpy
+        self.betx = np.array(twiss.betx)
+        self.bety = np.array(twiss.bety)
+        self.alfx = np.array(twiss.alfx)
+        self.alfy = np.array(twiss.alfy)
+        self.dx = np.array(twiss.dx)
+        self.dy = np.array(twiss.dy)
+        self.dpx = np.array(twiss.dpx)
+        self.dpy = np.array(twiss.dpy)
+        try:  # assume we have an xtrack.TwissTable
+            self.slip_factor = twiss["slip_factor"]
+            self.revolution_frequency = twiss.beta0 * c / self.circumference
+            LOGGER.debug("Initialized OpticsParameters from TwissTable object")
+        except KeyError:  # we have a MAD-X twiss dataframe and we expect them given
+            self.slip_factor = slip_factor
+            self.revolution_frequency = revolution_frequency
+            LOGGER.debug("Initialized OpticsParameters from MAD-X Twiss dataframe")
