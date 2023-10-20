@@ -5,12 +5,11 @@ of Michalis and from the package's analytical module and ensure
 they are consistent.
 """
 import numpy as np
-import pytest
 import xpart as xp
 import xtrack as xt
 
 # from cpymadtools import lhc
-from helpers import get_madx_ibs_beam_size_growth_time
+from helpers import get_madx_ibs_growth_rates
 
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters

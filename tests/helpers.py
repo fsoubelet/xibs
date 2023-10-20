@@ -1,8 +1,6 @@
 """
 Utility functions (could be in cpymadtools at some point).
 """
-import math
-
 from typing import Dict, Tuple
 
 import numba
@@ -12,7 +10,7 @@ from cpymad.madx import Madx
 from scipy.constants import c
 
 
-def get_madx_ibs_beam_size_growth_time(madx: Madx) -> Tuple[float, float, float]:
+def get_madx_ibs_growth_rates(madx: Madx) -> Tuple[float, float, float]:
     """
     Calls IBS module in MAD-X and return the horizontal, vertical and longitudinal growth rates.
     CAREFUL: the beam and twiss commands MUST have been called before calling this function.
