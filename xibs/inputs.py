@@ -76,7 +76,7 @@ class BeamParameters:
 class OpticsParameters:
     """Container dataclass for necessary optics parameters. It is initiated from
     the results of a `.twiss()` command with an `xtrack.Line`, or result of a ``TWISS``
-    call in ``MAD-X``, as a dataframe (as given by ``cpymad`` by default).
+    call in ``MAD-X`` as a dataframe (as given by ``cpymad`` by default).
 
     Args:
         twiss (Union["xtrack.twiss.TwissTable", pd.DataFrame]): the resulting `TwissTable`
