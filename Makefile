@@ -96,10 +96,10 @@ typing: format
 tests:  # all tests not involving pyhdtoolkit.cpymadtools
 	@python -m pytest -v
 
-testrepos:  # git clone the necessary repos for tests files
-	@echo "Cloning acc-models-sps repo."
+testrepos:  # git cloning the necessary repos for tests files - specify branch, could also specify tag to make sure we are static
+	@echo "Cloning acc-models-sps repo, 2021 branch."
 	@git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1
-	@echo "Cloning acc-models-lhc repo."
+	@echo "Cloning acc-models-lhc repo, 2022 branch."
 	@git clone -b 2022 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
 
 # Catch-all unknow targets without returning an error. This is a POSIX-compliant syntax.
