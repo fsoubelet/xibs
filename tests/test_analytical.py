@@ -19,7 +19,6 @@ def test_lhc_injection_protons_no_crossing(madx_lhc_injection_protons_no_crossin
     # --------------------------------------------------------------------
     # Get the growth rates from MAD-X
     # madx = madx_lhc_injection_protons_no_crossing  # fully set up from the config file
-    # madx.command.twiss()  # needs to be called before IBS!
     # mad_Tx, mad_Ty, mad_Tz = get_madx_ibs_growth_rates(madx)  # careful about the factor 2 in MAD-X
     # --------------------------------------------------------------------
     # Load xsuite line
