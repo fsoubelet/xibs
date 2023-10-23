@@ -63,7 +63,7 @@ def bunch_length(
         harmonic_number (int): harmonic number of the RF system.
         total_energy_GeV (float): total energy of the simulated particles in [GeV].
         slip_factor (float): slip factor of the machine.
-        sigma_e (float): energy spread of the particles. TODO: check with Michalis and in Wiedermann book.
+        sigma_e (float): relative energy spread of the particles.
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         energy_loss_GeV (float): The turn-by-turn oarticle energy loss in [GeV].
@@ -153,7 +153,7 @@ def ion_bunch_length(
         harmonic_number (int): harmonic number of the RF system.
         total_energy_GeV (float): total energy of the simulated particles in [GeV].
         slip_factor (float): slip factor of the machine.
-        sigma_e (float): energy spread of the particles? TODO: check with Michalis and in Wiedermann book.
+        sigma_e (float): relative energy spread of the particles.
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         particle_charge (int): elementary particle charge, in # of Coulomb charges (for
