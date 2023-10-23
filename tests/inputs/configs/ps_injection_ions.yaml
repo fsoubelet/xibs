@@ -1,6 +1,5 @@
-# Activate/Deactivate flags
-duration: 20        # Duration in seconds
-ibs_step: 1 #0.001 #1.4259865297332022e-05                # time step
+duration: 20        # Duration in second
+ibs_step: 1         # IBS step in seconds
 
 # Sequence to load
 sequence: "../../../000_sequences_and_XSlines/PS_injection_ions/PS_2022_Pb_ions_matched_with_RF.seq" 

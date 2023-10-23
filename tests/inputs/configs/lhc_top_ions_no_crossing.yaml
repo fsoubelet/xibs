@@ -1,9 +1,8 @@
-duration: 7200        # Duration in seconds
-ibs_step: 300 #0.001 #1.4259865297332022e-05                # time step
+duration: 7200        # Duration in second
+ibs_step: 300         # IBS step in seconds
 
 # Sequence to load
-#sequence: "../../../000_sequences_and_XSlines/LHC_top_ions_xing0/LHC.seq" 
-sequence: "/Users/skostogl/Documents/workspace/LumiModel/ibs_Michalis/scripts/IBS_package/comparison_python_MADX/LHC/lines_and_sequences/top_ions_xing0/run3_top.seq" 
+sequence: "acc-models-lhc/lhc.seq"  # relative to pytest run directory
 sequence_name: "lhcb1"
 
 energy: 557600.0   # 6.8 x Z

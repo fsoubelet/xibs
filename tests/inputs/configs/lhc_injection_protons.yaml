@@ -2,7 +2,7 @@ duration: 7200        # Duration in second
 ibs_step: 300         # IBS step in seconds
 
 # Sequence to load
-sequence: "../../../000_sequences_and_XSlines/LHC_injection_protons/LHC.seq" 
+sequence: "acc-models-lhc/lhc.seq"  # relative to pytest run directory
 sequence_name: "lhcb1"
 
 energy: 450.0                           # energy in GeV
