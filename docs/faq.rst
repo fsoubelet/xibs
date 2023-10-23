@@ -48,9 +48,10 @@ It goes as:
     twiss = madx.twiss().dframe()
     
     # Let's define the required attributes here
-    slipfactor = 0.0003484  # to be computed by the user
-    frev_hz = 11245.5  # to be computed by the user
-    
+    seq_name = "lhcb1"  # for instance, if we're working with LHC beam 1
+    slipfactor = 0.0003484  # to be computed by the user | TODO: figure out how
+    frev_hz = madx.sequence[seq_name].beam.freq0 * 1e6  # beware freq0 is in MHz
+
     # And these have to be provided as additional arguments
     optics_params = OpticsParameters(twiss, slipfactor, frev_hz)
 
