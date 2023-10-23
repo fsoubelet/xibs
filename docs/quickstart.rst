@@ -89,8 +89,8 @@ Providing Kicks
 In order to integrate **IBS** effects into tracking simulations however, computing **IBS** kicks to apply to the tracked particles is necessary.
 For this, the ``xibs.kicks`` module is provided, which includes two submodules: `xibs.kicks.simple` and `xibs.kicks.kinetic`.
 
-The former provides a simple kick calculation according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`, which valid above transition energy, and builds on the analytical formalism values from :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-The latter provides kicks according to the Kinetic theory of :cite:`NuclInstr:Zenkevich:Kinetic_IBS`, which is valid below transition energy.
+The former provides a simple kick calculation according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`, which builds on the analytical formalism values from :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation` and is valid *above transition energy*.
+The latter provides kicks according to the Kinetic theory of :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
 
 Both follow the same usage pattern as the analytical formalism, and are initialized as shown in the section above:
 
