@@ -50,14 +50,14 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
 
     # ----- Beam, sequence and get parameters from Twiss & Summ tables ----- #
     madx.command.beam(particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge)
-    madx.call(file=sequence)  # TODO: see above
+    madx.call(file=sequence)
     madx.use(sequence=sequence_name)
-    madx.command.twiss()  # needed to have TWISS and SUMM tables
+    madx.command.twiss()
     circumference = madx.table.summ.length[0]  # ring circumference in [m]
     gamma_transition = madx.table.summ.gammatr[0]  # transition energy gamma
     gamma_rel = madx.table.twiss.summary.gamma  # relativistic gamma
     beta_rel = np.sqrt(1.0 - 1.0 / gamma_rel**2)  # relativistic beta
-    etap = abs(1.0 / gamma_transition**2 - 1.0 / gamma_rel**2)  # get the slip factor
+    etap = np.abs(1.0 / gamma_transition**2 - 1.0 / gamma_rel**2)  # get the slip factor
     beam_energy_GeV = madx.table.twiss.summary.energy  # beam energy in [GeV]
     bunch_length_m = config["blns"] * 1e-9 / 4.0 * (c * beta_rel)  # bunch length in [m]
     geom_epsx = norm_epsx / (gamma_rel * beta_rel)  # geom emit x in [m]
@@ -91,7 +91,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     madx.sequence[sequence_name].beam.sigt = bunch_length_m  # set the bunch length (in [m])
     madx.sequence[sequence_name].beam.sige = dee  # set the relative energy spread
     madx.sequence[sequence_name].beam.npart = bunch_intensity  # number of particles per bunch
-    madx.command.twiss(centre=True)  # TODO: does using center in TWISS matter for the IBS calculations?
+    madx.command.twiss(centre=True)  # center=True in TWISS have a low impact on IBS growth rates calculations
 
 
 # ----- Private functions ----- #
