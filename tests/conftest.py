@@ -25,8 +25,9 @@ SPS_TOOLKIT = ACC_MODELS_SPS / "toolkit"
 SPS_LHC_IONS_OPTICS = ACC_MODELS_SPS / "strengths" / "lhc_ion.str"
 SPS_LHC_IONS_BEAMS = ACC_MODELS_SPS / "beams" / "beam_lhc_ion_injection.madx"
 
-# Location of config files to load to create MAD-X setups
-CONFIGS_DIR = INPUTS_DIR / "configs"
+# Locations of folders with specific files for tests
+CONFIGS_DIR = INPUTS_DIR / "configs"  # config files for MAD-X setups
+LINES_DIR = INPUTS_DIR / "lines"  # (equivalent) frozen and saved xtrack.Lines
 
 # ----- MAD-X Sequences Fixtures ----- #
 
