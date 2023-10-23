@@ -3,8 +3,10 @@ ibs_step: 300         # IBS step in seconds
 
 # Sequence to load
 sequence: "acc-models-lhc/lhc.seq"  # relative to pytest run directory
-sequence_name: "lhcb1"
+sequence_name: "lhcb1"              # sequence name for MAD-X to use
+opticsfile: "acc-models-lhc/operation/optics/????"    # relative to pytest run directory
 
+# TODO: config key for crossing angles
 energy: 557600.0   # 6.8 x Z
 bunch_intensity: 1.8e8
 emit_x: 1.65
