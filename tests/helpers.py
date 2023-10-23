@@ -32,8 +32,9 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     sequence and beam so we can call IBS later on. This is machine / config
     agnostic and will run the same (working) logic for whatever is provided.
     """
-    # Get values from the configuration (loaded from file)
-    sequence = config["sequence"]  # TODO: relative paths here, needs fix or assume it's already called
+    # ----- Get values from config (loaded from file) ----- #
+    sequence = config["sequence"]  # sequence file location, relative to pytest root dir
+    # opticsfile = config["opticsfile"]  # optics file location, relative to pytest root dir
     energy_GeV = config["energy"]  # beam energy in [GeV]
     norm_epsx = config["emit_x"] * 1e-6  # norm emit x in [m]
     norm_epsy = config["emit_y"] * 1e-6  # norm emit y in [m]
@@ -47,44 +48,50 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     particle_classical_radius_m = config["radius"]  # classical particle radius
     particle_charge = config["charge"]  # particle charge in [e]
 
-    # Beam, sequence and get some parameters from MAD-X Twiss
+    # ----- Beam, sequence and get parameters from Twiss & Summ tables ----- #
     madx.command.beam(particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge)
     madx.call(file=sequence)  # TODO: see above
     madx.use(sequence=sequence_name)
-    madx.command.twiss()
-    summ = madx.table.summ.dframe()
-    circumference = summ["length"].to_numpy()[0]  # ring circumference
-    gamma_transition = summ["gammatr"].to_numpy()[0]  # transition energy gamma
+    madx.command.twiss()  # needed to have TWISS and SUMM tables
+    circumference = madx.table.summ.length[0]  # ring circumference in [m]
+    gamma_transition = madx.table.summ.gammatr[0]  # transition energy gamma
     gamma_rel = madx.table.twiss.summary.gamma  # relativistic gamma
     beta_rel = np.sqrt(1.0 - 1.0 / gamma_rel**2)  # relativistic beta
     etap = abs(1.0 / gamma_transition**2 - 1.0 / gamma_rel**2)  # get the slip factor
     beam_energy_GeV = madx.table.twiss.summary.energy  # beam energy in [GeV]
-
-    # In MAD-X there is a convention that RF cavity if we activate it we need to multiply
-    # the voltage by the particle charge (important for ions) -> MAD-X asks for q*V [now xsuite also does]
-    madx.input(f"{rf_knobs}={rf_voltage*1e3}*{particle_charge};")
-    U0 = 0  # the energy loss per turn
     bunch_length_m = config["blns"] * 1e-9 / 4.0 * (c * beta_rel)  # bunch length in [m]
     geom_epsx = norm_epsx / (gamma_rel * beta_rel)  # geom emit x in [m]
     geom_epsy = norm_epsy / (gamma_rel * beta_rel)  # geom emit y in [m]
-
-    # fmt: off
+    U0 = 0  # the energy loss per turn
     dpp = _bl_to_dpp(  # relative momentum spread from bunch length
-        circumference, beam_energy_GeV, particle_charge, rf_voltage, U0, beta_rel, harmonic_number, etap, bunch_length_m
+        circumference,
+        beam_energy_GeV,
+        particle_charge,
+        rf_voltage,
+        U0,
+        beta_rel,
+        harmonic_number,
+        etap,
+        bunch_length_m,
     )
     dee = dpp * beta_rel**2  # relative energy spread [sigma_e in my codes]
-    # fmt: on
 
-    # Twiss with RF system on, set some properties for the beam, and a final twiss
-    madx.use(sequence=sequence_name)
+    # ----- RF system ----- #
+    # In MAD-X there is a convention that RF cavity if we activate it we need to multiply
+    # the voltage by the particle charge (important for ions) -> MAD-X asks for q*V [now xsuite also does]
+    madx.input(f"{rf_knobs}={rf_voltage*1e3}*{particle_charge};")
     madx.command.twiss()
-    madx.beam.ex = geom_epsx  # set the geom emit x (in [m])
-    madx.beam.ey = geom_epsy  # set the geom emit y (in [m])
-    madx.beam.sigt = bunch_length_m  # set the bunch length (in [m])
-    madx.beam.sige = dee  # set the relative energy spread
-    madx.beam.npart = bunch_intensity  # number of particles per bunch
+
+    # ----- Re-use sequence, set beam properties and do final twiss ----- #
+    madx.use(sequence=sequence_name)
+    # VERY IMPORTANT: use madx.sequence[sequence_name].beam to set the beam properties as since cpymad v1.13.0
+    # using madx.beam refers to the 'default_beam' which is not assigned to the sequence in question!
+    madx.sequence[sequence_name].beam.ex = geom_epsx  # set the geom emit x (in [m])
+    madx.sequence[sequence_name].beam.ey = geom_epsy  # set the geom emit y (in [m])
+    madx.sequence[sequence_name].beam.sigt = bunch_length_m  # set the bunch length (in [m])
+    madx.sequence[sequence_name].beam.sige = dee  # set the relative energy spread
+    madx.sequence[sequence_name].beam.npart = bunch_intensity  # number of particles per bunch
     madx.command.twiss(centre=True)  # TODO: does using center in TWISS matter for the IBS calculations?
-    # Getting the growth rates from MAD-X is left to the caller
 
 
 # ----- Private functions ----- #
