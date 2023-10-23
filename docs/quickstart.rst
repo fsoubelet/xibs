@@ -39,7 +39,8 @@ As a first step, all classes encompassing **IBS** functionality are initialized 
 
 .. tip::
    
-   Please note that while tracking is not necessary to calculate **IBS** effects (see the Analytical section below), it is necessary to provide an `xpart.Particles` distribution from which to get required properties.
+   Please note that while tracking is not necessary to calculate **IBS** effects (see the Analytical section below), it is necessary to provide an `xpart.Particles` object from which to get required properties.
+   The object does not necessarily need to represent a full generated and matched distribution, see the :doc:`FAQ <faq>` for details.
 
 Initializing then requires the following steps:
 
