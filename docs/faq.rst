@@ -37,8 +37,8 @@ Instantiating `OpticsParameters` from a ``MAD-X`` `twiss` result
 For those using for instance ``MAD-X`` and looking to only use the analytical calculations of `xibs` without setting up a whole `xtrack.Line`, it is possible to instantiate the `OpticsParameters` from a ``MAD-X`` `twiss` result.
 
 The `twiss` result is expected in the form of a `pandas.DataFrame` with all lowercase columns and values, as given by `cpymad`.
-Some additional attributes not present in ``MAD-X``'s `twiss` result are expected to be provided at instantiation time. 
-It goes as:
+Some additional attributes not present in ``MAD-X``'s `twiss` result are expected to be provided at instantiation time, namely the revolution frequency and slip factor. 
+These quantities can be computed from ``MAD-X`` after a `twiss`, as shown below:
 
 .. code-block:: python
 
@@ -46,11 +46,13 @@ It goes as:
 
     # Let's assume your `cpymad.madx.Madx` instance is already defined
     twiss = madx.twiss().dframe()
-    
-    # Let's define the required attributes here
-    seq_name = "lhcb1"  # for instance, if we're working with LHC beam 1
-    slipfactor = 0.0003484  # to be computed by the user | TODO: figure out how
+    seq_name = madx.table.twiss.summary.sequence  # works whichever your sequence
+
+    # Compute additional required parameters: revolution frequency and slip factor
     frev_hz = madx.sequence[seq_name].beam.freq0 * 1e6  # beware freq0 is in MHz
+    gamma_rel = madx.sequence[seq_name].beam.gamma  # relativistic gamma
+    gamma_tr = madx.table.summ.gammatr[0]  # transition gamma
+    slipfactor = (1/(gamma_tr**2)) - (1/(gamma_rel**2))  # use the xsuite convention!
 
     # And these have to be provided as additional arguments
     optics_params = OpticsParameters(twiss, slipfactor, frev_hz)
