@@ -1,8 +1,8 @@
-duration: 20        # Duration in seconds
-ibs_step: 1 #0.001 #1.4259865297332022e-05                # time step
+duration: 20        # Duration in second
+ibs_step: 1         # IBS step in seconds
 
 # Sequence to load
-sequence: "../../../000_sequences_and_XSlines/SPS_injection_ions/sps_q26_injection_ions.seq" 
+sequence: "acc-models-sps/sps.seq"  # relative to pytest run directory
 sequence_name: "sps"
 
 energy: 1415.72                           # energy in GeV
