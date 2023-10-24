@@ -17,7 +17,7 @@ particle: "ion"
 mass: 193.6872729
 radius: 4.998945710122783e-17
 charge: 82
-
+xing_knobs: ["on_x1", "on_x2h", "on_x2v", "on_x5", "on_x8h", "on_x8v"]
 V0max: 14                       # RF voltage in MV
 h: 35640
 cc_name_knobs: "vrf400"
