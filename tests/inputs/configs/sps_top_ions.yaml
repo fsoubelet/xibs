@@ -1,10 +1,12 @@
 duration: 20        # Duration in second
 ibs_step: 1         # IBS step in seconds
 
-# Sequence to load
+# Sequence and optics to load
 sequence: "acc-models-sps/sps.seq"  # relative to pytest run directory
-sequence_name: "sps"
+sequence_name: "sps"                # sequence name for MAD-X to use
+opticsfile: "????"                  # relative to pytest run directory
 
+# Configuration variables
 energy: 36994.8                           # energy in GeV
 bunch_intensity: 3.5e8
 emit_x: 1.2612
@@ -15,7 +17,6 @@ particle: "ion"
 mass: 193.6872729
 radius: 4.998945710122783e-17
 charge: 82
-
 V0max: 1.7                       # RF voltage in MV
 h: 4653
 cc_name_knobs: "vrf400"
