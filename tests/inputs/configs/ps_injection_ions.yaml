@@ -2,9 +2,9 @@ duration: 20        # Duration in second
 ibs_step: 1         # IBS step in seconds
 
 # Sequence and optics to load
-sequence: "???"       # relative to pytest run directory
-sequence_name: "ps"   # sequence name for MAD-X to use
-opticsfile: "???"     # relative to pytest run directory
+sequence: "acc-models-ps/STANDARD_PR_YETS 2022-2023_20-MAR-2023.seq"         # relative to pytest run directory
+sequence_name: "ps"                                                          # sequence name for MAD-X to use
+opticsfile: "acc-models-ps/scenarios/lhc_ion/0_injection/ps_inj_ion.str"     # relative to pytest run directory
 
 # Configuration variables - (see  Hannes' and Isabelle's report: https://cds.cern.ch/record/2749453/files/CERN-ACC-NOTE-2021-0003.pdf)
 energy: 208.744939                  # energy in [GeV]
