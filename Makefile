@@ -100,7 +100,7 @@ testrepos:  # git cloning the necessary repos for tests files - specify branch, 
 	@echo "Cloning acc-models-sps repo, 2021 branch."
 	@git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1
 	@echo "Cloning acc-models-lhc repo, 2022 branch."
-	@git clone -b 2022 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
+	@git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
 
 # Catch-all unknow targets without returning an error. This is a POSIX-compliant syntax.
 .DEFAULT:
