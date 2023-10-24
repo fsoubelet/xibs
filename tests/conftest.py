@@ -213,7 +213,8 @@ def xtrack_sps_injection_protons() -> xt.Line:
 @pytest.fixture()
 def xtrack_sps_injection_ions() -> xt.Line:
     """An `xtrack.Line` of the SPS sequence for ions at injection energy."""
-    pass
+    line_json = LINES_DIR / "lhc_top_ions.json"
+    return xt.Line.from_json("sps_injection_ions.json")
 
 
 @pytest.fixture()
