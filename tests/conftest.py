@@ -234,13 +234,15 @@ def xtrack_sps_top_ions() -> xt.Line:
 @pytest.fixture()
 def xtrack_ps_injection_protons() -> xt.Line:
     """An `xtrack.Line` of the PS sequence for protons at injection energy."""
-    pass
+    line_json = LINES_DIR / "ps_injection_protons.json"
+    return xt.Line.from_json(line_json)
 
 
 @pytest.fixture()
 def xtrack_ps_injection_ions() -> xt.Line:
     """An `xtrack.Line` of the PS sequence for ions at injection energy."""
-    pass
+    line_json = LINES_DIR / "ps_injection_ions.json"
+    return xt.Line.from_json(line_json)
 
 
 # ----- Private Utilities ----- #
