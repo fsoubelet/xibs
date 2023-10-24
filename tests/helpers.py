@@ -40,7 +40,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     norm_epsy = config["emit_y"] * 1e-6  # norm emit y in [m]
     bunch_intensity = config["bunch_intensity"]  # number of particles per bunch
     rf_knobs = config["cc_name_knobs"]  # MAD-X knobs for RF cavities
-    rf_voltage = config["V0max"] * 1e-3  # RF voltage in [kV] (MV * 1e-3)
+    rf_voltage = config["V0max"] * 1e-3  # RF voltage in [kV] (MV * 1e-3)  # TODO: CHECK THIS WITH SOFIA
     harmonic_number = config["h"]  # RF harmonic number
     particle = config["particle"]  # particle type
     sequence_name = config["sequence_name"]  # accelerator sequence to use
@@ -52,6 +52,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     # ----- Beam, sequence and get parameters from Twiss & Summ tables ----- #
     madx.command.beam(particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge)
     madx.call(file=sequence)
+    madx.call(file=opticsfile)
     madx.use(sequence=sequence_name)
     madx.command.twiss()
     circumference = madx.table.summ.length[0]  # ring circumference in [m]
