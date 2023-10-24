@@ -34,7 +34,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     """
     # ----- Get values from config (loaded from file) ----- #
     sequence = config["sequence"]  # sequence file location, relative to pytest root dir
-    # opticsfile = config["opticsfile"]  # optics file location, relative to pytest root dir
+    opticsfile = config["opticsfile"]  # optics file location, relative to pytest root dir
     energy_GeV = config["energy"]  # beam energy in [GeV]
     norm_epsx = config["emit_x"] * 1e-6  # norm emit x in [m]
     norm_epsy = config["emit_y"] * 1e-6  # norm emit y in [m]
@@ -47,6 +47,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     particle_mass_GeV = config["mass"]  # particle rest mass in [GeV]
     particle_classical_radius_m = config["radius"]  # classical particle radius
     particle_charge = config["charge"]  # particle charge in [e]
+    xing_knobs = config.get("xing_knobs", ())  # crossing angle knobs, only in LHC configs
 
     # ----- Beam, sequence and get parameters from Twiss & Summ tables ----- #
     madx.command.beam(particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge)
@@ -76,10 +77,12 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     )
     dee = dpp * beta_rel**2  # relative energy spread [sigma_e in my codes]
 
-    # ----- RF system ----- #
+    # ----- RF system and (potentially) crossing angles to 0 ----- #
     # In MAD-X there is a convention that RF cavity if we activate it we need to multiply
     # the voltage by the particle charge (important for ions) -> MAD-X asks for q*V [now xsuite also does]
-    madx.input(f"{rf_knobs}={rf_voltage*1e3}*{particle_charge};")
+    with madx.batch():
+        madx.globals.update({knob: 0 for knob in xing_knobs})
+    madx.globals[rf_knobs] = rf_voltage * 1e3 * particle_charge
     madx.command.twiss()
 
     # ----- Re-use sequence, set beam properties and do final twiss ----- #
