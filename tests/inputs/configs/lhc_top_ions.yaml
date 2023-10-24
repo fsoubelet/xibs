@@ -7,7 +7,7 @@ sequence_name: "lhcb1"                                # sequence name for MAD-X 
 opticsfile: "acc-models-lhc/operation/optics/????"    # relative to pytest run directory
 
 # Configuration variables
-energy: 557600.0                    # energy in GeV (6.8 x Z)
+energy: 557600.0                    # energy in [GeV] (6.8 x Z)
 bunch_intensity: 1.8e8              # number of particles per bunch
 emit_x: 1.65                        # norm emit x in [m]
 emit_y: 1.65                        # norm emit y in [m]
