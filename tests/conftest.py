@@ -6,7 +6,10 @@ comparison.
 """
 import pathlib
 
+from typing import Dict
+
 import pytest
+import xpart as xp
 import xtrack as xt
 import yaml
 
@@ -235,3 +238,24 @@ def xtrack_ps_injection_protons() -> xt.Line:
 def xtrack_ps_injection_ions() -> xt.Line:
     """An `xtrack.Line` of the PS sequence for ions at injection energy."""
     pass
+
+
+# ----- Private Utilities ----- #
+
+
+def _make_xtrack_line_for_config(config: Dict, p0: xp.Particles) -> xt.Line:
+    """
+    Make an `xtrack.Line` equivalent to the MAD-X setup for a given config.
+    Used to save the JSON files in `tests/inputs/lines` that are returned
+    by the fixtures.
+
+    Args:
+        config (dict): the loaded yaml config file for the MAD-X setup.
+        p0 (xp.Particles): the reference particle for the line.
+    """
+    with Madx() as madx:
+        setup_madx_from_config(madx, config)
+        seqname = config["sequence_name"]
+        line = xt.Line.from_madx_sequence(madx.sequence[seqname], allow_thick=True)
+        line.particle_ref = p0  # will be saved in the json file
+        return line
