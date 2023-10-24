@@ -16,7 +16,7 @@ from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 
 
-def test_lhc_injection_protons(madx_lhc_injection_protons):
+def test_lhc_injection_protons(madx_lhc_injection_protons, xtrack_lhc_injection_protons):
     # --------------------------------------------------------------------
     # Get the growth rates from MAD-X
     # madx = madx_lhc_injection_protons  # fully set up from the config file
