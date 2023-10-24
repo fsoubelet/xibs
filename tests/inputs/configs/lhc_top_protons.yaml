@@ -4,7 +4,7 @@ ibs_step: 300         # IBS step in seconds
 # Sequence and optics to load
 sequence: "acc-models-lhc/lhc.seq"                                                # relative to pytest run directory
 sequence_name: "lhcb1"                                                            # sequence name for MAD-X to use
-opticsfile: "acc-models-lhc/operation/optics/R2022a_A30cmC30cmA10mL200cm.madx"    # relative to pytest run directory
+opticsfile: "acc-models-lhc/operation/optics/R2023a_A30cmC30cmA10mL200cm.madx"    # relative to pytest run directory
 
 # Configuration variables
 energy: 6800.0                      # energy in [GeV]
