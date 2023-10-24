@@ -7,7 +7,7 @@ sequence_name: "ps"   # sequence name for MAD-X to use
 opticsfile: "???"     # relative to pytest run directory
 
 # Configuration variables - (see  Hannes' and Isabelle's report: https://cds.cern.ch/record/2749453/files/CERN-ACC-NOTE-2021-0003.pdf)
-energy: 208.744939                  # energy in GeV
+energy: 208.744939                  # energy in [GeV]
 bunch_intensity: 8.1e8              # number of particles per bunch
 emit_x: 0.8                         # norm emit x in [m]
 emit_y: 0.5                         # norm emit y in [m]

@@ -7,7 +7,7 @@ sequence_name: "sps"                # sequence name for MAD-X to use
 opticsfile: "????"                  # relative to pytest run directory
 
 # Configuration variables
-energy: 36994.8                     # energy in GeV
+energy: 36994.8                     # energy in [GeV]
 bunch_intensity: 3.5e8              # number of particles per bunch
 emit_x: 1.2612                      # norm emit x in [m]
 emit_y: 0.9081                      # norm emit y in [m]
