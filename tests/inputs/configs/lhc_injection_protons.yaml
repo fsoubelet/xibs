@@ -7,17 +7,17 @@ sequence_name: "lhcb1"                                                        # 
 opticsfile: "acc-models-lhc/operation/optics/R2022a_A11mC11mA10mL10m.madx"    # relative to pytest run directory
 
 # Configuration variables
-energy: 450.0                           # energy in GeV
-bunch_intensity: 1.8e11
-emit_x: 1.8
-emit_y: 1.8                         # ey in um
-blns: 1.2 
-bl_lev: 0.0                  
-particle: "proton"
-mass: 0.9382723
-radius: 1.534698e-18
-charge: 1
-xing_knobs: ["on_x1", "on_x2h", "on_x2v", "on_x5", "on_x8h", "on_x8v"]
-V0max: 4                       # RF voltage in MV
-h: 34640
-cc_name_knobs: "vrf400"
+energy: 450.0                       # energy in GeV
+bunch_intensity: 1.8e11             # number of particles per bunch
+emit_x: 1.8                         # norm emit x in [m]
+emit_y: 1.8                         # norm emit y in [m]
+blns: 1.2                           # bunch length in [ns]
+bl_lev: 0.0
+particle: "proton"                  # particle type
+mass: 0.9382723                     # particle rest mass in [GeV]
+radius: 1.534698e-18                # classical particle radius in [m]
+charge: 1                           # particle charge in [e]
+xing_knobs: ["on_x1", "on_x2h", "on_x2v", "on_x5", "on_x8h", "on_x8v"]   # MAD-X knobs for crossing angles
+V0max: 4                            # RF voltage in [MV]
+h: 34640                            # RF harmonic number
+cc_name_knobs: "vrf400"             # MAD-X knobs for RF cavities
