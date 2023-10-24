@@ -2,9 +2,9 @@ duration: 20        # Duration in second
 ibs_step: 1         # IBS step in seconds
 
 # Sequence and optics to load
-sequence: "acc-models-sps/sps.seq"  # relative to pytest run directory
-sequence_name: "sps"                # sequence name for MAD-X to use
-opticsfile: "????"                  # relative to pytest run directory
+sequence: "acc-models-sps/SPS_LS2_2020-05-26.seq"                   # relative to pytest run directory
+sequence_name: "sps"                                                # sequence name for MAD-X to use
+opticsfile: "acc-models-sps/strengths/lhc_ion.str"                  # relative to pytest run directory
 
 # Configuration variables
 energy: 1415.72                     # energy in [GeV]
