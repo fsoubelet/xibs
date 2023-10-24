@@ -97,6 +97,8 @@ tests:  # all tests not involving pyhdtoolkit.cpymadtools
 	@python -m pytest -v
 
 testrepos:  # git cloning the necessary repos for tests files - specify branch, could also specify tag to make sure we are static
+	@echo "Cloning acc-models-ps repo, 2023 branch."
+	@git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-ps.git --depth 1
 	@echo "Cloning acc-models-sps repo, 2021 branch."
 	@git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1
 	@echo "Cloning acc-models-lhc repo, 2022 branch."
