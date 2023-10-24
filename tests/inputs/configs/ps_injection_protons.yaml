@@ -7,16 +7,16 @@ sequence_name: "ps"   # sequence name for MAD-X to use
 opticsfile: "???"     # relative to pytest run directory
 
 # Configuration variables - (see Table 1 here: https://cds.cern.ch/record/2749453/files/CERN-ACC-NOTE-2021-0003.pdf)
-energy: 2.94827184                           # energy in GeV
-bunch_intensity: 8.1e8
-emit_x: 0.8
-emit_y: 0.5                         # ey in um
-blns: 8.0    # BL needs to be checked: closest order of magnitude found in last graph here: https://indico.psi.ch/event/6698/sessions/3635/attachments/13780/18077/OptimizationOfTheRFManipulationsInTheCERNPS-A_Lasheen.pdf
+energy: 2.94827184                  # energy in GeV
+bunch_intensity: 8.1e8              # number of particles per bunch
+emit_x: 0.8                         # norm emit x in [m]
+emit_y: 0.5                         # norm emit y in [m]
+blns: 8.0                           # bunch length in [ns]  |  (needs to be checked: closest order of magnitude found in last graph here: https://indico.psi.ch/event/6698/sessions/3635/attachments/13780/18077/OptimizationOfTheRFManipulationsInTheCERNPS-A_Lasheen.pdf)
 bl_lev: 0.0                  
-particle: "proton"
-mass: 0.9382723
-radius: 1.534698e-18
-charge: 1
-V0max: 0.200                       # RF voltage in MV
-h: 16
-cc_name_knobs: "vrf400"  # not correct for PS, but keep for now 
+particle: "proton"                  # particle type
+mass: 0.9382723                     # particle rest mass in [GeV]
+radius: 1.534698e-18                # classical particle radius in [m]
+charge: 1                           # particle charge in [e]
+V0max: 0.200                        # RF voltage in [MV]
+h: 16                               # RF harmonic number
+cc_name_knobs: "vrf400"             # MAD-X knobs for RF cavities  |  (not correct for PS, but keep for now)

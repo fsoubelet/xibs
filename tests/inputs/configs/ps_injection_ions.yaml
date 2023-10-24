@@ -7,16 +7,16 @@ sequence_name: "ps"   # sequence name for MAD-X to use
 opticsfile: "???"     # relative to pytest run directory
 
 # Configuration variables - (see  Hannes' and Isabelle's report: https://cds.cern.ch/record/2749453/files/CERN-ACC-NOTE-2021-0003.pdf)
-energy: 208.744939                          # energy in GeV
-bunch_intensity: 8.1e8
-emit_x: 0.8
-emit_y: 0.5                       # ey in um
-blns: 2.5                         # estimate from tomograph plot under folder /Bunch_length_data 
+energy: 208.744939                  # energy in GeV
+bunch_intensity: 8.1e8              # number of particles per bunch
+emit_x: 0.8                         # norm emit x in [m]
+emit_y: 0.5                         # norm emit y in [m]
+blns: 2.5                           # bunch length in [ns]
 bl_lev: 0.0                  
-particle: "ion"
-mass: 193.6872729
-radius: 4.998945710122783e-17
-charge: 54
-V0max: 0.0380958                    # RF voltage in MV
-h: 16
-cc_name_knobs: "vrf400"    # not correct as of now
+particle: "ion"                     # particle type
+mass: 193.6872729                   # particle rest mass in [GeV]
+radius: 4.998945710122783e-17       # classical particle radius in [m]
+charge: 54                          # particle charge in [e]
+V0max: 0.0380958                    # RF voltage in [MV]
+h: 16                               # RF harmonic number
+cc_name_knobs: "vrf400"             # MAD-X knobs for RF cavities  |  (not correct for PS, but keep for now)
