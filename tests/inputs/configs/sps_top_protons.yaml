@@ -7,16 +7,16 @@ sequence_name: "sps"                # sequence name for MAD-X to use
 opticsfile: "????"                  # relative to pytest run directory
 
 # Configuration variables
-energy: 451                           # energy in GeV
-bunch_intensity: 1.2e11
-emit_x: 2.5
-emit_y: 2.5                         # ey in um
-blns: 1.2 
+energy: 451                         # energy in GeV
+bunch_intensity: 1.2e11             # number of particles per bunch
+emit_x: 2.5                         # norm emit x in [m]
+emit_y: 2.5                         # norm emit y in [m]
+blns: 1.2                           # bunch length in [ns]
 bl_lev: 0.0                  
-particle: "proton"
-mass: 0.9382723
-radius: 1.534698e-18
-charge: 1
-V0max: 3                       # RF voltage in MV
-h: 4653
-cc_name_knobs: "vrf400"
+particle: "proton"                  # particle type
+mass: 0.9382723                     # particle rest mass in [GeV]
+radius: 1.534698e-18                # classical particle radius in [m]
+charge: 1                           # particle charge in [e]
+V0max: 3                            # RF voltage in [MV]
+h: 4653                             # RF harmonic number
+cc_name_knobs: "vrf400"             # MAD-X knobs for RF cavities
