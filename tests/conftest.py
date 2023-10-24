@@ -31,21 +31,141 @@ LINES_DIR = INPUTS_DIR / "lines"  # (equivalent) frozen and saved xtrack.Lines
 
 # ----- MAD-X Sequences Fixtures ----- #
 
+# -- LHC fixtures -- #
+
 
 @pytest.fixture()
-def madx_lhc_injection_protons_no_crossing() -> Madx:
+def madx_lhc_injection_protons() -> Madx:
     """
-    A cpymad.Madx instance with loaded LHC sequence, protons at
-    injection energy,
+    A cpymad.Madx instance with loaded LHCB1 sequence, protons at
+    injection energy.
     """
-    with open(CONFIGS_DIR / "lhc_injection_protons_no_crossing.yaml") as config_file:
+    with open(CONFIGS_DIR / "lhc_injection_protons.yaml") as config_file:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        # This will set up sequence, beam and RF parameters
         setup_madx_from_config(madx, config)
+        yield madx
 
-        # Yield, exits context manager only after the calling test is done
+
+# No injection ions??
+
+
+@pytest.fixture()
+def madx_lhc_top_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHCB1 sequence, protons at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "lhc_top_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
+        yield madx
+
+
+@pytest.fixture()
+def madx_lhc_top_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHCB1 sequence, ions at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "lhc_top_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
+        yield madx
+
+
+# -- SPS fixtures -- #
+
+
+@pytest.fixture()
+def madx_sps_injection_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, protons at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "sps_injection_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
+        yield madx
+
+
+@pytest.fixture()
+def madx_sps_injection_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, ions at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "sps_injection_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
+        yield madx
+
+
+@pytest.fixture()
+def madx_sps_top_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, protons at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "sps_top_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
+        yield madx
+
+
+@pytest.fixture()
+def madx_sps_top_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, ions at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "sps_top_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
+        yield madx
+
+
+# -- PS fixtures -- #
+
+
+@pytest.fixture()
+def madx_ps_injection_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded PS sequence, protons at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "ps_injection_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
+        yield madx
+
+
+@pytest.fixture()
+def madx_ps_injection_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded PS sequence, ions at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "ps_injection_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        setup_madx_from_config(madx, config)
         yield madx
 
 
