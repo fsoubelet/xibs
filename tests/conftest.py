@@ -190,7 +190,8 @@ def xtrack_lhc_injection_protons() -> xt.Line:
 @pytest.fixture()
 def xtrack_lhc_top_protons() -> xt.Line:
     """An `xtrack.Line` of the LHCB1 sequence for protons at top energy."""
-    pass
+    line_json = LINES_DIR / "lhc_top_protons.json"
+    return xt.Line.from_json(line_json)
 
 
 @pytest.fixture()
