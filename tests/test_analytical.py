@@ -12,25 +12,24 @@ import xtrack as xt
 from helpers import get_madx_ibs_growth_rates
 
 from xibs._old_michalis import MichalisIBS
-from xibs.analytical import BeamParameters, NagaitsevIBS, OpticsParameters
+from xibs.analytical import NagaitsevIBS
+from xibs.inputs import BeamParameters, OpticsParameters
 
 
-def test_lhc_injection_protons_no_crossing(madx_lhc_injection_protons_no_crossing):
+def test_lhc_injection_protons(madx_lhc_injection_protons):
     # --------------------------------------------------------------------
     # Get the growth rates from MAD-X
-    # madx = madx_lhc_injection_protons_no_crossing  # fully set up from the config file
+    # madx = madx_lhc_injection_protons  # fully set up from the config file
     # mad_Tx, mad_Ty, mad_Tz = get_madx_ibs_growth_rates(madx)  # careful about the factor 2 in MAD-X
     # --------------------------------------------------------------------
-    # Load xsuite line
+    # Load equivalent xsuite line
     # TODO: get from a fixture
     # p0 = xp.Particles(mass0=madx.beam.mass * 1e9, q0=madx.beam.charge, p0c=madx.beam.pc * 1e9)
     # line.particle_ref = p0
     # twiss = line.twiss(method="4d")
-    # TODO: for analytical tests this is not needed, we can just give straight the values
-    # of the geometrical emittances for the integrals / growth rates calculations and dont
-    # need xpart.Particles object. We can get them from the madx instance's beam.
+    # TODO: remember to override npart for the BeamParameters / MichalisIBS later on
     # --------------------------------------------------------------------
-    # Get the growth rates from the old code (xibs._old_Michalis)
+    # Get the growth rates from the old code (xibs._old_michalis)
     # --------------------------------------------------------------------
     # Get the growth rates from the analytical module (xibs.analytical)
     # --------------------------------------------------------------------
