@@ -170,3 +170,68 @@ def madx_ps_injection_ions() -> Madx:
 
 
 # ----- Xtrack Lines Fixtures ----- #
+
+# -- LHC fixtures -- #
+
+
+@pytest.fixture()
+def xtrack_lhc_injection_protons() -> xt.Line:
+    """An `xtrack.Line` of the LHCB1 sequence for protons at injection energy."""
+    pass
+
+
+# No injection ions??
+
+
+@pytest.fixture()
+def xtrack_lhc_top_protons() -> xt.Line:
+    """An `xtrack.Line` of the LHCB1 sequence for protons at top energy."""
+    pass
+
+
+@pytest.fixture()
+def xtrack_lhc_top_ions() -> xt.Line:
+    """An `xtrack.Line` of the LHCB1 sequence for ions at top energy."""
+    pass
+
+
+# -- SPS fixtures -- #
+
+
+@pytest.fixture()
+def xtrack_sps_injection_protons() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for protons at injection energy."""
+    pass
+
+
+@pytest.fixture()
+def xtrack_sps_injection_ions() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for ions at injection energy."""
+    pass
+
+
+@pytest.fixture()
+def xtrack_sps_top_protons() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for protons at top energy."""
+    pass
+
+
+@pytest.fixture()
+def xtrack_sps_top_ions() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for ions at top energy."""
+    pass
+
+
+# -- PS fixtures -- #
+
+
+@pytest.fixture()
+def xtrack_ps_injection_protons() -> xt.Line:
+    """An `xtrack.Line` of the PS sequence for protons at injection energy."""
+    pass
+
+
+@pytest.fixture()
+def xtrack_ps_injection_ions() -> xt.Line:
+    """An `xtrack.Line` of the PS sequence for ions at injection energy."""
+    pass
