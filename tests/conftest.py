@@ -180,7 +180,8 @@ def madx_ps_injection_ions() -> Madx:
 @pytest.fixture()
 def xtrack_lhc_injection_protons() -> xt.Line:
     """An `xtrack.Line` of the LHCB1 sequence for protons at injection energy."""
-    pass
+    line_json = LINES_DIR / "lhc_injection_protons.json"
+    return xt.Line.from_json(line_json)
 
 
 # No injection ions??
