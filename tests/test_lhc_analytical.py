@@ -42,15 +42,18 @@ def test_lhc_injection_protons(madx_lhc_injection_protons, xtrack_lhc_injection_
     IBS.integrals(params.geom_epsx, params.geom_epsy, params.sig_delta)
     IBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
     # --------------------------------------------------------------------
+    # Now we compare values. PLEASE KEEP IN MIND:
+    #  - We are using np.isclose so the reference number is the second argument
+    #  - We have to explicitely set atol=0 as the numbers are very small
+    #  - We leave the default of rtol=1e-5 so we compare within 0.001%
     # Compare the results to old implementation
-    np.isclose(IBS.ibs_growth_rates.Tx, MIBS.Ixx)
-    np.isclose(IBS.ibs_growth_rates.Ty, MIBS.Iyy)
-    np.isclose(IBS.ibs_growth_rates.Tz, MIBS.Ipp)
+    np.isclose(IBS.ibs_growth_rates.Tx, MIBS.Ixx, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Ty, MIBS.Iyy, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Tz, MIBS.Ipp, atol=0)
     # Compare the results to MAD-X (allow 10% deviation as MAD-X takes vertical disp into account)
-    np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, rtol=1e-2)
-    np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, rtol=1e-2)
-    np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, rtol=1e-2)
-
+    np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, atol=0)
 
 
 def test_lhc_top_protons(madx_lhc_top_protons, xtrack_lhc_top_protons):
@@ -80,14 +83,18 @@ def test_lhc_top_protons(madx_lhc_top_protons, xtrack_lhc_top_protons):
     IBS.integrals(params.geom_epsx, params.geom_epsy, params.sig_delta)
     IBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
     # --------------------------------------------------------------------
+    # Now we compare values. PLEASE KEEP IN MIND:
+    #  - We are using np.isclose so the reference number is the second argument
+    #  - We have to explicitely set atol=0 as the numbers are very small
+    #  - We leave the default of rtol=1e-5 so we compare within 0.001%
     # Compare the results to old implementation
-    np.isclose(IBS.ibs_growth_rates.Tx, MIBS.Ixx)
-    np.isclose(IBS.ibs_growth_rates.Ty, MIBS.Iyy)
-    np.isclose(IBS.ibs_growth_rates.Tz, MIBS.Ipp)
+    np.isclose(IBS.ibs_growth_rates.Tx, MIBS.Ixx, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Ty, MIBS.Iyy, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Tz, MIBS.Ipp, atol=0)
     # Compare the results to MAD-X (allow 10% deviation as MAD-X takes vertical disp into account)
-    np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, rtol=1e-2)
-    np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, rtol=1e-2)
-    np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, rtol=1e-2)
+    np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, atol=0)
 
 
 def test_lhc_top_ions(madx_lhc_top_ions, xtrack_lhc_top_ions):
@@ -117,11 +124,15 @@ def test_lhc_top_ions(madx_lhc_top_ions, xtrack_lhc_top_ions):
     IBS.integrals(params.geom_epsx, params.geom_epsy, params.sig_delta)
     IBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
     # --------------------------------------------------------------------
+    # Now we compare values. PLEASE KEEP IN MIND:
+    #  - We are using np.isclose so the reference number is the second argument
+    #  - We have to explicitely set atol=0 as the numbers are very small
+    #  - We leave the default of rtol=1e-5 so we compare within 0.001%
     # Compare the results to old implementation
-    np.isclose(IBS.ibs_growth_rates.Tx, MIBS.Ixx)
-    np.isclose(IBS.ibs_growth_rates.Ty, MIBS.Iyy)
-    np.isclose(IBS.ibs_growth_rates.Tz, MIBS.Ipp)
+    np.isclose(IBS.ibs_growth_rates.Tx, MIBS.Ixx, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Ty, MIBS.Iyy, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Tz, MIBS.Ipp, atol=0)
     # Compare the results to MAD-X (allow 10% deviation as MAD-X takes vertical disp into account)
-    np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, rtol=1e-2)
-    np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, rtol=1e-2)
-    np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, rtol=1e-2)
+    np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, atol=0)
+    np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, atol=0)
