@@ -35,11 +35,8 @@ help:
 
 # ----- Dev Tools Targets ----- #
 
-build:
+build: clean
 	@echo "Re-building wheel and sdist"
-	@echo "Cleaning up package builds and distutils remains."
-	@find . -type d -name "*build" -exec rm -rf {} +
-	@find . -type d -name "*dist" -exec rm -rf {} +
 	@hatch build --clean
 	@echo "Created build is located in the $(C)dist$(E) folder."
 
