@@ -17,9 +17,8 @@ from xibs.inputs import BeamParameters, OpticsParameters
 # In here we do need Nagaitsev results, so the kick method will ask for a NagaitsevIntegrals object.
 class SimpleKickIBS:
     """
-    A single class to compute the simple IBS kicks based on the analytical results
-    obtained in `xibs.analytical` from the Nagaitsev formalism (see for reference
-    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`).
+    A single class to compute the simple IBS kicks based on the analytical results obtained with
+    `xibs.analytical`. The kicks are implemented according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
     The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
 
     Attributes:

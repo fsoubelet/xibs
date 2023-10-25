@@ -52,7 +52,7 @@ class FrictionCoefficients:
 class KineticKickIBS:
     """
     A single class to compute the IBS diffusion and friction coefficients according
-    to the kinetic IBS formalism (TODO: see ref?).
+    to the kinetic IBS formalism of :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
     The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
 
     Attributes:
