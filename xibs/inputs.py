@@ -29,7 +29,10 @@ LOGGER = getLogger(__name__)
 
 @dataclass
 class BeamParameters:
-    """Container dataclass for necessary beam parameters. It is initiated from
+    """
+    .. versionadded:: 0.2.0
+    
+    Container dataclass for necessary beam parameters. It is initiated from
     the `xpart.Particles` object to track in your line with ``xsuite``.
 
     Args:
@@ -39,8 +42,8 @@ class BeamParameters:
 
     Attributes:
         n_part (int): number of simulated particles.
-        particle_charge (int): elementary particle charge, in # of Coulomb charges (for
-            instance 1 for electron or proton).
+        particle_charge (int): elementary particle charge, in # of Coulomb charges
+            (for instance 1 for electron or proton).
         particle_mass_GeV (float): particle mass in [GeV].
         total_energy_GeV (float): total energy of the simulated particles in [GeV].
         gamma_rel (float): relativistic gamma of the simulated particles.
@@ -74,9 +77,12 @@ class BeamParameters:
 
 @dataclass
 class OpticsParameters:
-    """Container dataclass for necessary optics parameters. It is initiated from
-    the results of a `.twiss()` command with an `xtrack.Line`, or result of a ``TWISS``
-    call in ``MAD-X`` as a dataframe (as given by ``cpymad`` by default).
+    """
+    .. versionadded:: 0.2.0
+    
+    Container dataclass for necessary optics parameters. It is initiated from the results
+    of a `.twiss()` command with an `xtrack.Line`, or result of a ``TWISS`` call in
+    ``MAD-X`` as a dataframe (as given by ``cpymad`` by default).
 
     Args:
         twiss (Union["xtrack.twiss.TwissTable", pd.DataFrame]): the resulting `TwissTable`
