@@ -70,21 +70,21 @@ docs:
 
 format:
 	@echo "Formatting code to PEP8 with $(P)isort$(E) and $(P)Black$(E). Max line length is 110 characters."
-	@python -m isort . && black .
+	@python -m isort tests xibs && black tests xibs
 
 install: clean
 	@echo "Installing with $(D)pip$(E) in the current environment."
 	@python -m pip install . -v
 
 lines: format
-	@tokei xibs
+	@tokei xibs --exclude xibs/_old_michalis.py
 
 lint: format
-	@echo "Linting code with $(P)Pylint$(E)."
+	@echo "Linting code with $(P)Ruff$(E)."
 	@ruff check xibs/
 
 typing: format
-	@echo "Checking code typing with $(P)mypy$(E)."
+	@echo "Checking code typing with $(P)MyPy$(E)."
 	@python -m mypy xibs
 
 
