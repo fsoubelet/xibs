@@ -1,0 +1,45 @@
+# Runs all tests and pushes coverage report to codeclimate
+name: Coverage
+
+defaults:
+  run:
+    shell: bash
+
+on:  # Runs on all push events to main branch and any push related to a pull request
+  push:
+    branches:
+      - main
+  pull_request:  # so that codeclimate gets coverage and reports on the diff
+
+jobs:
+  coverage:
+    name: ${{ matrix.os }} / ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:  # only one python version on ubuntu-latest
+        os: [ubuntu-latest]
+        python-version: [3.11]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: '**/pyproject.toml'
+
+      - name: Clone necessary optics repositories
+        run: make testrepos
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install package with test dependencies
+        run: python -m pip install ".[test]"
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
