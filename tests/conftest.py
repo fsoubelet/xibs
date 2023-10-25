@@ -47,8 +47,8 @@ def madx_lhc_injection_protons() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 # No injection ions??
