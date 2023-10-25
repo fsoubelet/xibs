@@ -17,7 +17,13 @@ particle: "proton"                  # particle type
 mass: 0.9382723                     # particle rest mass in [GeV]
 radius: 1.534698e-18                # classical particle radius in [m]
 charge: 1                           # particle charge in [e]
-xing_knobs: ["on_x1", "on_x2h", "on_x2v", "on_x5", "on_x8h", "on_x8v"]   # MAD-X knobs for crossing angles
+# MAD-X knobs for crossing angles, separation bumps etc that we want to set to 0
+lhc_xing_knobs: [
+  "on_x1", "on_sep1", "on_oh1", "on_ov1, "on_sep1_v", "on_x1_h", "on_x1_v",          # IR1
+  "on_x2h", "on_sep2h", "on_x2v", "on_sep2v", "on_a2", "on_o2", "on_oh2", "on_ov2",  # IR2
+  "on_x5", "on_sep5", "on_oh5", "on_ov5", "on_sep5_h", "on_x5_h", "on_x5_v",         # IR5
+  "on_x8h", "on_sep8h", "on_x8v", "on_sep8v", "on_a8", "on_o8", "on_oh8", "on_ov8"   # IR8
+]
 V0max: 12                           # RF voltage in [MV]
 h: 35640                            # RF harmonic number
 cc_name_knobs: "vrf400"             # MAD-X knobs for RF cavities
