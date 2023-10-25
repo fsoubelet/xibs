@@ -20,7 +20,10 @@ LOGGER = logging.getLogger(__name__)
 
 @numba.njit()
 def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> ArrayLike:
-    """Phi parameter of Eq (15) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
+    """
+    .. versionadded:: 0.2.0
+
+    Phi parameter of Eq (15) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
     .. todo::
         Figure out exactly who's what here, and why the calculation is not as Eq (15).
@@ -51,9 +54,12 @@ def bunch_length(
     energy_loss_GeV: float,
     particle_charge: int,
 ) -> float:
-    """Analytical calculation for bunch length for protons / electrons (from Wiedermann's book).
+    """
+    .. versionadded:: 0.2.0
 
-    This is a linear approximation which assumes that particles are in the center of the bucket only / mostly.
+    Analytical calculation for bunch length for protons / electrons (from Wiedermann's book).
+    This is a linear approximation which assumes that particles are in the center of the bucket
+    only / mostly.
 
     .. todo::
         Figure out exactly the formula that was implemented here and reference / document it in the docstring.
@@ -67,7 +73,8 @@ def bunch_length(
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         energy_loss_GeV (float): The turn-by-turn oarticle energy loss in [GeV].
-        particle_charge (int): elementary particle charge, in # of Coulomb charges (for instance 1 for electron or proton).
+        particle_charge (int): elementary particle charge, in # of Coulomb charges
+            (for instance 1 for electron or proton).
 
     Returns:
         The analytically calculated bunch length in [m].
@@ -98,9 +105,12 @@ def energy_spread(
     energy_loss_GeV: float,
     particle_charge: int,
 ) -> float:
-    """Counterpart of the `bunch_length` function, analytically calculates for bunch length for protons / electrons (from Wiedermann's book).
+    """
+    .. versionadded:: 0.2.0
 
-    The same caveats than in `bunch_length` apply here.
+    Counterpart of the `bunch_length` function, analytically calculates for bunch length for
+    protons / electrons (from Wiedermann's book). The same caveats than in `bunch_length` apply
+    here.
 
     Args:
         circumference (float): machine circumference in [m].
@@ -111,7 +121,8 @@ def energy_spread(
         beta_rel (float): relativistic beta of the simulated particles.
         rf_voltage_GV (float): RF voltage of the machine's cavities in [GV].
         energy_loss_GeV (float): The turn-by-turn oarticle energy loss in [GeV].
-        particle_charge (int): elementary particle charge, in # of Coulomb charges (for instance 1 for electron or proton).
+        particle_charge (int): elementary particle charge, in # of Coulomb charges
+            (for instance 1 for electron or proton).
 
     Returns:
         The analytically calculated dimensionless energy spread for the particle bunch.
@@ -140,10 +151,12 @@ def ion_bunch_length(
     rf_voltage_GV: float,
     particle_charge: int,
 ):
-    """Analytical calculation for bunch length for ions (from Wiedermann's book).
+    """
+    .. versionadded:: 0.2.0
 
-    This calculation does not work too well if the bucket is full. Implementation so far as I
-    can tell is as used in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS).
+    Analytical calculation for bunch length for ions (from Wiedermann's book). This calculation
+    does not work too well if the bucket is full. Implementation so far as I can tell is as used
+    in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS).
 
     .. todo::
         Figure out exactly the formula that was implemented here and reference / document it in the docstring.
@@ -184,9 +197,11 @@ def ion_energy_spread(
     rf_voltage_GV: float,
     particle_charge: int,
 ) -> float:
-    """Counterpart of the `ion_bunch_length` function, analytically calculates for bunch length for protons / electrons.
+    """
+    .. versionadded:: 0.2.0
 
-    The same caveats than in `ion_bunch_length` apply here.
+    Counterpart of the `ion_bunch_length` function, analytically calculates for bunch length for
+    protons / electrons. The same caveats than in `ion_bunch_length` apply here.
 
     Args:
         circumference (float): machine circumference in [m].
@@ -215,7 +230,10 @@ def ion_energy_spread(
 
 @numba.njit()
 def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
-    r"""Computes the terms inside the elliptic integral in Eq (4) of
+    r"""
+    .. versionadded:: 0.2.0
+
+    Computes the terms inside the elliptic integral in Eq (4) of
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
 
     This is an iterative method implementation that was found by Michalis (in ``C++``
