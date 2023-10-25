@@ -61,7 +61,8 @@ class IBSGrowthRates:
 
 # ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
 
-
+# TODO: work at some point to use scipy.special.elliprd for the elliptic integral
+# and remove both iterative_RD from the codebase and numba from the dependencies?
 class NagaitsevIBS:
     """
     A single class to compute Nagaitsev integrals (see
