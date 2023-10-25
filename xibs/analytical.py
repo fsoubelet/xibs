@@ -31,7 +31,10 @@ LOGGER = getLogger(__name__)
 
 @dataclass
 class NagaitsevIntegrals:
-    """Container dataclass for Nagaitsev integrals results.
+    """
+    .. versionadded:: 0.2.0
+
+    Container dataclass for Nagaitsev integrals results.
 
     Args:
         Ix (float): horizontal Nagaitsev integral.
@@ -46,7 +49,10 @@ class NagaitsevIntegrals:
 
 @dataclass
 class IBSGrowthRates:
-    """Container dataclass for IBS growth rates results.
+    """
+    .. versionadded:: 0.2.0
+
+    Container dataclass for IBS growth rates results.
 
     Args:
         Tx (float): horizontal IBS growth rate.
@@ -61,10 +67,13 @@ class IBSGrowthRates:
 
 # ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
 
+
 # TODO: work at some point to use scipy.special.elliprd for the elliptic integral
 # and remove both iterative_RD from the codebase and numba from the dependencies?
 class NagaitsevIBS:
     """
+    .. versionadded:: 0.2.0
+
     A single class to compute Nagaitsev integrals (see
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
     and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
@@ -89,6 +98,8 @@ class NagaitsevIBS:
         self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
     ) -> float:
         r"""
+        .. versionadded:: 0.2.0
+
         Calculates the Coulomb logarithm based on the beam parameters and optics the class
         was initiated with. For a good introductory resource on the Coulomb Log, see:
         https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html
@@ -157,7 +168,10 @@ class NagaitsevIBS:
     # This is 'Nagaitsev_Integrals' from Michalis's old code but it stops a bit earlier and really returns the integrals
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def integrals(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> NagaitsevIntegrals:
-        r"""Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_z` in this code base.
+        r"""
+        .. versionadded:: 0.2.0
+
+        Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_z` in this code base.
 
         These correspond to the integrals inside of Eq (32), (31) and (30) in
         :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
@@ -239,17 +253,23 @@ class NagaitsevIBS:
     def growth_rates(
         self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float
     ) -> IBSGrowthRates:
-        r"""Computes the ``IBS`` growth rates, named :math:`T_x, T_y` and :math:`T_z` in this code base, from Nagaitsev integrals.
+        r"""
+        .. versionadded:: 0.2.0
 
-        These correspond to the :math:`1 / \tau` term, for each plane, of Eq (28) in
-        :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.
-        The instance attribute `self.ibs_growth_rates` is automatically updated with
-        the results of this method.
+        Computes the ``IBS`` growth rates, named :math:`T_x, T_y` and :math:`T_z` in this
+        code base, from Nagaitsev integrals. These correspond to the :math:`1 / \tau` term,
+        for each plane, of Eq (28) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`,
+        respectively. The instance attribute `self.ibs_growth_rates` is automatically updated
+        with the results of this method.
 
         .. warning::
             This calculation is done by building on the Nagaitsev integrals. If the
             latter have not been computed yet, this method will raise an error. Please
             remember to call the instance's `integrals` method first.
+
+        .. warning::
+            Currently this calculation does not take into account vertical dispersion.
+            We are working on implementing it for a future version.
 
         .. tip::
             The calculation is done according to the following steps, which are related to different
@@ -266,6 +286,9 @@ class NagaitsevIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+
+        Raises:
+            ValueError: if the Nagaitsev integrals have not yet been computed.
 
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
@@ -307,8 +330,11 @@ class NagaitsevIBS:
     def emittance_evolution(
         self, geom_epsx: float, geom_epsy: float, sigma_delta: float, dt: float = None
     ) -> Tuple[float, float, float]:
-        r"""Analytically computes the new emittances at turn :math:`N+1` from
-        those at turn :math:`N` based on the ``IBS`` growth rates.
+        r"""
+        .. versionadded:: 0.2.0
+
+        Analytically computes the new emittances after a given time step `dt` has
+        ellapsed, from initial values, based on the ``IBS`` growth rates.
 
         .. warning::
             This calculation is done by building on the ``IBS`` growth rates. If the
@@ -334,6 +360,9 @@ class NagaitsevIBS:
             sigma_delta (float): momentum spread.
             dt (float, optional): the time interval to use. Default to the inverse
                 of the revolution frequency, :math:`1 / f_{rev}`.
+
+        Raises:
+            ValueError: if the IBS growth rates have not yet been computed.
 
         Returns:
             A tuple with the new horizontal & vertical geometric emittances as well as the new
