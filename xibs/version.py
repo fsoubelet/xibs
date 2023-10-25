@@ -4,7 +4,7 @@ VERSION = "0.2.0"
 def version_info() -> str:
     """
     .. versionadded:: 0.2.0
-    
+
     Debug convenience function to give version, platform and runtime information.
     """
     import pathlib
