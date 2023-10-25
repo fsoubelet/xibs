@@ -19,7 +19,11 @@ warnings.warn(
 
 
 class MichalisIBS:
-    """A class to encapsulate IBS calculations according to the Nagaitsev formalism."""
+    """
+    .. versionadded:: 0.2.0
+
+    A class to encapsulate IBS calculations according to the Nagaitsev formalism.
+    """
 
     def __init__(self, *args, **kwargs):
         pass
