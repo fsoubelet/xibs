@@ -2,12 +2,22 @@
 Utility functions (could be in cpymadtools at some point).
 """
 from typing import Dict, Tuple
-
+from dataclasses import dataclass
 import numba
 import numpy as np
 
 from cpymad.madx import Madx
 from scipy.constants import c
+
+
+@dataclass
+class Params:
+    """Class to hold and pass 4 parameters for the IBS growth rates calculations."""
+
+    geom_epsx: float
+    geom_epsy: float
+    sig_delta: float
+    bunch_length: float
 
 
 def get_madx_ibs_growth_rates(madx: Madx) -> Tuple[float, float, float]:
@@ -26,7 +36,7 @@ def get_madx_ibs_growth_rates(madx: Madx) -> Tuple[float, float, float]:
     return madx.globals.Tx, madx.globals.Ty, madx.globals.Tl
 
 
-def setup_madx_from_config(madx: Madx, config: Dict) -> None:
+def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
     """
     Takes values from loaded yaml config file and sets up the MAD-X lattice,
     sequence and beam so we can call IBS later on. This is machine / config
@@ -65,7 +75,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     geom_epsx = norm_epsx / (gamma_rel * beta_rel)  # geom emit x in [m]
     geom_epsy = norm_epsy / (gamma_rel * beta_rel)  # geom emit y in [m]
     U0 = 0  # the energy loss per turn
-    dpp = _bl_to_dpp(  # relative momentum spread from bunch length
+    dpp = _bl_to_dpp(  # relative momentum spread from bunch length [sigma_delta in my codes]
         circumference,
         beam_energy_GeV,
         particle_charge,
@@ -95,7 +105,10 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> None:
     madx.sequence[sequence_name].beam.sigt = bunch_length_m  # set the bunch length (in [m])
     madx.sequence[sequence_name].beam.sige = dee  # set the relative energy spread
     madx.sequence[sequence_name].beam.npart = bunch_intensity  # number of particles per bunch
-    madx.command.twiss(centre=True)  # center=True in TWISS have a low impact on IBS growth rates calculations
+    madx.command.twiss(centre=True)  # center=True in TWISS has a low impact on IBS growth rates calculations
+
+    # ----- Return the values we need for the IBS calculations ----- #
+    return Params(geom_epsx=geom_epsx, geom_epsy=geom_epsy, sig_delta=dpp, bunch_length=bunch_length_m)
 
 
 # ----- Private functions ----- #
