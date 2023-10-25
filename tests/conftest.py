@@ -64,8 +64,8 @@ def madx_lhc_top_protons() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 @pytest.fixture()
@@ -78,8 +78,8 @@ def madx_lhc_top_ions() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 # -- SPS fixtures -- #
@@ -95,8 +95,8 @@ def madx_sps_injection_protons() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 @pytest.fixture()
@@ -109,8 +109,8 @@ def madx_sps_injection_ions() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 @pytest.fixture()
@@ -123,8 +123,8 @@ def madx_sps_top_protons() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 @pytest.fixture()
@@ -137,8 +137,8 @@ def madx_sps_top_ions() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 # -- PS fixtures -- #
@@ -154,8 +154,8 @@ def madx_ps_injection_protons() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 @pytest.fixture()
@@ -168,8 +168,8 @@ def madx_ps_injection_ions() -> Madx:
         config = yaml.safe_load(config_file)
 
     with Madx(stdout=False) as madx:
-        setup_madx_from_config(madx, config)
-        yield madx
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
 
 # ----- Xtrack Lines Fixtures ----- #
