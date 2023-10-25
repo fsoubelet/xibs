@@ -89,7 +89,7 @@ def madx_lhc_top_ions() -> Madx:
 def madx_sps_injection_protons() -> Madx:
     """
     A cpymad.Madx instance with loaded SPS sequence, protons at
-    injection energy.
+    injection energy (Q26 configuration).
     """
     with open(CONFIGS_DIR / "sps_injection_protons.yaml") as config_file:
         config = yaml.safe_load(config_file)
@@ -117,7 +117,7 @@ def madx_sps_injection_ions() -> Madx:
 def madx_sps_top_protons() -> Madx:
     """
     A cpymad.Madx instance with loaded SPS sequence, protons at
-    top energy.
+    top energy (Q26 configuration).
     """
     with open(CONFIGS_DIR / "sps_top_protons.yaml") as config_file:
         config = yaml.safe_load(config_file)
@@ -206,27 +206,30 @@ def xtrack_lhc_top_ions() -> xt.Line:
 
 @pytest.fixture()
 def xtrack_sps_injection_protons() -> xt.Line:
-    """An `xtrack.Line` of the SPS sequence for protons at injection energy."""
-    pass
+    """An `xtrack.Line` of the SPS sequence for protons at injection energy (Q26 configuration)."""
+    line_json = LINES_DIR / "sps_injection_protons.json"
+    return xt.Line.from_json(line_json)
 
 
 @pytest.fixture()
 def xtrack_sps_injection_ions() -> xt.Line:
     """An `xtrack.Line` of the SPS sequence for ions at injection energy."""
-    line_json = LINES_DIR / "lhc_top_ions.json"
-    return xt.Line.from_json("sps_injection_ions.json")
+    line_json = LINES_DIR / "sps_injection_ions.json"
+    return xt.Line.from_json(line_json)
 
 
 @pytest.fixture()
 def xtrack_sps_top_protons() -> xt.Line:
-    """An `xtrack.Line` of the SPS sequence for protons at top energy."""
-    pass
+    """An `xtrack.Line` of the SPS sequence for protons at top energy (Q26 configuration)."""
+    line_json = LINES_DIR / "sps_top_protons.json"
+    return xt.Line.from_json(line_json)
 
 
 @pytest.fixture()
 def xtrack_sps_top_ions() -> xt.Line:
     """An `xtrack.Line` of the SPS sequence for ions at top energy."""
-    pass
+    line_json = LINES_DIR / "sps_top_ions.json"
+    return xt.Line.from_json(line_json)
 
 
 # -- PS fixtures -- #
