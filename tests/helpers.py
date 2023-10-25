@@ -1,8 +1,9 @@
 """
 Utility functions (could be in cpymadtools at some point).
 """
-from typing import Dict, Tuple
 from dataclasses import dataclass
+from typing import Dict, Tuple
+
 import numba
 import numpy as np
 
