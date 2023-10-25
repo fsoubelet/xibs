@@ -32,7 +32,7 @@ plt.rcParams.update(
 )
 
 # ----- File and parameters ----- #
-line_file = "../examples/lines/chrom-corr_DR.newlattice_2GHz.json"
+line_file = "../lines/chrom-corr_DR.newlattice_2GHz.json"
 harmonic_number = 2852
 rf_voltage = 4.5  # in MV
 energy_loss = 0  # let's pretend
