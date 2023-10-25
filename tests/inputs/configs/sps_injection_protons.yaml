@@ -1,10 +1,10 @@
 duration: 20        # Duration in second
 ibs_step: 1         # IBS step in seconds
 
-# Sequence and optics to load
-sequence: "acc-models-sps/sps.seq"  # relative to pytest run directory
-sequence_name: "sps"                # sequence name for MAD-X to use
-opticsfile: "????"                  # relative to pytest run directory
+# Sequence and optics to load | Chose Q26 config, only 1 opticsfile for the config, difference will be in beam parameters
+sequence: "acc-models-sps/sps.seq"                                  # relative to pytest run directory
+sequence_name: "sps"                                                # sequence name for MAD-X to use
+opticsfile: "acc-models-sps/strengths/lhc_q26.str"                  # relative to pytest run directory
 
 # Configuration variables
 energy: 25.92                       # energy in [GeV]
