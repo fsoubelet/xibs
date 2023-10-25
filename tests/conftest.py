@@ -37,7 +37,7 @@ LINES_DIR = INPUTS_DIR / "lines"  # (equivalent) frozen and saved xtrack.Lines
 # -- LHC fixtures -- #
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_lhc_injection_protons() -> Madx:
     """
     A cpymad.Madx instance with loaded LHCB1 sequence, protons at
@@ -54,7 +54,7 @@ def madx_lhc_injection_protons() -> Madx:
 # No injection ions??
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_lhc_top_protons() -> Madx:
     """
     A cpymad.Madx instance with loaded LHCB1 sequence, protons at
@@ -68,7 +68,7 @@ def madx_lhc_top_protons() -> Madx:
         yield madx, params
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_lhc_top_ions() -> Madx:
     """
     A cpymad.Madx instance with loaded LHCB1 sequence, ions at
@@ -85,7 +85,7 @@ def madx_lhc_top_ions() -> Madx:
 # -- SPS fixtures -- #
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_sps_injection_protons() -> Madx:
     """
     A cpymad.Madx instance with loaded SPS sequence, protons at
@@ -99,7 +99,7 @@ def madx_sps_injection_protons() -> Madx:
         yield madx, params
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_sps_injection_ions() -> Madx:
     """
     A cpymad.Madx instance with loaded SPS sequence, ions at
@@ -113,7 +113,7 @@ def madx_sps_injection_ions() -> Madx:
         yield madx, params
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_sps_top_protons() -> Madx:
     """
     A cpymad.Madx instance with loaded SPS sequence, protons at
@@ -127,7 +127,7 @@ def madx_sps_top_protons() -> Madx:
         yield madx, params
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_sps_top_ions() -> Madx:
     """
     A cpymad.Madx instance with loaded SPS sequence, ions at
@@ -144,7 +144,7 @@ def madx_sps_top_ions() -> Madx:
 # -- PS fixtures -- #
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_ps_injection_protons() -> Madx:
     """
     A cpymad.Madx instance with loaded PS sequence, protons at
@@ -158,7 +158,7 @@ def madx_ps_injection_protons() -> Madx:
         yield madx, params
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def madx_ps_injection_ions() -> Madx:
     """
     A cpymad.Madx instance with loaded PS sequence, ions at
@@ -177,7 +177,7 @@ def madx_ps_injection_ions() -> Madx:
 # -- LHC fixtures -- #
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_lhc_injection_protons() -> xt.Line:
     """An `xtrack.Line` of the LHCB1 sequence for protons at injection energy."""
     line_json = LINES_DIR / "lhc_injection_protons.json"
@@ -187,14 +187,14 @@ def xtrack_lhc_injection_protons() -> xt.Line:
 # No injection ions??
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_lhc_top_protons() -> xt.Line:
     """An `xtrack.Line` of the LHCB1 sequence for protons at top energy."""
     line_json = LINES_DIR / "lhc_top_protons.json"
     return xt.Line.from_json(line_json)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_lhc_top_ions() -> xt.Line:
     """An `xtrack.Line` of the LHCB1 sequence for ions at top energy."""
     line_json = LINES_DIR / "lhc_top_ions.json"
@@ -204,28 +204,28 @@ def xtrack_lhc_top_ions() -> xt.Line:
 # -- SPS fixtures -- #
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_sps_injection_protons() -> xt.Line:
     """An `xtrack.Line` of the SPS sequence for protons at injection energy (Q26 configuration)."""
     line_json = LINES_DIR / "sps_injection_protons.json"
     return xt.Line.from_json(line_json)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_sps_injection_ions() -> xt.Line:
     """An `xtrack.Line` of the SPS sequence for ions at injection energy."""
     line_json = LINES_DIR / "sps_injection_ions.json"
     return xt.Line.from_json(line_json)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_sps_top_protons() -> xt.Line:
     """An `xtrack.Line` of the SPS sequence for protons at top energy (Q26 configuration)."""
     line_json = LINES_DIR / "sps_top_protons.json"
     return xt.Line.from_json(line_json)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_sps_top_ions() -> xt.Line:
     """An `xtrack.Line` of the SPS sequence for ions at top energy."""
     line_json = LINES_DIR / "sps_top_ions.json"
@@ -235,14 +235,14 @@ def xtrack_sps_top_ions() -> xt.Line:
 # -- PS fixtures -- #
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_ps_injection_protons() -> xt.Line:
     """An `xtrack.Line` of the PS sequence for protons at injection energy."""
     line_json = LINES_DIR / "ps_injection_protons.json"
     return xt.Line.from_json(line_json)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def xtrack_ps_injection_ions() -> xt.Line:
     """An `xtrack.Line` of the PS sequence for ions at injection energy."""
     line_json = LINES_DIR / "ps_injection_ions.json"
