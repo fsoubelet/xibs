@@ -90,7 +90,7 @@ typing: format
 
 # ----- Tests Targets ----- #
 
-tests:  # all tests not involving pyhdtoolkit.cpymadtools
+tests: clean
 	@python -m pytest -v
 
 testrepos:  # git cloning the necessary repos for tests files - specify branch, could also specify tag to make sure we are static
