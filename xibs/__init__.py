@@ -24,4 +24,4 @@ __license__ = "Apache-2.0"
 # Expose chosen elements at the top-level of the package
 # One can then directly import xibs.BeamParameters for instance
 # Also limits what is imported when some idiot goes "from xibs import *"
-__all__ = [BeamParameters, OpticsParameters, NagaitsevIBS, SimpleKickIBS, KineticKickIBS]
+__all__ = ["BeamParameters", "OpticsParameters", "NagaitsevIBS", "SimpleKickIBS", "KineticKickIBS"]
