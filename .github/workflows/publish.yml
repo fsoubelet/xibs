@@ -1,0 +1,39 @@
+# Publishes to PyPI upon creation of a release
+name: Upload Package to PyPI
+
+defaults:
+  run:
+    shell: bash
+
+on:  # Runs everytime a release is added to the repository
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    name: ${{ matrix.os }} / ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:  # only lowest supported python on ubuntu-latest
+        os: [ubuntu-latest]
+        python-version: [3.11]
+    environment:
+      name: pypi
+      url: https://pypi.org/project/xibs/
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install hatch
+        run: pipx install hatch
+
+      - name: Build wheels and sdist
+        run: make build
+
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
+          print_hash: true
