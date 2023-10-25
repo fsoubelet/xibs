@@ -57,7 +57,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
     particle_mass_GeV = config["mass"]  # particle rest mass in [GeV]
     particle_classical_radius_m = config["radius"]  # classical particle radius in [m]
     particle_charge = config["charge"]  # particle charge in [e]
-    xing_knobs = config.get("xing_knobs", ())  # crossing angle knobs, only in LHC configs
+    lhc_xing_knobs = config.get("lhc_xing_knobs", ())  # IP crossing knobs, only in LHC configs
 
     # ----- Beam, sequence and get parameters from Twiss & Summ tables ----- #
     madx.command.beam(particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge)
@@ -92,7 +92,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
     # In MAD-X there is a convention that RF cavity if we activate it we need to multiply
     # the voltage by the particle charge (important for ions) -> MAD-X asks for q*V [now xsuite also does]
     with madx.batch():
-        madx.globals.update({knob: 0 for knob in xing_knobs})
+        madx.globals.update({knob: 0 for knob in lhc_xing_knobs})
     madx.globals[rf_knobs] = rf_voltage * 1e3 * particle_charge
     madx.command.twiss()
 
