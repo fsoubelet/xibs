@@ -51,7 +51,7 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
     norm_epsy = config["emit_y"] * 1e-6  # norm emit y in [m]
     bunch_intensity = config["bunch_intensity"]  # number of particles per bunch
     rf_knobs = config["cc_name_knobs"]  # MAD-X knobs for RF cavities
-    rf_voltage = config["V0max"] * 1e-3  # RF voltage in [kV] (MV * 1e-3)  # TODO: CHECK THIS WITH SOFIA
+    rf_voltage = config["V0max"] * 1e-3  # RF voltage in [kV] (MV * 1e-3)
     harmonic_number = config["h"]  # RF harmonic number
     particle = config["particle"]  # particle type
     sequence_name = config["sequence_name"]  # accelerator sequence to use
