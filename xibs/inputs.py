@@ -31,7 +31,7 @@ LOGGER = getLogger(__name__)
 class BeamParameters:
     """
     .. versionadded:: 0.2.0
-    
+
     Container dataclass for necessary beam parameters. It is initiated from
     the `xpart.Particles` object to track in your line with ``xsuite``.
 
@@ -79,7 +79,7 @@ class BeamParameters:
 class OpticsParameters:
     """
     .. versionadded:: 0.2.0
-    
+
     Container dataclass for necessary optics parameters. It is initiated from the results
     of a `.twiss()` command with an `xtrack.Line`, or result of a ``TWISS`` call in
     ``MAD-X`` as a dataframe (as given by ``cpymad`` by default).
