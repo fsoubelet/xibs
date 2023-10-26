@@ -19,8 +19,10 @@ import numpy as np
 from scipy.constants import c, hbar
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
+from scipy.special import elliprd
 
-from xibs.formulary import iterative_RD, phi
+# from xibs.formulary import iterative_RD, phi
+from xibs.formulary import phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -68,8 +70,6 @@ class IBSGrowthRates:
 # ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
 
 
-# TODO: work at some point to use scipy.special.elliprd for the elliptic integral
-# and remove both iterative_RD from the codebase and numba from the dependencies?
 class NagaitsevIBS:
     """
     .. versionadded:: 0.2.0
@@ -217,10 +217,10 @@ class NagaitsevIBS:
         lambda_2: np.ndarray = a1 + sqrt_term
         lambda_3: np.ndarray = a1 - sqrt_term
         # ----------------------------------------------------------------------------------------------
-        # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper
-        LOGGER.debug("Iteratively computing elliptic integral RD term")
-        R1: np.ndarray = iterative_RD(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
-        R2: np.ndarray = iterative_RD(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
+        # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper (at each element of the lattice)
+        LOGGER.debug("Computing elliptic integrals R1, R2 and R3")
+        R1: np.ndarray = elliprd(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
+        R2: np.ndarray = elliprd(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
         R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
         # ----------------------------------------------------------------------------------------------
         # This are the terms from Eq (33-35) in Nagaitsev paper
