@@ -1,0 +1,134 @@
+{
+  "bibliography": [],
+  "faq": [
+    {
+      "source": "from xibs.inputs import OpticsParameters\n\n# Let's assume your `xtrack.Line` is already defined\ntwiss = Line.twiss(particle_ref=p0)\noptics_params = OpticsParameters(twiss)",
+      "names": [],
+      "example": {
+        "document": "faq",
+        "ref_id": "instantiating-opticsparameters-from-an-xtrack-line-twiss-result",
+        "headings": [
+          "Frequently Asked Questions",
+          "Instantiating OpticsParameters and BeamParameters",
+          "Instantiating OpticsParameters from an xtrack.Line.twiss result"
+        ]
+      },
+      "doc_lineno": 25
+    },
+    {
+      "source": "from xibs.inputs import OpticsParameters\n\n# Let's assume your `cpymad.madx.Madx` instance is already defined\ntwiss = madx.twiss().dframe()\nseq_name = madx.table.twiss.summary.sequence  # works whichever your sequence\n\n# Compute additional required parameters: revolution frequency and slip factor\nfrev_hz = madx.sequence[seq_name].beam.freq0 * 1e6  # beware freq0 is in MHz\ngamma_rel = madx.sequence[seq_name].beam.gamma  # relativistic gamma\ngamma_tr = madx.table.summ.gammatr[0]  # transition gamma\nslipfactor = (1/(gamma_tr**2)) - (1/(gamma_rel**2))  # use the xsuite convention!\n\n# And these have to be provided as additional arguments\noptics_params = OpticsParameters(twiss, slipfactor, frev_hz)",
+      "names": [],
+      "example": {
+        "document": "faq",
+        "ref_id": "instantiating-opticsparameters-from-a-mad-x-twiss-result",
+        "headings": [
+          "Frequently Asked Questions",
+          "Instantiating OpticsParameters and BeamParameters",
+          "Instantiating OpticsParameters from a MAD-X twiss result"
+        ]
+      },
+      "doc_lineno": 43
+    },
+    {
+      "source": "import xpart as xp\nfrom xibs.inputs import BeamParameters\n\n# Let's define what one would use as \"reference particle\" for the line and use that\np0 = xp.Particles(p0c=6500e9, q0=1, mass0=xp.PROTON_MASS_EV)\nbeam_params = BeamParameters(p0)\n\n# Now you have to manually set the \"true\" value for '.n_part'\nbeam_parameters.n_part = int(5e5)",
+      "names": [
+        {
+          "import_components": [
+            "int"
+          ],
+          "code_str": "int",
+          "lineno": 9,
+          "end_lineno": 9,
+          "context": "none",
+          "resolved_location": "int"
+        }
+      ],
+      "example": {
+        "document": "faq",
+        "ref_id": "do-i-need-a-full-matched-particle-distribution-for-beamparameters",
+        "headings": [
+          "Frequently Asked Questions",
+          "Instantiating OpticsParameters and BeamParameters",
+          "Do I need a full matched particle distribution for BeamParameters?"
+        ]
+      },
+      "doc_lineno": 73
+    }
+  ],
+  "gallery/demo_analytical_emittances": [],
+  "gallery/demo_kinetic_kicks": [],
+  "gallery/demo_simple_kicks": [],
+  "gallery/index": [],
+  "gallery/sg_execution_times": [],
+  "index": [],
+  "modules/index": [],
+  "quickstart": [
+    {
+      "source": "import xibs",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "basic-usage",
+        "headings": [
+          "Quickstart",
+          "Basic Usage"
+        ]
+      },
+      "doc_lineno": 16
+    },
+    {
+      "source": "# Main IBS functionality (sub)modules\nimport xibs.analytical\nimport xibs.kicks.kinetic\nimport xibs.kicks.simple\n\n# Other (sub)modules\nimport xibs.inputs\nimport xibs.formulary",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "basic-usage",
+        "headings": [
+          "Quickstart",
+          "Basic Usage"
+        ]
+      },
+      "doc_lineno": 23
+    },
+    {
+      "source": "import xibs\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = xibs.inputs.OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = xibs.inputs.BeamParameters(particles)\n\n# Let's say you want a YourChosenFormalismIBS approach\nIBS = YourChosenFormalismIBS(beam_parameters, optics_parameters)\n# now do some IBS calculations",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "integration-with-xsuite",
+        "headings": [
+          "Quickstart",
+          "Integration with xsuite"
+        ]
+      },
+      "doc_lineno": 47
+    },
+    {
+      "source": "from xibs.analytical import NagaitsevIBS\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = xibs.inputs.OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = xibs.inputs.BeamParameters(particles)\n\n# Let's say you want a YourChosenFormalismIBS approach\nIBS = NagaitsevIBS(beam_parameters, optics_parameters)\n# now compute IBS growth rates and new emittances",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "analytical-emittance-evolution",
+        "headings": [
+          "Quickstart",
+          "Formalism and Models",
+          "Analytical Emittance Evolution"
+        ]
+      },
+      "doc_lineno": 73
+    },
+    {
+      "source": "from xibs.kicks.kinetic import KineticKickIBS\nfrom xibs.kicks.simple import SimpleKickIBS\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = xibs.inputs.OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = xibs.inputs.BeamParameters(particles)\n\n# Initialize your class\nkinetic_ibs = KineticKickIBS(beam_parameters, optics_parameters)\nsimple_ibs = SimpleKickIBS(beam_parameters, optics_parameters)\n# now compute kicks to apply to particles",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "providing-kicks",
+        "headings": [
+          "Quickstart",
+          "Formalism and Models",
+          "Providing Kicks"
+        ]
+      },
+      "doc_lineno": 98
+    }
+  ]
+}

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xibs.analytical &mdash; xibs 0.2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-codeautolink.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-dropdown.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/panels-bootstrap.min.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=938c9ccc"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+              <div class="version">
+                0.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#analytical-emittance-evolution">Analytical Emittance Evolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#providing-kicks">Providing Kicks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html">Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_kinetic_kicks.html">Kinetic IBS Kicks Tracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_simple_kicks.html">Simple IBS Kicks Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#input-data-structures">Input Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#simple-kicks">Simple Kicks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#kinetic-formalism">Kinetic Formalism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#formulary">Formulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-and-beamparameters">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-an-xtrack-line-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-a-mad-x-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Reference Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xibs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xibs.analytical</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xibs.analytical</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. _xibs-analytical:</span>
+
+<span class="sd">Analytical Calculations</span>
+<span class="sd">-----------------------</span>
+
+<span class="sd">Module with functionality to perform analytical calculations according to Nagaitsev&#39;s formalism.</span>
+<span class="sd">A user-facing class is provided which computes the Nagaitsev integrals based on beam parameters and machine optics.</span>
+<span class="sd">The formalism from which formulas and calculations are implemented can be found in :cite:p:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># important for sphinx to alias ArrayLike</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span><span class="p">,</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">scipy.constants</span> <span class="kn">import</span> <span class="n">c</span><span class="p">,</span> <span class="n">hbar</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">quad</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">elliprd</span>
+
+<span class="kn">from</span> <span class="nn">xibs.formulary</span> <span class="kn">import</span> <span class="n">phi</span>
+<span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>  <span class="c1"># scipy integration routines might warn for subdivisions</span>
+
+<span class="c1"># ----- Dataclasses to store results ----- #</span>
+
+
+<div class="viewcode-block" id="NagaitsevIntegrals">
+<a class="viewcode-back" href="../../modules/index.html#xibs.analytical.NagaitsevIntegrals">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">NagaitsevIntegrals</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. versionadded:: 0.2.0</span>
+
+<span class="sd">    Container dataclass for Nagaitsev integrals results.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        Ix (float): horizontal Nagaitsev integral.</span>
+<span class="sd">        Iy (float): vertical Nagaitsev integral.</span>
+<span class="sd">        Iz (float): longitudinal Nagaitsev integral.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Ix</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Iy</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Iz</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<div class="viewcode-block" id="IBSGrowthRates">
+<a class="viewcode-back" href="../../modules/index.html#xibs.analytical.IBSGrowthRates">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">IBSGrowthRates</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. versionadded:: 0.2.0</span>
+
+<span class="sd">    Container dataclass for IBS growth rates results.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        Tx (float): horizontal IBS growth rate.</span>
+<span class="sd">        Ty (float): vertical IBS growth rate.</span>
+<span class="sd">        Tz (float): longitudinal IBS growth rate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Tx</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Ty</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Tz</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<span class="c1"># ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #</span>
+
+
+<div class="viewcode-block" id="NagaitsevIBS">
+<a class="viewcode-back" href="../../modules/index.html#xibs.analytical.NagaitsevIBS">[docs]</a>
+<span class="k">class</span> <span class="nc">NagaitsevIBS</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. versionadded:: 0.2.0</span>
+
+<span class="sd">    A single class to compute Nagaitsev integrals (see</span>
+<span class="sd">    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)</span>
+<span class="sd">    and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for the calculations.</span>
+<span class="sd">        optics (OpticsParameters): the optics parameters to use for the calculations.</span>
+<span class="sd">        elliptic_integrals (NagaitsevIntegrals): the computed elliptic integrals. This</span>
+<span class="sd">            self-updates when they are computed with the `integrals` method.</span>
+<span class="sd">        ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates</span>
+<span class="sd">            when they are computed with the `growth_rates` method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_params</span><span class="p">:</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="p">:</span> <span class="n">BeamParameters</span> <span class="o">=</span> <span class="n">beam_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span> <span class="o">=</span> <span class="n">optics</span>
+        <span class="c1"># These self-update when they are computed, but can be overwritten by the user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elliptic_integrals</span><span class="p">:</span> <span class="n">NagaitsevIntegrals</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">:</span> <span class="n">IBSGrowthRates</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="NagaitsevIBS.coulomb_log">
+<a class="viewcode-back" href="../../modules/index.html#xibs.analytical.NagaitsevIBS.coulomb_log">[docs]</a>
+    <span class="k">def</span> <span class="nf">coulomb_log</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geom_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">geom_epxy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.2.0</span>
+
+<span class="sd">        Calculates the Coulomb logarithm based on the beam parameters and optics the class</span>
+<span class="sd">        was initiated with. For a good introductory resource on the Coulomb Log, see:</span>
+<span class="sd">        https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This function follows the exact computing implementation of the Coulomb log</span>
+<span class="sd">            calculation in the ``MAD-X`` source code. One can find it in the source code</span>
+<span class="sd">            in the file `MAD-X/src/ibsdb.f90` as the `twclog` subroutine.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            epsx (float): horizontal geometric emittance in [m].</span>
+<span class="sd">            epxy (float): vertical geometric emittance in [m].</span>
+<span class="sd">            sigma_delta (float): momentum spread.</span>
+<span class="sd">            bunch_length (float): bunch length in [m].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing Coulomb logarithm for definded beam and optics parameters&quot;</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Interpolated beta and dispersion functions for the average calculation below</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Interpolating beta and dispersion functions&quot;</span><span class="p">)</span>
+        <span class="n">_bxb</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span><span class="p">)</span>
+        <span class="n">_byb</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">bety</span><span class="p">)</span>
+        <span class="n">_dxb</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span>
+        <span class="n">_dyb</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dy</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Computing &quot;average&quot; of these functions - better here than a simple np.mean</span>
+        <span class="c1"># calculation because the latter doesn&#39;t take in consideration element lengths</span>
+        <span class="c1"># and can be skewed by some very high peaks in the optics</span>
+        <span class="n">_bx_bar</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">_bxb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span>
+        <span class="n">_by_bar</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">_byb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span>
+        <span class="n">_dx_bar</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">_dxb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span>
+        <span class="n">_dy_bar</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">_dyb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Calculate transverse temperature as 2*P*X, i.e. assume the transverse energy is temperature/2</span>
+        <span class="c1"># fmt: off</span>
+        <span class="n">Etrans</span> <span class="o">=</span> <span class="p">(</span>  
+            <span class="mf">5e8</span>
+            <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">total_energy_GeV</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_mass_GeV</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">geom_epsx</span> <span class="o">/</span> <span class="n">_bx_bar</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># fmt: on</span>
+        <span class="n">TempeV</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">Etrans</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Compute sigmas in each dimension</span>
+        <span class="n">sigma_x_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">_bx_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dx_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma_y_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epxy</span> <span class="o">*</span> <span class="n">_by_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dy_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma_t_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">bunch_length</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Calculate beam volume to get density (in cm^{-3}) then Debye length</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="mf">8.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma_x_cm</span> <span class="o">*</span> <span class="n">sigma_y_cm</span> <span class="o">*</span> <span class="n">sigma_t_cm</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">n_part</span> <span class="o">/</span> <span class="n">volume</span>
+        <span class="n">debyul</span> <span class="o">=</span> <span class="mf">743.4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">TempeV</span> <span class="o">/</span> <span class="n">density</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_charge</span>  <span class="c1"># Debye length?</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Calculate &#39;rmin&#39; as larger of classical distance of closest approach or quantum mechanical</span>
+        <span class="c1"># diffraction limit from nuclear radius</span>
+        <span class="n">rmincl</span> <span class="o">=</span> <span class="mf">1.44e-7</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_charge</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">TempeV</span>
+        <span class="n">rminqm</span> <span class="o">=</span> <span class="n">hbar</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="mf">1e5</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2e-3</span> <span class="o">*</span> <span class="n">Etrans</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_mass_GeV</span><span class="p">))</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Now compute the impact parameters and finally Coulomb logarithm</span>
+        <span class="n">bmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rmincl</span><span class="p">,</span> <span class="n">rminqm</span><span class="p">)</span>
+        <span class="n">bmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sigma_x_cm</span><span class="p">,</span> <span class="n">debyul</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">bmax</span> <span class="o">/</span> <span class="n">bmin</span><span class="p">)</span></div>
+
+
+    <span class="c1"># This is &#39;Nagaitsev_Integrals&#39; from Michalis&#39;s old code but it stops a bit earlier and really returns the integrals</span>
+    <span class="c1"># The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there</span>
+<div class="viewcode-block" id="NagaitsevIBS.integrals">
+<a class="viewcode-back" href="../../modules/index.html#xibs.analytical.NagaitsevIBS.integrals">[docs]</a>
+    <span class="k">def</span> <span class="nf">integrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NagaitsevIntegrals</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.2.0</span>
+
+<span class="sd">        Computes the Nagaitsev integrals, named :math:`I_x, I_y` and :math:`I_z` in this code base.</span>
+
+<span class="sd">        These correspond to the integrals inside of Eq (32), (31) and (30) in</span>
+<span class="sd">        :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, respectively.</span>
+<span class="sd">        The instance attribute `self.elliptic_integrals` is automatically updated</span>
+<span class="sd">        with the results of this method. It is used for other calculations.</span>
+
+<span class="sd">        .. tip::</span>
+<span class="sd">            The calculation is done according to the following steps, which are related to different</span>
+<span class="sd">            equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:</span>
+
+<span class="sd">                - Computes various intermediate terms and then :math:`a_x, a_y, a_s, a_1` and :math:`a_2` constants from Eq (18-21).</span>
+<span class="sd">                - Computes the eigenvalues :math:`\lambda_1, \lambda_2` of the :math:`\bf{A}` matrix (:math:`\bf{L}` matrix in B&amp;M) from Eq (22-24).</span>
+<span class="sd">                - Iteratively computes the :math:`R_1, R_2` and :math:`R_3` terms from Eq (25-27) with the forms of Eq (5-6).</span>
+<span class="sd">                - Computes the :math:`S_p, S_x` and :math:`S_{xp}` terms from Eq (33-35).</span>
+<span class="sd">                - Computes and return the integrals terms in Eq (30-32).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            epsx (float): horizontal geometric emittance in [m].</span>
+<span class="sd">            epxy (float): vertical geometric emittance in [m].</span>
+<span class="sd">            sigma_delta (float): momentum spread.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `NagaitsevIntegrals` object with the computed integrals for each plane.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Computing Nagaitsev integrals for defined beam and optics parameters&quot;</span><span class="p">)</span>
+        <span class="c1"># fmt: off</span>
+        <span class="c1"># All of the following (when type annotated as np.ndarray), hold one value per element in the lattice</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Computing necessary intermediate terms for the following lines</span>
+        <span class="n">sigx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span> <span class="o">*</span> <span class="n">geom_epsx</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dx</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigy</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">bety</span> <span class="o">*</span> <span class="n">geom_epsy</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dy</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">phix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">phi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">alfx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dpx</span><span class="p">)</span>
+        <span class="c1"># Computing the constants from Eq (18-21) in Nagaitsev paper</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span> <span class="o">/</span> <span class="n">geom_epsx</span>
+        <span class="n">ay</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">bety</span> <span class="o">/</span> <span class="n">geom_epsy</span>
+        <span class="n">a_s</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">ax</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">phix</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">a1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="p">(</span><span class="n">ax</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a_s</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">a2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="p">(</span><span class="n">ax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a_s</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">sqrt_term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a2</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ax</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">phix</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># square root term in Eq (22-23) and Eq (33-35)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># These are from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&amp;M)</span>
+        <span class="n">lambda_1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">ay</span>
+        <span class="n">lambda_2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">+</span> <span class="n">sqrt_term</span>
+        <span class="n">lambda_3</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">-</span> <span class="n">sqrt_term</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper (at each element of the lattice)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing elliptic integrals R1, R2 and R3&quot;</span><span class="p">)</span>
+        <span class="n">R1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">elliprd</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lambda_2</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lambda_3</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lambda_1</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_1</span>
+        <span class="n">R2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">elliprd</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lambda_3</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lambda_1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lambda_2</span><span class="p">)</span> <span class="o">/</span> <span class="n">lambda_2</span>
+        <span class="n">R3</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lambda_1</span> <span class="o">*</span> <span class="n">lambda_2</span> <span class="o">/</span> <span class="n">lambda_3</span><span class="p">)</span> <span class="o">-</span> <span class="n">lambda_1</span> <span class="o">*</span> <span class="n">R1</span> <span class="o">/</span> <span class="n">lambda_3</span> <span class="o">-</span> <span class="n">lambda_2</span> <span class="o">*</span> <span class="n">R2</span> <span class="o">/</span> <span class="n">lambda_3</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># This are the terms from Eq (33-35) in Nagaitsev paper</span>
+        <span class="n">Sp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">R1</span> <span class="o">-</span> <span class="n">R2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">/</span> <span class="n">sqrt_term</span><span class="p">)</span> <span class="o">-</span> <span class="n">R3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">/</span> <span class="n">sqrt_term</span><span class="p">))</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">Sx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">R1</span> <span class="o">-</span> <span class="n">R2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">/</span> <span class="n">sqrt_term</span><span class="p">)</span> <span class="o">-</span> <span class="n">R3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">/</span> <span class="n">sqrt_term</span><span class="p">))</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">Sxp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">phix</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">ax</span> <span class="o">*</span> <span class="p">(</span><span class="n">R3</span> <span class="o">-</span> <span class="n">R2</span><span class="p">)</span> <span class="o">/</span> <span class="n">sqrt_term</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># These are the integrands of the integrals in Eq (30-32) in Nagaitsev paper</span>
+        <span class="n">Ix_integrand</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span>
+            <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="n">sigx</span> <span class="o">*</span> <span class="n">sigy</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">Sx</span> <span class="o">+</span> <span class="n">Sp</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">phix</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">Sxp</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">Iy_integrand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">bety</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="n">sigx</span> <span class="o">*</span> <span class="n">sigy</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">R2</span> <span class="o">+</span> <span class="n">R3</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">R1</span><span class="p">)</span>
+        <span class="n">Ip_integrand</span> <span class="o">=</span> <span class="n">Sp</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="n">sigx</span> <span class="o">*</span> <span class="n">sigy</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Integrating the integrands above accross the ring to get the desired results</span>
+        <span class="n">Ix</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Ix_integrand</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">)))</span>
+        <span class="n">Iy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Iy_integrand</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">)))</span>
+        <span class="n">Iz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Ip_integrand</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">)))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">NagaitsevIntegrals</span><span class="p">(</span><span class="n">Ix</span><span class="p">,</span> <span class="n">Iy</span><span class="p">,</span> <span class="n">Iz</span><span class="p">)</span>
+        <span class="c1"># fmt: on</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Self-update the instance&#39;s attributes and then return the results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elliptic_integrals</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># This is the end of the calculations in &#39;Nagaitsev_Integrals&#39; from Michalis&#39;s old code (the last 3 lines essentially)</span>
+    <span class="c1"># The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there</span>
+<div class="viewcode-block" id="NagaitsevIBS.growth_rates">
+<a class="viewcode-back" href="../../modules/index.html#xibs.analytical.NagaitsevIBS.growth_rates">[docs]</a>
+    <span class="k">def</span> <span class="nf">growth_rates</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geom_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IBSGrowthRates</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.2.0</span>
+
+<span class="sd">        Computes the ``IBS`` growth rates, named :math:`T_x, T_y` and :math:`T_z` in this</span>
+<span class="sd">        code base, from Nagaitsev integrals. These correspond to the :math:`1 / \tau` term,</span>
+<span class="sd">        for each plane, of Eq (28) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`,</span>
+<span class="sd">        respectively. The instance attribute `self.ibs_growth_rates` is automatically updated</span>
+<span class="sd">        with the results of this method.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This calculation is done by building on the Nagaitsev integrals. If the</span>
+<span class="sd">            latter have not been computed yet, this method will raise an error. Please</span>
+<span class="sd">            remember to call the instance&#39;s `integrals` method first.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Currently this calculation does not take into account vertical dispersion.</span>
+<span class="sd">            We are working on implementing it for a future version.</span>
+
+<span class="sd">        .. tip::</span>
+<span class="sd">            The calculation is done according to the following steps, which are related to different</span>
+<span class="sd">            equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:</span>
+
+<span class="sd">                - Get the Nagaitsev integrals from the instance attributes (integrals of Eq (30-32)).</span>
+<span class="sd">                - Computes the Coulomb logarithm for the defined beam and optics parameters.</span>
+<span class="sd">                - Compute the rest of the constant term of Eq (30-32).</span>
+<span class="sd">                - Compute for each plane the full result of Eq (30-32), respectively.</span>
+<span class="sd">                - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_{\delta}^{2}` (as relevant) to get :math:`1 / \tau`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            epsx (float): horizontal geometric emittance in [m].</span>
+<span class="sd">            epxy (float): vertical geometric emittance in [m].</span>
+<span class="sd">            sigma_delta (float): momentum spread.</span>
+<span class="sd">            bunch_length (float): the bunch length in [m].</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the Nagaitsev integrals have not yet been computed.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An `IBSGrowthRates` object with the computed growth rates for each plane.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Check that the Nagaitsev integrals have been computed beforehand</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">elliptic_integrals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Attempted to compute growth rates without having computed Nagaitsev integrals.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Nagaitsev integrals have not been computed yet, cannot compute growth rates.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Please call the `integrals` method first.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Computing IBS growth rates for defined beam and optics parameters&quot;</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Get the Coulomb logarithm and the rest of the constant term in Eq (30-32)</span>
+        <span class="n">coulomb_logarithm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coulomb_log</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+        <span class="c1"># Then the rest of the constant term in the equation</span>
+        <span class="c1"># fmt: off</span>
+        <span class="n">rest_of_constant_term</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">n_part</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_classical_radius_m</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> 
+            <span class="o">/</span> <span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">5</span> <span class="o">*</span> <span class="n">bunch_length</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># fmt: on</span>
+        <span class="n">full_constant_term</span> <span class="o">=</span> <span class="n">rest_of_constant_term</span> <span class="o">*</span> <span class="n">coulomb_logarithm</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Compute the full result of Eq (30-32) for each plane | make sure to convert back to float</span>
+        <span class="n">Ix</span><span class="p">,</span> <span class="n">Iy</span><span class="p">,</span> <span class="n">Iz</span> <span class="o">=</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elliptic_integrals</span><span class="p">)</span>
+        <span class="n">Tx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Ix</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">geom_epsx</span><span class="p">)</span>
+        <span class="n">Ty</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Iy</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">geom_epsy</span><span class="p">)</span>
+        <span class="n">Tz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Iz</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">IBSGrowthRates</span><span class="p">(</span><span class="n">Tx</span><span class="p">,</span> <span class="n">Ty</span><span class="p">,</span> <span class="n">Tz</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Self-update the instance&#39;s attributes and then return the results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="c1"># This is &#39;emit_evol&#39; from Michalis&#39;s old code</span>
+    <span class="c1"># The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL (unused) and dt there</span>
+<div class="viewcode-block" id="NagaitsevIBS.emittance_evolution">
+<a class="viewcode-back" href="../../modules/index.html#xibs.analytical.NagaitsevIBS.emittance_evolution">[docs]</a>
+    <span class="k">def</span> <span class="nf">emittance_evolution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geom_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.2.0</span>
+
+<span class="sd">        Analytically computes the new emittances after a given time step `dt` has</span>
+<span class="sd">        ellapsed, from initial values, based on the ``IBS`` growth rates.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This calculation is done by building on the ``IBS`` growth rates. If the</span>
+<span class="sd">            latter have not been computed yet, this method will raise an error. Please</span>
+<span class="sd">            remember to call the instance&#39;s `growth_rates` method first.</span>
+
+<span class="sd">        .. tip::</span>
+<span class="sd">            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes</span>
+<span class="sd">            according to:</span>
+
+<span class="sd">            .. math::</span>
+
+<span class="sd">                T_{x,y,z} &amp;= 1 / \tau_{x,y,z}</span>
+
+<span class="sd">                \varepsilon_{x,y}^{N+1} &amp;= \varepsilon_{x,y}^{N} + e^{t / \tau_{x,y}}</span>
+
+<span class="sd">                \sigma_{\delta}^{N+1} &amp;= \sigma_{\delta}^{N} + e^{t / 2 \tau_{z}}</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            epsx (float): horizontal geometric emittance in [m].</span>
+<span class="sd">            epxy (float): vertical geometric emittance in [m].</span>
+<span class="sd">            sigma_delta (float): momentum spread.</span>
+<span class="sd">            dt (float, optional): the time interval to use. Default to the inverse</span>
+<span class="sd">                of the revolution frequency, :math:`1 / f_{rev}`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if the IBS growth rates have not yet been computed.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple with the new horizontal &amp; vertical geometric emittances as well as the new</span>
+<span class="sd">            momentum spread, after the time step has ellapsed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Check that the IBS growth rates have been computed beforehand</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Attempted to compute emittance evolution without having computed growth rates.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;IBS growth rates have not been computed yet, cannot compute new emittances.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Please call the `growth_rates` method first.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Computing new emittances from IBS growth rates for defined beam and optics parameters&quot;</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Set the time step to 1 / frev if not provided</span>
+        <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No time step provided, defaulting to 1 / frev&quot;</span><span class="p">)</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">revolution_frequency</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Compute new emittances and return them. Here we multiply because T = 1 / tau</span>
+        <span class="n">new_epsx</span> <span class="o">=</span> <span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span><span class="p">))</span>
+        <span class="n">new_epsy</span> <span class="o">=</span> <span class="n">geom_epsy</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span><span class="p">))</span>
+        <span class="n">new_sigma_delta</span> <span class="o">=</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">new_epsx</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">,</span> <span class="n">new_sigma_delta</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Felix Soubelet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
