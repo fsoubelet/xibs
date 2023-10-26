@@ -1,3 +1,6 @@
+"""
+Quick tests to check the version_info debugging for users works as intended.
+"""
 import platform
 
 from xibs.version import VERSION, version_info
