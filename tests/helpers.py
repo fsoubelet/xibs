@@ -4,7 +4,6 @@ Utility functions (could be in cpymadtools at some point).
 from dataclasses import dataclass
 from typing import Dict, Tuple
 
-import numba
 import numpy as np
 
 from cpymad.madx import Madx
@@ -115,7 +114,6 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
 # ----- Private functions ----- #
 
 
-@numba.njit()
 def _bl_to_dpp(
     RC: float,
     En: float,
