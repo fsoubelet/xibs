@@ -10,7 +10,6 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 import logging
 
-import numba
 import numpy as np
 
 from numpy.typing import ArrayLike
@@ -18,15 +17,11 @@ from numpy.typing import ArrayLike
 LOGGER = logging.getLogger(__name__)
 
 
-@numba.njit()
 def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> ArrayLike:
     """
     .. versionadded:: 0.2.0
 
     Phi parameter of Eq (15) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-
-    .. todo::
-        Figure out exactly who's what here, and why the calculation is not as Eq (15).
 
     Args:
         beta (ArrayLike): beta-functions through the machine.
@@ -42,7 +37,6 @@ def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> Arr
 
 # This is BunchLength from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Energy_loss, Z
-@numba.njit()
 def bunch_length(
     circumference: float,
     harmonic_number: int,
@@ -93,7 +87,6 @@ def bunch_length(
 
 # This is EnergySpread from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
-@numba.njit()
 def energy_spread(
     circumference: float,
     harmonic_number: int,
@@ -140,7 +133,6 @@ def energy_spread(
 
 # This is ion_BunchLength from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, Sigma_E, beta_rel, RF_Voltage, Z
-@numba.njit()
 def ion_bunch_length(
     circumference: float,
     harmonic_number: int,
@@ -186,7 +178,6 @@ def ion_bunch_length(
 
 # This is ionEnergySpread from Michalis's code, in general_functions.py
 # The arguments used to be Circumferance, Harmonic_Num, Energy_total, SlipF, BL, beta_rel, RF_Voltage, Energy_loss, Z
-@numba.njit()
 def ion_energy_spread(
     circumference: float,
     harmonic_number: int,
@@ -226,99 +217,3 @@ def ion_energy_spread(
         * (-(np.cos(tau_phi) - 1))
         / (total_energy_GeV * abs(slip_factor) * harmonic_number * np.pi)
     )
-
-
-@numba.njit()
-def iterative_RD(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> ArrayLike:
-    r"""
-    .. versionadded:: 0.2.0
-
-    Computes the terms inside the elliptic integral in Eq (4) of
-    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-
-    This is an iterative method implementation that was found by Michalis (in ``C++``
-    then adapted). The implementation is found in ref [5] (uses ref [4] too) of the
-    same paper: :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
-
-    .. note::
-        This calculation is taken from the `NagaitsevIBS.RDiter` method in Michalis's
-        old code. Some PowerPoints from him in an old ABP group meeting mention how
-        the calculation works. One can look into this for details and "documentation".
-
-    Args:
-        x (ArrayLike): the :math:`\lambda_1` values in Nagaitsev paper? Eigen values of
-            the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-            it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
-            element in the lattice.
-        y (ArrayLike): the :math:`\lambda_2` values in Nagaitsev paper? Eigen values of
-            the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-            it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
-            element in the lattice.
-        z (ArrayLike): the :math:`\lambda_3` values in Nagaitsev paper? Eigen values of
-            the :math:`\bf{A}` matrix in Eq (2) which comes from B&M (ref ?). In B&M
-            it is :math:`\bf{L}` matrix (ref?). This is an array with the value for each
-            element in the lattice.
-
-    Returns:
-        An array with the result of the calculation for each element in the lattice. This
-        is NOT the elliptic integral yet, it has to be integrated afterwards.
-    """
-    R = []
-    for i, j, k in zip(x, y, z):
-        x0 = i
-        y0 = j
-        z0 = k
-        if (x0 < 0) and (y0 <= 0) and (z0 <= 0):
-            return
-        x = x0
-        y = y0
-        z = [z0]
-        li = []
-        Sn = []
-        differ = 10e-4
-        for n in range(0, 1000):
-            xi = x
-            yi = y
-            li.append(np.sqrt(xi * yi) + np.sqrt(xi * z[n]) + np.sqrt(yi * z[n]))
-            x = (xi + li[n]) / 4.0
-            y = (yi + li[n]) / 4.0
-            z.append((z[n] + li[n]) / 4.0)
-            if (
-                (abs(x - xi) / x0 < differ)
-                and (abs(y - yi) / y0 < differ)
-                and (abs(z[n] - z[n + 1]) / z0 < differ)
-            ):
-                break
-        lim = n
-        mi = (xi + yi + 3 * z[lim]) / 5.0
-        Cx = 1 - (xi / mi)
-        Cy = 1 - (yi / mi)
-        Cz = 1 - (z[n] / mi)
-        En = max(Cx, Cy, Cz)
-        if En >= 1:
-            return
-        summ = 0
-        for m in range(2, 6):
-            Sn.append((Cx**m + Cy**m + 3 * Cz**m) / (2 * m))
-        for m in range(0, lim):
-            summ += 1 / (np.sqrt(z[m]) * (z[m] + li[m]) * 4**m)
-
-        # Ern = 3 * En**6 / (1 - En) ** (3 / 2.0)
-        rn = -Sn[2 - 2] ** 3 / 10.0 + 3 * Sn[3 - 2] ** 2 / 10.0 + 3 * Sn[2 - 2] * Sn[4 - 2] / 5.0
-        R.append(
-            3 * summ
-            + (
-                1
-                + 3 * Sn[2 - 2] / 7.0
-                + Sn[3 - 2] / 3.0
-                + 3 * Sn[2 - 2] ** 2 / 22.0
-                + 3 * Sn[4 - 2] / 11.0
-                + 3 * Sn[2 - 2] * Sn[3 - 2] / 13.0
-                + 3 * Sn[5 - 2] / 13.0
-                + rn
-            )
-            / (4**lim * mi ** (3 / 2.0))
-        )
-    # This returns an array with one value per element in the lattice
-    # This is NOT the elliptic integral yet, it has to be integrated afterwards. It is the term in the integral in Eq (4) in Nagaitsev paper.
-    return R
