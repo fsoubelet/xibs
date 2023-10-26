@@ -17,7 +17,6 @@ from logging import getLogger
 from typing import Optional, Union
 
 import numpy as np
-import pandas as pd
 
 from numpy.typing import ArrayLike
 from scipy.constants import c
@@ -114,7 +113,7 @@ class OpticsParameters:
 
     # ----- To be provided at initialization ----- #
     twiss: InitVar[  # Almost all is derived from there, this is not kept!
-        Union["xtrack.twiss.TwissTable", pd.DataFrame]
+        Union["xtrack.twiss.TwissTable", "pandas.DataFrame"]
     ]
     _slipfactor: InitVar[Optional[float]] = None
     _frev_hz: InitVar[Optional[float]] = None
@@ -135,7 +134,7 @@ class OpticsParameters:
 
     def __post_init__(
         self,
-        twiss: Union["xtrack.twiss.TwissTable", pd.DataFrame],
+        twiss: Union["xtrack.twiss.TwissTable", "pandas.DataFrame"],
         # The following are only needed if we instanciate from MAD-X twiss
         _slipfactor: Optional[float] = None,
         _frev_hz: Optional[float] = None,
