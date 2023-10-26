@@ -1,4 +1,4 @@
-Reference bibliography
+Reference Bibliography
 ======================
 
 .. bibliography::

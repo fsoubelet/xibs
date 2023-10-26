@@ -1,23 +1,27 @@
 API Reference
 =============
 
-
-.. automodule:: xibs.nagaitsev
+.. automodule:: xibs.inputs
     :members:
     :noindex:
 
 
-.. automodule:: xibs.evolutions
+.. automodule:: xibs.analytical
     :members:
     :noindex:
 
 
-.. automodule:: xibs.simple
+.. automodule:: xibs.kicks.simple
     :members:
     :noindex:
 
 
-.. automodule:: xibs.kinetic
+.. automodule:: xibs.kicks.kinetic
+    :members:
+    :noindex:
+
+
+.. automodule:: xibs.formulary
     :members:
     :noindex:
 

@@ -1,60 +1,270 @@
+"""
+Additional tools for testing, all fixtures defined here are discovered by and available to all tests automatically.
+Throughout the tests, remember to only benchmark by comparing analytical quantities and not some evolution over
+many tracked turns, as the kinetic or simple kicks are applied with a random component and it will mess up any
+comparison.
+"""
 import pathlib
 
+from typing import Dict
+
 import pytest
+import xpart as xp
+import xtrack as xt
+import yaml
 
 from cpymad.madx import Madx
-from helpers import make_sps_thin, re_cycle_sequence
+from helpers import setup_madx_from_config
 
-# TODO: prepare paths to various files
+# ----- Paths to inputs ----- #
+
 CURRENT_DIR = pathlib.Path(__file__).parent
 INPUTS_DIR = CURRENT_DIR / "inputs"
 
-# The following can be kept (and .gitignored) locally but will be cloned (with tag) in the CI
-ACC_MODELS_SPS = INPUTS_DIR / "acc-models-sps"
+# Various necessary files in acc-models-sps
+ACC_MODELS_SPS = INPUTS_DIR / "acc-models-sps"  # .gitignored so can be kept locally, is cloned in our CI
 SPS_SEQUENCE = ACC_MODELS_SPS / "SPS_LS2_2020-05-26.seq"
 SPS_TOOLKIT = ACC_MODELS_SPS / "toolkit"
 SPS_LHC_IONS_OPTICS = ACC_MODELS_SPS / "strengths" / "lhc_ion.str"
 SPS_LHC_IONS_BEAMS = ACC_MODELS_SPS / "beams" / "beam_lhc_ion_injection.madx"
 
+# Locations of folders with specific files for tests
+CONFIGS_DIR = INPUTS_DIR / "configs"  # config files for MAD-X setups
+LINES_DIR = INPUTS_DIR / "lines"  # (equivalent) frozen and saved xtrack.Lines
 
-# ----- Fixtures accessible to all tests ----- #
+# ----- MAD-X Sequences Fixtures ----- #
+
+# -- LHC fixtures -- #
 
 
-@pytest.fixture()
-def matched_sps_lhc_ions_injection() -> Madx:
+@pytest.fixture(scope="function")
+def madx_lhc_injection_protons() -> Madx:
     """
-    A cpymad.Madx instance with loaded SPS sequence, lhc ions optics,
-    and matched parameters.
+    A cpymad.Madx instance with loaded LHCB1 sequence, protons at
+    injection energy.
     """
+    with open(CONFIGS_DIR / "lhc_injection_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
     with Madx(stdout=False) as madx:
-        # Parameters for matching later on
-        qx, qy, dqx, dqy = 26.30, 26.25, -3.0e-9, -3.0e-9
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
 
-        # Call sequence, optics and define beams
-        madx.call(str(SPS_SEQUENCE.absolute()))
-        madx.call(str(SPS_LHC_IONS_OPTICS.absolute()))
-        madx.call(str(SPS_LHC_IONS_BEAMS.absolute()))
-        madx.command.use(sequence="sps")
-        madx.command.twiss()
 
-        # Makethin, call some definition macros
-        re_cycle_sequence(madx)  # TODO: could use cpymadtools for this
-        madx.command.use(sequence="sps")
-        make_sps_thin(madx, sequence="sps", slicefactor=5)
-        madx.command.use(sequence="sps")
-        madx.call(str((SPS_TOOLKIT / "macro.madx").absolute()))
-        madx.exec(f"sps_match_tunes({qx},{qy});")  # TODO: could use cpymadtools for this
-        madx.exec("sps_define_sext_knobs();")
-        madx.exec("sps_set_chroma_weights_q26();")
+# No injection ions??
 
-        # Match chromas (TODO: could use cpymadtools for this)
-        madx.command.match()
-        madx.command.global_(dq1=dqx)
-        madx.command.global_(dq2=dqy)
-        madx.command.vary(name="qph_setvalue")
-        madx.command.vary(name="qpv_setvalue")
-        madx.command.jacobian(calls=50, tolerance=1e-25)
-        madx.command.endmatch()
 
-        # Yield, exits context manager only after the calling test is done
-        yield madx
+@pytest.fixture(scope="function")
+def madx_lhc_top_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHCB1 sequence, protons at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "lhc_top_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+@pytest.fixture(scope="function")
+def madx_lhc_top_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHCB1 sequence, ions at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "lhc_top_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+# -- SPS fixtures -- #
+
+
+@pytest.fixture(scope="function")
+def madx_sps_injection_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, protons at
+    injection energy (Q26 configuration).
+    """
+    with open(CONFIGS_DIR / "sps_injection_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+@pytest.fixture(scope="function")
+def madx_sps_injection_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, ions at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "sps_injection_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+@pytest.fixture(scope="function")
+def madx_sps_top_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, protons at
+    top energy (Q26 configuration).
+    """
+    with open(CONFIGS_DIR / "sps_top_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+@pytest.fixture(scope="function")
+def madx_sps_top_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded SPS sequence, ions at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "sps_top_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+# -- PS fixtures -- #
+
+
+@pytest.fixture(scope="function")
+def madx_ps_injection_protons() -> Madx:
+    """
+    A cpymad.Madx instance with loaded PS sequence, protons at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "ps_injection_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+@pytest.fixture(scope="function")
+def madx_ps_injection_ions() -> Madx:
+    """
+    A cpymad.Madx instance with loaded PS sequence, ions at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "ps_injection_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+# ----- Xtrack Lines Fixtures ----- #
+
+# -- LHC fixtures -- #
+
+
+@pytest.fixture(scope="function")
+def xtrack_lhc_injection_protons() -> xt.Line:
+    """An `xtrack.Line` of the LHCB1 sequence for protons at injection energy."""
+    line_json = LINES_DIR / "lhc_injection_protons.json"
+    return xt.Line.from_json(line_json)
+
+
+# No injection ions??
+
+
+@pytest.fixture(scope="function")
+def xtrack_lhc_top_protons() -> xt.Line:
+    """An `xtrack.Line` of the LHCB1 sequence for protons at top energy."""
+    line_json = LINES_DIR / "lhc_top_protons.json"
+    return xt.Line.from_json(line_json)
+
+
+@pytest.fixture(scope="function")
+def xtrack_lhc_top_ions() -> xt.Line:
+    """An `xtrack.Line` of the LHCB1 sequence for ions at top energy."""
+    line_json = LINES_DIR / "lhc_top_ions.json"
+    return xt.Line.from_json(line_json)
+
+
+# -- SPS fixtures -- #
+
+
+@pytest.fixture(scope="function")
+def xtrack_sps_injection_protons() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for protons at injection energy (Q26 configuration)."""
+    line_json = LINES_DIR / "sps_injection_protons.json"
+    return xt.Line.from_json(line_json)
+
+
+@pytest.fixture(scope="function")
+def xtrack_sps_injection_ions() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for ions at injection energy."""
+    line_json = LINES_DIR / "sps_injection_ions.json"
+    return xt.Line.from_json(line_json)
+
+
+@pytest.fixture(scope="function")
+def xtrack_sps_top_protons() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for protons at top energy (Q26 configuration)."""
+    line_json = LINES_DIR / "sps_top_protons.json"
+    return xt.Line.from_json(line_json)
+
+
+@pytest.fixture(scope="function")
+def xtrack_sps_top_ions() -> xt.Line:
+    """An `xtrack.Line` of the SPS sequence for ions at top energy."""
+    line_json = LINES_DIR / "sps_top_ions.json"
+    return xt.Line.from_json(line_json)
+
+
+# -- PS fixtures -- #
+
+
+@pytest.fixture(scope="function")
+def xtrack_ps_injection_protons() -> xt.Line:
+    """An `xtrack.Line` of the PS sequence for protons at injection energy."""
+    line_json = LINES_DIR / "ps_injection_protons.json"
+    return xt.Line.from_json(line_json)
+
+
+@pytest.fixture(scope="function")
+def xtrack_ps_injection_ions() -> xt.Line:
+    """An `xtrack.Line` of the PS sequence for ions at injection energy."""
+    line_json = LINES_DIR / "ps_injection_ions.json"
+    return xt.Line.from_json(line_json)
+
+
+# ----- Private Utilities ----- #
+
+
+def _make_xtrack_line_for_config(config: Dict, p0: xp.Particles) -> xt.Line:
+    """
+    Make an `xtrack.Line` equivalent to the MAD-X setup for a given config.
+    Used to save the JSON files in `tests/inputs/lines` that are returned
+    by the fixtures.
+
+    Args:
+        config (dict): the loaded yaml config file for the MAD-X setup.
+        p0 (xp.Particles): the reference particle for the line.
+    """
+    with Madx() as madx:
+        setup_madx_from_config(madx, config)
+        seqname = config["sequence_name"]
+        line = xt.Line.from_madx_sequence(madx.sequence[seqname], allow_thick=True)
+        line.particle_ref = p0  # will be saved in the json file
+        return line

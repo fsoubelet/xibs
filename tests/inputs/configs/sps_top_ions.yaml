@@ -1,0 +1,22 @@
+duration: 20        # Duration in second
+ibs_step: 1         # IBS step in seconds
+
+# Sequence and optics to load | Only 1 opticsfile for the ions config, difference will be in beam parameters
+sequence: "acc-models-sps/SPS_LS2_2020-05-26.seq"                   # relative to pytest run directory
+sequence_name: "sps"                                                # sequence name for MAD-X to use
+opticsfile: "acc-models-sps/strengths/lhc_ion.str"                  # relative to pytest run directory
+
+# Configuration variables
+energy: 36994.8                     # energy in [GeV]
+bunch_intensity: 3.5e8              # number of particles per bunch
+emit_x: 1.2612                      # norm emit x in [m]
+emit_y: 0.9081                      # norm emit y in [m]
+blns: 2.6284                        # bunch length in [ns]
+bl_lev: 0.0                  
+particle: "ion"                     # particle type
+mass: 193.6872729                   # particle rest mass in [GeV]
+radius: 4.998945710122783e-17       # classical particle radius in [m]
+charge: 82                          # particle charge in [e]
+V0max: 1.7                          # RF voltage in [MV]
+h: 4653                             # RF harmonic number
+cc_name_knobs: "vrf400"             # MAD-X knobs for RF cavities

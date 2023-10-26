@@ -33,9 +33,9 @@ description = "Prototype Intra-Beam Scattering implementation for Xsuite."
 authors = [
     {name = "Felix Soubelet", email = "felix.soubelet@cern.ch"},
     {name = "Elias Waagaard", email = "elias.walter.waagaard@cern.ch"},
-    {name = "Michail Zampetakis", email = "michail.zampetakis@cern.ch"},
+    {name = "Michalis Zampetakis", email = "Michalis.zampetakis@cern.ch"},
 ]
-license = "Apache-2.0"
+license = {text = "Apache-2.0"}
 dynamic = ["version"]  # Dynamically look for the version info at build time
 requires-python = ">=3.8"
 
@@ -62,8 +62,7 @@ classifiers = [
 # Our direct dependencies
 dependencies = [
   "numpy >= 1.21",
-  "pandas >= 2.0",
-  "scipy >= 1.6",
+  "scipy >= 1.8",
 ]
 
 [project.optional-dependencies]
@@ -74,6 +73,9 @@ test = [
   "pytest-cov >= 4.0",
   "coverage[toml] >= 7.0",
   "cpymad >= 1.14",
+  "xtrack>=0.41",
+  "xfields>=0.12",  # not an explicit dependency of xtrack but needed
+  "pyyaml>=6.0",  # to load configs
 ]
 dev = [
   "black >= 23.9",
@@ -88,6 +90,8 @@ docs = [
   "sphinxcontrib-bibtex >= 2.4",
   "sphinx-prompt >= 1.5",
   "sphinx-codeautolink < 1.0",
+  "sphinx-panels < 1.0",
+  "sphinx-gallery < 1.0",
 ]
 
 [project.urls]
@@ -112,7 +116,7 @@ source = ["xibs/"]  # Tell coverage.py to assess this only (redundant with '--co
 
 [tool.coverage.report]
 ignore_errors = true  # Ignore source code that can’t be found, emit a warning instead
-omit = []
+omit = ["xibs/_old_michalis.py", "xibs/kicks/*"]  # TODO: remove the latter once kicks are implemented
 skip_empty = true  # Don’t report files that have no executable code (e.g. __init__.py).
 precision = 2  # Number of digits after the decimal point to display for reported coverage 
 

@@ -252,7 +252,25 @@ Temporary Items
 .ruff_cache
 .ruff_cache/
 
+### macOS template
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
 
-# ----- Test files and repos ----- #
-tests/inputs/acc-models-sps/
-*/*/acc-models-sps/
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+
+# Test files and repos
+acc-models-ps/
+acc-models-sps/
+acc-models-lhc/
+
+# Sphinx build directory and sphinx-gallery generated documents
+doc_build/
+docs/gallery/
+docs/gen_modules/

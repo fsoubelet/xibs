@@ -4,13 +4,10 @@ defaults:
   run:
     shell: bash
 
-on: [push]  # Runs on all push events
-
-# TODO: If we want to excluse on main (when a coverage workflow will take care of that)
-# on:  # Runs on any push event to any branch except master (the coverage workflow takes care of that)
-#   push:
-#     branches-ignore:
-#       - 'main'
+on:  # Runs on any push event to any branch except main (the coverage workflow takes care of that)
+  push:
+    branches-ignore:
+      - 'main'
 
 jobs:
   tests:
@@ -18,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-latest, windows-latest]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-latest]
         python-version: [3.8, 3.9, "3.10", "3.11"]
       fail-fast: false
 
@@ -32,8 +29,8 @@ jobs:
           cache: pip
           cache-dependency-path: '**/pyproject.toml'
 
-      - name: Clone acc-models-sps into test inputs folder  # specify the branch, could also specify tag to make sure we are static
-        run: git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1 tests/inputs/acc-models-sps/
+      - name: Clone necessary optics repositories
+        run: make testrepos
 
       - name: Upgrade pip
         run: python -m pip install --upgrade pip

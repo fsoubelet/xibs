@@ -15,7 +15,7 @@ P=\033[95m
 R=\033[31m
 Y=\033[33m
 
-.PHONY : help build clean docs format install lines lint typing tests
+.PHONY : help build clean docs format install lines lint typing tests testrepos
 
 all: install
 
@@ -30,15 +30,13 @@ help:
 	@echo "  $(R) lint $(E)  \t  to lint the packages' code though $(P)Ruff$(E)."
 	@echo "  $(R) typing $(E)  \t  to run type checking on the codebase with $(P)MyPy$(E)."
 	@echo "  $(R) tests $(E)  \t  to run the test suite with $(P)pytest$(E)."
+	@echo "  $(R) testrepos $(E)  \t  to $(P)git$(E) clone the necessary repositories for test files."
 
 
 # ----- Dev Tools Targets ----- #
 
-build:
+build: clean
 	@echo "Re-building wheel and sdist"
-	@echo "Cleaning up package builds and distutils remains."
-	@find . -type d -name "*build" -exec rm -rf {} +
-	@find . -type d -name "*dist" -exec rm -rf {} +
 	@hatch build --clean
 	@echo "Created build is located in the $(C)dist$(E) folder."
 
@@ -72,28 +70,36 @@ docs:
 
 format:
 	@echo "Formatting code to PEP8 with $(P)isort$(E) and $(P)Black$(E). Max line length is 110 characters."
-	@python -m isort . && black .
+	@python -m isort tests xibs && black tests xibs
 
 install: clean
 	@echo "Installing with $(D)pip$(E) in the current environment."
 	@python -m pip install . -v
 
 lines: format
-	@tokei xibs
+	@tokei xibs --exclude xibs/_old_michalis.py
 
 lint: format
-	@echo "Linting code with $(P)Pylint$(E)."
+	@echo "Linting code with $(P)Ruff$(E)."
 	@ruff check xibs/
 
 typing: format
-	@echo "Checking code typing with $(P)mypy$(E)."
+	@echo "Checking code typing with $(P)MyPy$(E)."
 	@python -m mypy xibs
 
 
 # ----- Tests Targets ----- #
 
-tests:  # all tests not involving pyhdtoolkit.cpymadtools
+tests: clean
 	@python -m pytest -v
+
+testrepos:  # git cloning the necessary repos for tests files - specify branch, could also specify tag to make sure we are static
+	@echo "Cloning acc-models-ps repo, 2023 branch."
+	@git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-ps.git --depth 1
+	@echo "Cloning acc-models-sps repo, 2021 branch."
+	@git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1
+	@echo "Cloning acc-models-lhc repo, 2022 branch."
+	@git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
 
 # Catch-all unknow targets without returning an error. This is a POSIX-compliant syntax.
 .DEFAULT:
