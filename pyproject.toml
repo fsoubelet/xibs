@@ -83,6 +83,8 @@ dev = [
   "ruff >= 0.0.290",
 ]
 docs = [
+  "xsuite",
+  "matplotlib > 3.0",
   "Sphinx >= 7.0",
   "sphinx-rtd-theme >= 1.0",
   "sphinx-issues >= 3.0",
