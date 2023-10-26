@@ -10,6 +10,8 @@ The formalism from which formulas and calculations are implemented can be found 
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
+import warnings
+
 from dataclasses import astuple, dataclass
 from logging import getLogger
 from typing import Tuple
@@ -21,12 +23,11 @@ from scipy.integrate import quad
 from scipy.interpolate import interp1d
 from scipy.special import elliprd
 
-# from xibs.formulary import iterative_RD, phi
 from xibs.formulary import phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
-
+warnings.filterwarnings("ignore")  # scipy integration routines might warn for subdivisions
 
 # ----- Dataclasses to store results ----- #
 
