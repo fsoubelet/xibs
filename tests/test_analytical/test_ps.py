@@ -1,5 +1,5 @@
 """
-Tests in here are each for different SPS configurations (inj/top and protons/ions).
+Tests in here are each for different PS configurations (injection protons/ions).
 We are computing the growth rates from MAD-X, from the old code of Michalis and
 from the package's (new & fast) analytical module then compare them all to ensure
 they are consistent.
