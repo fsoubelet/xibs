@@ -95,6 +95,18 @@ class NagaitsevIBS:
         self.elliptic_integrals: NagaitsevIntegrals = None
         self.ibs_growth_rates: IBSGrowthRates = None
 
+    def __str__(self) -> str:
+        has_integrals = self.elliptic_integrals is not None
+        has_growth_rates = self.ibs_growth_rates is not None
+        return (
+            "NagaitsevIBS object for analytical IBS calculations.\n"
+            f"Elliptic integrals computed: {has_integrals}\n"
+            f"IBS growth rates computed: {has_growth_rates}"
+        )
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def coulomb_log(
         self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
     ) -> float:
