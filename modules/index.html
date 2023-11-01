@@ -177,7 +177,7 @@ of a <code class="xref py py-obj docutils literal notranslate"><span class="pre"
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>twiss</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[&quot;xtrack.twiss.TwissTable&quot;,</span> <span class="pre">pd.DataFrame]</span></code>) -- the resulting <code class="xref py py-obj docutils literal notranslate"><span class="pre">TwissTable</span></code>
 of a <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss()</span></code> call on the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>, <strong>or</strong> the <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> table of the
-<code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> sequence as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. Lowercase keys are expected. If
+<code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> sequence as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. Lowercase keys are expected. If
 initiating from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> twiss, the next two arguments are required. This
 is an init-only parameter used for instanciation and it will not be kept in
 the instance’s attributes.</p></li>
@@ -491,9 +491,16 @@ The class initiates from a <code class="xref py py-obj docutils literal notransl
 
 <dl class="py class">
 <dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.kinetic.</span></span><span class="sig-name descname"><span class="pre">KineticCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks/kinetic.html#KineticCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Container dataclass for kinetic IBS coefficients. These are computed from the diffusion
+and friction ones according to <span id="id8">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.kinetic.</span></span><span class="sig-name descname"><span class="pre">KineticKickIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks/kinetic.html#KineticKickIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>A single class to compute the IBS diffusion and friction coefficients according
-to the kinetic IBS formalism of <span id="id8">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
+to the kinetic IBS formalism of <span id="id9">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
 The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -501,9 +508,12 @@ The class initiates from a <code class="xref py py-obj docutils literal notransl
 <li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations.</p></li>
 <li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations.</p></li>
 <li><p><strong>diffusion_coeffs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionCoefficients</span></code>) -- the computed diffusion coefficients. This
-self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">diffusion_coefficients</span></code> method.</p></li>
+self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_coefficients</span></code> method.</p></li>
 <li><p><strong>friction_coeffs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">FrictionCoefficients</span></code>) -- the computed friction coefficients. This
-self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method.</p></li>
+self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_coefficients</span></code> method.</p></li>
+<li><p><strong>kinectic_coeffs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">KineticCoefficients</span></code>) -- the computed kinetic coefficients from which
+the kinetic kicks are determined. This self-updates when they are computed with
+the <code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_coefficients</span></code> method?</p></li>
 </ul>
 </dd>
 </dl>
@@ -522,7 +532,7 @@ self-updates when they are computed with the <code class="xref py py-obj docutil
 <p>Analytical calculation for bunch length for protons / electrons (from Wiedermann’s book).
 This is a linear approximation which assumes that particles are in the center of the bucket
 only / mostly.</p>
-<div class="admonition-todo admonition" id="id9">
+<div class="admonition-todo admonition" id="id10">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -586,7 +596,7 @@ here.</p>
 <p>Analytical calculation for bunch length for ions (from Wiedermann’s book). This calculation
 does not work too well if the bucket is full. Implementation so far as I can tell is as used
 in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS).</p>
-<div class="admonition-todo admonition" id="id10">
+<div class="admonition-todo admonition" id="id11">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -644,7 +654,7 @@ instance 1 for electron or proton).</p></li>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
-<p>Phi parameter of Eq (15) in <span id="id11">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
+<p>Phi parameter of Eq (15) in <span id="id12">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

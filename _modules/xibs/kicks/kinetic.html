@@ -174,6 +174,21 @@
 
 
 
+<div class="viewcode-block" id="KineticCoefficients">
+<a class="viewcode-back" href="../../../modules/index.html#xibs.kicks.kinetic.KineticCoefficients">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">KineticCoefficients</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container dataclass for kinetic IBS coefficients. These are computed from the diffusion</span>
+<span class="sd">    and friction ones according to :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Tx</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Ty</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Tz</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
 <span class="c1"># ----- Main class to compute kinetic coefficients and apply kicks ----- #</span>
 
 
@@ -190,9 +205,12 @@
 <span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for the calculations.</span>
 <span class="sd">        optics (OpticsParameters): the optics parameters to use for the calculations.</span>
 <span class="sd">        diffusion_coeffs (DiffusionCoefficients): the computed diffusion coefficients. This</span>
-<span class="sd">            self-updates when they are computed with the `diffusion_coefficients` method.</span>
+<span class="sd">            self-updates when they are computed with the `kinetic_coefficients` method.</span>
 <span class="sd">        friction_coeffs (FrictionCoefficients): the computed friction coefficients. This</span>
-<span class="sd">            self-updates when they are computed with the `growth_rates` method.</span>
+<span class="sd">            self-updates when they are computed with the `kinetic_coefficients` method.</span>
+<span class="sd">        kinectic_coeffs (KineticCoefficients): the computed kinetic coefficients from which</span>
+<span class="sd">            the kinetic kicks are determined. This self-updates when they are computed with</span>
+<span class="sd">            the `kinetic_coefficients` method?</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_params</span><span class="p">:</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -200,7 +218,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span> <span class="o">=</span> <span class="n">optics</span>
         <span class="c1"># These self-update when they are computed, but can be overwritten by the user</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_coeffs</span><span class="p">:</span> <span class="n">DiffusionCoefficients</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">friction_coeffs</span><span class="p">:</span> <span class="n">FrictionCoefficients</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">friction_coeffs</span><span class="p">:</span> <span class="n">FrictionCoefficients</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kinectic_coeffs</span><span class="p">:</span> <span class="n">KineticCoefficients</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
     <span class="c1"># TODO: go over with Michalis on his old code and determine what is being done before porting it</span>

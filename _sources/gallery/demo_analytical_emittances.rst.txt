@@ -257,8 +257,8 @@ object and will be updated internally each time they are computed.
 
  .. code-block:: none
 
-    NagaitsevIntegrals(Ix=8.080074863172837e+19, Iy=1.4787255633698515e+17, Iz=6.011370322868276e+23)
-    NagaitsevIntegrals(Ix=8.080074863172837e+19, Iy=1.4787255633698515e+17, Iz=6.011370322868276e+23)
+    NagaitsevIntegrals(Ix=8.139897209848883e+19, Iy=1.4926563916750342e+17, Iz=6.045602497494139e+23)
+    NagaitsevIntegrals(Ix=8.139897209848883e+19, Iy=1.4926563916750342e+17, Iz=6.045602497494139e+23)
 
 
 
@@ -287,8 +287,8 @@ internally and updated internally each time they are computed.
 
  .. code-block:: none
 
-    IBSGrowthRates(Tx=374.5903267281716, Ty=102.82869426832902, Tz=91.799132227187)
-    IBSGrowthRates(Tx=374.5903267281716, Ty=102.82869426832902, Tz=91.799132227187)
+    IBSGrowthRates(Tx=377.1709222383724, Ty=105.91298375003639, Tz=93.20744278423678)
+    IBSGrowthRates(Tx=377.1709222383724, Ty=105.91298375003639, Tz=93.20744278423678)
 
 
 
@@ -321,9 +321,9 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step Epsilon_x = 9.914930270784692e-11
-    Next time step Epsilon_y = 6.607479068229443e-13
-    Next time step Sigma_delta = 0.0017345838815304852
+    Next time step Epsilon_x = 9.968022506515493e-11
+    Next time step Epsilon_y = 6.506852249202357e-13
+    Next time step Sigma_delta = 0.0017304964602339523
 
 
 
@@ -499,7 +499,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 32.340 seconds)
+   **Total running time of the script:** (0 minutes 36.248 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_emittances.py:
