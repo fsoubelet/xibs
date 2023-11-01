@@ -45,6 +45,18 @@ class FrictionCoefficients:
     Fz: float
 
 
+@dataclass
+class KineticCoefficients:
+    """
+    Container dataclass for kinetic IBS coefficients. These are computed from the diffusion
+    and friction ones according to :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
+    """
+
+    Tx: float
+    Ty: float
+    Tz: float
+
+
 # ----- Main class to compute kinetic coefficients and apply kicks ----- #
 
 
@@ -59,9 +71,12 @@ class KineticKickIBS:
         beam_parameters (BeamParameters): the beam parameters to use for the calculations.
         optics (OpticsParameters): the optics parameters to use for the calculations.
         diffusion_coeffs (DiffusionCoefficients): the computed diffusion coefficients. This
-            self-updates when they are computed with the `diffusion_coefficients` method.
+            self-updates when they are computed with the `kinetic_coefficients` method.
         friction_coeffs (FrictionCoefficients): the computed friction coefficients. This
-            self-updates when they are computed with the `growth_rates` method.
+            self-updates when they are computed with the `kinetic_coefficients` method.
+        kinectic_coeffs (KineticCoefficients): the computed kinetic coefficients from which
+            the kinetic kicks are determined. This self-updates when they are computed with
+            the `kinetic_coefficients` method?
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
@@ -70,5 +85,6 @@ class KineticKickIBS:
         # These self-update when they are computed, but can be overwritten by the user
         self.diffusion_coeffs: DiffusionCoefficients = None
         self.friction_coeffs: FrictionCoefficients = None
+        self.kinectic_coeffs: KineticCoefficients = None
 
     # TODO: go over with Michalis on his old code and determine what is being done before porting it

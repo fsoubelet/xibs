@@ -39,6 +39,9 @@ jobs:
       - name: Install package with test dependencies
         run: python -m pip install ".[test]"
 
+      - name: Install xsuite and pre-compile kernels  # avoids recompiling in every test
+        run: python -m pip install xsuite && xsuite-prebuild
+
       - name: Run Tests
         run: make tests
 

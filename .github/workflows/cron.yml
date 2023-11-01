@@ -32,11 +32,14 @@ jobs:
       - name: Clone necessary optics repositories
         run: make testrepos
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
+      - name: Upgrade pip and setuptools  # setuptools might be needed for 3.x builds
+        run: python -m pip install --upgrade pip setuptools wheel
 
       - name: Install package with test dependencies
         run: python -m pip install ".[test]"
+
+      - name: Install xsuite and pre-compile kernels  # avoids recompiling in every test
+        run: python -m pip install xsuite && xsuite-prebuild
 
       - name: Run Tests
         run: make tests
