@@ -33,7 +33,9 @@ def test_sps_injection_protons(madx_sps_injection_protons):
     # --------------------------------------------------------------------
     # Now we compare values to MAD-X
     assert np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, atol=0, rtol=5.1e-2)
-    assert np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, atol=0, rtol=52.5e-2)  # looked manually, integration struggles
+    assert np.isclose(
+        IBS.ibs_growth_rates.Ty, mad_Ty, atol=0, rtol=52.5e-2
+    )  # looked manually, integration struggles
     assert np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, atol=0, rtol=1e-2)
 
 
@@ -53,7 +55,9 @@ def test_sps_injection_ions(madx_sps_injection_ions):
     IBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
     # --------------------------------------------------------------------
     # Now we compare values to MAD-X
-    assert np.isclose(IBS.ibs_growth_rates.Tx, mad_Tx, atol=0, rtol=35e-2)  # looked manually, integration struggles
+    assert np.isclose(
+        IBS.ibs_growth_rates.Tx, mad_Tx, atol=0, rtol=35e-2
+    )  # looked manually, integration struggles
     assert np.isclose(IBS.ibs_growth_rates.Ty, mad_Ty, atol=0, rtol=3.8e-2)
     assert np.isclose(IBS.ibs_growth_rates.Tz, mad_Tz, atol=0, rtol=1e-2)
 
