@@ -227,7 +227,7 @@ figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(7, 8))
 
 epsx.plot(old_turn_by_turn.epsilon_x, "o", ms=2, label="Old")
 epsy.plot(old_turn_by_turn.epsilon_y, "o", ms=2, label="Old")
-sigdelta.plot( old_turn_by_turn.sig_delta, "o", ms=2, label="Old")
+sigdelta.plot(old_turn_by_turn.sig_delta, "o", ms=2, label="Old")
 epsx.plot(turn_by_turn.epsilon_x, label="New")
 epsy.plot(turn_by_turn.epsilon_y, label="New")
 sigdelta.plot(turn_by_turn.sig_delta, label="New")

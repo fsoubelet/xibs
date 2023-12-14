@@ -24,6 +24,7 @@ help:
 	@echo "  $(R) build $(E)  \t  to build wheel and source distribution with $(P)Hatch$(E)."
 	@echo "  $(R) clean $(E)  \t  to recursively remove build, run and bitecode files/dirs."
 	@echo "  $(R) docs $(E)  \t  to build the documentation for the package with $(P)Sphinx$(E)."
+	@echo "  $(R) docrepos $(E)  \t  to $(P)git$(E) clone the necessary repositories to build the documentation gallery."
 	@echo "  $(R) format $(E)  \t  to recursively apply PEP8 formatting through the $(P)Black$(E) and $(P)isort$(E) cli tools."
 	@echo "  $(R) install $(E)  \t  to $(C)pip install$(E) this package into the current environment."
 	@echo "  $(R) lines $(E)  \t  to count lines of code in the package folder with the $(P)tokei$(E) tool."
@@ -67,6 +68,13 @@ clean:
 docs:
 	@echo "Building static pages with $(D)Sphinx$(E)."
 	@python -m sphinx -v -b html docs doc_build -d doc_build
+	@rm -rf docs/sg_execution_times.rst
+
+docrepos:
+	@echo "Cloning acc-models-lhc repo, 2023 branch."
+	@git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
+	@echo "Moving acc-models-lhc repo to examples folder."
+	@mv acc-models-lhc examples/
 
 format:
 	@echo "Formatting code to PEP8 with $(P)isort$(E) and $(P)Black$(E). Max line length is 110 characters."
@@ -91,14 +99,14 @@ typing: format
 # ----- Tests Targets ----- #
 
 tests: clean
-	@python -m pytest -v
+	@python -m pytest -n auto -v
 
 testrepos:  # git cloning the necessary repos for tests files - specify branch, could also specify tag to make sure we are static
 	@echo "Cloning acc-models-ps repo, 2023 branch."
 	@git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-ps.git --depth 1
 	@echo "Cloning acc-models-sps repo, 2021 branch."
 	@git clone -b 2021 https://gitlab.cern.ch/acc-models/acc-models-sps.git --depth 1
-	@echo "Cloning acc-models-lhc repo, 2022 branch."
+	@echo "Cloning acc-models-lhc repo, 2023 branch."
 	@git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
 
 # Catch-all unknow targets without returning an error. This is a POSIX-compliant syntax.

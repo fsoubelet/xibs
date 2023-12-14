@@ -9,8 +9,8 @@ opticsfile: "acc-models-sps/strengths/lhc_ion.str"                  # relative t
 # Configuration variables
 energy: 36994.8                     # energy in [GeV]
 bunch_intensity: 3.5e8              # number of particles per bunch
-emit_x: 1.2612                      # norm emit x in [m]
-emit_y: 0.9081                      # norm emit y in [m]
+emit_x: 1.2612                      # norm emit x in [um]
+emit_y: 0.9081                      # norm emit y in [um]
 blns: 2.6284                        # bunch length in [ns]
 bl_lev: 0.0                  
 particle: "ion"                     # particle type

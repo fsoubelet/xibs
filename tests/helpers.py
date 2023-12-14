@@ -36,7 +36,7 @@ def get_madx_ibs_growth_rates(madx: Madx) -> Tuple[float, float, float]:
     return madx.globals.Tx, madx.globals.Ty, madx.globals.Tl
 
 
-def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
+def setup_madx_from_config(madx: Madx, config: Dict, remove_crossing_angles: bool = True) -> Params:
     """
     Takes values from loaded yaml config file and sets up the MAD-X lattice,
     sequence and beam so we can call IBS later on. This is machine / config
@@ -55,7 +55,6 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
     particle = config["particle"]  # particle type
     sequence_name = config["sequence_name"]  # accelerator sequence to use
     particle_mass_GeV = config["mass"]  # particle rest mass in [GeV]
-    particle_classical_radius_m = config["radius"]  # classical particle radius in [m]
     particle_charge = config["charge"]  # particle charge in [e]
     lhc_xing_knobs = config.get("lhc_xing_knobs", ())  # IP crossing knobs, only in LHC configs
 
@@ -91,9 +90,10 @@ def setup_madx_from_config(madx: Madx, config: Dict) -> Params:
     # ----- RF system and (potentially) crossing angles to 0 ----- #
     # In MAD-X there is a convention that RF cavity if we activate it we need to multiply
     # the voltage by the particle charge (important for ions) -> MAD-X asks for q*V [now xsuite also does]
-    with madx.batch():
-        madx.globals.update({knob: 0 for knob in lhc_xing_knobs})
     madx.globals[rf_knobs] = rf_voltage * 1e3 * particle_charge
+    if remove_crossing_angles is True:
+        with madx.batch():
+            madx.globals.update({knob: 0 for knob in lhc_xing_knobs})
     madx.command.twiss()
 
     # ----- Re-use sequence, set beam properties and do final twiss ----- #

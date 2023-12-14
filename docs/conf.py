@@ -27,6 +27,7 @@ if str(TOPLEVEL_DIR) not in sys.path:
 # See: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_type_aliases
 autodoc_type_aliases = {"ArrayLike": "ArrayLike"}
 
+
 # To use SVG outputs when scraping matplotlib figures for the sphinx-gallery
 class matplotlib_svg_scraper(object):
     def __repr__(self):
@@ -134,6 +135,7 @@ sphinx_gallery_conf = {
     "examples_dirs": ["../examples"],  # directory where to find plotting scripts
     "gallery_dirs": ["gallery"],  # directory where to store generated plots
     "filename_pattern": "^((?!sgskip).)*$",  # which files to execute, taken from matplotlib
+    'ignore_pattern': r'helpers.py',  # file to not generate a gallery for
     "subsection_order": ExampleTitleSortKey,
     "within_subsection_order": ExampleTitleSortKey,
     "reference_url": {"xibs": None},  # Sets up intersphinx in gallery code

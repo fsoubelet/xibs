@@ -9,8 +9,8 @@ opticsfile: "acc-models-sps/strengths/lhc_q26.str"                  # relative t
 # Configuration variables
 energy: 25.92                       # energy in [GeV]
 bunch_intensity: 1.2e11             # number of particles per bunch
-emit_x: 2.5                         # norm emit x in [m]
-emit_y: 2.5                         # norm emit y in [m]
+emit_x: 2.5                         # norm emit x in [um]
+emit_y: 2.5                         # norm emit y in [um]
 blns: 1.2                           # bunch length in [ns]
 bl_lev: 0.0                  
 particle: "proton"                  # particle type

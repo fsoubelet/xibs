@@ -95,8 +95,8 @@ class Records:
     bunch_length: np.ndarray
 
 
-nturns = 1000  # number of turns to loop for
-ibs_step = 50  # frequency at which to re-compute the growth rates in [turns]
+nturns = 10000  # number of turns to loop for
+ibs_step = 250  # frequency at which to re-compute the growth rates in [turns]
 dt = 1 / IBS.optics.revolution_frequency
 
 # For results of the new codes

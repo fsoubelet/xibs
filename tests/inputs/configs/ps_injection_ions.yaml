@@ -9,8 +9,8 @@ opticsfile: "acc-models-ps/scenarios/lhc_ion/0_injection/ps_inj_ion.str"     # r
 # Configuration variables - (see  Hannes' and Isabelle's report: https://cds.cern.ch/record/2749453/files/CERN-ACC-NOTE-2021-0003.pdf)
 energy: 208.744939                  # energy in [GeV]
 bunch_intensity: 8.1e8              # number of particles per bunch
-emit_x: 0.8                         # norm emit x in [m]
-emit_y: 0.5                         # norm emit y in [m]
+emit_x: 0.8                         # norm emit x in [um]
+emit_y: 0.5                         # norm emit y in [um]
 blns: 2.5                           # bunch length in [ns]
 bl_lev: 0.0                  
 particle: "ion"                     # particle type

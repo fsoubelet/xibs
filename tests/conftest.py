@@ -21,13 +21,6 @@ from helpers import setup_madx_from_config
 CURRENT_DIR = pathlib.Path(__file__).parent
 INPUTS_DIR = CURRENT_DIR / "inputs"
 
-# Various necessary files in acc-models-sps
-ACC_MODELS_SPS = INPUTS_DIR / "acc-models-sps"  # .gitignored so can be kept locally, is cloned in our CI
-SPS_SEQUENCE = ACC_MODELS_SPS / "SPS_LS2_2020-05-26.seq"
-SPS_TOOLKIT = ACC_MODELS_SPS / "toolkit"
-SPS_LHC_IONS_OPTICS = ACC_MODELS_SPS / "strengths" / "lhc_ion.str"
-SPS_LHC_IONS_BEAMS = ACC_MODELS_SPS / "beams" / "beam_lhc_ion_injection.madx"
-
 # Locations of folders with specific files for tests
 CONFIGS_DIR = INPUTS_DIR / "configs"  # config files for MAD-X setups
 LINES_DIR = INPUTS_DIR / "lines"  # (equivalent) frozen and saved xtrack.Lines
@@ -79,6 +72,66 @@ def madx_lhc_top_ions() -> Madx:
 
     with Madx(stdout=False) as madx:
         params = setup_madx_from_config(madx, config)
+        yield madx, params
+
+
+# -- LHC fixtures with crossing angles (and vertical dispersion) -- #
+
+
+@pytest.fixture(scope="function")
+def madx_lhc_injection_protons_with_vertical_disp() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHCB1 sequence, protons at
+    injection energy.
+    """
+    with open(CONFIGS_DIR / "lhc_injection_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        # important: set remove_crossing_angles to False to have vertical dispersion
+        params = setup_madx_from_config(madx, config, remove_crossing_angles=False)
+        # The opticsfile calls toolkit/reset-bump-flags which sets all crossing flags to 0
+        # anyway so I call the strengths again here explicitly
+        madx.call(file="acc-models-lhc/strengths/ATS_Nominal/2023/ats_10m.madx")
+        madx.command.twiss(centre=True)  # need to update twiss table for IBS command
+        yield madx, params
+
+
+@pytest.fixture(scope="function")
+def madx_lhc_top_protons_with_vertical_disp() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHCB1 sequence, protons at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "lhc_top_protons.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        # important: set remove_crossing_angles to False to have vertical dispersion
+        params = setup_madx_from_config(madx, config, remove_crossing_angles=False)
+        # The opticsfile calls toolkit/reset-bump-flags which sets all crossing flags to 0
+        # anyway so I call the strengths again here explicitly
+        madx.call(file="acc-models-lhc/strengths/ATS_Nominal/2023/ats_30cm.madx")
+        madx.command.twiss(centre=True)  # need to update twiss table for IBS command
+        yield madx, params
+
+
+@pytest.fixture(scope="function")
+def madx_lhc_top_ions_with_vertical_disp() -> Madx:
+    """
+    A cpymad.Madx instance with loaded LHCB1 sequence, ions at
+    top energy.
+    """
+    with open(CONFIGS_DIR / "lhc_top_ions.yaml") as config_file:
+        config = yaml.safe_load(config_file)
+
+    with Madx(stdout=False) as madx:
+        # important: set remove_crossing_angles to False to have vertical dispersion
+        params = setup_madx_from_config(madx, config, remove_crossing_angles=False)
+        # The opticsfile calls toolkit/reset-bump-flags which sets all crossing flags to 0
+        # anyway so I call the strengths again here explicitly
+        madx.call(file="acc-models-lhc/strengths/ATS_Nominal/2023_IONS/50cm.madx")
+        madx.command.twiss(centre=True)  # need to update twiss table for IBS command
         yield madx, params
 
 
