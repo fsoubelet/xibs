@@ -35,7 +35,7 @@ It goes very simply as:
     optics_params = OpticsParameters(twiss)
 
 .. note::
-    Since `xibs` version 0.3.0, there is a convenience method to do the above automatically for the user.
+    Since ``xibs`` version 0.3.0, there is a convenience method to do the above automatically for the user.
     It is documented in the :ref:`API reference <xibs-inputs>`.
     It goes according to:
 
@@ -50,7 +50,7 @@ It goes very simply as:
 Instantiating OpticsParameters from ``MAD-X``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For those using for instance ``MAD-X`` and looking to only use the analytical calculations of `xibs` without setting up a whole `xtrack.Line`, it is possible to instantiate the `OpticsParameters` from a ``MAD-X`` `twiss` result.
+For those using for instance ``MAD-X`` and looking to only use the analytical calculations of ``xibs`` without setting up a whole `xtrack.Line`, it is possible to instantiate the `OpticsParameters` from a ``MAD-X`` `twiss` result.
 
 The `twiss` result is expected in the form of a `pandas.DataFrame` with all lowercase columns and values, as given by `cpymad`.
 Some additional attributes not present in ``MAD-X``'s `twiss` result are expected to be provided at instantiation time, namely the revolution frequency and slip factor. 
@@ -72,7 +72,7 @@ These quantities can be computed from ``MAD-X`` after a `twiss`, as shown below:
     optics_params = OpticsParameters(twiss, slipfactor, frev_hz)
 
 .. note::
-    Since `xibs` version 0.3.0, there is a convenience method to do the above automatically for the user.
+    Since ``xibs`` version 0.3.0, there is a convenience method to do the above automatically for the user.
     It is documented in the :ref:`API reference <xibs-inputs>`.
 
     .. code-block:: python
@@ -126,7 +126,7 @@ The default mode to instantiate a `BeamParameters` is from an `xpart.Particles` 
 As seen just above, it is possible to use an `xtrack.Line`'s reference particle to do so.
 
 
-Since `xibs` version 0.3.0, there is a convenience method to do the above automatically for the user.
+Since ``xibs`` version 0.3.0, there is a convenience method to do the above automatically for the user.
 It is documented in the :ref:`API reference <xibs-inputs>`.
 It goes according to:
 
@@ -163,10 +163,69 @@ It is also possible to query the `beam` in use for the currently active sequence
     beam_params.n_part = int(npart)  # very important to adjust this!
 
 .. note::
-    Since `xibs` version 0.3.0, there is a convenience method to do the above automatically for the user.
+    Since ``xibs`` version 0.3.0, there is a convenience method to do the above automatically for the user.
     It is documented in the :ref:`API reference <xibs-inputs>`.
 
     .. code-block:: python
 
         # Let's assume your `cpymad.madx.Madx` instance is already defined
         beam_params = BeamParameters.from_madx(madx)
+
+
+.. _xibs-faq-geom-norm-emittances:
+
+Geomettric or Normalized Emittances
+-----------------------------------
+
+Some functions in ``xibs`` require emittances to be provided as input, for instance `~xibs.analytical.BjorkenMtingwaIBS.growth_rates`.
+In all such cases, while internally ``xibs`` uses geomtric emittances for computations (as they are the values used in the implemented formulae), it is possible to provide either the geometric or the normalized emittances.
+
+For these functions the API will ask for both `epsx` and `epsy` arguments, and offer an optional boolean argument `normalized_emittances` which defaults to `False`.
+If set to `True`, then the provided emittances are assumed to be the normalized ones, and will be converted to geometric emittances internally.
+
+For instance for the `~.BjorkenMtingwaIBS.growth_rates` method, the API is:
+
+.. code-block:: python
+
+    # Let's assume your beam and optics parameters have been instantiated
+    IBS = xibs.ibs(beam_params, optics, formalism=...)
+    
+    # Getting growth rates from geometric emittances goes as:
+    rates_geom = IBS.growth_rates(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+
+    # Getting growth rates from normalized emittances goes as:
+    rates_norm = IBS.growth_rates(
+        norm_epsx, norm_epsy, sigma_delta, bunch_length, normalized_emittances=True
+    )
+
+    # The two results are the same
+    assert rates_geom == rates_norm  # this is True
+
+For functions that also return emittance values, such as the `emittance_evolution` method of analytical IBS implementations, the returned values will be the same as the input ones, i.e. if normalized emittances were provided, then normalized emittances will be returned.
+That's as much as the user has to think about this.
+
+
+.. _xibs-faq-bunched-coasting-beams:
+
+Bunched and Coasting Beams
+--------------------------
+
+Users may want to obtain IBS growth rates for simulations in which they have coasting beams.
+This is possible, through currently only in the Bjorken & Mtingwa formalism.
+
+The `~.BjorkenMtingwaIBS.growth_rates` method provides a `bunched` boolean argument, which defaults to `True`, corresponding to a bunched beam case.
+To adapt the growth rates calculation for a coasting beam, one simply has to set this argument to `False`:
+
+.. code-block:: python
+
+    # Let's assume your beam and optics parameters have been instantiated
+    IBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)
+
+    # Getting growth rates for a bunched beam (default)
+    rates_bunched = IBS.growth_rates(psx, epsy, sigma_delta, bunch_length)
+
+    # Getting growth rates for a coasting beam
+    rates_coasting = IBS.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched=False)
+
+    # The two of course yield different values
+    assert rates_bunched != rates_coasting  # this is True

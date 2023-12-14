@@ -44,8 +44,8 @@ class BeamParameters:
         n_part (int): number of simulated particles.
         particle_charge (int): elementary particle charge, in # of Coulomb charges
             (for instance 1 for electron or proton).
-        particle_mass_GeV (float): particle mass in [GeV].
-        total_energy_GeV (float): total energy of the simulated particles in [GeV].
+        particle_mass_eV (float): particle mass in [eV].
+        total_energy_eV (float): total energy of the simulated particles in [eV].
         gamma_rel (float): relativistic gamma of the simulated particles.
         beta_rel (float): relativistic beta of the simulated particles.
         particle_classical_radius_m (float): the particles' classical radius in [m].
@@ -58,8 +58,8 @@ class BeamParameters:
     # The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michalis's code
     n_part: int = field(init=False)
     particle_charge: int = field(init=False)
-    particle_mass_GeV: float = field(init=False)
-    total_energy_GeV: float = field(init=False)
+    particle_mass_eV: float = field(init=False)
+    total_energy_eV: float = field(init=False)
     gamma_rel: float = field(init=False)
     beta_rel: float = field(init=False)
     particle_classical_radius_m: float = field(init=False)
@@ -69,8 +69,8 @@ class BeamParameters:
         LOGGER.debug("Initializing BeamParameters from Particles object")
         self.n_part = particles.weight[0] * particles.gamma0.shape[0]
         self.particle_charge = particles.q0
-        self.particle_mass_GeV = particles.mass0 * 1e-9
-        self.total_energy_GeV = np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2) * 1e-9
+        self.particle_mass_eV = particles.mass0
+        self.total_energy_eV = np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2)
         self.gamma_rel = particles.gamma0[0]
         self.beta_rel = particles.beta0[0]
         self.particle_classical_radius_m = particles.get_classical_particle_radius0()
@@ -207,7 +207,7 @@ class OpticsParameters:
     ):
         # Attributes derived from the TwissTable
         self.s = np.array(twiss.s)
-        self.circumference = twiss.s[-1]
+        self.circumference = self.s[-1]
         self.betx = np.array(twiss.betx)
         self.bety = np.array(twiss.bety)
         self.alfx = np.array(twiss.alfx)
@@ -261,6 +261,13 @@ class OpticsParameters:
         gamma_tr = madx.table.summ.gammatr[0]  # transition gamma
         slipfactor = (1 / (gamma_tr**2)) - (1 / (gamma_rel**2))  # use the xsuite convention!
 
+        cminus = madx.table.summ.dqmin[0]  # just to check coupling
+        if not np.isclose(cminus, 0, atol=0, rtol=1e-4):  # there is some betatron coupling
+            LOGGER.warning(
+                f"There is betatron coupling in the machine (|Cminus| = {cminus:.3f}),"
+                "which is not taken into account in analytical calculations."
+            )
+
         LOGGER.debug("Initializing OpticsParameters from determined parameters")
         return cls(twiss, slipfactor, frev_hz)
 
@@ -284,6 +291,12 @@ class OpticsParameters:
         method = kwargs.pop("method", "4d")  # by default 4D, can be overriden
         LOGGER.debug("Running TWISS for on the line")
         twiss = line.twiss(method=method, **kwargs)
+
+        if not np.isclose(twiss.c_minus, 0, atol=0, rtol=1e-4):  # there is some betatron coupling
+            LOGGER.warning(
+                f"There is betatron coupling in the machine (|Cminus| = {twiss.c_minus:.3f}),"
+                "which is not taken into account in analytical calculations."
+            )
 
         LOGGER.debug("Initializing OpticsParameters from determined parameters")
         return cls(twiss)
