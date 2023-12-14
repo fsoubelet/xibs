@@ -7,10 +7,10 @@ sequence_name: "sps"                                                # sequence n
 opticsfile: "acc-models-sps/strengths/lhc_q26.str"                  # relative to pytest run directory
 
 # Configuration variables
-energy: 451                         # energy in [GeV]
+energy: 450                         # energy in [GeV]
 bunch_intensity: 1.2e11             # number of particles per bunch
-emit_x: 2.5                         # norm emit x in [m]
-emit_y: 2.5                         # norm emit y in [m]
+emit_x: 2.5                         # norm emit x in [um]
+emit_y: 2.5                         # norm emit y in [um]
 blns: 1.2                           # bunch length in [ns]
 bl_lev: 0.0                  
 particle: "proton"                  # particle type

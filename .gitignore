@@ -274,3 +274,5 @@ acc-models-lhc/
 doc_build/
 docs/gallery/
 docs/gen_modules/
+
+*.ipynb

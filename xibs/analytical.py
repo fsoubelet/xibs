@@ -1,12 +1,19 @@
 """
 .. _xibs-analytical:
 
-Analytical Calculations
------------------------
+IBS: Analytical Calculations
+----------------------------
 
-Module with functionality to perform analytical calculations according to Nagaitsev's formalism.
-A user-facing class is provided which computes the Nagaitsev integrals based on beam parameters and machine optics.
-The formalism from which formulas and calculations are implemented can be found in :cite:p:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`.
+Module with functionality to perform analytical IBS calculations, either according to either Nagaitsev's or Bjorken & Mtingwa's formalism.
+User-facing classes are provided which allow to compute the growth rates based on beam parameters and machine optics.
+The formalism from which formulas and calculations are implemented can be found in :cite:p:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation` and :cite:`CERN:Antoniou:Revision_IBS_MADX`, respectively.
+
+.. warning::
+    Please note that these analytical implementations make the assumptions.
+    Should your scenario not satisfy the following assumptions, the results might not be accurate:
+
+        - It is assumed that beam profiles are Gaussian,
+        - It is assumed that no betatron coupling is present in the machine.
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
@@ -14,12 +21,13 @@ import warnings
 
 from dataclasses import astuple, dataclass
 from logging import getLogger
-from typing import Tuple
+from typing import Callable, Tuple
 
 import numpy as np
 
+from numpy.typing import ArrayLike
 from scipy.constants import c, hbar
-from scipy.integrate import quad
+from scipy.integrate import quad, quad_vec
 from scipy.interpolate import interp1d
 from scipy.special import elliprd
 
@@ -68,11 +76,11 @@ class IBSGrowthRates:
     Tz: float
 
 
-# ----- Main class to compute Nagaitsev integrals and IBS growth rates ----- #
+# ----- Classes to Compute Analytical IBS Growth Rates ----- #
 
 
 class NagaitsevIBS:
-    """
+    r"""
     .. versionadded:: 0.2.0
 
     A single class to compute Nagaitsev integrals (see
@@ -119,8 +127,12 @@ class NagaitsevIBS:
 
         .. note::
             This function follows the exact computing implementation of the Coulomb log
-            calculation in the ``MAD-X`` source code. One can find it in the source code
-            in the file `MAD-X/src/ibsdb.f90` as the `twclog` subroutine.
+            calculation in the ``MAD-X`` source code, which ine can find in the file
+            `MAD-X/src/ibsdb.f90` as the `twclog` subroutine. It is computed as
+            :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`. Here :math:`r_{max}`
+            denotes the smaller of :math:`\sigma_x` and the Debye length; while :math:`r_{min}`
+            is the larger of the classical distance of closest approach and the quantum
+            diffraction limit from the nuclear radius.
 
         Args:
             epsx (float): horizontal geometric emittance in [m].
@@ -143,10 +155,12 @@ class NagaitsevIBS:
         # Computing "average" of these functions - better here than a simple np.mean
         # calculation because the latter doesn't take in consideration element lengths
         # and can be skewed by some very high peaks in the optics
-        _bx_bar = quad(_bxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
-        _by_bar = quad(_byb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
-        _dx_bar = quad(_dxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
-        _dy_bar = quad(_dyb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+        with warnings.catch_warnings():  # Catch and ignore the scipy.integrate.IntegrationWarning
+            warnings.simplefilter("ignore", category=UserWarning)
+            _bx_bar = quad(_bxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+            _by_bar = quad(_byb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+            _dx_bar = quad(_dxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
+            _dy_bar = quad(_dyb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
         # ----------------------------------------------------------------------------------------------
         # Calculate transverse temperature as 2*P*X, i.e. assume the transverse energy is temperature/2
         # fmt: off
@@ -197,9 +211,9 @@ class NagaitsevIBS:
 
                 - Computes various intermediate terms and then :math:`a_x, a_y, a_s, a_1` and :math:`a_2` constants from Eq (18-21).
                 - Computes the eigenvalues :math:`\lambda_1, \lambda_2` of the :math:`\bf{A}` matrix (:math:`\bf{L}` matrix in B&M) from Eq (22-24).
-                - Iteratively computes the :math:`R_1, R_2` and :math:`R_3` terms from Eq (25-27) with the forms of Eq (5-6).
+                - Computes the :math:`R_1, R_2` and :math:`R_3` terms from Eq (25-27) with the forms of Eq (5-6).
                 - Computes the :math:`S_p, S_x` and :math:`S_{xp}` terms from Eq (33-35).
-                - Computes and return the integrals terms in Eq (30-32).
+                - Computes and returns the integrals terms in Eq (30-32).
 
         Args:
             epsx (float): horizontal geometric emittance in [m].
@@ -214,8 +228,8 @@ class NagaitsevIBS:
         # All of the following (when type annotated as np.ndarray), hold one value per element in the lattice
         # ----------------------------------------------------------------------------------------------
         # Computing necessary intermediate terms for the following lines
-        sigx: np.ndarray = np.sqrt(self.optics.betx * geom_epsx + (self.optics.dx * sigma_delta) ** 2)
-        sigy: np.ndarray = np.sqrt(self.optics.bety * geom_epsy + (self.optics.dy * sigma_delta) ** 2)
+        sigx: np.ndarray = np.sqrt(self.optics.betx * geom_epsx + (self.optics.dx * sigma_delta)**2)
+        sigy: np.ndarray = np.sqrt(self.optics.bety * geom_epsy + (self.optics.dy * sigma_delta)**2)
         phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, self.optics.dx, self.optics.dpx)
         # Computing the constants from Eq (18-21) in Nagaitsev paper
         ax: np.ndarray = self.optics.betx / geom_epsx
@@ -248,12 +262,13 @@ class NagaitsevIBS:
             * (Sx + Sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + Sxp)
         )
         Iy_integrand = self.optics.bety / (self.optics.circumference * sigx * sigy) * (R2 + R3 - 2 * R1)
-        Ip_integrand = Sp / (self.optics.circumference * sigx * sigy)
+        Iz_integrand = Sp / (self.optics.circumference * sigx * sigy)
         # ----------------------------------------------------------------------------------------------
         # Integrating the integrands above accross the ring to get the desired results
+        # This is identical to np.trapz(Ixyz_integrand, self.optics.s) but faster and somehow closer to MAD-X values
         Ix = float(np.sum(Ix_integrand[:-1] * np.diff(self.optics.s)))
         Iy = float(np.sum(Iy_integrand[:-1] * np.diff(self.optics.s)))
-        Iz = float(np.sum(Ip_integrand[:-1] * np.diff(self.optics.s)))
+        Iz = float(np.sum(Iz_integrand[:-1] * np.diff(self.optics.s)))
         result = NagaitsevIntegrals(Ix, Iy, Iz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
@@ -264,7 +279,12 @@ class NagaitsevIBS:
     # This is the end of the calculations in 'Nagaitsev_Integrals' from Michalis's old code (the last 3 lines essentially)
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def growth_rates(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        compute_integrals: bool = True,
     ) -> IBSGrowthRates:
         r"""
         .. versionadded:: 0.2.0
@@ -273,12 +293,12 @@ class NagaitsevIBS:
         code base, from Nagaitsev integrals. These correspond to the :math:`1 / \tau` term,
         for each plane, of Eq (28) in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`,
         respectively. The instance attribute `self.ibs_growth_rates` is automatically updated
-        with the results of this method.
+        with the results of this method when it is called.
 
-        .. warning::
+        .. note::
             This calculation is done by building on the Nagaitsev integrals. If the
-            latter have not been computed yet, this method will raise an error. Please
-            remember to call the instance's `integrals` method first.
+            latter have not been computed yet, this method will first log a message
+            and compute them, then compute the growth rates.
 
         .. warning::
             Currently this calculation does not take into account vertical dispersion.
@@ -299,21 +319,23 @@ class NagaitsevIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
-
-        Raises:
-            ValueError: if the Nagaitsev integrals have not yet been computed.
+            compute_integrals (bool): if `True`, the Nagaitsev elliptic integrals will be computed
+                before the growth rates. Defaults to `True`. New in version 0.3.0.
 
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the Nagaitsev integrals have been computed beforehand
-        if self.elliptic_integrals is None:
-            LOGGER.error("Attempted to compute growth rates without having computed Nagaitsev integrals.")
-            raise ValueError(
-                "Nagaitsev integrals have not been computed yet, cannot compute growth rates.\n"
-                "Please call the `integrals` method first."
+        if self.elliptic_integrals is None and compute_integrals is False:
+            LOGGER.info(
+                "Computing growth rates requires having computed Nagaitsev integrals. They will be computed first."
             )
+            _ = self.integrals(geom_epsx, geom_epsy, sigma_delta)
+        # ----------------------------------------------------------------------------------------------
+        # Compute the integrals if asked to by the user (default behaviour)
+        if compute_integrals is True:
+            _ = self.integrals(geom_epsx, geom_epsy, sigma_delta)
         LOGGER.info("Computing IBS growth rates for defined beam and optics parameters")
         # ----------------------------------------------------------------------------------------------
         # Get the Coulomb logarithm and the rest of the constant term in Eq (30-32)
@@ -341,7 +363,7 @@ class NagaitsevIBS:
     # This is 'emit_evol' from Michalis's old code
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL (unused) and dt there
     def emittance_evolution(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, dt: float = None
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
     ) -> Tuple[float, float, float]:
         r"""
         .. versionadded:: 0.2.0
@@ -356,26 +378,29 @@ class NagaitsevIBS:
 
         .. tip::
             The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
-            according to:
+            according to the following, where :math:`N` represents the time step:
 
             .. math::
 
                 T_{x,y,z} &= 1 / \tau_{x,y,z}
 
-                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} + e^{t / \tau_{x,y}}
+                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
 
-                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} + e^{t / 2 \tau_{z}}
+                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
+
+                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
 
 
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            geom_epsx (float): horizontal geometric emittance in [m].
+            geom_epsy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
-            dt (float, optional): the time interval to use. Default to the inverse
+            dt (float, optional): the time interval to use, in [s]. Default to the inverse
                 of the revolution frequency, :math:`1 / f_{rev}`.
+            bunch_length (float): the bunch length in [m].
 
         Raises:
-            ValueError: if the IBS growth rates have not yet been computed.
+            ValueError: if the ``IBS`` growth rates have not yet been computed.
 
         Returns:
             A tuple with the new horizontal & vertical geometric emittances as well as the new
@@ -397,7 +422,727 @@ class NagaitsevIBS:
             dt = 1 / self.optics.revolution_frequency
         # ----------------------------------------------------------------------------------------------
         # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        new_epsx = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
-        new_epsy = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
-        new_sigma_delta = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        return new_epsx, new_epsy, new_sigma_delta
+        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
+        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
+        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
+
+
+class BjorkenMtingwaIBS:
+    r"""
+    .. versionadded:: 0.3.0
+
+    A single class to compute the IBS growth rates according to the `Bjorken & Mtingwa` formalism.
+    The exact approach follows the ``MAD-X`` implementation, which has corrected B&M in order to
+    take in consideration the vertical dispersion values (see the relevant note about the changes
+    at :cite:`CERN:Antoniou:Revision_IBS_MADX`). It initiates from a `BeamParameters` and an
+    `OpticsParameters` objects.
+
+    .. note::
+        If possible, when creating the `OpticsParameters` to initiate this class, please do so
+        by providing the ``TWISS`` values calculated at the center of elements. This is done by
+        giving the flag `centre=true` to the ``TWISS`` command in ``MAD-X``, for instance. If
+        this isn't done, a warning will be issued that one might observe some slight discrepancies
+        against ``MAD-X`` result values.
+
+    Attributes:
+        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
+        optics (OpticsParameters): the optics parameters to use for the calculations.
+        ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
+            when they are computed with the `growth_rates` method.
+    """
+
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+        self.beam_parameters: BeamParameters = beam_params
+        self.optics: OpticsParameters = optics
+        # These self-update when they are computed, but can be overwritten by the user
+        self.ibs_growth_rates: IBSGrowthRates = None
+
+    def __str__(self) -> str:
+        has_growth_rates = self.ibs_growth_rates is not None
+        return (
+            "BjorkenMtingwaIBS object for analytical IBS calculations.\n"
+            f"IBS growth rates computed: {has_growth_rates}"
+        )
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def coulomb_log(
+        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
+    ) -> float:
+        r"""
+        .. versionadded:: 0.3.0
+
+        Calculates the Coulomb logarithm based on the beam parameters and optics the class
+        was initiated with. For a good introductory resource on the Coulomb Log, see:
+        https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html
+
+        .. note::
+            This function follows the exact computing implementation of the Coulomb log
+            calculation in the ``MAD-X`` source code, which ine can find in the file
+            `MAD-X/src/ibsdb.f90` as the `twclog` subroutine. It is computed as
+            :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`. Here :math:`r_{max}`
+            denotes the smaller of :math:`\sigma_x` and the Debye length; while :math:`r_{min}`
+            is the larger of the classical distance of closest approach and the quantum
+            diffraction limit from the nuclear radius.
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): bunch length in [m].
+
+        Returns:
+            The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
+        """
+        # We call the NagaitsevIBS class to compute the Coulomb log, it is a little bit
+        # of runtime overhead but I don't want to duplicate the code.
+        return NagaitsevIBS(self.beam_parameters, self.optics).coulomb_log(
+            geom_epsx, geom_epxy, sigma_delta, bunch_length
+        )
+
+    def _Gamma(
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        bunched: bool = True,
+    ) -> float:
+        r"""
+        .. versionadded:: 0.3.0
+
+        Computes :math:`\Gamma`, the 6-dimensional invariant phase space volume of a bunched beam.
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): the bunch length in [m].
+            bunched (bool): whether the beam is bunched or coasting, as there is a factor
+                :math:`\sqrt(2)` between the two. Defaults to `True`.
+
+        Returns:
+            The computed :math:`\Gamma` value.
+        """
+        factor = 1 if bunched is True else np.sqrt(2)  # for coasting beams we will divide by sqrt(2)
+        # fmt: off
+        _gamma = (
+            (2 * np.pi) ** 3
+            * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel) ** 3
+            * (self.beam_parameters.particle_mass_GeV * 1e6)**3  # use mass in eV like in .growth_rates method (the m^3 terms cancel out)
+            * geom_epsx
+            * geom_epsy
+            * sigma_delta
+            * bunch_length
+        )
+        # fmt: on
+        return _gamma / factor
+
+    def _a(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the a term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betx_over_epsx: np.ndarray = self.optics.betx / geom_epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = self.optics.bety / geom_epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        Hx: np.ndarray = (Dx**2 + self.optics.betx**2 * phix**2) / self.optics.betx
+        Hy: np.ndarray = (Dy**2 + self.optics.bety**2 * phiy**2) / self.optics.bety
+        # ----------------------------------------------------------------------------------------------
+        a: np.ndarray = (
+            gamma**2 * (Hx / geom_epsx + Hy / geom_epsy)
+            + gamma**2 / (sigma_delta**2)
+            + (betx_over_epsx + bety_over_epsy)
+        )
+        return a
+
+    def _b(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the b term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betxbety: np.ndarray = self.optics.betx * self.optics.bety  # beta_x * beta_y term
+        epsxepsy: np.ndarray = geom_epsx * geom_epsy  # eps_x * eps_y term
+        betx_over_epsx: np.ndarray = self.optics.betx / geom_epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = self.optics.bety / geom_epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        # ----------------------------------------------------------------------------------------------
+        b: np.ndarray = (
+            (betx_over_epsx + bety_over_epsy)
+            * (
+                (gamma**2 * Dx**2) / (geom_epsx * self.optics.betx)
+                + (gamma**2 * Dy**2) / (geom_epsy * self.optics.bety)
+                + gamma**2 / sigma_delta**2
+            )
+            + betxbety * gamma**2 * (phix**2 + phiy**2) / (epsxepsy)
+            + (betxbety / epsxepsy)
+        )
+        return b
+
+    def _c(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the c term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betxbety: np.ndarray = self.optics.betx * self.optics.bety  # beta_x * beta_y term
+        epsxepsy: np.ndarray = geom_epsx * geom_epsy  # eps_x * eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        # ----------------------------------------------------------------------------------------------
+        c: np.ndarray = (betxbety / (epsxepsy)) * (
+            (gamma**2 * Dx**2) / (geom_epsx * self.optics.betx)
+            + (gamma**2 * Dy**2) / (geom_epsy * self.optics.bety)
+            + gamma**2 / sigma_delta**2
+        )
+        return c
+
+    def _ax(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the ax term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We define new shorter names for a lot of arrays, for clarity of the expressions below
+        betx: np.ndarray = self.optics.betx  # horizontal beta-functions
+        bety: np.ndarray = self.optics.bety  # vertical beta-functions
+        epsx: float = geom_epsx  # horizontal geometric emittance
+        epsy: float = geom_epsy  # vertical geometric emittance
+        sigd: float = sigma_delta  # momentum spread
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betx_over_epsx: np.ndarray = betx / epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = bety / epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        Hx: np.ndarray = (Dx**2 + self.optics.betx**2 * phix**2) / self.optics.betx
+        Hy: np.ndarray = (Dy**2 + self.optics.bety**2 * phiy**2) / self.optics.bety
+        # ----------------------------------------------------------------------------------------------
+        ax: np.ndarray = (  # double checked formula vs table - not same values as tx1 * cprime!
+            2 * gamma**2 * (Hx / epsx + Hy / epsy + 1 / sigd**2)
+            - (betx * Hy) / (Hx * epsy)
+            + (betx / (Hx * gamma**2)) * (2 * betx_over_epsx - bety_over_epsy - gamma**2 / sigd**2)
+            - 2 * betx_over_epsx
+            - bety_over_epsy
+            + (betx / (Hx * gamma**2)) * (6 * betx_over_epsx * gamma**2 * phix**2)
+        )
+        return ax
+
+    def _bx(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the bx term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We define new shorter names for a lot of arrays, for clarity of the expressions below
+        betx: np.ndarray = self.optics.betx  # horizontal beta-functions
+        bety: np.ndarray = self.optics.bety  # vertical beta-functions
+        epsx: float = geom_epsx  # horizontal geometric emittance
+        epsy: float = geom_epsy  # vertical geometric emittance
+        sigd: float = sigma_delta  # momentum spread
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betx_over_epsx: np.ndarray = betx / epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = bety / epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        Hx: np.ndarray = (Dx**2 + self.optics.betx**2 * phix**2) / self.optics.betx
+        Hy: np.ndarray = (Dy**2 + self.optics.bety**2 * phiy**2) / self.optics.bety
+        # ----------------------------------------------------------------------------------------------
+        bx: np.ndarray = (  # double checked formula vs table - not same values as tx2 * cprime
+            (betx_over_epsx + bety_over_epsy)
+            * (gamma**2 * Hx / epsx + gamma**2 * Hy / epsy + gamma**2 / sigd**2)
+            - gamma**2 * (betx_over_epsx**2 * phix**2 + bety_over_epsy**2 * phiy**2)
+            + betx_over_epsx * (betx_over_epsx - 4 * bety_over_epsy)
+            + (betx / (Hx * gamma**2))
+            * (
+                (gamma**2 / sigd**2) * (betx_over_epsx - 2 * bety_over_epsy)
+                + betx_over_epsx * bety_over_epsy
+                + 6 * betx_over_epsx * bety_over_epsy * gamma**2 * phix**2
+                + gamma**2 * (2 * bety_over_epsy**2 * phiy**2 - betx_over_epsx**2 * phix**2)
+            )
+            + ((betx * Hy) / (epsy * Hx)) * (betx_over_epsx - 2 * bety_over_epsy)
+        )
+        return bx
+
+    def _ay(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the ay term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betx_over_epsx: np.ndarray = self.optics.betx / geom_epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = self.optics.bety / geom_epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        Hx: np.ndarray = (Dx**2 + self.optics.betx**2 * phix**2) / self.optics.betx
+        Hy: np.ndarray = (Dy**2 + self.optics.bety**2 * phiy**2) / self.optics.bety
+        # ----------------------------------------------------------------------------------------------
+        ay: np.ndarray = (
+            -(gamma**2)
+            * (
+                Hx / geom_epsx
+                + 2 * Hy / geom_epsy
+                + (self.optics.betx * Hy) / (self.optics.bety * geom_epsx)
+                + 1 / sigma_delta**2
+            )
+            + 2 * gamma**4 * Hy / self.optics.bety * (Hy / geom_epsy + Hx / geom_epsx)
+            + 2 * gamma**4 * Hy / (self.optics.bety * sigma_delta**2)
+            - (betx_over_epsx - 2 * bety_over_epsy)
+            + (6 * bety_over_epsy * gamma**2 * phiy**2)
+        )
+        return ay
+
+    def _by(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the by term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betxbety: np.ndarray = self.optics.betx * self.optics.bety  # beta_x * beta_y term
+        epsxepsy: np.ndarray = geom_epsx * geom_epsy  # eps_x * eps_y term
+        betx_over_epsx: np.ndarray = self.optics.betx / geom_epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = self.optics.bety / geom_epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        Hx: np.ndarray = (Dx**2 + self.optics.betx**2 * phix**2) / self.optics.betx
+        Hy: np.ndarray = (Dy**2 + self.optics.bety**2 * phiy**2) / self.optics.bety
+        # ----------------------------------------------------------------------------------------------
+        by: np.ndarray = (
+            gamma**2 * (bety_over_epsy - 2 * betx_over_epsx) * (Hx / geom_epsx + 1 / sigma_delta**2)
+            + gamma**2 * Hy / geom_epsy * (bety_over_epsy - 4 * betx_over_epsx)
+            + (betxbety / epsxepsy)
+            + gamma**2 * (2 * betx_over_epsx**2 * phix**2 - bety_over_epsy**2 * phiy**2)
+            + gamma**4
+            * Hy
+            / self.optics.bety
+            * (betx_over_epsx + bety_over_epsy)
+            * (Hy / geom_epsy + 1 / sigma_delta**2)
+            + gamma**4 * Hx * Hy / (self.optics.bety * geom_epsx) * (betx_over_epsx + bety_over_epsy)
+            - gamma**4
+            * Hy
+            / self.optics.bety
+            * (betx_over_epsx**2 * phix**2 + bety_over_epsy**2 * phiy**2)
+            + 6 * gamma**2 * phiy**2 * betx_over_epsx * bety_over_epsy
+        )
+        return by
+
+    def _az(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the al term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betx_over_epsx: np.ndarray = self.optics.betx / geom_epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = self.optics.bety / geom_epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        Hx: np.ndarray = (Dx**2 + self.optics.betx**2 * phix**2) / self.optics.betx
+        Hy: np.ndarray = (Dy**2 + self.optics.bety**2 * phiy**2) / self.optics.bety
+        # ----------------------------------------------------------------------------------------------
+        az: np.ndarray = (
+            2 * gamma**2 * (Hx / geom_epsx + Hy / geom_epsy + 1 / sigma_delta**2)
+            - betx_over_epsx
+            - bety_over_epsy
+        )
+        return az
+
+    def _bz(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
+        """Computes the bl term of Table 1 in the MAD-X note."""
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        betx_over_epsx: np.ndarray = self.optics.betx / geom_epsx  # beta_x / eps_x term
+        bety_over_epsy: np.ndarray = self.optics.bety / geom_epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dy: np.ndarray = self.optics.dy * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        Dpy: np.ndarray = self.optics.dpy * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, Dx, Dpx)
+        phiy: np.ndarray = phi(self.optics.bety, self.optics.alfy, Dy, Dpy)
+        Hx: np.ndarray = (Dx**2 + self.optics.betx**2 * phix**2) / self.optics.betx
+        Hy: np.ndarray = (Dy**2 + self.optics.bety**2 * phiy**2) / self.optics.bety
+        # ----------------------------------------------------------------------------------------------
+        bz: np.ndarray = (
+            (betx_over_epsx + bety_over_epsy)
+            * gamma**2
+            * (Hx / geom_epsx + Hy / geom_epsy + 1 / sigma_delta**2)
+            - 2 * betx_over_epsx * bety_over_epsy
+            - gamma**2 * (betx_over_epsx**2 * phix**2 + bety_over_epsy**2 * phiy**2)
+        )
+        return bz
+
+    def _constants(
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float
+    ) -> Tuple[float, ArrayLike, ArrayLike, float]:
+        r"""
+        .. versionadded:: 0.3.0
+
+        Computes the constant terms of Eq (8) in :cite:`CERN:Antoniou:Revision_IBS_MADX`.
+        Returned are four terms: first the constant common to all planes, then the horizontal,
+        vertical and longitudinal terms (in brackets in Eq (8)).
+
+        The common constant and the longitudinal constant are floats. The horizontal and vertical
+        terms are arrays, with one value per element in the lattice (as they depend on :math:`H_x`
+        and :math:`\beta_y`, respectively).
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): the bunch length in [m].
+
+        Returns:
+            Four variables corresponding to the common, horizontal, vertical and longitudinal
+            constants of Eq (8) in :cite:`CERN:Antoniou:Revision_IBS_MADX`.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # fmt: off
+        # We define new shorter names for a lot of arrays, for clarity of the expressions below
+        betx: np.ndarray = self.optics.betx  # horizontal beta-functions
+        bety: np.ndarray = self.optics.bety  # vertical beta-functions
+        alfx: np.ndarray = self.optics.alfx  # horizontal alpha-functions
+        epsx: float = geom_epsx  # horizontal geometric emittance
+        epsy: float = geom_epsy  # vertical geometric emittance
+        # ----------------------------------------------------------------------------------------------
+        # We compute (once) some convenience terms used a lot in the equations, for efficiency & clarity
+        beta: float = self.beam_parameters.beta_rel  # relativistic beta
+        gamma: float = self.beam_parameters.gamma_rel  # relativistic gamma
+        bety_over_epsy: np.ndarray = bety / epsy  # beta_y / eps_y term
+        # ----------------------------------------------------------------------------------------------
+        # Adjust dispersion and dispersion prime by multiplied by relativistic beta, in order to be in the
+        # deltap and not the pt frame (default in MAD-X / xsuite). Necessary for non-relativistic beams
+        LOGGER.debug("Adjusting Dx, Dy, Dpx, Dpy to be in the pt frame")
+        Dx: np.ndarray = self.optics.dx * beta
+        Dpx: np.ndarray = self.optics.dpx * beta
+        # ----------------------------------------------------------------------------------------------
+        # Computing Phi_{x,y} amd H_{x,y} as defined in Eq (6) and Eq (7) of the note
+        LOGGER.debug("Computing Phi_x, Phi_y, H_x and H_y at all elements")
+        phix: np.ndarray = phi(betx, alfx, Dx, Dpx)
+        Hx: np.ndarray = (Dx**2 + betx**2 * phix**2) / betx
+        # ----------------------------------------------------------------------------------------------
+        # Compute the Coulomb logarithm and the common constant term in Eq (8) (the first fraction)
+        coulomb_logarithm: float = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        common_constant_term: float = (
+            np.pi**2
+            * self.beam_parameters.particle_classical_radius_m**2
+            * c
+            * (self.beam_parameters.particle_mass_GeV * 1e6)** 3  # use mass in eV like in ._Gamma method (the m^3 terms cancel out)
+            * self.beam_parameters.n_part
+            * coulomb_logarithm
+            / (self.beam_parameters.gamma_rel * self._Gamma(geom_epsx, geom_epsy, sigma_delta, bunch_length))
+        )
+        # ----------------------------------------------------------------------------------------------
+        # fmt: on
+        # Compute the plane-dependent constants (in brackets) for each plane of Eq (8) in the MAD-X note
+        const_x: np.ndarray = gamma**2 * Hx / epsx
+        const_y: np.ndarray = bety_over_epsy
+        const_z: float = gamma**2 / sigma_delta**2
+        # ----------------------------------------------------------------------------------------------
+        # Return the four terms now
+        return common_constant_term, const_x, const_y, const_z
+
+    def growth_rates(
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        integration_intervals: int = 17,
+    ) -> IBSGrowthRates:
+        r"""
+        .. versionadded:: 0.3.0
+
+        Computes the ``IBS`` growth rates, named :math:`T_x, T_y` and :math:`T_z` in this code
+        base. These correspond to the :math:`1 / \tau` term, for each plane :math:`x, y` and
+        :math:`z`, respectively. The instance attribute `self.ibs_growth_rates` is automatically
+        updated with the results of this method when it is called.
+
+        .. warning::
+            When creating the `OpticsParameters` to initiate this class, please do so by providing
+            the ``TWISS`` values calculated at the center of elements. This is done by giving the
+            flag `centre=true` to the ``TWISS`` command in ``MAD-X`` for instance. If not, one might
+            observe some slight discrepancies with the ``MAD-X`` values.
+
+        .. tip::
+            The calculation is done according to the following steps, which are related to different
+            equations in :cite:`CERN:Antoniou:Revision_IBS_MADX`:
+
+                - Adjusts the :math:`D_x, D_y, D^{\prime}_{x}, D^{\prime}_{y}` terms (multiply by :math:`\beta_{rel}`) to be in the :math:`pt` frame.
+                - Computes the various terms from Table 1 of the MAD-X note.
+                - Computes the Coulomb logarithm and the common constant term (first fraction) of Eq (8).
+                - Defines the integrands of integrals in Eq (8) of the MAD-X note.
+                - Defines sub-intervals and integrates the above over all of them, getting growth rates at each element in the lattice.
+                - Averages the results over the full circumference of the machine.
+
+        Args:
+            epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): the bunch length in [m].
+            integration_intervals (int): the number of sub-intervals to use when integrating the
+                integrands of Eq (8) of the MAD-X note. Please DO NOT change this parameter unless
+                you know exactly what you are doing. Defaults to 17.
+
+        Returns:
+            An `IBSGrowthRates` object with the computed growth rates for each plane.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # We warn the user in case the TWISS was not centered - but keep going
+        if self.optics._is_centered is False:
+            LOGGER.warning("Twiss was not calculated at center of elements")
+            warnings.warn(
+                "The provided Twiss was calculated at the exit of the elements, but a centered version is "
+                "desired. You might notice some discrepancies with the results from MAD-X itself."
+            )
+        # fmt: off
+        # All of the following (when type annotated as np.ndarray), hold one value per element in the lattice
+        # ----------------------------------------------------------------------------------------------
+        # Getting the arrays from Table 1 of the MAD-X note
+        LOGGER.debug("Computing terms from Table 1 of the MAD-X note")
+        a: np.ndarray = self._a(geom_epsx, geom_epsy, sigma_delta)    # This is 'a' in MAD-X fortran code
+        b: np.ndarray = self._b(geom_epsx, geom_epsy, sigma_delta)    # This is 'b' in MAD-X fortran code
+        c: np.ndarray = self._c(geom_epsx, geom_epsy, sigma_delta)    # This is 'cprime' in MAD-X fortran code
+        ax: np.ndarray = self._ax(geom_epsx, geom_epsy, sigma_delta)  # This is 'tx1 * cprime / bracket_x' in MAD-X fortran code
+        bx: np.ndarray = self._bx(geom_epsx, geom_epsy, sigma_delta)  # This is 'tx2 * cprime / bracket_x' in MAD-X fortran code
+        ay: np.ndarray = self._ay(geom_epsx, geom_epsy, sigma_delta)  # This is 'ty1 * cprime' in MAD-X fortran code
+        by: np.ndarray = self._by(geom_epsx, geom_epsy, sigma_delta)  # This is 'ty2 * cprime' in MAD-X fortran code
+        az: np.ndarray = self._az(geom_epsx, geom_epsy, sigma_delta)  # This is 'tl1 * cprime' in MAD-X fortran code
+        bz: np.ndarray = self._bz(geom_epsx, geom_epsy, sigma_delta)  # This is 'tl2 * cprime' in MAD-X fortran code                                   
+        # ----------------------------------------------------------------------------------------------
+        # Getting the constant term and the bracket terms from Eq (8) of the MAD-X note
+        LOGGER.debug("Computing common constant term and bracket terms from Eq (8) of the MAD-X note")
+        common_constant_term, bracket_x, bracket_y, bracket_z = self._constants(
+            geom_epsx, geom_epsy, sigma_delta, bunch_length
+        )
+        # ----------------------------------------------------------------------------------------------
+        # Defining the integrands from Eq (8) of the MAD-X note, for each plane (remember these functions
+        # are vectorised since a, b, c, ax, bx, ay, by are all arrays). The bracket terms are included.
+        LOGGER.debug("Defining integrands of Eq (8) of the MAD-X note")
+        def Ix_integrand_vec(_lambda: float) -> ArrayLike:
+            numerator: np.ndarray = bracket_x * np.sqrt(_lambda) * (ax * _lambda + bx)
+            denominator: np.ndarray = (_lambda**3 + a * _lambda**2 + b * _lambda + c) ** (3 / 2)
+            return numerator / denominator
+
+        def Iy_integrand_vec(_lambda: float) -> ArrayLike:
+            numerator: np.ndarray = bracket_y * np.sqrt(_lambda) * (ay * _lambda + by)
+            denominator: np.ndarray = (_lambda**3 + a * _lambda**2 + b * _lambda + c) ** (3 / 2)
+            return numerator / denominator
+
+        def Iz_integrand_vec(_lambda: float) -> ArrayLike:
+            numerator: np.ndarray = bracket_z * np.sqrt(_lambda) * (az * _lambda + bz)
+            denominator: np.ndarray = (_lambda**3 + a * _lambda**2 + b * _lambda + c) ** (3 / 2)
+            return numerator / denominator
+        # ----------------------------------------------------------------------------------------------
+        # Defining a function to perform the integrating, which is done sub-interval by sub-interval
+        def calculate_integral_vec(func: Callable) -> ArrayLike:
+            """Defines limits of intervals, then goes over all intervals and performs the integration
+            of the provided function on each one. At each step, we add the intermediate values to the
+            final result, which is returned."""
+            nb_elements: int = ax.size
+            result: np.ndarray = np.zeros(nb_elements)
+
+            # The following two hold the values for starts and ends of sub-intervals on which to integrate
+            interval_starts = np.array([10**i for i in np.arange(0, int(integration_intervals) - 1)])
+            interval_ends = np.array([10**i for i in np.arange(1, int(integration_intervals))])
+
+            # Now we loop over the intervals and integrate the function on each one, using scipy
+            # We add the intermediate integration result of each interval to our final result
+            for start, end in zip(interval_starts, interval_ends):
+                integrals, _ = quad_vec(func, start, end)  # integrals is an array
+                result += integrals
+            return result
+        # ----------------------------------------------------------------------------------------------
+        # fmt: on
+        # Now we loop over the lattice and compute the integrals at each element
+        LOGGER.debug("Computing integrals of Eq (8) of the MAD-X note - at each element in the lattice")
+        Tx_array: np.ndarray = calculate_integral_vec(Ix_integrand_vec)
+        Ty_array: np.ndarray = calculate_integral_vec(Iy_integrand_vec)
+        Tz_array: np.ndarray = calculate_integral_vec(Iz_integrand_vec)
+        # ----------------------------------------------------------------------------------------------
+        # Don't forget to multiply by the common constant term here
+        LOGGER.debug("Including common constant term of Eq (8) of the MAD-X note")
+        Tx_array *= common_constant_term
+        Ty_array *= common_constant_term
+        Tz_array *= common_constant_term
+        # ----------------------------------------------------------------------------------------------
+        # Compute the final growth rates for each plane as an average | make sure to convert back to float
+        # Interpolate the growth rates through the lattice for the average calculation below
+        LOGGER.debug("Interpolating intermediate growth rates through the lattice")
+        _tx = interp1d(self.optics.s, Tx_array)
+        _ty = interp1d(self.optics.s, Ty_array)
+        _tz = interp1d(self.optics.s, Tz_array)
+        # ----------------------------------------------------------------------------------------------
+        # To get a better average, we interpolate the array over the s coordinate, and then integrate this
+        # interpolated function over the whole ring.
+        LOGGER.debug("Getting average growth rates over the lattice")
+        with warnings.catch_warnings():  # Catch and ignore the scipy.integrate.IntegrationWarning
+            warnings.simplefilter("ignore", category=UserWarning)
+            Tx: float = float(quad(_tx, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference)
+            Ty: float = float(quad(_ty, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference)
+            Tz: float = float(quad(_tz, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference)
+        result = IBSGrowthRates(Tx, Ty, Tz)
+        # ----------------------------------------------------------------------------------------------
+        # Self-update the instance's attributes and then return the results
+        self.ibs_growth_rates = result
+        return result
+
+    def emittance_evolution(
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
+    ) -> Tuple[float, float, float]:
+        r"""
+        .. versionadded:: 0.3.0
+
+        Analytically computes the new emittances after a given time step `dt` has
+        ellapsed, from initial values, based on the ``IBS`` growth rates.
+
+        .. warning::
+            This calculation is done by building on the ``IBS`` growth rates. If the
+            latter have not been computed yet, this method will raise an error. Please
+            remember to call the instance's `growth_rates` method first.
+
+        .. tip::
+            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
+            according to the following, where :math:`N` represents the time step:
+
+            .. math::
+
+                T_{x,y,z} &= 1 / \tau_{x,y,z}
+
+                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
+
+                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
+
+                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
+
+
+        Args:
+            geom_epsx (float): horizontal geometric emittance in [m].
+            geom_epsy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            dt (float, optional): the time interval to use, in [s]. Default to the inverse
+                of the revolution frequency, :math:`1 / f_{rev}`.
+            bunch_length (float): the bunch length in [m].
+
+        Raises:
+            ValueError: if the ``IBS`` growth rates have not yet been computed.
+
+        Returns:
+            A tuple with the new horizontal & vertical geometric emittances as well as the new
+            momentum spread, after the time step has ellapsed.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Check that the IBS growth rates have been computed beforehand
+        if self.ibs_growth_rates is None:
+            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
+            raise ValueError(
+                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
+                "Please call the `growth_rates` method first."
+            )
+        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Set the time step to 1 / frev if not provided
+        if dt is None:
+            LOGGER.debug("No time step provided, defaulting to 1 / frev")
+            dt = 1 / self.optics.revolution_frequency
+        # ----------------------------------------------------------------------------------------------
+        # Compute new emittances and return them. Here we multiply because T = 1 / tau
+        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
+        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
+        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length

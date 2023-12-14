@@ -52,6 +52,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Physics",
@@ -71,6 +72,7 @@ dependencies = [
 test = [
   "pytest >= 7.0",
   "pytest-cov >= 4.0",
+  "pytest-xdist >= 3.0",  # for parallel testing | mostly to help CI
   "coverage[toml] >= 7.0",
   "cpymad >= 1.14",
   "xtrack>=0.41",
@@ -84,6 +86,7 @@ dev = [
 ]
 docs = [
   "xsuite",
+  "cpymad >= 1.14",
   "matplotlib > 3.0",
   "Sphinx >= 7.0",
   "sphinx-rtd-theme >= 1.0",
@@ -107,18 +110,25 @@ documentation = "https://fsoubelet.github.io/xibs"
 # Default pytest CLI options, will be overriden if given at the command line
 testpaths = ["tests"]
 addopts = [
-    "--cov-report=xml",  # Output coverage stats in xml file (for CodeClimate)
-    "--cov-report=term-missing",  # Report lines not covered at end of pytest run
     "--cov-config=pyproject.toml",  # Find coverage.py configuration in this file
+    "--cov-report=term-missing",  # Report lines not covered at end of pytest run
+    "--cov-report=xml",  # Output coverage stats in xml file (for CodeClimate)
     "--cov=xibs",  # Report on coverage for this package only
 ]
+filterwarnings = ["ignore::scipy.integrate.IntegrationWarning"]  # scipy might complain about many subdivisions, don't care
+
+# If one wants to get the logging output from the tests, uncomment the following
+# log_cli = true
+# log_cli_level = "INFO"
+# log_cli_format = "%(asctime)s [%(levelname)7s] %(message)s (%(filename)s:%(lineno)s)"
+# log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
 source = ["xibs/"]  # Tell coverage.py to assess this only (redundant with '--cov=xibs'?)
 
 [tool.coverage.report]
 ignore_errors = true  # Ignore source code that can’t be found, emit a warning instead
-omit = ["xibs/_old_michalis.py", "xibs/kicks/*"]  # TODO: remove the latter once kicks are implemented
+omit = ["xibs/_old_michalis.py", "xibs/kicks.py"]  # TODO: remove the latter once kicks are implemented
 skip_empty = true  # Don’t report files that have no executable code (e.g. __init__.py).
 precision = 2  # Number of digits after the decimal point to display for reported coverage 
 

@@ -9,9 +9,9 @@ opticsfile: "acc-models-lhc/operation/optics/R2023a_A30cmC30cmA10mL200cm.madx"  
 # Configuration variables
 energy: 6800.0                      # energy in [GeV]
 bunch_intensity: 1.8e11             # number of particles per bunch
-emit_x: 1.8                         # norm emit x in [m]
-emit_y: 1.8                         # norm emit y in [m]
-blns: 1.2                           # bunch length in [ns]
+emit_x: 1.8                         # norm emit x in [um]
+emit_y: 1.8                         # norm emit y in [um]
+blns: 0.5                           # bunch length in [ns]
 bl_lev: 0.0
 particle: "proton"                  # particle type
 mass: 0.9382723                     # particle rest mass in [GeV]
