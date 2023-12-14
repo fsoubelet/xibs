@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.inputs &mdash; xibs 0.2.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sphinx-codeautolink.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/sphinx-dropdown.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/panels-bootstrap.min.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <title>xibs.inputs &mdash; xibs 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-codeautolink.css?v=125d5c1c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-dropdown.css?v=995e94df" />
+      <link rel="stylesheet" type="text/css" href="../../_static/panels-bootstrap.min.css?v=21c0b90a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=0a86e678" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=938c9ccc"></script>
+        <script src="../../_static/documentation_options.js?v=e259d695"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -43,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -58,37 +60,52 @@
 <li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#analytical-emittance-evolution">Analytical Emittance Evolution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#providing-kicks">Providing Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../gallery/index.html">Gallery</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html">Analytical Growth Rates and Emittance Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_kinetic_kicks.html">Kinetic IBS Kicks Tracking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_simple_kicks.html">Simple IBS Kicks Tracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#input-data-structures">Input Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#analytical-calculations">Analytical Calculations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#simple-kicks">Simple Kicks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#kinetic-formalism">Kinetic Formalism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#formulary">Formulary</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-and-beamparameters">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-an-xtrack-line-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> result</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-a-mad-x-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters">Instantiating OpticsParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-an-xtrack-line">Instantiating OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-mad-x">Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#instantiating-beamparameters">Instantiating BeamParameters</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../faq.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-beamparameters-from-an-xtrack-line">Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -131,7 +148,8 @@
 <span class="sd">Various parts of ``xibs`` perform calculations based on beam and optics parameters.</span>
 
 <span class="sd">The former is encompassed in a `BeamParameters` dataclass which is initiated from a generated `xpart.Particles` object.</span>
-<span class="sd">The latter is encompassed in an `OpticsParameters` dataclass which is initiated from the result of a ``TWISS`` call on the line.</span>
+<span class="sd">The latter is encompassed in an `OpticsParameters` dataclass which is initiated from the result of a ``TWISS`` call on</span>
+<span class="sd">the line (if in ``xsuite``) or the sequence (if in ``MAD-X``).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># important for sphinx to alias ArrayLike</span>
 
@@ -153,7 +171,7 @@
 <a class="viewcode-back" href="../../modules/index.html#xibs.inputs.BeamParameters">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">BeamParameters</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. versionadded:: 0.2.0</span>
 
 <span class="sd">    Container dataclass for necessary beam parameters. It is initiated from</span>
@@ -176,7 +194,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># ----- To be provided at initialization ----- #</span>
-    <span class="n">particles</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="s2">&quot;xpart.Particles&quot;</span><span class="p">]</span>  <span class="c1"># Almost all is derived from there, this is not kept!</span>
+    <span class="c1"># Almost all is derived from these, but it is not kept!</span>
+    <span class="n">particles</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="s2">&quot;xpart.Particles&quot;</span><span class="p">]</span>  <span class="c1"># noqa: F821</span>
     <span class="c1"># ----- Below are attributes derived from the Particles object ----- #</span>
     <span class="c1"># The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michalis&#39;s code</span>
     <span class="n">n_part</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -187,7 +206,7 @@
     <span class="n">beta_rel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">particle_classical_radius_m</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">):</span>  <span class="c1"># noqa: F821</span>
         <span class="c1"># Attributes derived from the Particles object</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing BeamParameters from Particles object&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_part</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">particles</span><span class="o">.</span><span class="n">gamma0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -196,7 +215,75 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">total_energy_GeV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">p0c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">particles</span><span class="o">.</span><span class="n">mass0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-9</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gamma_rel</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">gamma0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">beta_rel</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">beta0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">particle_classical_radius_m</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">get_classical_particle_radius0</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_classical_radius_m</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">get_classical_particle_radius0</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BeamParameters.from_madx">
+<a class="viewcode-back" href="../../modules/index.html#xibs.inputs.BeamParameters.from_madx">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_madx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">madx</span><span class="p">:</span> <span class="s2">&quot;cpymad.madx.Madx&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BeamParameters</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.3.0</span>
+
+<span class="sd">        Constructor to return a `BeamParameters` object from a `~cpymad.madx.Madx` object.</span>
+<span class="sd">        This is a convenience method for the user, which essentially queries the relevant</span>
+<span class="sd">        information from the current sequence&#39;s beam.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This method will query parameters from the `~cpymad.madx.Madx` object. It will</span>
+<span class="sd">            get parameters from the current active sequence&#39;s beam, and use these to create</span>
+<span class="sd">            an `xpart.Particles` object from which to instanciate the `BeamParameters` object.</span>
+<span class="sd">            Note that the `xpart` package is required to use this method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            madx (cpymad.madx.Madx): a `~cpymad.madx.Madx` instance to created an `OpticsParameters`</span>
+<span class="sd">                object from.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `BeamParameters` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">xpart</span> <span class="k">as</span> <span class="nn">xp</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running TWISS for active sequence&quot;</span><span class="p">)</span>
+        <span class="n">madx</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">twiss</span><span class="p">()</span>  <span class="c1"># want the table to determine the sequence name and access its beam</span>
+        <span class="n">seq_name</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">twiss</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">sequence</span>  <span class="c1"># will give us the active sequence</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Getting relevant information from current sequence&#39;s beam&quot;</span><span class="p">)</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">gamma</span>  <span class="c1"># relativistic gamma</span>
+        <span class="n">q0</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">charge</span>  <span class="c1"># electrical particle charge in units of [qp]</span>
+        <span class="n">mass0</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="mf">1e9</span>  <span class="c1"># rest mass | in [GeV] in MAD-X but we want [eV]</span>
+        <span class="n">npart</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">npart</span>  <span class="c1"># number of particles</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing BeamParameters from determined parameters&quot;</span><span class="p">)</span>
+        <span class="n">particle</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">(</span><span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">,</span> <span class="n">mass0</span><span class="o">=</span><span class="n">mass0</span><span class="p">,</span> <span class="n">gamma0</span><span class="o">=</span><span class="n">gamma</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">n_part</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">npart</span><span class="p">)</span>  <span class="c1"># very important to adjust this!</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="BeamParameters.from_line">
+<a class="viewcode-back" href="../../modules/index.html#xibs.inputs.BeamParameters.from_line">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="s2">&quot;xtrack.Line&quot;</span><span class="p">,</span> <span class="n">n_part</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpticsParameters</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.3.0</span>
+
+<span class="sd">        Constructor to return a `BeamParameters` object from an `~xtrack.Line` object.</span>
+<span class="sd">        This is a convenience method for the user, which will instantiate the class</span>
+<span class="sd">        from the line&#39;s reference particle.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line (xtrack.Line): an `xtrack.Line`.</span>
+<span class="sd">            n_part (int): number of particles to in the bunch. This is a mandatory</span>
+<span class="sd">                argument as it is not possible to infer it from `line.particle_ref`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A `BeamParameters` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing BeamParameters from the line&#39;s reference particle&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">particle_ref</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">n_part</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_part</span><span class="p">)</span>  <span class="c1"># very important to adjust this!</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
 
 
 
@@ -204,7 +291,7 @@
 <a class="viewcode-back" href="../../modules/index.html#xibs.inputs.OpticsParameters">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">OpticsParameters</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. versionadded:: 0.2.0</span>
 
 <span class="sd">    Container dataclass for necessary optics parameters. It is initiated from the results</span>
@@ -235,13 +322,13 @@
 <span class="sd">        alfy (ArrayLike): vertical alpha functions.</span>
 <span class="sd">        dx (ArrayLike): horizontal dispersion functions in [m].</span>
 <span class="sd">        dy (ArrayLike): vertical dispersion functions in [m].</span>
-<span class="sd">        dpx (ArrayLike): horizontal dispersion (d px / d delta).</span>
-<span class="sd">        dpy (ArrayLike): horizontal dispersion (d px / d delta).</span>
+<span class="sd">        dpx (ArrayLike): horizontal dispersion of px (d px / d delta).</span>
+<span class="sd">        dpy (ArrayLike): horizontal dispersion of py (d px / d delta).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># ----- To be provided at initialization ----- #</span>
     <span class="n">twiss</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span>  <span class="c1"># Almost all is derived from there, this is not kept!</span>
-        <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;xtrack.twiss.TwissTable&quot;</span><span class="p">,</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">]</span>
+        <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;xtrack.twiss.TwissTable&quot;</span><span class="p">,</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">]</span>  <span class="c1"># noqa: F821</span>
     <span class="p">]</span>
     <span class="n">_slipfactor</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_frev_hz</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -254,15 +341,17 @@
     <span class="n">bety</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">alfx</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">alfy</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="c1"># The following four are eta_x, eta_y, eta_dx and eta_dy in Michalis&#39;s code</span>
+    <span class="c1"># The following four are eta_x, eta_y, eta_dx and eta_dy in Michalis&#39;s code and in the old litterature</span>
     <span class="n">dx</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">dy</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">dpx</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">dpy</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># The following is private and just for us, information necessary in the</span>
+    <span class="n">_is_centered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">twiss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;xtrack.twiss.TwissTable&quot;</span><span class="p">,</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">],</span>
+        <span class="n">twiss</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;xtrack.twiss.TwissTable&quot;</span><span class="p">,</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">],</span>  <span class="c1"># noqa: F821</span>
         <span class="c1"># The following are only needed if we instanciate from MAD-X twiss</span>
         <span class="n">_slipfactor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">_frev_hz</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -281,12 +370,118 @@
         <span class="k">try</span><span class="p">:</span>  <span class="c1"># assume we have been given an xtrack.TwissTable</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">slip_factor</span> <span class="o">=</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;slip_factor&quot;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">revolution_frequency</span> <span class="o">=</span> <span class="n">twiss</span><span class="o">.</span><span class="n">beta0</span> <span class="o">*</span> <span class="n">c</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_centered</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># never the case in xsuite</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initialized OpticsParameters from TwissTable object&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>  <span class="c1"># then it is a MAD-X twiss dataframe and we need these 2 provided</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">slip_factor</span> <span class="o">=</span> <span class="n">_slipfactor</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">revolution_frequency</span> <span class="o">=</span> <span class="n">_frev_hz</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initialized OpticsParameters from MAD-X Twiss dataframe&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_centered</span> <span class="o">=</span> <span class="n">_is_twiss_centered</span><span class="p">(</span><span class="n">twiss</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initialized OpticsParameters from MAD-X Twiss dataframe&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="OpticsParameters.from_madx">
+<a class="viewcode-back" href="../../modules/index.html#xibs.inputs.OpticsParameters.from_madx">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_madx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">madx</span><span class="p">:</span> <span class="s2">&quot;cpymad.madx.Madx&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpticsParameters</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.3.0</span>
+
+<span class="sd">        Constructor to return an `OpticsParameters` object from a `~cpymad.madx.Madx` object.</span>
+<span class="sd">        This is a convenience method for the user, which essentially follows the steps described</span>
+<span class="sd">        in the :ref:`FAQ &lt;xibs-faq-optics-params-from-madx&gt;`.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This method will query parameters from the `~cpymad.madx.Madx` object. It will</span>
+<span class="sd">            get parameters from the current active sequence, and make a ``TWISS`` call for</span>
+<span class="sd">            said sequence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            madx (cpymad.madx.Madx): a `~cpymad.madx.Madx` instance to created an `OpticsParameters`</span>
+<span class="sd">                object from.</span>
+<span class="sd">            **kwargs: any keyword argument will be transmitted to the `madx.twiss` call.</span>
+<span class="sd">                The default `centre` argument is ``true`` (recommended) but it can be overriden.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An `OpticsParameters` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">centre</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;centre&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># by default centered, can be overriden</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running TWISS for active sequence&quot;</span><span class="p">)</span>
+        <span class="n">twiss</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">centre</span><span class="o">=</span><span class="n">centre</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">dframe</span><span class="p">()</span>  <span class="c1"># this way we are sure to get a centered twiss</span>
+        <span class="n">seq_name</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">twiss</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">sequence</span>  <span class="c1"># will give us the active sequence</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Getting slip factor and revolution frequency&quot;</span><span class="p">)</span>
+        <span class="n">frev_hz</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">freq0</span> <span class="o">*</span> <span class="mf">1e6</span>  <span class="c1"># freq0 in MHz in MADX &amp; we want [Hz]</span>
+        <span class="n">gamma_rel</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">gamma</span>  <span class="c1"># relativistic gamma</span>
+        <span class="n">gamma_tr</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">summ</span><span class="o">.</span><span class="n">gammatr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># transition gamma</span>
+        <span class="n">slipfactor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma_tr</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># use the xsuite convention!</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing OpticsParameters from determined parameters&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">twiss</span><span class="p">,</span> <span class="n">slipfactor</span><span class="p">,</span> <span class="n">frev_hz</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OpticsParameters.from_line">
+<a class="viewcode-back" href="../../modules/index.html#xibs.inputs.OpticsParameters.from_line">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="s2">&quot;xtrack.Line&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpticsParameters</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.3.0</span>
+
+<span class="sd">        Constructor to return an `OpticsParameters` object from an `~xtrack.Line` object.</span>
+<span class="sd">        This is a convenience method for the user, which will perform a `.twiss` call on</span>
+<span class="sd">        the provided line and return an `OpticsParameters` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line (xtrack.Line): an `xtrack.Line`.</span>
+<span class="sd">            **kwargs: any keyword argument will be transmitted to the `line.twiss` call.</span>
+<span class="sd">                The default `method` argument is ``4d`` but it can be overriden.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An `OpticsParameters` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;4d&quot;</span><span class="p">)</span>  <span class="c1"># by default 4D, can be overriden</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running TWISS for on the line&quot;</span><span class="p">)</span>
+        <span class="n">twiss</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing OpticsParameters from determined parameters&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">twiss</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># ----- Helper functions ----- #</span>
+
+
+<span class="k">def</span> <span class="nf">_is_twiss_centered</span><span class="p">(</span><span class="n">twiss</span><span class="p">:</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. versionadded:: 0.3.0</span>
+
+<span class="sd">    Determines if the ``TWISS`` was performed at the center of elements, in ``MAD-X``.</span>
+<span class="sd">    If the `twiss` was obtained from ``xsuite`` it is never centered and this function</span>
+<span class="sd">    is not necessary.</span>
+
+<span class="sd">    .. tip::</span>
+<span class="sd">        The check is performed as in the Fortran code of the ``IBS`` module in ``MAD-X``.</span>
+<span class="sd">        We skip all rows in the table until we get to the first element with non-zero length,</span>
+<span class="sd">        note its `s` position, then the `s` and `l` of the next element. We compare the</span>
+<span class="sd">        :math:`\Delta s` to the length and conclude. If the two match, then the :math:`\Delta s`</span>
+<span class="sd">        is exactly the length of the second element which means the `s` values are given at the</span>
+<span class="sd">        end of elements, and therefore we are not centered. Otherwise, we are.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        twiss (pd.DataFrame): a DataFrame of the twiss table, from ``MAD-X``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        `True` if the TWISS was centered, `False` otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get to the first row with an actual element of non-zero length</span>
+    <span class="n">tw</span> <span class="o">=</span> <span class="n">twiss</span><span class="p">[</span><span class="n">twiss</span><span class="o">.</span><span class="n">l</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Get the &quot;first&quot; value of s and l</span>
+    <span class="n">s0</span> <span class="o">=</span> <span class="n">tw</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Get the s variable at the next element</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">tw</span><span class="o">.</span><span class="n">l</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">tw</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Compare s1 - s0 with the length of the second element, if it matches then the delta_s corresponds</span>
+    <span class="c1"># to the length of the element and we are getting values at the exit of the elements: not centered</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">s1</span> <span class="o">-</span> <span class="n">s0</span><span class="p">,</span> <span class="n">l1</span><span class="p">)</span>
 </pre></div>
 
            </div>

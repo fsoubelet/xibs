@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 
-<html class="writer-html5" lang="en">
+<html class="writer-html5" data-content_root="./" lang="en">
 <head>
-<meta charset="utf-8"/><meta content="Docutils 0.18.1: http://docutils.sourceforge.net/" name="generator"/>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Quickstart — xibs 0.2.0 documentation</title>
-<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
-<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
-<link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sphinx-codeautolink.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery-binder.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery-dataframe.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery-rendered-html.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sphinx-dropdown.css" rel="stylesheet" type="text/css"/>
-<link href="_static/panels-bootstrap.min.css" rel="stylesheet" type="text/css"/>
-<link href="_static/css/custom.css" rel="stylesheet" type="text/css"/>
+<title>Quickstart — xibs 0.3.0 documentation</title>
+<link href="_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
+<link href="_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-codeautolink.css?v=125d5c1c" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery.css?v=61a4c737" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery-binder.css?v=f4aeca0c" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery-dataframe.css?v=2082cf3c" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery-rendered-html.css?v=1277b6f3" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-dropdown.css?v=995e94df" rel="stylesheet" type="text/css"/>
+<link href="_static/panels-bootstrap.min.css?v=21c0b90a" rel="stylesheet" type="text/css"/>
+<link href="_static/css/custom.css?v=0a86e678" rel="stylesheet" type="text/css"/>
 <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
 <script src="_static/jquery.js?v=5d32c60e"></script>
 <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="_static/documentation_options.js?v=938c9ccc"></script>
+<script src="_static/documentation_options.js?v=e259d695"></script>
 <script src="_static/doctools.js?v=888ff710"></script>
 <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -40,7 +40,7 @@
 <a href="index.html">
 </a>
 <div class="version">
-                0.2.0
+                0.3.0
               </div>
 <div role="search">
 <form action="search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -55,37 +55,52 @@
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-with-xsuite">Integration with xsuite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#formalism-and-models">Formalism and Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#analytical-emittance-evolution">Analytical Emittance Evolution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#providing-kicks">Providing Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formalism-dispatch">Formalism Dispatch</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gallery/index.html">Gallery</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gallery/demo_analytical_emittances.html">Analytical Growth Rates and Emittance Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="gallery/demo_kinetic_kicks.html">Kinetic IBS Kicks Tracking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gallery/demo_simple_kicks.html">Simple IBS Kicks Tracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/index.html#input-data-structures">Input Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/index.html#analytical-calculations">Analytical Calculations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/index.html#simple-kicks">Simple Kicks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/index.html#kinetic-formalism">Kinetic Formalism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/index.html#formulary">Formulary</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#instantiating-opticsparameters-and-beamparameters">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="faq.html#instantiating-opticsparameters-from-an-xtrack-line-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> result</a></li>
-<li class="toctree-l3"><a class="reference internal" href="faq.html#instantiating-opticsparameters-from-a-mad-x-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#instantiating-opticsparameters">Instantiating OpticsParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="faq.html#instantiating-opticsparameters-from-an-xtrack-line">Instantiating OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="faq.html#instantiating-opticsparameters-from-mad-x">Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#instantiating-beamparameters">Instantiating BeamParameters</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="faq.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="faq.html#instantiating-beamparameters-from-an-xtrack-line">Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -129,75 +144,94 @@ Please note that the package is a prototype and the API is subject to change, th
 </pre></div>
 </div>
 <p>This namespace exposes the main components / classes of <code class="docutils literal notranslate"><span class="pre">xibs</span></code>, which will be expanded on below.
-Various submodules give access to different functionalities calculating relevant <strong>IBS</strong> properties through different formalism, which one can import on a per-need basis:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main IBS functionality (sub)modules</span>
+Various submodules give access to different functionalities calculating relevant IBS properties through different formalism, which one can import on a per-need basis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main IBS functionality modules</span>
 <span class="kn">import</span> <span class="nn">xibs.analytical</span>
-<span class="kn">import</span> <span class="nn">xibs.kicks.kinetic</span>
-<span class="kn">import</span> <span class="nn">xibs.kicks.simple</span>
+<span class="kn">import</span> <span class="nn">xibs.kicks</span>
 
-<span class="c1"># Other (sub)modules</span>
+<span class="c1"># Some other modules</span>
 <span class="kn">import</span> <span class="nn">xibs.inputs</span>
 <span class="kn">import</span> <span class="nn">xibs.formulary</span>
 </pre></div>
 </div>
+<p>In the main namespace is a convenience dispatch function to initialize the proper modelling class based on the demanded formalism.
+See the <a class="reference internal" href="#formalism-dispatch">formalism dispatch</a> section below for more details.</p>
 </section>
 <section id="integration-with-xsuite">
 <h2>Integration with xsuite<a class="headerlink" href="#integration-with-xsuite" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">xibs</span></code> package is meant to integrate with <code class="docutils literal notranslate"><span class="pre">xsuite</span></code> simulations.
-As a first step, all classes encompassing <strong>IBS</strong> functionality are initialized from the optics of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code> to simulate for, as well as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> distribution to be tracked through the line.</p>
+As a first step, all classes encompassing IBS functionality are initialized from the optics of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code> to simulate for, as well as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> distribution to be tracked through the line.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Please note that while tracking is not necessary to calculate <strong>IBS</strong> effects (see the Analytical section below), it is necessary to provide an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object from which to get required properties.
+<p>Please note that while tracking is not necessary to calculate IBS effects (see the Analytical section below), it is necessary to provide an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object from which to get required properties.
 The object does not necessarily need to represent a full generated and matched distribution, see the <a class="reference internal" href="faq.html"><span class="doc">FAQ</span></a> for details.</p>
 </div>
 <p>Initializing then requires the following steps:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xibs</span>
 
-<span class="c1"># Let's assume your `line` and `particles` are already defined</span>
+<span class="c1"># Let's assume your `line` and `particles` are already defined - from xsuite</span>
 <span class="n">optics_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">OpticsParameters</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">))</span>
 <span class="n">beam_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
 
 <span class="c1"># Let's say you want a YourChosenFormalismIBS approach</span>
 <span class="n">IBS</span> <span class="o">=</span> <span class="n">YourChosenFormalismIBS</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">)</span>
-<span class="c1"># now do some IBS calculations</span>
+
+<span class="c1"># Now compute IBS growth rates (and then updated emittances, etc.)</span>
+<span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is also possible to initialize the <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> twiss table (in the form of a dataframe), see the <a class="reference internal" href="faq.html"><span class="doc">FAQ</span></a> for details.</p>
 </div>
 </section>
 <section id="formalism-and-models">
 <h2>Formalism and Models<a class="headerlink" href="#formalism-and-models" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">xibs</span></code> package provides functionality to calculate and apply <strong>IBS</strong> effects through different formalism.</p>
-<section id="analytical-emittance-evolution">
-<h3>Analytical Emittance Evolution<a class="headerlink" href="#analytical-emittance-evolution" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">xibs</span></code> package provides functionality to calculate and apply IBS effects through different formalism.</p>
+<section id="analytical-calculations">
+<h3>Analytical Calculations<a class="headerlink" href="#analytical-calculations" title="Link to this heading"></a></h3>
 <p>If one decides to stick to analytical calculations of growth rates and emittance evolutions, this is where the integration ends.
-In <code class="docutils literal notranslate"><span class="pre">xibs</span></code> these are calculated following Nagaitsev’s approach <span id="id1">[<a class="reference internal" href="bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>, which provides equations for faster computation of the approach by Bjorken and Mtingwa <span id="id2">[<a class="reference internal" href="bibliography.html#id4" title="James Bjorken and Sekazi Mtingwa. Intrabeam scattering. In Particle Accelerators, pages 115–143. Gordon and Breach Science Publishers, 1983. URL: https://s3.cern.ch/inspire-prod-files-a/a7d86ec1529ba6512d446523cd88c2d5.">BM83</a>]</span>.</p>
-<p>All functionality is provided in the <code class="docutils literal notranslate"><span class="pre">xibs.analytical</span></code> submodule through the <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> class.
-It is initialized as shown in the section above:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <span class="n">NagaitsevIBS</span>
+In <code class="docutils literal notranslate"><span class="pre">xibs</span></code> these are calculated following either:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Nagaitsev</span></code> formalism <span id="id1">[<a class="reference internal" href="bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>, which provides equations for faster computation of the approach by Bjorken and Mtingwa <span id="id2">[<a class="reference internal" href="bibliography.html#id4" title="James Bjorken and Sekazi Mtingwa. Intrabeam scattering. In Particle Accelerators, pages 115–143. Gordon and Breach Science Publishers, 1983. URL: https://s3.cern.ch/inspire-prod-files-a/a7d86ec1529ba6512d446523cd88c2d5.">BM83</a>]</span>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Bjorken-Mtingwa</span></code> formalism <span id="id3">[<a class="reference internal" href="bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>, which adapts the approach of Bjorken and Mtingwa <span id="id4">[<a class="reference internal" href="bibliography.html#id4" title="James Bjorken and Sekazi Mtingwa. Intrabeam scattering. In Particle Accelerators, pages 115–143. Gordon and Breach Science Publishers, 1983. URL: https://s3.cern.ch/inspire-prod-files-a/a7d86ec1529ba6512d446523cd88c2d5.">BM83</a>]</span> by taking into consideration the effects of vertical dispersion.</p></li>
+</ul>
+</div></blockquote>
+<p>All functionality is provided in the <code class="docutils literal notranslate"><span class="pre">xibs.analytical</span></code> submodule through the <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> classes, respectively.
+They are initialized as shown in the section above:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <span class="n">BjorkenMtingwaIBS</span><span class="p">,</span> <span class="n">NagaitsevIBS</span>
+<span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
 
 <span class="c1"># Let's assume your `line` and `particles` are already defined</span>
-<span class="n">optics_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">OpticsParameters</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">))</span>
-<span class="n">beam_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
+<span class="n">optics_parameters</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">))</span>
+<span class="n">beam_parameters</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
 
-<span class="c1"># Let's say you want a YourChosenFormalismIBS approach</span>
+<span class="c1"># To get analytical modelling with Nagaitsev' approach</span>
 <span class="n">IBS</span> <span class="o">=</span> <span class="n">NagaitsevIBS</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">)</span>
-<span class="c1"># now compute IBS growth rates and new emittances</span>
+
+<span class="c1"># To get analytical modelling with MAD-X' approach</span>
+<span class="n">IBS</span> <span class="o">=</span> <span class="n">BjorkenMtingwaIBS</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">)</span>
+
+<span class="c1"># Now compute IBS growth rates (and then updated emittances, etc.)</span>
+<span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>One can find a detailed usage walkthrough of this in the <a class="reference internal" href="gallery/demo_analytical_emittances.html#demo-analytical"><span class="std std-ref">analytical example</span></a>.</p>
+<p>One can find detailed usage walkthroughs of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> classes usage in the <a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#demo-analytical-bjorken-mtingwa"><span class="std std-ref">Bjorken-Mtingwa</span></a> and <a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#demo-analytical-nagaitsev"><span class="std std-ref">Nagaitsev</span></a> analytical examples, respectively.</p>
 </section>
-<section id="providing-kicks">
-<h3>Providing Kicks<a class="headerlink" href="#providing-kicks" title="Link to this heading"></a></h3>
-<p>In order to integrate <strong>IBS</strong> effects into tracking simulations however, computing <strong>IBS</strong> kicks to apply to the tracked particles is necessary.
+<section id="providing-kicks-to-particle-distributions">
+<h3>Providing Kicks to Particle Distributions<a class="headerlink" href="#providing-kicks-to-particle-distributions" title="Link to this heading"></a></h3>
+<p>In order to integrate IBS effects into tracking simulations however, computing IBS kicks to apply to the tracked particles is necessary.
 For this, the <code class="docutils literal notranslate"><span class="pre">xibs.kicks</span></code> module is provided, which includes two submodules: <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.kicks.simple</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.kicks.kinetic</span></code>.</p>
-<p>The former provides a simple kick calculation according to <span id="id3">[<a class="reference internal" href="bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>, which builds on the analytical formalism values from <span id="id4">[<a class="reference internal" href="bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span> and is valid <em>above transition energy</em>.
-The latter provides kicks according to the Kinetic theory of <span id="id5">[<a class="reference internal" href="bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
+<p>The former provides a simple kick calculation according to <span id="id5">[<a class="reference internal" href="bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>, which builds on the analytical formalism values from <span id="id6">[<a class="reference internal" href="bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span> and is valid <em>above transition energy</em>.
+The latter provides kicks according to the Kinetic theory of <span id="id7">[<a class="reference internal" href="bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
 <p>Both follow the same usage pattern as the analytical formalism, and are initialized as shown in the section above:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xibs.kicks.kinetic</span> <span class="kn">import</span> <span class="n">KineticKickIBS</span>
-<span class="kn">from</span> <span class="nn">xibs.kicks.simple</span> <span class="kn">import</span> <span class="n">SimpleKickIBS</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
+<span class="kn">from</span> <span class="nn">xibs.kicks</span> <span class="kn">import</span> <span class="n">KineticKickIBS</span><span class="p">,</span> <span class="n">SimpleKickIBS</span>
 
 <span class="c1"># Let's assume your `line` and `particles` are already defined</span>
-<span class="n">optics_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">OpticsParameters</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">))</span>
-<span class="n">beam_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
+<span class="n">optics_parameters</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">))</span>
+<span class="n">beam_parameters</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
 
 <span class="c1"># Initialize your class</span>
 <span class="n">kinetic_ibs</span> <span class="o">=</span> <span class="n">KineticKickIBS</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">)</span>
@@ -205,11 +239,33 @@ The latter provides kicks according to the Kinetic theory of <span id="id5">[<a 
 <span class="c1"># now compute kicks to apply to particles</span>
 </pre></div>
 </div>
-<p>One can find a detailed usage walkthrough of these in the <a class="reference internal" href="gallery/demo_kinetic_kicks.html#demo-kinetic"><span class="std std-ref">kinetic example</span></a> and <a class="reference internal" href="gallery/demo_simple_kicks.html#demo-simple"><span class="std std-ref">simple example</span></a>.</p>
-<div class="admonition-todo admonition" id="id6">
-<p class="admonition-title">Todo</p>
-<p>In time, reach: no matter the formalism used the API will work similarly?
-Aka a unified interface (e.g. <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.ibs(...,</span> <span class="pre">formalism="...")</span></code>)?</p>
+<p>One can find a detailed usage walkthrough of these in the <span class="xref std std-ref">kinetic example</span> and <span class="xref std std-ref">simple example</span>.</p>
+</section>
+<section id="formalism-dispatch">
+<h3>Formalism Dispatch<a class="headerlink" href="#formalism-dispatch" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">xibs</span></code> package provides a convenience functionto initialize the proper modelling class based on the demanded formalism.
+One can directly import it from the main namespace, and provide both the necessary <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> to any IBS class in this package, as well as the formalism to use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xibs</span>
+
+<span class="c1"># Here is where you would define your inputs</span>
+<span class="c1"># Let's assume your `line` and `particles` are already defined</span>
+<span class="n">beam_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
+<span class="n">optics_parameters</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">OpticsParameters</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">))</span>
+
+<span class="c1"># Get the proper modelling class based on the demanded formalism</span>
+<span class="n">BM_IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">ibs</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"madx"</span><span class="p">)</span>
+<span class="n">NAGAITSEV_IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">ibs</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"nagaitsev"</span><span class="p">)</span>
+<span class="n">KINETIC_IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">ibs</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"kinetic"</span><span class="p">)</span>
+<span class="n">SIMPLE_IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">ibs</span><span class="p">(</span><span class="n">beam_parameters</span><span class="p">,</span> <span class="n">optics_parameters</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"simple"</span><span class="p">)</span>
+
+<span class="c1"># You can be sure you will get the appropriate instances</span>
+<a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#isinstance" title="isinstance"><span class="nb">isinstance</span></a><span class="p">(</span><span class="n">BM_IBS</span><span class="p">,</span> <span class="n">xibs</span><span class="o">.</span><span class="n">analytical</span><span class="o">.</span><span class="n">BjorkenMtingwaIBS</span><span class="p">)</span>  <span class="c1"># True</span>
+<a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#isinstance" title="isinstance"><span class="nb">isinstance</span></a><span class="p">(</span><span class="n">NAGAITSEV_IBS</span><span class="p">,</span> <span class="n">xibs</span><span class="o">.</span><span class="n">analytical</span><span class="o">.</span><span class="n">NagaitsevIBS</span><span class="p">)</span>  <span class="c1"># True</span>
+<a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#isinstance" title="isinstance"><span class="nb">isinstance</span></a><span class="p">(</span><span class="n">KINETIC_IBS</span><span class="p">,</span> <span class="n">xibs</span><span class="o">.</span><span class="n">kicks</span><span class="o">.</span><span class="n">KineticKickIBS</span><span class="p">)</span>  <span class="c1"># True</span>
+<a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#isinstance" title="isinstance"><span class="nb">isinstance</span></a><span class="p">(</span><span class="n">SIMPLE_IBS</span><span class="p">,</span> <span class="n">xibs</span><span class="o">.</span><span class="n">kicks</span><span class="o">.</span><span class="n">SimpleKickIBS</span><span class="p">)</span>  <span class="c1"># True</span>
+
+<span class="c1"># Now go and do your IBS calculations :)</span>
+</pre></div>
 </div>
 </section>
 </section>

@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 
-<html class="writer-html5" lang="en">
+<html class="writer-html5" data-content_root="./" lang="en">
 <head>
-<meta charset="utf-8"/><meta content="Docutils 0.18.1: http://docutils.sourceforge.net/" name="generator"/>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Frequently Asked Questions — xibs 0.2.0 documentation</title>
-<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
-<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
-<link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sphinx-codeautolink.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery-binder.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery-dataframe.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sg_gallery-rendered-html.css" rel="stylesheet" type="text/css"/>
-<link href="_static/sphinx-dropdown.css" rel="stylesheet" type="text/css"/>
-<link href="_static/panels-bootstrap.min.css" rel="stylesheet" type="text/css"/>
-<link href="_static/css/custom.css" rel="stylesheet" type="text/css"/>
+<title>Frequently Asked Questions — xibs 0.3.0 documentation</title>
+<link href="_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
+<link href="_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-codeautolink.css?v=125d5c1c" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery.css?v=61a4c737" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery-binder.css?v=f4aeca0c" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery-dataframe.css?v=2082cf3c" rel="stylesheet" type="text/css"/>
+<link href="_static/sg_gallery-rendered-html.css?v=1277b6f3" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-dropdown.css?v=995e94df" rel="stylesheet" type="text/css"/>
+<link href="_static/panels-bootstrap.min.css?v=21c0b90a" rel="stylesheet" type="text/css"/>
+<link href="_static/css/custom.css?v=0a86e678" rel="stylesheet" type="text/css"/>
 <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
 <script src="_static/jquery.js?v=5d32c60e"></script>
 <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="_static/documentation_options.js?v=938c9ccc"></script>
+<script src="_static/documentation_options.js?v=e259d695"></script>
 <script src="_static/doctools.js?v=888ff710"></script>
 <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -40,7 +40,7 @@
 <a href="index.html">
 </a>
 <div class="version">
-                0.2.0
+                0.3.0
               </div>
 <div role="search">
 <form action="search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -55,37 +55,52 @@
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="quickstart.html#formalism-and-models">Formalism and Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#analytical-emittance-evolution">Analytical Emittance Evolution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart.html#providing-kicks">Providing Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gallery/index.html">Gallery</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gallery/demo_analytical_emittances.html">Analytical Growth Rates and Emittance Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="gallery/demo_kinetic_kicks.html">Kinetic IBS Kicks Tracking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gallery/demo_simple_kicks.html">Simple IBS Kicks Tracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/index.html#input-data-structures">Input Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/index.html#analytical-calculations">Analytical Calculations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/index.html#simple-kicks">Simple Kicks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/index.html#kinetic-formalism">Kinetic Formalism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/index.html#formulary">Formulary</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#instantiating-opticsparameters-and-beamparameters">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#instantiating-opticsparameters-from-an-xtrack-line-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> result</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#instantiating-opticsparameters-from-a-mad-x-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#instantiating-opticsparameters">Instantiating OpticsParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instantiating-opticsparameters-from-an-xtrack-line">Instantiating OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instantiating-opticsparameters-from-mad-x">Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#instantiating-beamparameters">Instantiating BeamParameters</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instantiating-beamparameters-from-an-xtrack-line">Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -115,39 +130,45 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div itemprop="articleBody">
 <section id="frequently-asked-questions">
-<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading"></a></h1>
+<span id="xibs-faq"></span><h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading"></a></h1>
 <p>This page provides answers to common questions or pitfalls about the package.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>If you feel like a topic should be included here, let us know!</p>
 </div>
-<section id="instantiating-opticsparameters-and-beamparameters">
-<h2>Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code><a class="headerlink" href="#instantiating-opticsparameters-and-beamparameters" title="Link to this heading"></a></h2>
-<p>All classes in this package are instantiated from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamsParameters</span></code> object.
-This section compiles a few common questions about these two classes.</p>
-<section id="instantiating-opticsparameters-from-an-xtrack-line-twiss-result">
-<h3>Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> result<a class="headerlink" href="#instantiating-opticsparameters-from-an-xtrack-line-twiss-result" title="Link to this heading"></a></h3>
-<p>The default mode to instantiate an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> is from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">TwissTable</span></code> returned by a <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> call.
+<section id="instantiating-opticsparameters">
+<span id="xibs-faq-opticsparams"></span><h2>Instantiating OpticsParameters<a class="headerlink" href="#instantiating-opticsparameters" title="Link to this heading"></a></h2>
+<p>All classes in this package are instantiated from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamsParameters</span></code> object.
+This section compiles a few common questions about the former.</p>
+<section id="instantiating-opticsparameters-from-an-xtrack-line">
+<span id="xibs-faq-optics-params-from-line"></span><h3>Instantiating OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code><a class="headerlink" href="#instantiating-opticsparameters-from-an-xtrack-line" title="Link to this heading"></a></h3>
+<p>The default mode to instantiate an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> is from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">TwissTable</span></code> returned by an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> call.
 All necessary attributes of the class are automatically filled or computed from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">TwissTable</span></code> object.
 It goes very simply as:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">OpticsParameters</span>
-
-<span class="c1"># Let's assume your `xtrack.Line` is already defined</span>
-<span class="n">twiss</span> <span class="o">=</span> <span class="n">Line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `xtrack.Line` is already defined</span>
+<span class="n">twiss</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">)</span>
 <span class="n">optics_params</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="p">(</span><span class="n">twiss</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.
+It goes according to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `xtrack.Line` is already defined</span>
+<span class="n">optics_params</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="o">.</span><span class="n">from_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
-<section id="instantiating-opticsparameters-from-a-mad-x-twiss-result">
-<h3>Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result<a class="headerlink" href="#instantiating-opticsparameters-from-a-mad-x-twiss-result" title="Link to this heading"></a></h3>
+<section id="instantiating-opticsparameters-from-mad-x">
+<span id="xibs-faq-optics-params-from-madx"></span><h3>Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code><a class="headerlink" href="#instantiating-opticsparameters-from-mad-x" title="Link to this heading"></a></h3>
 <p>For those using for instance <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> and looking to only use the analytical calculations of <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> without setting up a whole <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>, it is possible to instantiate the <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result.</p>
-<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result is expected in the form of a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with all lowercase columns and values, as given by <code class="xref py py-obj docutils literal notranslate"><span class="pre">cpymad</span></code>.
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result is expected in the form of a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with all lowercase columns and values, as given by <code class="xref py py-obj docutils literal notranslate"><span class="pre">cpymad</span></code>.
 Some additional attributes not present in <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code>’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result are expected to be provided at instantiation time, namely the revolution frequency and slip factor.
 These quantities can be computed from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> after a <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code>, as shown below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">OpticsParameters</span>
-
-<span class="c1"># Let's assume your `cpymad.madx.Madx` instance is already defined</span>
-<span class="n">twiss</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">twiss</span><span class="p">()</span><span class="o">.</span><span class="n">dframe</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `cpymad.madx.Madx` instance is already defined</span>
+<span class="n">twiss</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">centre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dframe</span><span class="p">()</span>  <span class="c1"># you want a Twiss at element centers</span>
 <span class="n">seq_name</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">twiss</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">sequence</span>  <span class="c1"># works whichever your sequence</span>
 
 <span class="c1"># Compute additional required parameters: revolution frequency and slip factor</span>
@@ -160,14 +181,28 @@ These quantities can be computed from <code class="docutils literal notranslate"
 <span class="n">optics_params</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="p">(</span><span class="n">twiss</span><span class="p">,</span> <span class="n">slipfactor</span><span class="p">,</span> <span class="n">frev_hz</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `cpymad.madx.Madx` instance is already defined</span>
+<span class="n">optics_params</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="o">.</span><span class="n">from_madx</span><span class="p">(</span><span class="n">madx</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
+</section>
+<section id="instantiating-beamparameters">
+<span id="xibs-faq-beamparams"></span><h2>Instantiating BeamParameters<a class="headerlink" href="#instantiating-beamparameters" title="Link to this heading"></a></h2>
+<p>All classes in this package are instantiated from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamsParameters</span></code> object.
+This section compiles a few common questions about the latter.</p>
 <section id="do-i-need-a-full-matched-particle-distribution-for-beamparameters">
-<h3>Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?<a class="headerlink" href="#do-i-need-a-full-matched-particle-distribution-for-beamparameters" title="Link to this heading"></a></h3>
-<p>One might have noticed, for example in the <a class="reference internal" href="gallery/demo_analytical_emittances.html#demo-analytical"><span class="std std-ref">analytical example</span></a>, that the latter is instantiated from a fully matched <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> distribution.
+<span id="xibs-faq-beam-params-from-particle-ref"></span><h3>Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?<a class="headerlink" href="#do-i-need-a-full-matched-particle-distribution-for-beamparameters" title="Link to this heading"></a></h3>
+<p>One might have noticed, for example in the <a class="reference internal" href="gallery/demo_analytical_bjorken_mtingwa_emittances.html#demo-analytical-bjorken-mtingwa"><span class="std std-ref">Bjorken-Mtingwa</span></a> or <a class="reference internal" href="gallery/demo_analytical_nagaitsev_emittances.html#demo-analytical-nagaitsev"><span class="std std-ref">Nagaitsev</span></a> analytical examples, that the latter is instantiated from a fully matched <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> distribution.
 Creating a matched distribution is an intensive step and requires parameters one might not want to be annoyed providing.</p>
 <p>It is possible to bypass this step and use for instance the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">particle_ref</span></code> instead.
 However, in several computations the Coulomb logarithm is necessary, which is heavily dependent on the number of particles in the distribution, a value not reflected by the reference particle object.</p>
-<p>When instantiating from a single particle this values will be wrong and should be manually set afterwards.
+<p>When instantiating from a single particle this value will be wrong and should be manually set afterwards.
 This would go as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xpart</span> <span class="k">as</span> <span class="nn">xp</span>
 <span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span>
@@ -179,6 +214,48 @@ This would go as:</p>
 <span class="c1"># Now you have to manually set the "true" value for '.n_part'</span>
 <span class="n">beam_parameters</span><span class="o">.</span><span class="n">n_part</span> <span class="o">=</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#int" title="int"><span class="nb">int</span></a><span class="p">(</span><span class="mf">5e5</span><span class="p">)</span>
 </pre></div>
+</div>
+</section>
+<section id="instantiating-beamparameters-from-an-xtrack-line">
+<span id="xibs-faq-beam-params-from-line"></span><h3>Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code><a class="headerlink" href="#instantiating-beamparameters-from-an-xtrack-line" title="Link to this heading"></a></h3>
+<p>The default mode to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> is from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object.
+As seen just above, it is possible to use an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>’s reference particle to do so.</p>
+<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.
+It goes according to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `xtrack.Line` is already defined</span>
+<span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="o">.</span><span class="n">from_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">n_part</span><span class="o">=</span><span class="mf">5e5</span><span class="p">)</span>  <span class="c1"># need to provide n_part</span>
+</pre></div>
+</div>
+</section>
+<section id="instantiating-beamparameters-from-mad-x">
+<span id="xibs-faq-beam-params-from-madx"></span><h3>Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code><a class="headerlink" href="#instantiating-beamparameters-from-mad-x" title="Link to this heading"></a></h3>
+<p>It is also possible to query the <code class="xref py py-obj docutils literal notranslate"><span class="pre">beam</span></code> in use for the currently active sequence from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> to get the desired parameters.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `cpymad.madx.Madx` instance is already defined</span>
+<span class="n">madx</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">twiss</span><span class="p">()</span>  <span class="c1"># want the table to determine the sequence name and access its beam</span>
+<span class="n">seq_name</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">twiss</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">sequence</span>  <span class="c1"># will give us the active sequence</span>
+
+<span class="c1"># Query required parameters from the beam: particle momentum, particle charge,</span>
+<span class="c1"># particle rest mass and number of particles in the bunch</span>
+<span class="n">p0c_eV</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">pc</span> <span class="o">*</span> <span class="mf">1e9</span>  <span class="c1"># in [GeV] in MAD-X beam, but we want [eV]</span>
+<span class="n">q0</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">charge</span>  <span class="c1"># electrical particle charge in units of [qp]</span>
+<span class="n">mass0</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="mf">1e9</span>  <span class="c1"># rest mass in [eV] | but in [GeV] in MAD-X</span>
+<span class="n">npart</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">npart</span>  <span class="c1"># number of particles</span>
+
+<span class="c1"># Create an xpart.Particles object with this information</span>
+<span class="n">particle</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">(</span><span class="n">p0c</span><span class="o">=</span><span class="n">p0c_eV</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">,</span> <span class="n">mass0</span><span class="o">=</span><span class="n">mass0</span><span class="p">)</span>
+<span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
+<span class="n">beam_params</span><span class="o">.</span><span class="n">n_part</span> <span class="o">=</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#int" title="int"><span class="nb">int</span></a><span class="p">(</span><span class="n">npart</span><span class="p">)</span>  <span class="c1"># very important to adjust this!</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `cpymad.madx.Madx` instance is already defined</span>
+<span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="o">.</span><span class="n">from_madx</span><span class="p">(</span><span class="n">madx</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>

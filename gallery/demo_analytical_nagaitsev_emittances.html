@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution &mdash; xibs 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-codeautolink.css?v=125d5c1c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css?v=995e94df" />
+      <link rel="stylesheet" type="text/css" href="../_static/panels-bootstrap.min.css?v=21c0b90a" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0a86e678" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=e259d695"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="../modules/index.html" />
+    <link rel="prev" title="Comparison of Analytical IBS Growth Rates and Emittances Evolution" href="demo_compare_analyticals.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#input-data-structures">Input Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formulary">Formulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#instantiating-opticsparameters">Instantiating OpticsParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-opticsparameters-from-an-xtrack-line">Instantiating OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-opticsparameters-from-mad-x">Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#instantiating-beamparameters">Instantiating BeamParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-beamparameters-from-an-xtrack-line">Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">xibs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Gallery</a></li>
+      <li class="breadcrumb-item active">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/fsoubelet/xibs" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-gallery-demo-analytical-nagaitsev-emittances-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="nagaitsev-formalism-analytical-growth-rates-and-emittance-evolution">
+<span id="demo-analytical-nagaitsev"></span><span id="sphx-glr-gallery-demo-analytical-nagaitsev-emittances-py"></span><h1>Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution<a class="headerlink" href="#nagaitsev-formalism-analytical-growth-rates-and-emittance-evolution" title="Link to this heading"></a></h1>
+<p>This example shows how to use the <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> class
+to calculate IBS growth rates and emittances evolutions analytically.</p>
+<p>We will demonstrate using an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code> of the <code class="docutils literal notranslate"><span class="pre">CLIC</span></code> damping ring,
+for a positron beam.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass" title="dataclasses.dataclass" class="sphx-glr-backref-module-dataclasses sphx-glr-backref-type-py-function"><span class="n">dataclass</span></a>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xpart</span> <span class="k">as</span> <span class="nn">xp</span>
+<span class="kn">import</span> <span class="nn">xtrack</span> <span class="k">as</span> <span class="nn">xt</span>
+
+<span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <span class="n">NagaitsevIBS</span>
+<span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
+
+<a href="https://docs.python.org/3/library/stdtypes.html#dict.update" title="builtins.dict.update" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-method"><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span></a><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;axes.titlesize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;axes.labelsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;xtick.labelsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;ytick.labelsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;legend.fontsize&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="s2">&quot;figure.titlesize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s start by defining the line and particle information, as well as some
+parameters for later use:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">line_file</span></a> <span class="o">=</span> <span class="s2">&quot;lines/chrom-corr_DR.newlattice_2GHz.json&quot;</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">harmonic_number</span></a> <span class="o">=</span> <span class="mi">2852</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">rf_voltage</span></a> <span class="o">=</span> <span class="mf">4.5</span>  <span class="c1"># in MV</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">energy_loss</span></a> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># let&#39;s pretend ;)</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">bunch_intensity</span></a> <span class="o">=</span> <span class="mf">4.4e9</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sigma_z</span></a> <span class="o">=</span> <span class="mf">1.58e-3</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_x</span></a> <span class="o">=</span> <span class="mf">5.6644e-07</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_y</span></a> <span class="o">=</span> <span class="mf">3.7033e-09</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_part</span></a> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">5e3</span><span class="p">)</span>  <span class="c1"># for this example let&#39;s not use too many particles</span>
+</pre></div>
+</div>
+<section id="setting-up-line-and-particles">
+<h2>Setting up line and particles<a class="headerlink" href="#setting-up-line-and-particles" title="Link to this heading"></a></h2>
+<p>Let’s start by loading the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>, activating RF cavities and
+generating a matched Gaussian bunch:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">line</span> <span class="o">=</span> <span class="n">xt</span><span class="o">.</span><span class="n">Line</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">line_file</span></a><span class="p">)</span>
+<span class="n">line</span><span class="o">.</span><span class="n">build_tracker</span><span class="p">(</span><span class="n">extra_headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#define XTRACK_MULTIPOLE_NO_SYNRAD&quot;</span><span class="p">])</span>
+
+<span class="c1"># ----- Power accelerating cavities ----- #</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">cavities</span></a> <span class="o">=</span> <span class="p">[</span><span class="n">element</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">elements</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">xt</span><span class="o">.</span><span class="n">Cavity</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">cavity</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/stdtypes.html#list" title="builtins.list" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">cavities</span></a><span class="p">:</span>
+    <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">cavity</span><span class="o">.</span><span class="n">lag</span></a> <span class="o">=</span> <span class="mi">180</span>
+
+<span class="n">p0</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">(</span><span class="n">mass0</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">xp</span><span class="o">.</span><span class="n">ELECTRON_MASS_EV</span></a><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">p0c</span><span class="o">=</span><span class="mf">2.86e9</span><span class="p">)</span>
+<span class="n">line</span><span class="o">.</span><span class="n">particle_ref</span> <span class="o">=</span> <span class="n">p0</span>
+<span class="n">twiss</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">()</span>
+
+<span class="n">particles</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">generate_matched_gaussian_bunch</span><span class="p">(</span>
+    <span class="n">num_particles</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_part</span></a><span class="p">,</span>
+    <span class="n">total_intensity_particles</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">bunch_intensity</span></a><span class="p">,</span>
+    <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_x</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_x</span></a><span class="p">,</span>
+    <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_y</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_y</span></a><span class="p">,</span>
+    <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sigma_z</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sigma_z</span></a><span class="p">,</span>
+    <span class="n">particle_ref</span><span class="o">=</span><span class="n">p0</span><span class="p">,</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Init: interval 718, total 71796
+Loading line from dict:   0% (0/71796 iterations)
+Loading line from dict:   1% (718/71796 iterations)
+Loading line from dict:   2% (1436/71796 iterations)
+Loading line from dict:   3% (2154/71796 iterations)
+Loading line from dict:   4% (2872/71796 iterations)
+Loading line from dict:   5% (3590/71796 iterations)
+Loading line from dict:   6% (4308/71796 iterations)
+Loading line from dict:   7% (5026/71796 iterations)
+Loading line from dict:   8% (5744/71796 iterations)
+Loading line from dict:   9% (6462/71796 iterations)
+Loading line from dict:  10% (7180/71796 iterations)
+Loading line from dict:  11% (7898/71796 iterations)
+Loading line from dict:  12% (8616/71796 iterations)
+Loading line from dict:  13% (9334/71796 iterations)
+Loading line from dict:  14% (10052/71796 iterations)
+Loading line from dict:  15% (10770/71796 iterations)
+Loading line from dict:  16% (11488/71796 iterations)
+Loading line from dict:  17% (12206/71796 iterations)
+Loading line from dict:  18% (12924/71796 iterations)
+Loading line from dict:  19% (13642/71796 iterations)
+Loading line from dict:  20% (14360/71796 iterations)
+Loading line from dict:  21% (15078/71796 iterations)
+Loading line from dict:  22% (15796/71796 iterations)
+Loading line from dict:  23% (16514/71796 iterations)
+Loading line from dict:  24% (17232/71796 iterations)
+Loading line from dict:  25% (17950/71796 iterations)
+Loading line from dict:  26% (18668/71796 iterations)
+Loading line from dict:  27% (19386/71796 iterations)
+Loading line from dict:  28% (20104/71796 iterations)
+Loading line from dict:  29% (20822/71796 iterations)
+Loading line from dict:  30% (21540/71796 iterations)
+Loading line from dict:  31% (22258/71796 iterations)
+Loading line from dict:  32% (22976/71796 iterations)
+Loading line from dict:  33% (23694/71796 iterations)
+Loading line from dict:  34% (24412/71796 iterations)
+Loading line from dict:  35% (25130/71796 iterations)
+Loading line from dict:  36% (25848/71796 iterations)
+Loading line from dict:  37% (26566/71796 iterations)
+Loading line from dict:  38% (27284/71796 iterations)
+Loading line from dict:  39% (28002/71796 iterations)
+Loading line from dict:  40% (28720/71796 iterations)
+Loading line from dict:  41% (29438/71796 iterations)
+Loading line from dict:  42% (30156/71796 iterations)
+Loading line from dict:  43% (30874/71796 iterations)
+Loading line from dict:  44% (31592/71796 iterations)
+Loading line from dict:  45% (32310/71796 iterations)
+Loading line from dict:  46% (33028/71796 iterations)
+Loading line from dict:  47% (33746/71796 iterations)
+Loading line from dict:  48% (34464/71796 iterations)
+Loading line from dict:  49% (35182/71796 iterations)
+Loading line from dict:  50% (35900/71796 iterations)
+Loading line from dict:  51% (36618/71796 iterations)
+Loading line from dict:  52% (37336/71796 iterations)
+Loading line from dict:  53% (38054/71796 iterations)
+Loading line from dict:  54% (38772/71796 iterations)
+Loading line from dict:  55% (39490/71796 iterations)
+Loading line from dict:  56% (40208/71796 iterations)
+Loading line from dict:  57% (40926/71796 iterations)
+Loading line from dict:  58% (41644/71796 iterations)
+Loading line from dict:  59% (42362/71796 iterations)
+Loading line from dict:  60% (43080/71796 iterations)
+Loading line from dict:  61% (43798/71796 iterations)
+Loading line from dict:  62% (44516/71796 iterations)
+Loading line from dict:  63% (45234/71796 iterations)
+Loading line from dict:  64% (45952/71796 iterations)
+Loading line from dict:  65% (46670/71796 iterations)
+Loading line from dict:  66% (47388/71796 iterations)
+Loading line from dict:  67% (48106/71796 iterations)
+Loading line from dict:  68% (48824/71796 iterations)
+Loading line from dict:  69% (49542/71796 iterations)
+Loading line from dict:  70% (50260/71796 iterations)
+Loading line from dict:  71% (50978/71796 iterations)
+Loading line from dict:  72% (51696/71796 iterations)
+Loading line from dict:  73% (52414/71796 iterations)
+Loading line from dict:  74% (53132/71796 iterations)
+Loading line from dict:  75% (53850/71796 iterations)
+Loading line from dict:  76% (54568/71796 iterations)
+Loading line from dict:  77% (55286/71796 iterations)
+Loading line from dict:  78% (56004/71796 iterations)
+Loading line from dict:  79% (56722/71796 iterations)
+Loading line from dict:  80% (57440/71796 iterations)
+Loading line from dict:  81% (58158/71796 iterations)
+Loading line from dict:  82% (58876/71796 iterations)
+Loading line from dict:  83% (59594/71796 iterations)
+Loading line from dict:  84% (60312/71796 iterations)
+Loading line from dict:  85% (61030/71796 iterations)
+Loading line from dict:  86% (61748/71796 iterations)
+Loading line from dict:  87% (62466/71796 iterations)
+Loading line from dict:  88% (63184/71796 iterations)
+Loading line from dict:  89% (63902/71796 iterations)
+Loading line from dict:  90% (64620/71796 iterations)
+Loading line from dict:  91% (65338/71796 iterations)
+Loading line from dict:  92% (66056/71796 iterations)
+Loading line from dict:  93% (66774/71796 iterations)
+Loading line from dict:  94% (67492/71796 iterations)
+Loading line from dict:  95% (68210/71796 iterations)
+Loading line from dict:  96% (68928/71796 iterations)
+Loading line from dict:  97% (69646/71796 iterations)
+Loading line from dict:  98% (70364/71796 iterations)
+Loading line from dict:  99% (71082/71796 iterations)
+Loading line from dict: 100% (71796/71796 iterations)
+Done loading line from dict.
+Compiling ContextCpu kernels...
+Done compiling ContextCpu kernels.
+</pre></div>
+</div>
+<p>We can have a look at the generated particles (see the <a class="reference external" href="https://xsuite.readthedocs.io/en/latest/particlesmanip.html">xsuite user guide</a> for more)</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <span class="p">(</span><a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axx</span></a><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axy</span></a><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axz</span></a><span class="p">)</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.plot.html#matplotlib.axes.Axes.plot" title="matplotlib.axes.Axes.plot" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axx</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="mf">1e6</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">x</span></a><span class="p">,</span> <span class="mf">1e5</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">px</span></a><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.plot.html#matplotlib.axes.Axes.plot" title="matplotlib.axes.Axes.plot" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axy</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="mf">1e6</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">y</span></a><span class="p">,</span> <span class="mf">1e6</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">py</span></a><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.plot.html#matplotlib.axes.Axes.plot" title="matplotlib.axes.Axes.plot" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axz</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="mf">1e3</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">zeta</span></a><span class="p">,</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">particles</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_xlabel.html#matplotlib.axes.Axes.set_xlabel" title="matplotlib.axes.Axes.set_xlabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axx</span><span class="o">.</span><span class="n">set_xlabel</span></a><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$x$ [$\mu$m]&quot;</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_ylabel.html#matplotlib.axes.Axes.set_ylabel" title="matplotlib.axes.Axes.set_ylabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axx</span><span class="o">.</span><span class="n">set_ylabel</span></a><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$p_x$ [$10^{-5}$]&quot;</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_xlabel.html#matplotlib.axes.Axes.set_xlabel" title="matplotlib.axes.Axes.set_xlabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axy</span><span class="o">.</span><span class="n">set_xlabel</span></a><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$y$ [$\mu$m]&quot;</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_ylabel.html#matplotlib.axes.Axes.set_ylabel" title="matplotlib.axes.Axes.set_ylabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axy</span><span class="o">.</span><span class="n">set_ylabel</span></a><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$p_y$ [$10^{-3}$]&quot;</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_xlabel.html#matplotlib.axes.Axes.set_xlabel" title="matplotlib.axes.Axes.set_xlabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axz</span><span class="o">.</span><span class="n">set_xlabel</span></a><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$z$ [$10^{-3}$]&quot;</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_ylabel.html#matplotlib.axes.Axes.set_ylabel" title="matplotlib.axes.Axes.set_ylabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axz</span><span class="o">.</span><span class="n">set_ylabel</span></a><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\delta$ [$10^{-3}$]&quot;</span><span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.align_ylabels" title="matplotlib.figure.Figure.align_ylabels" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span></a><span class="p">([</span><a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axx</span></a><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axy</span></a><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axz</span></a><span class="p">])</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../_images/sphx_glr_demo_analytical_nagaitsev_emittances_001.svg" srcset="../_images/sphx_glr_demo_analytical_nagaitsev_emittances_001.svg, ../_images/sphx_glr_demo_analytical_nagaitsev_emittances_001_2_00x.svg 2.00x" alt="demo analytical nagaitsev emittances" class = "sphx-glr-single-img"/><p>We can compute initial (geometrical) emittances as well as the bunch length
+from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_x</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">x</span></a><span class="p">[</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">state</span></a> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># horizontal stdev</span>
+<a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_y</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">y</span></a><span class="p">[</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">state</span></a> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># vertical stdev</span>
+<span class="n">sig_delta</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">state</span></a> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># momentum spread</span>
+
+<span class="c1"># Compute horizontal &amp; vertical geometric emittances as well as the bunch length, all in [m]</span>
+<span class="n">geom_epsx</span> <span class="o">=</span> <span class="p">(</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_x</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;dx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sig_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;betx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">geom_epsy</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_y</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;bety&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">bunch_l</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">zeta</span></a><span class="p">[</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">state</span></a> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="computing-elliptic-integrals-and-ibs-growth-rates">
+<h2>Computing Elliptic Integrals and IBS Growth Rates<a class="headerlink" href="#computing-elliptic-integrals-and-ibs-growth-rates" title="Link to this heading"></a></h2>
+<p>Let us instantiate the <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> class. It is fairly
+simple and is done from both the beam parameters of the particles and the
+optics parameters of the line. For each of these a specific <code class="xref py py-obj docutils literal notranslate"><span class="pre">dataclass</span></code>
+is provided in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code> module.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
+<span class="n">optics</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="p">(</span><span class="n">twiss</span><span class="p">)</span>
+<span class="n">IBS</span> <span class="o">=</span> <span class="n">NagaitsevIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As a first step, all calculations in rely on the computing of Nagaitsev integrals
+<span id="id1">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>, which is done with
+a dedicated function. These are returned, but also stored internally in the <strong>IBS</strong>
+object and will be updated internally each time they are computed.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">integrals</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">integrals</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">geom_epsy</span></a><span class="p">,</span> <span class="n">sig_delta</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">integrals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">IBS</span><span class="o">.</span><span class="n">elliptic_integrals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>NagaitsevIntegrals(Ix=8.054321119596657e+19, Iy=1.475120919635158e+17, Iz=5.983720787348584e+23)
+NagaitsevIntegrals(Ix=8.054321119596657e+19, Iy=1.475120919635158e+17, Iz=5.983720787348584e+23)
+</pre></div>
+</div>
+<p>From these the <strong>IBS</strong> growth rates can be computed, which is again done by calling
+a dedicated function. If the integrals mentioned above have not been computed yet,
+an message will be logged for the user and they will be computed first. Once again,
+these are returned but also stored internally and updated internally each time they
+are computed.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">growth_rates</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">geom_epsy</span></a><span class="p">,</span> <span class="n">sig_delta</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">bunch_l</span></a><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">growth_rates</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">IBS</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>IBSGrowthRates(Tx=366.3329367157667, Ty=102.14637398609214, Tz=90.51155335991919)
+IBSGrowthRates(Tx=366.3329367157667, Ty=102.14637398609214, Tz=90.51155335991919)
+</pre></div>
+</div>
+<p>Please note that the <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBS.growth_rates</span></code> method by default re-computes the
+integrals before computing the growth rates. This convenient as usually, one
+needs to update the integrals when they want to update the growth rates. It
+can be disabled by setting the <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_integrals</span></code> argument to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
+</section>
+<section id="computing-new-emittances-from-growth-rates">
+<h2>Computing New Emittances from Growth Rates<a class="headerlink" href="#computing-new-emittances-from-growth-rates" title="Link to this heading"></a></h2>
+<p>From these one can compute the emittances at the next time step. For the emittances
+at the next turn, once should use <span class="math notranslate nohighlight">\(1 / f_{rev}\)</span> as the time step, which
+is the default value used if it is not provided.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">new_geom_epsx</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_geom_epsy</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_sig_delta</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">emittance_evolution</span><span class="p">(</span>
+    <span class="n">geom_epsx</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">geom_epsy</span></a><span class="p">,</span> <span class="n">sig_delta</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">bunch_l</span></a>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next time step geometrical epsilon_x = </span><span class="si">{</span><span class="n">new_geom_epsx</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next time step geometrical epsilon_y = </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_geom_epsy</span></a><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next time step sigma_delta = </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_sig_delta</span></a><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next time step bunch length = </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Next time step geometrical epsilon_x = 1.0016575516875124e-10 m
+Next time step geometrical epsilon_y = 6.576689733638122e-13 m
+Next time step sigma_delta = 0.0017351274937179467
+Next time step bunch length = 0.0015973165029909181 m
+</pre></div>
+</div>
+</section>
+<section id="analytical-evolution-for-many-turns">
+<h2>Analytical Evolution for Many Turns<a class="headerlink" href="#analytical-evolution-for-many-turns" title="Link to this heading"></a></h2>
+<p>One can then analytically look at the evolution through many turns by looping
+over this calculation. Let’s do this for 10 000 turns, re-computing the elliptic
+integrals and the IBS growth rates every 200 turns. The more frequent this update
+the more physically accurate the results will be, but the longer the simulation
+as this computation is the most compute-intensive process.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a> <span class="o">=</span> <span class="mi">10_000</span>  <span class="c1"># number of turns to loop for</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ibs_step</span></a> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># frequency at which to re-compute the growth rates in [turns]</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># array of turns</span>
+
+<span class="c1"># Set up a dataclass to store the results</span>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Records</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataclass to store (and update) important values through tracking.&quot;&quot;&quot;</span>
+
+    <span class="n">epsilon_x</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class"><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></a>
+    <span class="n">epsilon_y</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class"><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></a>
+    <span class="n">sig_delta</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class"><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></a>
+    <span class="n">bunch_length</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class"><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></a>
+
+
+<span class="c1"># Initialize the dataclass</span>
+<span class="n">turn_by_turn</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span>
+    <span class="n">epsilon_x</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+    <span class="n">epsilon_y</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+    <span class="n">sig_delta</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+    <span class="n">bunch_length</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Store the initial values</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">bunch_length</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">zeta</span></a><span class="p">[</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">state</span></a> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">sig_delta</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_delta</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_x</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;dx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sig_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;betx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_y</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;bety&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># We loop here now</span>
+<span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">):</span>
+    <span class="c1"># ----- Potentially re-compute the elliptic integrals and IBS growth rates ----- #</span>
+    <span class="k">if</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">%</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ibs_step</span></a> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Turn </span><span class="si">{</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="si">}</span><span class="s2">: re-computing the Nagaitsev integrals and growth rates&quot;</span><span class="p">)</span>
+        <span class="c1"># We compute from values at the previous turn</span>
+        <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span>  <span class="c1"># this recomputes the integrals by default</span>
+            <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+            <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+            <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">sig_delta</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+            <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">bunch_length</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ----- Compute the new emittances ----- #</span>
+    <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_emit_x</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_emit_y</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_sig_delta</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">emittance_evolution</span><span class="p">(</span>
+        <span class="n">geom_epsx</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">geom_epsy</span></a><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">sigma_delta</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">sig_delta</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">bunch_length</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">bunch_length</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="c1"># dt = 1.0 / IBS.optics.revolution_frequency,  # default value</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ----- Update the records with the new values ----- #</span>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_emit_x</span></a>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_emit_y</span></a>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">sig_delta</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_sig_delta</span></a>
+    <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">bunch_length</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Turn 1: re-computing the Nagaitsev integrals and growth rates
+Turn 200: re-computing the Nagaitsev integrals and growth rates
+Turn 400: re-computing the Nagaitsev integrals and growth rates
+Turn 600: re-computing the Nagaitsev integrals and growth rates
+Turn 800: re-computing the Nagaitsev integrals and growth rates
+Turn 1000: re-computing the Nagaitsev integrals and growth rates
+Turn 1200: re-computing the Nagaitsev integrals and growth rates
+Turn 1400: re-computing the Nagaitsev integrals and growth rates
+Turn 1600: re-computing the Nagaitsev integrals and growth rates
+Turn 1800: re-computing the Nagaitsev integrals and growth rates
+Turn 2000: re-computing the Nagaitsev integrals and growth rates
+Turn 2200: re-computing the Nagaitsev integrals and growth rates
+Turn 2400: re-computing the Nagaitsev integrals and growth rates
+Turn 2600: re-computing the Nagaitsev integrals and growth rates
+Turn 2800: re-computing the Nagaitsev integrals and growth rates
+Turn 3000: re-computing the Nagaitsev integrals and growth rates
+Turn 3200: re-computing the Nagaitsev integrals and growth rates
+Turn 3400: re-computing the Nagaitsev integrals and growth rates
+Turn 3600: re-computing the Nagaitsev integrals and growth rates
+Turn 3800: re-computing the Nagaitsev integrals and growth rates
+Turn 4000: re-computing the Nagaitsev integrals and growth rates
+Turn 4200: re-computing the Nagaitsev integrals and growth rates
+Turn 4400: re-computing the Nagaitsev integrals and growth rates
+Turn 4600: re-computing the Nagaitsev integrals and growth rates
+Turn 4800: re-computing the Nagaitsev integrals and growth rates
+Turn 5000: re-computing the Nagaitsev integrals and growth rates
+Turn 5200: re-computing the Nagaitsev integrals and growth rates
+Turn 5400: re-computing the Nagaitsev integrals and growth rates
+Turn 5600: re-computing the Nagaitsev integrals and growth rates
+Turn 5800: re-computing the Nagaitsev integrals and growth rates
+Turn 6000: re-computing the Nagaitsev integrals and growth rates
+Turn 6200: re-computing the Nagaitsev integrals and growth rates
+Turn 6400: re-computing the Nagaitsev integrals and growth rates
+Turn 6600: re-computing the Nagaitsev integrals and growth rates
+Turn 6800: re-computing the Nagaitsev integrals and growth rates
+Turn 7000: re-computing the Nagaitsev integrals and growth rates
+Turn 7200: re-computing the Nagaitsev integrals and growth rates
+Turn 7400: re-computing the Nagaitsev integrals and growth rates
+Turn 7600: re-computing the Nagaitsev integrals and growth rates
+Turn 7800: re-computing the Nagaitsev integrals and growth rates
+Turn 8000: re-computing the Nagaitsev integrals and growth rates
+Turn 8200: re-computing the Nagaitsev integrals and growth rates
+Turn 8400: re-computing the Nagaitsev integrals and growth rates
+Turn 8600: re-computing the Nagaitsev integrals and growth rates
+Turn 8800: re-computing the Nagaitsev integrals and growth rates
+Turn 9000: re-computing the Nagaitsev integrals and growth rates
+Turn 9200: re-computing the Nagaitsev integrals and growth rates
+Turn 9400: re-computing the Nagaitsev integrals and growth rates
+Turn 9600: re-computing the Nagaitsev integrals and growth rates
+Turn 9800: re-computing the Nagaitsev integrals and growth rates
+</pre></div>
+</div>
+<p>Feel free to run this simulation for more turns, or with a different frequency
+of the IBS growth rates re-computation. After this is done running, we can plot
+the evolutions across the turns:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html#matplotlib.pyplot.subplot_mosaic" title="matplotlib.pyplot.subplot_mosaic" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span></a><span class="p">(</span>
+    <span class="p">[[</span><span class="s2">&quot;epsx&quot;</span><span class="p">,</span> <span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">,</span> <span class="s2">&quot;bl&quot;</span><span class="p">]],</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="p">)</span>
+
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <span class="mf">1e10</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <span class="mf">1e13</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <span class="mf">1e3</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">sig_delta</span></a><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <span class="mf">1e3</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">bunch_length</span></a><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Axes parameters</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\varepsilon_x$ [$10^{-10}$m]&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\varepsilon_y$ [$10^{-13}$m]&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_{\delta}$ [$10^{-3}$]&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Bunch length [mm]&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axis</span></a> <span class="ow">in</span> <span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]):</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axis.YAxis.set_label_position.html#matplotlib.axis.YAxis.set_label_position" title="matplotlib.axis.YAxis.set_label_position" class="sphx-glr-backref-module-matplotlib-axis sphx-glr-backref-type-py-method"><span class="n">axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_label_position</span></a><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axis.YAxis.tick_right.html#matplotlib.axis.YAxis.tick_right" title="matplotlib.axis.YAxis.tick_right" class="sphx-glr-backref-module-matplotlib-axis sphx-glr-backref-type-py-method"><span class="n">axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span></a><span class="p">()</span>
+
+<span class="k">for</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axis</span></a> <span class="ow">in</span> <span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]):</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.set_xlabel.html#matplotlib.axes.Axes.set_xlabel" title="matplotlib.axes.Axes.set_xlabel" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span></a><span class="p">(</span><span class="s2">&quot;Turn Number&quot;</span><span class="p">)</span>
+
+<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.align_ylabels" title="matplotlib.figure.Figure.align_ylabels" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span></a><span class="p">((</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">]))</span>
+<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.align_ylabels" title="matplotlib.figure.Figure.align_ylabels" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span></a><span class="p">((</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]))</span>
+
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../_images/sphx_glr_demo_analytical_nagaitsev_emittances_002.svg" srcset="../_images/sphx_glr_demo_analytical_nagaitsev_emittances_002.svg, ../_images/sphx_glr_demo_analytical_nagaitsev_emittances_002_2_00x.svg 2.00x" alt="demo analytical nagaitsev emittances" class = "sphx-glr-single-img"/><div class="admonition-references admonition">
+<p class="admonition-title">References</p>
+<p>The use of the following functions, methods, classes and modules is shown
+in this example:</p>
+<ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">analytical</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">integrals</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code></p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code></p></li>
+</ul>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 22.809 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-analytical-nagaitsev-emittances-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/44753cfd900e08e65d941ea131c64ba9/demo_analytical_nagaitsev_emittances.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_analytical_nagaitsev_emittances.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/f23edd214f105e5f911df32af1ad9992/demo_analytical_nagaitsev_emittances.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">demo_analytical_nagaitsev_emittances.py</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="demo_compare_analyticals.html" class="btn btn-neutral float-left" title="Comparison of Analytical IBS Growth Rates and Emittances Evolution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Felix Soubelet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -8,7 +8,7 @@
 Gallery
 =======
 
-This page contains a gallery of examples showcasing functionality provided by `xibs`
+This page contains a gallery of examples showcasing functionality provided by `xibs`.
 Click on any image thumbnail to see the corresponding example page with and access to the source code.
 
 
@@ -20,52 +20,52 @@ Click on any image thumbnail to see the corresponding example page with and acce
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.analytical.BjorkenMtingwaIBS class to calculate IBS gr...">
+
+.. only:: html
+
+  .. image:: /gallery/images/thumb/sphx_glr_demo_analytical_bjorken_mtingwa_emittances_thumb.svg
+    :alt:
+
+  :ref:`sphx_glr_gallery_demo_analytical_bjorken_mtingwa_emittances.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows a comparison of the performance of ~xibs.analytical.BjorkenMtingwaIBS and ~x...">
+
+.. only:: html
+
+  .. image:: /gallery/images/thumb/sphx_glr_demo_compare_analyticals_thumb.svg
+    :alt:
+
+  :ref:`sphx_glr_gallery_demo_compare_analyticals.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Comparison of Analytical IBS Growth Rates and Emittances Evolution</div>
+    </div>
+
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.analytical.NagaitsevIBS class to calculate IBS growth ...">
 
 .. only:: html
 
-  .. image:: /gallery/images/thumb/sphx_glr_demo_analytical_emittances_thumb.svg
+  .. image:: /gallery/images/thumb/sphx_glr_demo_analytical_nagaitsev_emittances_thumb.svg
     :alt:
 
-  :ref:`sphx_glr_gallery_demo_analytical_emittances.py`
+  :ref:`sphx_glr_gallery_demo_analytical_nagaitsev_emittances.py`
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">Analytical Growth Rates and Emittance Evolution</div>
-    </div>
-
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.kicks.kinetic.KineticKickIBS class to calculate IBS ki...">
-
-.. only:: html
-
-  .. image:: /gallery/images/thumb/sphx_glr_demo_kinetic_kicks_thumb.png
-    :alt:
-
-  :ref:`sphx_glr_gallery_demo_kinetic_kicks.py`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">Kinetic IBS Kicks Tracking</div>
-    </div>
-
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.kicks.simple.SimpleKickIBS class to calculate IBS kick...">
-
-.. only:: html
-
-  .. image:: /gallery/images/thumb/sphx_glr_demo_simple_kicks_thumb.png
-    :alt:
-
-  :ref:`sphx_glr_gallery_demo_simple_kicks.py`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">Simple IBS Kicks Tracking</div>
+      <div class="sphx-glr-thumbnail-title">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</div>
     </div>
 
 
@@ -77,9 +77,9 @@ Click on any image thumbnail to see the corresponding example page with and acce
 .. toctree::
    :hidden:
 
-   /gallery/demo_analytical_emittances
-   /gallery/demo_kinetic_kicks
-   /gallery/demo_simple_kicks
+   /gallery/demo_analytical_bjorken_mtingwa_emittances
+   /gallery/demo_compare_analyticals
+   /gallery/demo_analytical_nagaitsev_emittances
 
 
 .. only:: html

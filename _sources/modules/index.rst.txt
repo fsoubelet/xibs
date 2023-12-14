@@ -6,17 +6,17 @@ API Reference
     :noindex:
 
 
+.. automodule:: xibs.dispatch
+    :members:
+    :noindex:
+
+
 .. automodule:: xibs.analytical
     :members:
     :noindex:
 
 
-.. automodule:: xibs.kicks.simple
-    :members:
-    :noindex:
-
-
-.. automodule:: xibs.kicks.kinetic
+.. automodule:: xibs.kicks
     :members:
     :noindex:
 

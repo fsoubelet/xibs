@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xibs.dispatch &mdash; xibs 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-codeautolink.css?v=125d5c1c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-dropdown.css?v=995e94df" />
+      <link rel="stylesheet" type="text/css" href="../../_static/panels-bootstrap.min.css?v=21c0b90a" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=0a86e678" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=e259d695"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#input-data-structures">Input Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#formulary">Formulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters">Instantiating OpticsParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-an-xtrack-line">Instantiating OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-opticsparameters-from-mad-x">Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#instantiating-beamparameters">Instantiating BeamParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-beamparameters-from-an-xtrack-line">Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Reference Bibliography</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xibs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xibs.dispatch</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xibs.dispatch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. _xibs-dispatch:</span>
+
+<span class="sd">Formalism Dispatch</span>
+<span class="sd">------------------</span>
+
+<span class="sd">This module provides a single function, `ibs`, to ease the class instantiation for the user. The function returns an</span>
+<span class="sd">instance of the relevant IBS modelling class based on the desired formalism.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <span class="n">BjorkenMtingwaIBS</span><span class="p">,</span> <span class="n">NagaitsevIBS</span>
+<span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
+<span class="kn">from</span> <span class="nn">xibs.kicks</span> <span class="kn">import</span> <span class="n">KineticKickIBS</span><span class="p">,</span> <span class="n">SimpleKickIBS</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ibs">
+<a class="viewcode-back" href="../../modules/index.html#xibs.dispatch.ibs">[docs]</a>
+<span class="k">def</span> <span class="nf">ibs</span><span class="p">(</span>
+    <span class="n">beam_params</span><span class="p">:</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">optics_params</span><span class="p">:</span> <span class="n">OpticsParameters</span><span class="p">,</span> <span class="n">formalism</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">BjorkenMtingwaIBS</span><span class="p">,</span> <span class="n">NagaitsevIBS</span><span class="p">,</span> <span class="n">KineticKickIBS</span><span class="p">,</span> <span class="n">SimpleKickIBS</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dispatch function to return the appropriate IBS modelling class based on the desired formalism.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for the calculations. They will</span>
+<span class="sd">            be used to initialize the relevant IBS class.</span>
+<span class="sd">        optics_params (OpticsParameters): the optics parameters to use for the calculations. They will be</span>
+<span class="sd">            used to initialize the relevant IBS class.</span>
+<span class="sd">        formalism (str): the desired IBS modelling formalism. This determines which IBS class will be</span>
+<span class="sd">            returned. Valid options are: &quot;bjorken-mtingwa&quot; (or also &quot;b&amp;m&quot;), &quot;nagaitsev&quot;, &quot;kinetic&quot;, and</span>
+<span class="sd">            &quot;simple&quot;. This argument is case-insensitive. See the return annotation below for more details.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An instance of the relevant IBS modelling class. The chosen class is determined by the `formalism`</span>
+<span class="sd">        argument. Below are the various options and corresponding returned classes:</span>
+
+<span class="sd">        - **bjorken-mtingwa** or **b&amp;m**: returns a `BjorkenMtingwaIBS` instance (see :ref:`xibs-analytical`),</span>
+<span class="sd">          which implements the ``MAD-X`` analytical calculations for IBS growth rates that build on Bjorken &amp;</span>
+<span class="sd">          Mtingwa&#39;s formalism to take in consideration vertical dispersion.</span>
+<span class="sd">        - **nagaitsev**: returns a `NagaitsevIBS` instance (see :ref:`xibs-analytical`), which implements the</span>
+<span class="sd">          Nagaitsev analytical calculation for IBS growth rates. It is very fast, but does not take in</span>
+<span class="sd">          consideration the vertical dispersion.</span>
+<span class="sd">        - **kinetic**: returns a `KineticKickIBS` instance (see :ref:`xibs-kicks`), which implements the</span>
+<span class="sd">          kinetic kick-based formalism.</span>
+<span class="sd">        - **simple**: returns a `SimpleKickIBS` instance (see :ref:`xibs-kicks`), which implements the kick</span>
+<span class="sd">          formalism from Nagaitsev analytical values.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from xibs import ibs, BeamParameters, OpticsParameters</span>
+
+<span class="sd">            # Here is where you would define your inputs</span>
+<span class="sd">            beam_params = BeamParameters(...)</span>
+<span class="sd">            optics = OpticsParameters(...)</span>
+
+<span class="sd">            # Get the proper modelling class based on the demanded formalism</span>
+<span class="sd">            BM_IBS = ibs(beam_params, optics, formalism=&quot;b&amp;m&quot;)  # a BjorkenMtingwaIBS instance</span>
+<span class="sd">            NAGAITSEV_IBS = ibs(beam_params, optics, formalism=&quot;nagaitsev&quot;)  # a NagaitsevIBS instance</span>
+<span class="sd">            KINETIC_IBS = ibs(beam_params, optics, formalism=&quot;kinetic&quot;)  # a KineticKickIBS instance</span>
+<span class="sd">            SIMPLE_IBS = ibs(beam_params, optics, formalism=&quot;simple&quot;)  # a SimpleKickIBS instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+    <span class="c1"># Check the validity of the &#39;formalism&#39; argument</span>
+    <span class="k">if</span> <span class="n">formalism</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bjorken-mtingwa&quot;</span><span class="p">,</span> <span class="s2">&quot;b&amp;m&quot;</span><span class="p">,</span> <span class="s2">&quot;nagaitsev&quot;</span><span class="p">,</span> <span class="s2">&quot;kinetic&quot;</span><span class="p">,</span> <span class="s2">&quot;simple&quot;</span><span class="p">):</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid formalism &#39;</span><span class="si">{</span><span class="n">formalism</span><span class="si">}</span><span class="s2">&#39; demanded.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown formalism &#39;</span><span class="si">{</span><span class="n">formalism</span><span class="si">}</span><span class="s2">&#39; demanded. The valid options are (case-insensitive): &quot;</span>
+            <span class="s2">&quot;&#39;bjorken-mtingwa&#39; (or &#39;b&amp;m&#39;), &#39;nagaitsev&#39;, &#39;kinetic&#39;, and &#39;simple&#39;.&quot;</span>
+        <span class="p">)</span>
+    <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+    <span class="c1"># Dispatch the appropriate class based on the &#39;formalism&#39; argument</span>
+    <span class="c1"># This can be a pattern matching statement when Python 3.10 becomes our lowest supported version</span>
+    <span class="k">if</span> <span class="n">formalism</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bjorken-mtingwa&quot;</span><span class="p">,</span> <span class="s2">&quot;b&amp;m&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">BjorkenMtingwaIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">formalism</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;nagaitsev&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">NagaitsevIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">formalism</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kinetic&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">KineticKickIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics_params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SimpleKickIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics_params</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Felix Soubelet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

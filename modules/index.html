@@ -1,138 +1,144 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Reference &mdash; xibs 0.2.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sphinx-codeautolink.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sphinx-dropdown.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/panels-bootstrap.min.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
+<html class="writer-html5" data-content_root="../" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>API Reference — xibs 0.3.0 documentation</title>
+<link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-codeautolink.css?v=125d5c1c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery.css?v=61a4c737" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-binder.css?v=f4aeca0c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-dataframe.css?v=2082cf3c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-dropdown.css?v=995e94df" rel="stylesheet" type="text/css"/>
+<link href="../_static/panels-bootstrap.min.css?v=21c0b90a" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/custom.css?v=0a86e678" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=938c9ccc"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../_static/copybutton.js?v=f281be69"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Frequently Asked Questions" href="../faq.html" />
-    <link rel="prev" title="Simple IBS Kicks Tracking" href="../gallery/demo_simple_kicks.html" /> 
+<script src="../_static/jquery.js?v=5d32c60e"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+<script src="../_static/documentation_options.js?v=e259d695"></script>
+<script src="../_static/doctools.js?v=888ff710"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+<script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="../_static/js/theme.js"></script>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../faq.html" rel="next" title="Frequently Asked Questions"/>
+<link href="../gallery/demo_analytical_nagaitsev_emittances.html" rel="prev" title="Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution"/>
 </head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../index.html">
-            
-          </a>
-              <div class="version">
-                0.2.0
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a href="../index.html">
+</a>
+<div class="version">
+                0.3.0
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#analytical-emittance-evolution">Analytical Emittance Evolution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#providing-kicks">Providing Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gallery/index.html">Gallery</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_emittances.html">Analytical Growth Rates and Emittance Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html">Kinetic IBS Kicks Tracking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_simple_kicks.html">Simple IBS Kicks Tracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#input-data-structures">Input Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#analytical-calculations">Analytical Calculations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#simple-kicks">Simple Kicks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#kinetic-formalism">Kinetic Formalism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ibs-applying-kicks">IBS: Applying Kicks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#formulary">Formulary</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../faq.html#instantiating-opticsparameters-and-beamparameters">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-opticsparameters-from-an-xtrack-line-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line.twiss</span></code> result</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-opticsparameters-from-a-mad-x-twiss-result">Instantiating <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#instantiating-opticsparameters">Instantiating OpticsParameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-opticsparameters-from-an-xtrack-line">Instantiating OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-opticsparameters-from-mad-x">Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#instantiating-beamparameters">Instantiating BeamParameters</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-beamparameters-from-an-xtrack-line">Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
 </ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">xibs</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">API Reference</li>
-      <li class="wy-breadcrumbs-aside">
-              <!-- User defined GitHub URL -->
-              <a href="https://github.com/fsoubelet/xibs" class="fa fa-github"> Edit on GitHub</a>
-      </li>
-  </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="api-reference">
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../index.html">xibs</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Home" class="icon icon-home" href="../index.html"></a></li>
+<li class="breadcrumb-item active">API Reference</li>
+<li class="wy-breadcrumbs-aside">
+<!-- User defined GitHub URL -->
+<a class="fa fa-github" href="https://github.com/fsoubelet/xibs"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
+<section id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
 <section id="input-data-structures">
 <span id="xibs-inputs"></span><h2>Input Data Structures<a class="headerlink" href="#input-data-structures" title="Link to this heading"></a></h2>
 <p>Module with container dataclasses to encompass expected necessary inputs .
 Various parts of <code class="docutils literal notranslate"><span class="pre">xibs</span></code> perform calculations based on beam and optics parameters.</p>
 <p>The former is encompassed in a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> dataclass which is initiated from a generated <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object.
-The latter is encompassed in an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> dataclass which is initiated from the result of a <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> call on the line.</p>
+The latter is encompassed in an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> dataclass which is initiated from the result of a <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> call on
+the line (if in <code class="docutils literal notranslate"><span class="pre">xsuite</span></code>) or the sequence (if in <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code>).</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
@@ -161,8 +167,55 @@ it will not be kept in the instance’s attributes.</p>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xtrack.Line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_part</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">OpticsParameters</span></span></span><a class="reference internal" href="../_modules/xibs/inputs.html#BeamParameters.from_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Constructor to return a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> object from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">Line</span></code> object.
+This is a convenience method for the user, which will instantiate the class
+from the line’s reference particle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xtrack.Line</span></code>) -- an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>.</p></li>
+<li><p><strong>n_part</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- number of particles to in the bunch. This is a mandatory
+argument as it is not possible to infer it from <code class="xref py py-obj docutils literal notranslate"><span class="pre">line.particle_ref</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> object.</p>
+</dd>
+</dl>
 </dd></dl>
-
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_madx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">madx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><span class="pre">cpymad.madx.Madx</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">BeamParameters</span></span></span><a class="reference internal" href="../_modules/xibs/inputs.html#BeamParameters.from_madx"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Constructor to return a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> object from a <a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Madx</span></code></a> object.
+This is a convenience method for the user, which essentially queries the relevant
+information from the current sequence’s beam.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method will query parameters from the <a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Madx</span></code></a> object. It will
+get parameters from the current active sequence’s beam, and use these to create
+an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object from which to instanciate the <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> object.
+Note that the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart</span></code> package is required to use this method.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>madx</strong> (<a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">cpymad.madx.Madx</span></code></a>) -- a <a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Madx</span></code></a> instance to created an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code>
+object from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> object.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.inputs.</span></span><span class="sig-name descname"><span class="pre">OpticsParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">twiss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dataclasses.InitVar[typing.Union[ForwardRef('xtrack.twiss.TwissTable'),</span> <span class="pre">ForwardRef('pandas.DataFrame')]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_slipfactor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dataclasses.InitVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_frev_hz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dataclasses.InitVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/inputs.html#OpticsParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -175,9 +228,9 @@ of a <code class="xref py py-obj docutils literal notranslate"><span class="pre"
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>twiss</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union[&quot;xtrack.twiss.TwissTable&quot;,</span> <span class="pre">pd.DataFrame]</span></code>) -- the resulting <code class="xref py py-obj docutils literal notranslate"><span class="pre">TwissTable</span></code>
+<li><p><strong>twiss</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Union["xtrack.twiss.TwissTable",</span> <span class="pre">pd.DataFrame]</span></code>) -- the resulting <code class="xref py py-obj docutils literal notranslate"><span class="pre">TwissTable</span></code>
 of a <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss()</span></code> call on the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>, <strong>or</strong> the <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> table of the
-<code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> sequence as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. Lowercase keys are expected. If
+<code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> sequence as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. Lowercase keys are expected. If
 initiating from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> twiss, the next two arguments are required. This
 is an init-only parameter used for instanciation and it will not be kept in
 the instance’s attributes.</p></li>
@@ -199,19 +252,289 @@ Only required if the <code class="docutils literal notranslate"><span class="pre
 <li><p><strong>alfy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- vertical alpha functions.</p></li>
 <li><p><strong>dx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- horizontal dispersion functions in [m].</p></li>
 <li><p><strong>dy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- vertical dispersion functions in [m].</p></li>
-<li><p><strong>dpx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- horizontal dispersion (d px / d delta).</p></li>
-<li><p><strong>dpy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- horizontal dispersion (d px / d delta).</p></li>
+<li><p><strong>dpx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- horizontal dispersion of px (d px / d delta).</p></li>
+<li><p><strong>dpy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- horizontal dispersion of py (d px / d delta).</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xtrack.Line</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">OpticsParameters</span></span></span><a class="reference internal" href="../_modules/xibs/inputs.html#OpticsParameters.from_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Constructor to return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> object from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">Line</span></code> object.
+This is a convenience method for the user, which will perform a <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> call on
+the provided line and return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xtrack.Line</span></code>) -- an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>.</p></li>
+<li><p><strong>**kwargs</strong> -- any keyword argument will be transmitted to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">line.twiss</span></code> call.
+The default <code class="xref py py-obj docutils literal notranslate"><span class="pre">method</span></code> argument is <code class="docutils literal notranslate"><span class="pre">4d</span></code> but it can be overriden.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> object.</p>
+</dd>
+</dl>
 </dd></dl>
-
-<section id="analytical-calculations">
-<span id="xibs-analytical"></span><h2>Analytical Calculations<a class="headerlink" href="#analytical-calculations" title="Link to this heading"></a></h2>
-<p>Module with functionality to perform analytical calculations according to Nagaitsev’s formalism.
-A user-facing class is provided which computes the Nagaitsev integrals based on beam parameters and machine optics.
-The formalism from which formulas and calculations are implemented can be found in <span id="id1">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_madx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">madx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><span class="pre">cpymad.madx.Madx</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">OpticsParameters</span></span></span><a class="reference internal" href="../_modules/xibs/inputs.html#OpticsParameters.from_madx"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Constructor to return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> object from a <a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Madx</span></code></a> object.
+This is a convenience method for the user, which essentially follows the steps described
+in the <a class="reference internal" href="../faq.html#xibs-faq-optics-params-from-madx"><span class="std std-ref">FAQ</span></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method will query parameters from the <a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Madx</span></code></a> object. It will
+get parameters from the current active sequence, and make a <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> call for
+said sequence.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>madx</strong> (<a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">cpymad.madx.Madx</span></code></a>) -- a <a class="reference external" href="https://hibtc.github.io/cpymad/automod/cpymad.madx.Madx.html#cpymad.madx.Madx" title="(in cpymad v1.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Madx</span></code></a> instance to created an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code>
+object from.</p></li>
+<li><p><strong>**kwargs</strong> -- any keyword argument will be transmitted to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">madx.twiss</span></code> call.
+The default <code class="xref py py-obj docutils literal notranslate"><span class="pre">centre</span></code> argument is <code class="docutils literal notranslate"><span class="pre">true</span></code> (recommended) but it can be overriden.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> object.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<section id="formalism-dispatch">
+<span id="xibs-dispatch"></span><h2>Formalism Dispatch<a class="headerlink" href="#formalism-dispatch" title="Link to this heading"></a></h2>
+<p>This module provides a single function, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ibs</span></code>, to ease the class instantiation for the user. The function returns an
+instance of the relevant IBS modelling class based on the desired formalism.</p>
 </section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">xibs.dispatch.</span></span><span class="sig-name descname"><span class="pre">ibs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formalism</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">BjorkenMtingwaIBS</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">NagaitsevIBS</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">KineticKickIBS</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SimpleKickIBS</span></span></span><a class="reference internal" href="../_modules/xibs/dispatch.html#ibs"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>A dispatch function to return the appropriate IBS modelling class based on the desired formalism.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations. They will
+be used to initialize the relevant IBS class.</p></li>
+<li><p><strong>optics_params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations. They will be
+used to initialize the relevant IBS class.</p></li>
+<li><p><strong>formalism</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) -- the desired IBS modelling formalism. This determines which IBS class will be
+returned. Valid options are: “bjorken-mtingwa” (or also “b&amp;m”), “nagaitsev”, “kinetic”, and
+“simple”. This argument is case-insensitive. See the return annotation below for more details.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>An instance of the relevant IBS modelling class. The chosen class is determined by the <code class="xref py py-obj docutils literal notranslate"><span class="pre">formalism</span></code>
+argument. Below are the various options and corresponding returned classes:</p>
+<ul class="simple">
+<li><p><strong>bjorken-mtingwa</strong> or <strong>b&amp;m</strong>: returns a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> instance (see <a class="reference internal" href="#xibs-analytical"><span class="std std-ref">IBS: Analytical Calculations</span></a>),
+which implements the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> analytical calculations for IBS growth rates that build on Bjorken &amp;
+Mtingwa’s formalism to take in consideration vertical dispersion.</p></li>
+<li><p><strong>nagaitsev</strong>: returns a <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> instance (see <a class="reference internal" href="#xibs-analytical"><span class="std std-ref">IBS: Analytical Calculations</span></a>), which implements the
+Nagaitsev analytical calculation for IBS growth rates. It is very fast, but does not take in
+consideration the vertical dispersion.</p></li>
+<li><p><strong>kinetic</strong>: returns a <code class="xref py py-obj docutils literal notranslate"><span class="pre">KineticKickIBS</span></code> instance (see <a class="reference internal" href="#xibs-kicks"><span class="std std-ref">IBS: Applying Kicks</span></a>), which implements the
+kinetic kick-based formalism.</p></li>
+<li><p><strong>simple</strong>: returns a <code class="xref py py-obj docutils literal notranslate"><span class="pre">SimpleKickIBS</span></code> instance (see <a class="reference internal" href="#xibs-kicks"><span class="std std-ref">IBS: Applying Kicks</span></a>), which implements the kick
+formalism from Nagaitsev analytical values.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xibs</span> <span class="kn">import</span> <span class="n">ibs</span><span class="p">,</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
+
+<span class="c1"># Here is where you would define your inputs</span>
+<span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">optics</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Get the proper modelling class based on the demanded formalism</span>
+<span class="n">BM_IBS</span> <span class="o">=</span> <span class="n">ibs</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"b&amp;m"</span><span class="p">)</span>  <span class="c1"># a BjorkenMtingwaIBS instance</span>
+<span class="n">NAGAITSEV_IBS</span> <span class="o">=</span> <span class="n">ibs</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"nagaitsev"</span><span class="p">)</span>  <span class="c1"># a NagaitsevIBS instance</span>
+<span class="n">KINETIC_IBS</span> <span class="o">=</span> <span class="n">ibs</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"kinetic"</span><span class="p">)</span>  <span class="c1"># a KineticKickIBS instance</span>
+<span class="n">SIMPLE_IBS</span> <span class="o">=</span> <span class="n">ibs</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=</span><span class="s2">"simple"</span><span class="p">)</span>  <span class="c1"># a SimpleKickIBS instance</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+<section id="ibs-analytical-calculations">
+<span id="xibs-analytical"></span><h2>IBS: Analytical Calculations<a class="headerlink" href="#ibs-analytical-calculations" title="Link to this heading"></a></h2>
+<p>Module with functionality to perform analytical IBS calculations, either according to either Nagaitsev’s or Bjorken &amp; Mtingwa’s formalism.
+User-facing classes are provided which allow to compute the growth rates based on beam parameters and machine optics.
+The formalism from which formulas and calculations are implemented can be found in <span id="id1">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span> and <span id="id2">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>, respectively.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please note that these analytical implementations make the assumptions.
+Should your scenario not satisfy the following assumptions, the results might not be accurate:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>It is assumed that beam profiles are Gaussian,</p></li>
+<li><p>It is assumed that no betatron coupling is present in the machine.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.analytical.</span></span><span class="sig-name descname"><span class="pre">BjorkenMtingwaIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>A single class to compute the IBS growth rates according to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Bjorken</span> <span class="pre">&amp;</span> <span class="pre">Mtingwa</span></code> formalism.
+The exact approach follows the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> implementation, which has corrected B&amp;M in order to
+take in consideration the vertical dispersion values (see the relevant note about the changes
+at <span id="id3">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>). It initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If possible, when creating the <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> to initiate this class, please do so
+by providing the <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> values calculated at the center of elements. This is done by
+giving the flag <code class="xref py py-obj docutils literal notranslate"><span class="pre">centre=true</span></code> to the <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> command in <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code>, for instance. If
+this isn’t done, a warning will be issued that one might observe some slight discrepancies
+against <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> result values.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations.</p></li>
+<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations.</p></li>
+<li><p><strong>ibs_growth_rates</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">IBSGrowthRates</span></code>) -- the computed IBS growth rates. This self-updates
+when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">coulomb_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS.coulomb_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Calculates the Coulomb logarithm based on the beam parameters and optics the class
+was initiated with. For a good introductory resource on the Coulomb Log, see:
+<a class="reference external" href="https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html">https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function follows the exact computing implementation of the Coulomb log
+calculation in the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> source code, which ine can find in the file
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">MAD-X/src/ibsdb.f90</span></code> as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">twclog</span></code> subroutine. It is computed as
+<span class="math notranslate nohighlight">\(\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})\)</span>. Here <span class="math notranslate nohighlight">\(r_{max}\)</span>
+denotes the smaller of <span class="math notranslate nohighlight">\(\sigma_x\)</span> and the Debye length; while <span class="math notranslate nohighlight">\(r_{min}\)</span>
+is the larger of the classical distance of closest approach and the quantum
+diffraction limit from the nuclear radius.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
+<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
+<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
+<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- bunch length in [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The dimensionless Coulomb logarithm <span class="math notranslate nohighlight">\(\ln \left( \Lambda \right)\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">emittance_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS.emittance_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Analytically computes the new emittances after a given time step <code class="xref py py-obj docutils literal notranslate"><span class="pre">dt</span></code> has
+ellapsed, from initial values, based on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This calculation is done by building on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates. If the
+latter have not been computed yet, this method will raise an error. Please
+remember to call the instance’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method first.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The calculation is an exponential growth based on the rates <span class="math notranslate nohighlight">\(T_{x,y,z}\)</span>. It goes
+according to the following, where <span class="math notranslate nohighlight">\(N\)</span> represents the time step:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}T_{x,y,z} &amp;= 1 / \tau_{x,y,z}\\\varepsilon_{x,y}^{N+1} &amp;= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}\\\sigma_{\delta}^{N+1} &amp;= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}\\\sigma_{z}^{N+1} &amp;= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}\end{aligned}\end{align} \]</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geom_epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
+<li><p><strong>geom_epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
+<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
+<li><p><strong>dt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float,</span> <span class="pre">optional</span></code>) -- the time interval to use, in [s]. Default to the inverse
+of the revolution frequency, <span class="math notranslate nohighlight">\(1 / f_{rev}\)</span>.</p></li>
+<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates have not yet been computed.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple with the new horizontal &amp; vertical geometric emittances as well as the new
+momentum spread, after the time step has ellapsed.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">17</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+</div>
+<p>Computes the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates, named <span class="math notranslate nohighlight">\(T_x, T_y\)</span> and <span class="math notranslate nohighlight">\(T_z\)</span> in this code
+base. These correspond to the <span class="math notranslate nohighlight">\(1 / \tau\)</span> term, for each plane <span class="math notranslate nohighlight">\(x, y\)</span> and
+<span class="math notranslate nohighlight">\(z\)</span>, respectively. The instance attribute <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.ibs_growth_rates</span></code> is automatically
+updated with the results of this method when it is called.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When creating the <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> to initiate this class, please do so by providing
+the <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> values calculated at the center of elements. This is done by giving the
+flag <code class="xref py py-obj docutils literal notranslate"><span class="pre">centre=true</span></code> to the <code class="docutils literal notranslate"><span class="pre">TWISS</span></code> command in <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> for instance. If not, one might
+observe some slight discrepancies with the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> values.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The calculation is done according to the following steps, which are related to different
+equations in <span id="id4">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Adjusts the <span class="math notranslate nohighlight">\(D_x, D_y, D^{\prime}_{x}, D^{\prime}_{y}\)</span> terms (multiply by <span class="math notranslate nohighlight">\(\beta_{rel}\)</span>) to be in the <span class="math notranslate nohighlight">\(pt\)</span> frame.</p></li>
+<li><p>Computes the various terms from Table 1 of the MAD-X note.</p></li>
+<li><p>Computes the Coulomb logarithm and the common constant term (first fraction) of Eq (8).</p></li>
+<li><p>Defines the integrands of integrals in Eq (8) of the MAD-X note.</p></li>
+<li><p>Defines sub-intervals and integrates the above over all of them, getting growth rates at each element in the lattice.</p></li>
+<li><p>Averages the results over the full circumference of the machine.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
+<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
+<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
+<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
+<li><p><strong>integration_intervals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- the number of sub-intervals to use when integrating the
+integrands of Eq (8) of the MAD-X note. Please DO NOT change this parameter unless
+you know exactly what you are doing. Defaults to 17.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSGrowthRates</span></code> object with the computed growth rates for each plane.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.analytical.</span></span><span class="sig-name descname"><span class="pre">IBSGrowthRates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/analytical.html#IBSGrowthRates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -229,7 +552,6 @@ The formalism from which formulas and calculations are implemented can be found 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.analytical.</span></span><span class="sig-name descname"><span class="pre">NagaitsevIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -237,7 +559,7 @@ The formalism from which formulas and calculations are implemented can be found 
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>A single class to compute Nagaitsev integrals (see
-<span id="id2">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>)
+<span id="id5">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>)
 and IBS growth rates. It initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -253,7 +575,7 @@ when they are computed with the <code class="xref py py-obj docutils literal not
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">coulomb_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.coulomb_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">coulomb_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.coulomb_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
@@ -263,8 +585,12 @@ was initiated with. For a good introductory resource on the Coulomb Log, see:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function follows the exact computing implementation of the Coulomb log
-calculation in the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> source code. One can find it in the source code
-in the file <code class="xref py py-obj docutils literal notranslate"><span class="pre">MAD-X/src/ibsdb.f90</span></code> as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">twclog</span></code> subroutine.</p>
+calculation in the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> source code, which ine can find in the file
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">MAD-X/src/ibsdb.f90</span></code> as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">twclog</span></code> subroutine. It is computed as
+<span class="math notranslate nohighlight">\(\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})\)</span>. Here <span class="math notranslate nohighlight">\(r_{max}\)</span>
+denotes the smaller of <span class="math notranslate nohighlight">\(\sigma_x\)</span> and the Debye length; while <span class="math notranslate nohighlight">\(r_{min}\)</span>
+is the larger of the classical distance of closest approach and the quantum
+diffraction limit from the nuclear radius.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -280,10 +606,9 @@ in the file <code class="xref py py-obj docutils literal notranslate"><span clas
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">emittance_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.emittance_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">emittance_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.emittance_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
@@ -298,22 +623,23 @@ remember to call the instance’s <code class="xref py py-obj docutils literal n
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The calculation is an exponential growth based on the rates <span class="math notranslate nohighlight">\(T_{x,y,z}\)</span>. It goes
-according to:</p>
+according to the following, where <span class="math notranslate nohighlight">\(N\)</span> represents the time step:</p>
 <div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}T_{x,y,z} &amp;= 1 / \tau_{x,y,z}\\\varepsilon_{x,y}^{N+1} &amp;= \varepsilon_{x,y}^{N} + e^{t / \tau_{x,y}}\\\sigma_{\delta}^{N+1} &amp;= \sigma_{\delta}^{N} + e^{t / 2 \tau_{z}}\end{aligned}\end{align} \]</div>
+\[ \begin{align}\begin{aligned}T_{x,y,z} &amp;= 1 / \tau_{x,y,z}\\\varepsilon_{x,y}^{N+1} &amp;= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}\\\sigma_{\delta}^{N+1} &amp;= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}\\\sigma_{z}^{N+1} &amp;= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}\end{aligned}\end{align} \]</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
+<li><p><strong>geom_epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
+<li><p><strong>geom_epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
 <li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
-<li><p><strong>dt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float,</span> <span class="pre">optional</span></code>) -- the time interval to use. Default to the inverse
+<li><p><strong>dt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float,</span> <span class="pre">optional</span></code>) -- the time interval to use, in [s]. Default to the inverse
 of the revolution frequency, <span class="math notranslate nohighlight">\(1 / f_{rev}\)</span>.</p></li>
+<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the IBS growth rates have not yet been computed.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates have not yet been computed.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A tuple with the new horizontal &amp; vertical geometric emittances as well as the new
@@ -321,23 +647,22 @@ momentum spread, after the time step has ellapsed.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_integrals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>Computes the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates, named <span class="math notranslate nohighlight">\(T_x, T_y\)</span> and <span class="math notranslate nohighlight">\(T_z\)</span> in this
 code base, from Nagaitsev integrals. These correspond to the <span class="math notranslate nohighlight">\(1 / \tau\)</span> term,
-for each plane, of Eq (28) in <span id="id3">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>,
+for each plane, of Eq (28) in <span id="id6">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>,
 respectively. The instance attribute <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.ibs_growth_rates</span></code> is automatically updated
-with the results of this method.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
+with the results of this method when it is called.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>This calculation is done by building on the Nagaitsev integrals. If the
-latter have not been computed yet, this method will raise an error. Please
-remember to call the instance’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">integrals</span></code> method first.</p>
+latter have not been computed yet, this method will first log a message
+and compute them, then compute the growth rates.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -347,7 +672,7 @@ We are working on implementing it for a future version.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The calculation is done according to the following steps, which are related to different
-equations in <span id="id4">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
+equations in <span id="id7">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Get the Nagaitsev integrals from the instance attributes (integrals of Eq (30-32)).</p></li>
@@ -365,39 +690,37 @@ equations in <span id="id4">[<a class="reference internal" href="../bibliography
 <li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
 <li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
 <li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
+<li><p><strong>compute_integrals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, the Nagaitsev elliptic integrals will be computed
+before the growth rates. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>. New in version 0.3.0.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the Nagaitsev integrals have not yet been computed.</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSGrowthRates</span></code> object with the computed growth rates for each plane.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSGrowthRates</span></code> object with the computed growth rates for each plane.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">integrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NagaitsevIntegrals</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.integrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">integrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NagaitsevIntegrals</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.integrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>Computes the Nagaitsev integrals, named <span class="math notranslate nohighlight">\(I_x, I_y\)</span> and <span class="math notranslate nohighlight">\(I_z\)</span> in this code base.</p>
 <p>These correspond to the integrals inside of Eq (32), (31) and (30) in
-<span id="id5">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>, respectively.
+<span id="id8">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>, respectively.
 The instance attribute <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.elliptic_integrals</span></code> is automatically updated
 with the results of this method. It is used for other calculations.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The calculation is done according to the following steps, which are related to different
-equations in <span id="id6">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
+equations in <span id="id9">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Computes various intermediate terms and then <span class="math notranslate nohighlight">\(a_x, a_y, a_s, a_1\)</span> and <span class="math notranslate nohighlight">\(a_2\)</span> constants from Eq (18-21).</p></li>
 <li><p>Computes the eigenvalues <span class="math notranslate nohighlight">\(\lambda_1, \lambda_2\)</span> of the <span class="math notranslate nohighlight">\(\bf{A}\)</span> matrix (<span class="math notranslate nohighlight">\(\bf{L}\)</span> matrix in B&amp;M) from Eq (22-24).</p></li>
-<li><p>Iteratively computes the <span class="math notranslate nohighlight">\(R_1, R_2\)</span> and <span class="math notranslate nohighlight">\(R_3\)</span> terms from Eq (25-27) with the forms of Eq (5-6).</p></li>
+<li><p>Computes the <span class="math notranslate nohighlight">\(R_1, R_2\)</span> and <span class="math notranslate nohighlight">\(R_3\)</span> terms from Eq (25-27) with the forms of Eq (5-6).</p></li>
 <li><p>Computes the <span class="math notranslate nohighlight">\(S_p, S_x\)</span> and <span class="math notranslate nohighlight">\(S_{xp}\)</span> terms from Eq (33-35).</p></li>
-<li><p>Computes and return the integrals terms in Eq (30-32).</p></li>
+<li><p>Computes and returns the integrals terms in Eq (30-32).</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -414,9 +737,7 @@ equations in <span id="id6">[<a class="reference internal" href="../bibliography
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.analytical.</span></span><span class="sig-name descname"><span class="pre">NagaitsevIntegrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIntegrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -434,34 +755,15 @@ equations in <span id="id6">[<a class="reference internal" href="../bibliography
 </dd>
 </dl>
 </dd></dl>
-
-<section id="simple-kicks">
-<span id="xibs-simple"></span><h2>Simple Kicks<a class="headerlink" href="#simple-kicks" title="Link to this heading"></a></h2>
-<p>Module with user-facing API to compute simple IBS kicks from the Nagaitsev integrals and apply them to particles.</p>
+<section id="ibs-applying-kicks">
+<span id="xibs-kicks"></span><h2>IBS: Applying Kicks<a class="headerlink" href="#ibs-applying-kicks" title="Link to this heading"></a></h2>
+<p>Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: kinetic and simple.</p>
+<p>In the kinetic formalism, the applied IBS kicks are determined from computed diffusion and friction terms.
+In the simple formalism, the applied IBS kicks are determined from Nagaitsev integrals (see <a class="reference internal" href="#xibs-analytical"><span class="std std-ref">IBS: Analytical Calculations</span></a>).</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.simple.</span></span><span class="sig-name descname"><span class="pre">SimpleKickIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks/simple.html#SimpleKickIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>A single class to compute the simple IBS kicks based on the analytical results obtained with
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.analytical</span></code>. The kicks are implemented according to <span id="id7">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.
-The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations.</p></li>
-<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<section id="kinetic-formalism">
-<span id="xibs-kinetic"></span><h2>Kinetic Formalism<a class="headerlink" href="#kinetic-formalism" title="Link to this heading"></a></h2>
-<p>Module with user-facing API to compute diffusion and friction terms according to the kinetic formalism, as well as the corresponding kinetic IBS kicks and apply them to particles.</p>
-</section>
-<dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.kinetic.</span></span><span class="sig-name descname"><span class="pre">DiffusionCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks/kinetic.html#DiffusionCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">DiffusionCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#DiffusionCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Container dataclass for kinetic IBS diffusion coefficients.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -473,10 +775,9 @@ The class initiates from a <code class="xref py py-obj docutils literal notransl
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.kinetic.</span></span><span class="sig-name descname"><span class="pre">FrictionCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Fx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks/kinetic.html#FrictionCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">FrictionCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Fx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Fz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#FrictionCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Container dataclass for kinetic IBS friction coefficients.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -488,19 +789,20 @@ The class initiates from a <code class="xref py py-obj docutils literal notransl
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.kinetic.</span></span><span class="sig-name descname"><span class="pre">KineticCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks/kinetic.html#KineticCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">KineticCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#KineticCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Container dataclass for kinetic IBS coefficients. These are computed from the diffusion
-and friction ones according to <span id="id8">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
+and friction ones according to <span id="id10">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.kinetic.</span></span><span class="sig-name descname"><span class="pre">KineticKickIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks/kinetic.html#KineticKickIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>A single class to compute the IBS diffusion and friction coefficients according
-to the kinetic IBS formalism of <span id="id9">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">KineticKickIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#KineticKickIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>A single class to compute the IBS diffusion and friction coefficients according
+to the kinetic IBS formalism of <span id="id11">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
 The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -518,21 +820,38 @@ the <code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </dd>
 </dl>
 </dd></dl>
-
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">SimpleKickIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#SimpleKickIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>A single class to compute the simple IBS kicks based on the analytical results obtained with
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.analytical</span></code>. The kicks are implemented according to <span id="id12">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.
+The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations.</p></li>
+<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 <section id="formulary">
 <span id="xibs-utils"></span><h2>Formulary<a class="headerlink" href="#formulary" title="Link to this heading"></a></h2>
 <p>Module with commonly used formulae to compute quantities of interest needed in the rest of the package.</p>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">bunch_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circumference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slip_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf_voltage_GV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_loss_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#bunch_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">bunch_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circumference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slip_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf_voltage_GV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_loss_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#bunch_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>Analytical calculation for bunch length for protons / electrons (from Wiedermann’s book).
 This is a linear approximation which assumes that particles are in the center of the bucket
 only / mostly.</p>
-<div class="admonition-todo admonition" id="id10">
+<div class="admonition-todo admonition" id="id13">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -556,10 +875,9 @@ only / mostly.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">energy_spread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circumference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slip_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf_voltage_GV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_loss_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#energy_spread"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">energy_spread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circumference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slip_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf_voltage_GV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_loss_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#energy_spread"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
@@ -586,7 +904,6 @@ here.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">ion_bunch_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circumference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slip_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf_voltage_GV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/formulary.html#ion_bunch_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -596,7 +913,7 @@ here.</p>
 <p>Analytical calculation for bunch length for ions (from Wiedermann’s book). This calculation
 does not work too well if the bucket is full. Implementation so far as I can tell is as used
 in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS).</p>
-<div class="admonition-todo admonition" id="id11">
+<div class="admonition-todo admonition" id="id14">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -619,10 +936,9 @@ instance 1 for electron or proton).</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">ion_energy_spread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circumference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slip_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf_voltage_GV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#ion_energy_spread"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">ion_energy_spread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circumference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">harmonic_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_energy_GeV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">slip_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf_voltage_GV</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#ion_energy_spread"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
@@ -647,14 +963,13 @@ instance 1 for electron or proton).</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ArrayLike</span></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">xibs.formulary.</span></span><span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ArrayLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">ArrayLike</span></span></span><a class="reference internal" href="../_modules/xibs/formulary.html#phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
-<p>Phi parameter of Eq (15) in <span id="id12">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
+<p>Phi parameter of Eq (15) in <span id="id15">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -669,31 +984,25 @@ instance 1 for electron or proton).</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">xibs.version.</span></span><span class="sig-name descname"><span class="pre">version_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/xibs/version.html#version_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">xibs.version.</span></span><span class="sig-name descname"><span class="pre">version_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/xibs/version.html#version_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>Debug convenience function to give version, platform and runtime information.</p>
 </dd></dl>
-
 </section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../gallery/demo_simple_kicks.html" class="btn btn-neutral float-left" title="Simple IBS Kicks Tracking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2023, Felix Soubelet.</p>
-  </div>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="../gallery/demo_analytical_nagaitsev_emittances.html" rel="prev" title="Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="n" class="btn btn-neutral float-right" href="../faq.html" rel="next" title="Frequently Asked Questions">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2023, Felix Soubelet.</p>
+</div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
@@ -701,15 +1010,14 @@ instance 1 for electron or proton).</p></li>
    
 
 </footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
+</div>
+</div>
+</section>
+</div>
+<script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
-
+  </script>
 </body>
 </html>
