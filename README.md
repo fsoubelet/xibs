@@ -1,6 +1,6 @@
 # XIBS
 
-<p align="center">
+<p>
   <!-- PyPi Version -->
   <a href="https://pypi.org/project/xibs">
     <img alt="PyPI Version" src="https://img.shields.io/pypi/v/xibs?label=PyPI&logo=PyPI">
@@ -10,8 +10,6 @@
   <a href="https://github.com/fsoubelet/xibs/releases">
     <img alt="Github Release" src="https://img.shields.io/github/v/release/fsoubelet/xibs?color=orange&label=Release&logo=Github">
   </a>
-
-  <br/>
 
   <!-- Github Actions Build -->
   <a href="https://github.com/fsoubelet/xibs/actions?query=workflow%3A%22Cron+Testing%22">
