@@ -143,7 +143,7 @@ class NagaitsevIBS:
         Returns:
             The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
         """
-        LOGGER.debug("Computing Coulomb logarithm for definded beam and optics parameters")
+        LOGGER.debug("Computing Coulomb logarithm for defined beam and optics parameters")
         # ----------------------------------------------------------------------------------------------
         # Interpolated beta and dispersion functions for the average calculation below
         LOGGER.debug("Interpolating beta and dispersion functions")
@@ -497,59 +497,11 @@ class BjorkenMtingwaIBS:
         Returns:
             The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
         """
-        # We call the NagaitsevIBS class to compute the Coulomb log, it is a little bit
-        # of runtime overhead but I don't want to duplicate the code.
+        # Instantiate a NagaitsevIBS class and call its '.coulomb_log' method. This is a
+        # very small (~1.5ms) runtime overhead that allows avoiding code duplication.
         return NagaitsevIBS(self.beam_parameters, self.optics).coulomb_log(
             geom_epsx, geom_epxy, sigma_delta, bunch_length
         )
-        # LOGGER.debug("Computing Coulomb logarithm for definded beam and optics parameters")
-        # # ----------------------------------------------------------------------------------------------
-        # # Interpolated beta and dispersion functions for the average calculation below
-        # LOGGER.debug("Interpolating beta and dispersion functions")
-        # _bxb = interp1d(self.optics.s, self.optics.betx)
-        # _byb = interp1d(self.optics.s, self.optics.bety)
-        # _dxb = interp1d(self.optics.s, self.optics.dx)
-        # _dyb = interp1d(self.optics.s, self.optics.dy)
-        # # ----------------------------------------------------------------------------------------------
-        # # Computing "average" of these functions - better here than a simple np.mean
-        # # calculation because the latter doesn't take in consideration element lengths
-        # # and can be skewed by some very high peaks in the optics
-        # with warnings.catch_warnings():  # Catch and ignore the scipy.integrate.IntegrationWarning
-        #     warnings.simplefilter("ignore", category=UserWarning)
-        #     _bx_bar = quad(_bxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
-        #     _by_bar = quad(_byb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
-        #     _dx_bar = quad(_dxb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
-        #     _dy_bar = quad(_dyb, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference
-        # # ----------------------------------------------------------------------------------------------
-        # # Calculate transverse temperature as 2*P*X, i.e. assume the transverse energy is temperature/2
-        # # fmt: off
-        # Etrans = (  
-        #     5e8
-        #     * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV)
-        #     * (geom_epsx / _bx_bar)
-        # )
-        # # fmt: on
-        # TempeV = 2.0 * Etrans
-        # # ----------------------------------------------------------------------------------------------
-        # # Compute sigmas in each dimension
-        # sigma_x_cm = 100 * np.sqrt(geom_epsx * _bx_bar + (_dx_bar * sigma_delta) ** 2)
-        # sigma_y_cm = 100 * np.sqrt(geom_epxy * _by_bar + (_dy_bar * sigma_delta) ** 2)
-        # sigma_t_cm = 100 * bunch_length
-        # # ----------------------------------------------------------------------------------------------
-        # # Calculate beam volume to get density (in cm^{-3}) then Debye length
-        # volume = 8.0 * np.sqrt(np.pi**3) * sigma_x_cm * sigma_y_cm * sigma_t_cm
-        # density = self.beam_parameters.n_part / volume
-        # debyul = 743.4 * np.sqrt(TempeV / density) / self.beam_parameters.particle_charge  # Debye length?
-        # # ----------------------------------------------------------------------------------------------
-        # # Calculate 'rmin' as larger of classical distance of closest approach or quantum mechanical
-        # # diffraction limit from nuclear radius
-        # rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
-        # rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_GeV))
-        # # ----------------------------------------------------------------------------------------------
-        # # Now compute the impact parameters and finally Coulomb logarithm
-        # bmin = max(rmincl, rminqm)
-        # bmax = min(sigma_x_cm, debyul)
-        # return np.log(bmax / bmin)
 
     def _Gamma(
         self,
