@@ -124,16 +124,15 @@ class NagaitsevIBS:
         Calculates the Coulomb logarithm based on the beam parameters and optics the class
         was initiated with. For a good introductory resource on the Coulomb Log, see:
         https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html. The calculation
-        follows the formulae in :cite:`AIP:Anderson:Physics_Vade_Mecum`.
+        follows 
 
         .. note::
-            This function follows the exact computing implementation of the Coulomb log
-            calculation in the ``MAD-X`` source code, which ine can find in the file
-            `MAD-X/src/ibsdb.f90` as the `twclog` subroutine. It is computed as
-            :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`. Here :math:`r_{max}`
-            denotes the smaller of :math:`\sigma_x` and the Debye length; while :math:`r_{min}`
-            is the larger of the classical distance of closest approach and the quantum
-            diffraction limit from the nuclear radius.
+            This function follows the formulae in :cite:`AIP:Anderson:Physics_Vade_Mecum`. The
+            Coulomb log is computed as :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`.
+            Here :math:`r_{max}` denotes the smaller of :math:`\sigma_x` and the Debye length; while
+            :math:`r_{min}` is the larger of the classical distance of closest approach and the
+            quantum diffraction limit from the nuclear radius. It is the calculation that is done by
+            ``MAD-X`` (see the `twclog` subroutine in the `MAD-X/src/ibsdb.f90` source file).
 
         Args:
             epsx (float): horizontal geometric emittance in [m].
@@ -479,16 +478,15 @@ class BjorkenMtingwaIBS:
         Calculates the Coulomb logarithm based on the beam parameters and optics the class
         was initiated with. For a good introductory resource on the Coulomb Log, see:
         https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html. The calculation
-        follows the formulae in :cite:`AIP:Anderson:Physics_Vade_Mecum`.
+        follows 
 
         .. note::
-            This function follows the exact computing implementation of the Coulomb log
-            calculation in the ``MAD-X`` source code, which ine can find in the file
-            `MAD-X/src/ibsdb.f90` as the `twclog` subroutine. It is computed as
-            :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`. Here :math:`r_{max}`
-            denotes the smaller of :math:`\sigma_x` and the Debye length; while :math:`r_{min}`
-            is the larger of the classical distance of closest approach and the quantum
-            diffraction limit from the nuclear radius.
+            This function follows the formulae in :cite:`AIP:Anderson:Physics_Vade_Mecum`. The
+            Coulomb log is computed as :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`.
+            Here :math:`r_{max}` denotes the smaller of :math:`\sigma_x` and the Debye length; while
+            :math:`r_{min}` is the larger of the classical distance of closest approach and the
+            quantum diffraction limit from the nuclear radius. It is the calculation that is done by
+            ``MAD-X`` (see the `twclog` subroutine in the `MAD-X/src/ibsdb.f90` source file).
 
         Args:
             epsx (float): horizontal geometric emittance in [m].
