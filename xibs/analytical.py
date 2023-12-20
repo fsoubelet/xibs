@@ -1016,7 +1016,7 @@ class BjorkenMtingwaIBS:
         # Getting the constant term and the bracket terms from Eq (8) of the MAD-X note
         LOGGER.debug("Computing common constant term and bracket terms from Eq (8) of the MAD-X note")
         common_constant_term, bracket_x, bracket_y, bracket_z = self._constants(
-            geom_epsx, geom_epsy, sigma_delta, bunch_length
+            geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched
         )
         # ----------------------------------------------------------------------------------------------
         # Defining the integrands from Eq (8) of the MAD-X note, for each plane (remember these functions
