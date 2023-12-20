@@ -981,6 +981,7 @@ class BjorkenMtingwaIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
             integration_intervals (int): the number of sub-intervals to use when integrating the
                 integrands of Eq (8) of the MAD-X note. Please DO NOT change this parameter unless
                 you know exactly what you are doing. Defaults to 17.
