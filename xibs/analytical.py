@@ -519,8 +519,7 @@ class BjorkenMtingwaIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
-            bunched (bool): whether the beam is bunched or coasting, as there is a factor
-                :math:`\sqrt(2)` between the two. Defaults to `True`.
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
 
         Returns:
             The computed :math:`\Gamma` value.
@@ -949,6 +948,7 @@ class BjorkenMtingwaIBS:
         geom_epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        bunched: bool = True,
         integration_intervals: int = 17,
     ) -> IBSGrowthRates:
         r"""
