@@ -189,9 +189,6 @@ class NagaitsevIBS:
         # Now compute the impact parameters and finally Coulomb logarithm
         bmin = max(rmincl, rminqm)
         bmax = min(sigma_x_cm, debyul)
-        bunching_factor = (
-            1 if bunched is True else np.sqrt(2)
-        )  # for coasting beams we need to divide by sqrt(2)
         return np.log(bmax / bmin)
 
     # This is 'Nagaitsev_Integrals' from Michalis's old code but it stops a bit earlier and really returns the integrals
@@ -528,19 +525,28 @@ class BjorkenMtingwaIBS:
         Returns:
             The computed :math:`\Gamma` value.
         """
-        factor = 1 if bunched is True else np.sqrt(2)  # for coasting beams we will divide by sqrt(2)
         # fmt: off
-        _gamma = (
-            (2 * np.pi) ** 3
-            * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel) ** 3
-            * (self.beam_parameters.particle_mass_GeV * 1e6)**3  # use mass in eV like in .growth_rates method (the m^3 terms cancel out)
-            * geom_epsx
-            * geom_epsy
-            * sigma_delta
-            * bunch_length
-        )
+        if bunched is True:
+            return (
+                (2 * np.pi)**3
+                * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)**3
+                * (self.beam_parameters.particle_mass_GeV * 1e6)**3  # use mass in eV like in .growth_rates method (the m^3 terms cancel out)
+                * geom_epsx
+                * geom_epsy
+                * sigma_delta
+                * bunch_length
+            )
+        else:  # we have coasting beam
+            return (
+                4 * np.pi**(5/2)
+                * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)**3
+                * (self.beam_parameters.particle_mass_GeV * 1e6)**3  # use mass in eV like in .growth_rates method (the m^3 terms cancel out)
+                * geom_epsx
+                * geom_epsy
+                * sigma_delta
+                * self.optics.circumference
+            )
         # fmt: on
-        return _gamma / factor
 
     def _a(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
         """Computes the a term of Table 1 in the MAD-X note."""
