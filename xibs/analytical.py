@@ -116,12 +116,7 @@ class NagaitsevIBS:
         return self.__str__()
 
     def coulomb_log(
-        self,
-        geom_epsx: float,
-        geom_epxy: float,
-        sigma_delta: float,
-        bunch_length: float,
-        bunched: bool = True,
+        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
     ) -> float:
         r"""
         .. versionadded:: 0.2.0
@@ -143,8 +138,6 @@ class NagaitsevIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): bunch length in [m].
-            bunched (bool): whether the beam is bunched or not (coasting). This applies a
-                correction factor to the calculation. Defaults to `True`.
 
         Returns:
             The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
@@ -196,8 +189,10 @@ class NagaitsevIBS:
         # Now compute the impact parameters and finally Coulomb logarithm
         bmin = max(rmincl, rminqm)
         bmax = min(sigma_x_cm, debyul)
-        bunching_factor = 1 if bunched is True else np.sqrt(2)  # for coasting beams we need to divide by sqrt(2)
-        return np.log(bmax / bmin) / bunching_factor
+        bunching_factor = (
+            1 if bunched is True else np.sqrt(2)
+        )  # for coasting beams we need to divide by sqrt(2)
+        return np.log(bmax / bmin)
 
     # This is 'Nagaitsev_Integrals' from Michalis's old code but it stops a bit earlier and really returns the integrals
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
@@ -477,12 +472,7 @@ class BjorkenMtingwaIBS:
         return self.__str__()
 
     def coulomb_log(
-        self,
-        geom_epsx: float,
-        geom_epxy: float,
-        sigma_delta: float,
-        bunch_length: float,
-        bunched: bool = True,
+        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
     ) -> float:
         r"""
         .. versionadded:: 0.3.0
@@ -504,8 +494,6 @@ class BjorkenMtingwaIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): bunch length in [m].
-            bunched (bool): whether the beam is bunched or not (coasting). This applies a
-                correction factor to the calculation. Defaults to `True`.
 
         Returns:
             The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
@@ -513,7 +501,7 @@ class BjorkenMtingwaIBS:
         # Instantiate a NagaitsevIBS class and call its '.coulomb_log' method. This is a
         # very small (~1.5ms) runtime overhead that allows avoiding code duplication.
         return NagaitsevIBS(self.beam_parameters, self.optics).coulomb_log(
-            geom_epsx, geom_epxy, sigma_delta, bunch_length, bunched
+            geom_epsx, geom_epxy, sigma_delta, bunch_length
         )
 
     def _Gamma(
