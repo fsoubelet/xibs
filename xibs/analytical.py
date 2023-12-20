@@ -873,7 +873,7 @@ class BjorkenMtingwaIBS:
         return bz
 
     def _constants(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, bunched: bool = True
     ) -> Tuple[float, ArrayLike, ArrayLike, float]:
         r"""
         .. versionadded:: 0.3.0
@@ -891,6 +891,7 @@ class BjorkenMtingwaIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
 
         Returns:
             Four variables corresponding to the common, horizontal, vertical and longitudinal
@@ -930,7 +931,7 @@ class BjorkenMtingwaIBS:
             * (self.beam_parameters.particle_mass_GeV * 1e6)** 3  # use mass in eV like in ._Gamma method (the m^3 terms cancel out)
             * self.beam_parameters.n_part
             * coulomb_logarithm
-            / (self.beam_parameters.gamma_rel * self._Gamma(geom_epsx, geom_epsy, sigma_delta, bunch_length))
+            / (self.beam_parameters.gamma_rel * self._Gamma(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched))
         )
         # ----------------------------------------------------------------------------------------------
         # fmt: on
