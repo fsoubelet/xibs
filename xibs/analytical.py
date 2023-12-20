@@ -873,7 +873,12 @@ class BjorkenMtingwaIBS:
         return bz
 
     def _constants(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, bunched: bool = True
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        bunched: bool = True,
     ) -> Tuple[float, ArrayLike, ArrayLike, float]:
         r"""
         .. versionadded:: 0.3.0
