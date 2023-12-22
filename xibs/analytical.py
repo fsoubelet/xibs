@@ -19,6 +19,7 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 import warnings
 
+from abc import ABC, abstractmethod
 from dataclasses import astuple, dataclass
 from logging import getLogger
 from typing import Callable, Tuple
@@ -76,39 +77,33 @@ class IBSGrowthRates:
     Tz: float
 
 
-# ----- Classes to Compute Analytical IBS Growth Rates ----- #
+# ----- Abstract Base Class to Inherit from ----- #
 
 
-class NagaitsevIBS:
+class AnalyticalIBS(ABC):
     r"""
-    .. versionadded:: 0.2.0
+    .. versionadded:: 0.4.0
 
-    A single class to compute Nagaitsev integrals (see
-    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
-    and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
+    Abstract base class for analytical IBS calculations, from which all
+    implementations inherit.
 
     Attributes:
-        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
-        optics (OpticsParameters): the optics parameters to use for the calculations.
-        elliptic_integrals (NagaitsevIntegrals): the computed elliptic integrals. This
-            self-updates when they are computed with the `integrals` method.
-        ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
+        beam_parameters (`~xibs.inputs.BeamParameters`): the beam parameters to use for the calculations.
+        optics (`~xibs.inputs.OpticsParameters`): the optics parameters to use for the calculations.
+        ibs_growth_rates (`IBSGrowthRates`): the computed IBS growth rates. This self-updates
             when they are computed with the `growth_rates` method.
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
-        # These self-update when they are computed, but can be overwritten by the user
-        self.elliptic_integrals: NagaitsevIntegrals = None
+        # This one self-updates when computed, but can be overwritten by the user
         self.ibs_growth_rates: IBSGrowthRates = None
 
     def __str__(self) -> str:
-        has_integrals = self.elliptic_integrals is not None
-        has_growth_rates = self.ibs_growth_rates is not None
+        has_growth_rates = isinstance(self.ibs_growth_rates, IBSGrowthRates)  # False if default value of None
         return (
-            "NagaitsevIBS object for analytical IBS calculations.\n"
-            f"Elliptic integrals computed: {has_integrals}\n"
+            f"{self.__class__.__name__} object for analytical IBS calculations.\n"
             f"IBS growth rates computed: {has_growth_rates}"
         )
 
@@ -190,6 +185,81 @@ class NagaitsevIBS:
         bmin = max(rmincl, rminqm)
         bmax = min(sigma_x_cm, debyul)
         return np.log(bmax / bmin)
+
+    @abstractmethod
+    def growth_rates(
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+    ) -> IBSGrowthRates:
+        r"""
+        Abstract method to compute the IBS growth rates. This method should be implemented in
+        all child classes.
+
+        Args:
+            geom_epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): the bunch length in [m].
+
+        Returns:
+            An `IBSGrowthRates` object with the computed growth rates for each plane.
+        """
+        raise NotImplementedError(
+            "This method should be implemented in all child classes, but it hasn't been for this one."
+        )
+
+    @abstractmethod
+    def emittance_evolution(
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
+    ) -> Tuple[float, float, float]:
+        r"""
+        Abstract method to compute the emittance evolution. This method should be implemented in
+        all child classes.
+
+        Args:
+            geom_epsx (float): horizontal geometric emittance in [m].
+            epxy (float): vertical geometric emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): the bunch length in [m].
+            dt (float, optional): the time interval to use, in [s]. Default to the inverse
+                of the revolution frequency, :math:`1 / f_{rev}`.
+
+        Returns:
+            A tuple with the new horizontal & vertical geometric emittances, the new
+            momentum spread and the new bunch length, after the time step has ellapsed.
+        """
+        raise NotImplementedError(
+            "This method should be implemented in all child classes, but it hasn't been for this one."
+        )
+
+
+# ----- Classes to Compute Analytical IBS Growth Rates ----- #
+
+
+class NagaitsevIBS(AnalyticalIBS):
+    r"""
+    .. versionadded:: 0.2.0
+
+    A single class to compute Nagaitsev integrals (see
+    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
+    and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
+
+    Attributes:
+        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
+        optics (OpticsParameters): the optics parameters to use for the calculations.
+        elliptic_integrals (NagaitsevIntegrals): the computed elliptic integrals. This
+            self-updates when they are computed with the `integrals` method.
+        ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
+            when they are computed with the `growth_rates` method.
+    """
+
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+        super().__init__(beam_params, optics)
+        # This self-updates when computed, but can be overwritten by the user
+        self.elliptic_integrals: NagaitsevIntegrals = None
 
     # This is 'Nagaitsev_Integrals' from Michalis's old code but it stops a bit earlier and really returns the integrals
     # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
@@ -402,8 +472,8 @@ class NagaitsevIBS:
             ValueError: if the ``IBS`` growth rates have not yet been computed.
 
         Returns:
-            A tuple with the new horizontal & vertical geometric emittances as well as the new
-            momentum spread, after the time step has ellapsed.
+            A tuple with the new horizontal & vertical geometric emittances, the new
+            momentum spread and the new bunch length, after the time step has ellapsed.
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
@@ -428,7 +498,7 @@ class NagaitsevIBS:
         return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
 
 
-class BjorkenMtingwaIBS:
+class BjorkenMtingwaIBS(AnalyticalIBS):
     r"""
     .. versionadded:: 0.3.0
 
@@ -453,53 +523,7 @@ class BjorkenMtingwaIBS:
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        self.beam_parameters: BeamParameters = beam_params
-        self.optics: OpticsParameters = optics
-        # These self-update when they are computed, but can be overwritten by the user
-        self.ibs_growth_rates: IBSGrowthRates = None
-
-    def __str__(self) -> str:
-        has_growth_rates = self.ibs_growth_rates is not None
-        return (
-            "BjorkenMtingwaIBS object for analytical IBS calculations.\n"
-            f"IBS growth rates computed: {has_growth_rates}"
-        )
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-    def coulomb_log(
-        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
-    ) -> float:
-        r"""
-        .. versionadded:: 0.3.0
-
-        Calculates the Coulomb logarithm based on the beam parameters and optics the class
-        was initiated with. For a good introductory resource on the Coulomb Log, see:
-        https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html.
-
-        .. note::
-            This function follows the formulae in :cite:`AIP:Anderson:Physics_Vade_Mecum`. The
-            Coulomb log is computed as :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`.
-            Here :math:`r_{max}` denotes the smaller of :math:`\sigma_x` and the Debye length; while
-            :math:`r_{min}` is the larger of the classical distance of closest approach and the
-            quantum diffraction limit from the nuclear radius. It is the calculation that is done by
-            ``MAD-X`` (see the `twclog` subroutine in the `MAD-X/src/ibsdb.f90` source file).
-
-        Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
-            bunch_length (float): bunch length in [m].
-
-        Returns:
-            The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
-        """
-        # Instantiate a NagaitsevIBS class and call its '.coulomb_log' method. This is a
-        # very small (~1.5ms) runtime overhead that allows avoiding code duplication.
-        return NagaitsevIBS(self.beam_parameters, self.optics).coulomb_log(
-            geom_epsx, geom_epxy, sigma_delta, bunch_length
-        )
+        super().__init__(beam_params, optics)
 
     def _Gamma(
         self,
@@ -1136,8 +1160,8 @@ class BjorkenMtingwaIBS:
             ValueError: if the ``IBS`` growth rates have not yet been computed.
 
         Returns:
-            A tuple with the new horizontal & vertical geometric emittances as well as the new
-            momentum spread, after the time step has ellapsed.
+            A tuple with the new horizontal & vertical geometric emittances, the new
+            momentum spread and the new bunch length, after the time step has ellapsed.
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand

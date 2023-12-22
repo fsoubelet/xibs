@@ -24,12 +24,10 @@ def test_nagaitsev_repr(xtrack_ps_injection_protons):
     # --------------------------------------------------------------------
     # Check the repr (which calls __str__) withough having calculated integrals nor growth rates
     assert "NagaitsevIBS object for analytical IBS calculations." in IBS.__repr__()
-    assert "Elliptic integrals computed: False" in IBS.__repr__()
     assert "IBS growth rates computed: False" in IBS.__repr__()
     # --------------------------------------------------------------------
     # Check the repr after computing the growth rates
     IBS.growth_rates(2e-6, 2e-6, 1e-5, 1e-5)  # random values as they don't matter
-    assert "Elliptic integrals computed: True" in IBS.__repr__()
     assert "IBS growth rates computed: True" in IBS.__repr__()
 
 
