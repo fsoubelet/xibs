@@ -88,9 +88,9 @@ class AnalyticalIBS(ABC):
     implementations inherit.
 
     Attributes:
-        beam_parameters (`~xibs.inputs.BeamParameters`): the beam parameters to use for the calculations.
-        optics (`~xibs.inputs.OpticsParameters`): the optics parameters to use for the calculations.
-        ibs_growth_rates (`IBSGrowthRates`): the computed IBS growth rates. This self-updates
+        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
+        optics (OpticsParameters): the optics parameters to use for the calculations.
+        ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
             when they are computed with the `growth_rates` method.
     """
 
@@ -195,8 +195,7 @@ class AnalyticalIBS(ABC):
         bunch_length: float,
     ) -> IBSGrowthRates:
         r"""
-        Abstract method to compute the IBS growth rates. This method should be implemented in
-        all child classes.
+        Method to compute the IBS growth rates.
 
         Args:
             geom_epsx (float): horizontal geometric emittance in [m].
@@ -216,8 +215,7 @@ class AnalyticalIBS(ABC):
         self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
     ) -> Tuple[float, float, float]:
         r"""
-        Abstract method to compute the emittance evolution. This method should be implemented in
-        all child classes.
+        Abstract method to compute the emittance evolution.
 
         Args:
             geom_epsx (float): horizontal geometric emittance in [m].
