@@ -235,6 +235,40 @@ class AnalyticalIBS(ABC):
             "This method should be implemented in all child classes, but it hasn't been for this one."
         )
 
+    def _normalized_emittance(self, geometric_emittance: float) -> float:
+        r"""
+        .. versionadded:: 0.4.0
+
+        Computes normalized emittance from the geometric one, using relativistic
+        beta and gamma from the the instance's beam parameters attribute.
+
+        Args:
+            geometric_emittance (float): geometric emittance in [m].
+            beta_ref (float): relativistic beta.
+            gamma_rel (float): relativistic gamma.
+
+        Returns:
+            The normalized emittance in [m].
+        """
+        return geometric_emittance * self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel
+
+    def _geometric_emittance(self, normalized_emittance: float) -> float:
+        r"""
+        .. versionadded:: 0.4.0
+
+        Computes geometric emittance from the normalized one, using relativistic
+        beta and gamma from the the instance's beam parameters attribute.
+
+        Args:
+            normalized_emittance (float): normalized emittance in [m].
+            beta_ref (float): relativistic beta.
+            gamma_rel (float): relativistic gamma.
+
+        Returns:
+            The geometric emittance in [m].
+        """
+        return normalized_emittance / (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)
+
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
 
