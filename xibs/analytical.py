@@ -210,28 +210,74 @@ class AnalyticalIBS(ABC):
             "This method should be implemented in all child classes, but it hasn't been for this one."
         )
 
-    @abstractmethod
     def emittance_evolution(
         self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
     ) -> Tuple[float, float, float]:
         r"""
-        Abstract method to compute the emittance evolution.
+        .. versionadded:: 0.2.0
+
+        Analytically computes the new emittances after a given time step `dt` has
+        ellapsed, from initial values, based on the ``IBS`` growth rates.
+
+        .. warning::
+            This calculation is done by building on the ``IBS`` growth rates. If the
+            latter have not been computed yet, this method will raise an error. Please
+            remember to call the instance's `growth_rates` method first.
+
+        .. tip::
+            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
+            according to the following, where :math:`N` represents the time step:
+
+            .. math::
+
+                T_{x,y,z} &= 1 / \tau_{x,y,z}
+
+                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
+
+                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
+
+                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
+
 
         Args:
             geom_epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            geom_epsy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
-            bunch_length (float): the bunch length in [m].
             dt (float, optional): the time interval to use, in [s]. Default to the inverse
                 of the revolution frequency, :math:`1 / f_{rev}`.
+            bunch_length (float): the bunch length in [m].
+
+        Raises:
+            ValueError: if the ``IBS`` growth rates have not yet been computed.
 
         Returns:
             A tuple with the new horizontal & vertical geometric emittances, the new
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
-        raise NotImplementedError(
-            "This method should be implemented in all child classes, but it hasn't been for this one."
-        )
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+
+        # ----------------------------------------------------------------------------------------------
+        # Check that the IBS growth rates have been computed beforehand
+        if self.ibs_growth_rates is None:
+            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
+            raise ValueError(
+                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
+                "Please call the `growth_rates` method first."
+            )
+        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Set the time step to 1 / frev if not provided
+        if dt is None:
+            LOGGER.debug("No time step provided, defaulting to 1 / frev")
+            dt = 1 / self.optics.revolution_frequency
+        # ----------------------------------------------------------------------------------------------
+        # Compute new emittances and return them. Here we multiply because T = 1 / tau
+        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
+        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
+        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
 
     def _normalized_emittance(self, geometric_emittance: float) -> float:
         r"""
@@ -271,7 +317,7 @@ class AnalyticalIBS(ABC):
         """
         .. versionadded:: 0.4.0
 
-        Get the geometric emittance from the hypothetical and optional input pair 
+        Get the geometric emittance from the hypothetical and optional input pair
         of [geometric, normalized] emittance. If the geometric one is provided, it
         is directly returned (even if the normalized one is provided too). If only
         the normalized one is provided, it is converted to geometric. If none are
@@ -280,21 +326,22 @@ class AnalyticalIBS(ABC):
         Args:
             geom_emit (float): the geometric emittance, in [m]. Defaults to `None`.
             norm_emit (float): the normalized emittance, in [m] . Defaults to `None`.
-        
+
         Raises:
             RuntimeError: if neither of the two inputs is given.
-        
+
         Returns:
             The geometric emittance, in [m].
         """
-        if geom_emit is not None:  # geom is already provided
+        if geom_emit is not None:  # geom is provided, return it
             return geom_emit
-        elif geom_emit is None and norm_emit is not None:  # get geom from norm
+        elif geom_emit is None and norm_emit is not None:  # norm is provided, return geom from norm
             return self._geometric_emittance(norm_emit)
-        else:  # none of geom or norm emit provided
+        else:  # neither geom or norm emit provided, raise and error
             raise RuntimeError(
                 "At least one of the geometric or normalized emittances has to be provided, but none was given."
             )
+
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
 
@@ -321,8 +368,6 @@ class NagaitsevIBS(AnalyticalIBS):
         # This self-updates when computed, but can be overwritten by the user
         self.elliptic_integrals: NagaitsevIntegrals = None
 
-    # This is 'Nagaitsev_Integrals' from Michalis's old code but it stops a bit earlier and really returns the integrals
-    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def integrals(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> NagaitsevIntegrals:
         r"""
         .. versionadded:: 0.2.0
@@ -405,8 +450,6 @@ class NagaitsevIBS(AnalyticalIBS):
         self.elliptic_integrals = result
         return result
 
-    # This is the end of the calculations in 'Nagaitsev_Integrals' from Michalis's old code (the last 3 lines essentially)
-    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def growth_rates(
         self,
         geom_epsx: float,
@@ -456,7 +499,7 @@ class NagaitsevIBS(AnalyticalIBS):
         """
         # ----------------------------------------------------------------------------------------------
         # Make sure we are working with geometric emittances
-        
+
         # ----------------------------------------------------------------------------------------------
         # Check that the Nagaitsev integrals have been computed beforehand
         if self.elliptic_integrals is None and compute_integrals is False:
@@ -491,77 +534,6 @@ class NagaitsevIBS(AnalyticalIBS):
         # Self-update the instance's attributes and then return the results
         self.ibs_growth_rates = result
         return result
-
-    # This is 'emit_evol' from Michalis's old code
-    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL (unused) and dt there
-    def emittance_evolution(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
-    ) -> Tuple[float, float, float]:
-        r"""
-        .. versionadded:: 0.2.0
-
-        Analytically computes the new emittances after a given time step `dt` has
-        ellapsed, from initial values, based on the ``IBS`` growth rates.
-
-        .. warning::
-            This calculation is done by building on the ``IBS`` growth rates. If the
-            latter have not been computed yet, this method will raise an error. Please
-            remember to call the instance's `growth_rates` method first.
-
-        .. tip::
-            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
-            according to the following, where :math:`N` represents the time step:
-
-            .. math::
-
-                T_{x,y,z} &= 1 / \tau_{x,y,z}
-
-                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
-
-                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
-
-                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
-
-
-        Args:
-            geom_epsx (float): horizontal geometric emittance in [m].
-            geom_epsy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
-            dt (float, optional): the time interval to use, in [s]. Default to the inverse
-                of the revolution frequency, :math:`1 / f_{rev}`.
-            bunch_length (float): the bunch length in [m].
-
-        Raises:
-            ValueError: if the ``IBS`` growth rates have not yet been computed.
-
-        Returns:
-            A tuple with the new horizontal & vertical geometric emittances, the new
-            momentum spread and the new bunch length, after the time step has ellapsed.
-        """
-        # ----------------------------------------------------------------------------------------------
-        # Make sure we are working with geometric emittances
-        
-        # ----------------------------------------------------------------------------------------------
-        # Check that the IBS growth rates have been computed beforehand
-        if self.ibs_growth_rates is None:
-            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise ValueError(
-                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
-                "Please call the `growth_rates` method first."
-            )
-        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
-        # ----------------------------------------------------------------------------------------------
-        # Set the time step to 1 / frev if not provided
-        if dt is None:
-            LOGGER.debug("No time step provided, defaulting to 1 / frev")
-            dt = 1 / self.optics.revolution_frequency
-        # ----------------------------------------------------------------------------------------------
-        # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
-        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
-        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
 
 
 class BjorkenMtingwaIBS(AnalyticalIBS):
@@ -1187,72 +1159,3 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
         # Self-update the instance's attributes and then return the results
         self.ibs_growth_rates = result
         return result
-
-    def emittance_evolution(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
-    ) -> Tuple[float, float, float]:
-        r"""
-        .. versionadded:: 0.3.0
-
-        Analytically computes the new emittances after a given time step `dt` has
-        ellapsed, from initial values, based on the ``IBS`` growth rates.
-
-        .. warning::
-            This calculation is done by building on the ``IBS`` growth rates. If the
-            latter have not been computed yet, this method will raise an error. Please
-            remember to call the instance's `growth_rates` method first.
-
-        .. tip::
-            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
-            according to the following, where :math:`N` represents the time step:
-
-            .. math::
-
-                T_{x,y,z} &= 1 / \tau_{x,y,z}
-
-                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
-
-                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
-
-                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
-
-
-        Args:
-            geom_epsx (float): horizontal geometric emittance in [m].
-            geom_epsy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
-            dt (float, optional): the time interval to use, in [s]. Default to the inverse
-                of the revolution frequency, :math:`1 / f_{rev}`.
-            bunch_length (float): the bunch length in [m].
-
-        Raises:
-            ValueError: if the ``IBS`` growth rates have not yet been computed.
-
-        Returns:
-            A tuple with the new horizontal & vertical geometric emittances, the new
-            momentum spread and the new bunch length, after the time step has ellapsed.
-        """
-        # ----------------------------------------------------------------------------------------------
-        # Make sure we are working with geometric emittances
-        
-        # ----------------------------------------------------------------------------------------------
-        # Check that the IBS growth rates have been computed beforehand
-        if self.ibs_growth_rates is None:
-            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise ValueError(
-                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
-                "Please call the `growth_rates` method first."
-            )
-        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
-        # ----------------------------------------------------------------------------------------------
-        # Set the time step to 1 / frev if not provided
-        if dt is None:
-            LOGGER.debug("No time step provided, defaulting to 1 / frev")
-            dt = 1 / self.optics.revolution_frequency
-        # ----------------------------------------------------------------------------------------------
-        # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
-        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
-        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
