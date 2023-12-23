@@ -455,6 +455,9 @@ class NagaitsevIBS(AnalyticalIBS):
             An `IBSGrowthRates` object with the computed growth rates for each plane.
         """
         # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        
+        # ----------------------------------------------------------------------------------------------
         # Check that the Nagaitsev integrals have been computed beforehand
         if self.elliptic_integrals is None and compute_integrals is False:
             LOGGER.info(
@@ -535,6 +538,9 @@ class NagaitsevIBS(AnalyticalIBS):
             A tuple with the new horizontal & vertical geometric emittances, the new
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
         if self.ibs_growth_rates is None:
@@ -1081,6 +1087,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
         """
         # ----------------------------------------------------------------------------------------------
         # Make sure we are working with geometric emittances
+
         # ----------------------------------------------------------------------------------------------
         # We warn the user in case the TWISS was not centered - but keep going
         if self.optics._is_centered is False:
@@ -1225,6 +1232,9 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             A tuple with the new horizontal & vertical geometric emittances, the new
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
         if self.ibs_growth_rates is None:
