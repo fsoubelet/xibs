@@ -324,14 +324,14 @@ class AnalyticalIBS(ABC):
         provided, a `RuntimeError` is raised.
 
         Args:
-            geom_emit (float): the geometric emittance, in [m]. Defaults to `None`.
-            norm_emit (float): the normalized emittance, in [m] . Defaults to `None`.
+            geom_emit (float): the geometric emittance in [m]. Defaults to `None`.
+            norm_emit (float): the normalized emittance in [m] . Defaults to `None`.
 
         Raises:
             RuntimeError: if neither of the two inputs is given.
 
         Returns:
-            The geometric emittance, in [m].
+            The geometric emittance in [m].
         """
         if geom_emit is not None:  # geom is provided, return it
             return geom_emit
