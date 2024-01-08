@@ -160,7 +160,7 @@ class AnalyticalIBS(ABC):
         # fmt: off
         Etrans = (  
             5e8
-            * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV)
+            * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_eV * 1e-9)  # energies needed in GeV
             * (geom_epsx / _bx_bar)
         )
         # fmt: on
@@ -179,7 +179,7 @@ class AnalyticalIBS(ABC):
         # Calculate 'rmin' as larger of classical distance of closest approach or quantum mechanical
         # diffraction limit from nuclear radius
         rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
-        rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_GeV))
+        rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_eV * 1e-9))  # energy in GeV
         # ----------------------------------------------------------------------------------------------
         # Now compute the impact parameters and finally Coulomb logarithm
         bmin = max(rmincl, rminqm)
@@ -591,7 +591,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             return (
                 (2 * np.pi)**3
                 * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)**3
-                * (self.beam_parameters.particle_mass_GeV * 1e6)**3  # use mass in eV like in .growth_rates method (the m^3 terms cancel out)
+                * (self.beam_parameters.particle_mass_eV * 1e-3)**3  # use mass in MeV like in .growth_rates method (the m^3 terms cancel out)
                 * geom_epsx
                 * geom_epsy
                 * sigma_delta
@@ -601,7 +601,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             return (
                 4 * np.pi**(5/2)
                 * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)**3
-                * (self.beam_parameters.particle_mass_GeV * 1e6)**3  # use mass in eV like in .growth_rates method (the m^3 terms cancel out)
+                * (self.beam_parameters.particle_mass_eV * 1e-3)**3  # use mass in MeV like in .growth_rates method (the m^3 terms cancel out)
                 * geom_epsx
                 * geom_epsy
                 * sigma_delta
@@ -995,7 +995,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             np.pi**2
             * self.beam_parameters.particle_classical_radius_m**2
             * c
-            * (self.beam_parameters.particle_mass_GeV * 1e6)** 3  # use mass in eV like in ._Gamma method (the m^3 terms cancel out)
+            * (self.beam_parameters.particle_mass_eV * 1e-3)** 3  # use mass in MeV like in ._Gamma method (the m^3 terms cancel out)
             * self.beam_parameters.n_part
             * coulomb_logarithm
             / (self.beam_parameters.gamma_rel * self._Gamma(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched))

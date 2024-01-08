@@ -58,7 +58,7 @@ class BeamParameters:
     # The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michalis's code
     n_part: int = field(init=False)
     particle_charge: int = field(init=False)
-    particle_mass_GeV: float = field(init=False)
+    particle_mass_eV: float = field(init=False)
     total_energy_GeV: float = field(init=False)
     gamma_rel: float = field(init=False)
     beta_rel: float = field(init=False)
@@ -69,7 +69,7 @@ class BeamParameters:
         LOGGER.debug("Initializing BeamParameters from Particles object")
         self.n_part = particles.weight[0] * particles.gamma0.shape[0]
         self.particle_charge = particles.q0
-        self.particle_mass_GeV = particles.mass0 * 1e-9
+        self.particle_mass_eV = particles.mass0
         self.total_energy_GeV = np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2) * 1e-9
         self.gamma_rel = particles.gamma0[0]
         self.beta_rel = particles.beta0[0]
@@ -207,7 +207,7 @@ class OpticsParameters:
     ):
         # Attributes derived from the TwissTable
         self.s = np.array(twiss.s)
-        self.circumference = twiss.s[-1]
+        self.circumference = self.s[-1]
         self.betx = np.array(twiss.betx)
         self.bety = np.array(twiss.bety)
         self.alfx = np.array(twiss.alfx)

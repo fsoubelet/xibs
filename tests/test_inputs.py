@@ -25,7 +25,7 @@ def test_init_beamparameters(madx_sps_injection_protons, xtrack_sps_injection_pr
     # Perform checks
     assert np.isclose(beamparams.n_part, madx.sequence.sps.beam.npart)
     assert np.isclose(beamparams.particle_charge, p0.q0)
-    assert np.isclose(beamparams.particle_mass_GeV, p0.mass0 * 1e-9)
+    assert np.isclose(beamparams.particle_mass_eV, p0.mass0)
     assert np.isclose(beamparams.total_energy_GeV, np.sqrt(p0.p0c[0] ** 2 + p0.mass0**2) * 1e-9)
     assert np.isclose(beamparams.gamma_rel, p0.gamma0[0])
     assert np.isclose(beamparams.beta_rel, p0.beta0[0])
@@ -51,8 +51,8 @@ def test_init_beamparameters_from_madx(madx_sps_injection_protons, xtrack_sps_in
     assert np.isclose(from_madx.n_part, madx.sequence.sps.beam.npart)
     assert np.isclose(from_madx.particle_charge, madx.sequence.sps.beam.charge)
     assert np.isclose(from_madx.particle_charge, from_part.particle_charge)
-    assert np.isclose(from_madx.particle_mass_GeV, madx.sequence.sps.beam.mass)
-    assert np.isclose(from_madx.particle_mass_GeV, from_part.particle_mass_GeV)
+    assert np.isclose(from_madx.particle_mass_eV, madx.sequence.sps.beam.mass * 1e9)  # it is in GeV in MAD-X
+    assert np.isclose(from_madx.particle_mass_eV, from_part.particle_mass_eV)
     assert np.isclose(from_madx.total_energy_GeV, from_part.total_energy_GeV)
     assert np.isclose(from_madx.gamma_rel, madx.sequence.sps.beam.gamma)
     assert np.isclose(from_madx.gamma_rel, from_part.gamma_rel)
@@ -76,7 +76,7 @@ def test_init_beamparameters_from_line(xtrack_sps_injection_protons):
     # Perform checks - the MAD-X and line are equivalent so this should work
     assert np.isclose(from_line.n_part, from_part.n_part)
     assert np.isclose(from_line.particle_charge, from_part.particle_charge)
-    assert np.isclose(from_line.particle_mass_GeV, from_part.particle_mass_GeV)
+    assert np.isclose(from_line.particle_mass_eV, from_part.particle_mass_eV)
     assert np.isclose(from_line.total_energy_GeV, from_part.total_energy_GeV)
     assert np.isclose(from_line.gamma_rel, from_part.gamma_rel)
     assert np.isclose(from_line.beta_rel, from_part.beta_rel)
