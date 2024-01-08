@@ -111,7 +111,12 @@ class AnalyticalIBS(ABC):
         return self.__str__()
 
     def coulomb_log(
-        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
+        self,
+        epsx: float,
+        epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        normalized_emittances: bool = False,
     ) -> float:
         r"""
         .. versionadded:: 0.2.0
@@ -128,16 +133,28 @@ class AnalyticalIBS(ABC):
             quantum diffraction limit from the nuclear radius. It is the calculation that is done by
             ``MAD-X`` (see the `twclog` subroutine in the `MAD-X/src/ibsdb.f90` source file).
 
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
+
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): bunch length in [m].
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
 
         Returns:
             The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
         """
         LOGGER.debug("Computing Coulomb logarithm for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # Interpolated beta and dispersion functions for the average calculation below
         LOGGER.debug("Interpolating beta and dispersion functions")
@@ -171,7 +188,7 @@ class AnalyticalIBS(ABC):
         # ----------------------------------------------------------------------------------------------
         # Compute sigmas in each dimension
         sigma_x_cm = 100 * np.sqrt(geom_epsx * _bx_bar + (_dx_bar * sigma_delta) ** 2)
-        sigma_y_cm = 100 * np.sqrt(geom_epxy * _by_bar + (_dy_bar * sigma_delta) ** 2)
+        sigma_y_cm = 100 * np.sqrt(geom_epsy * _by_bar + (_dy_bar * sigma_delta) ** 2)
         sigma_t_cm = 100 * bunch_length
         # ----------------------------------------------------------------------------------------------
         # Calculate beam volume to get density (in cm^{-3}) then Debye length
