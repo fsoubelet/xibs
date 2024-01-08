@@ -45,7 +45,7 @@ class BeamParameters:
         particle_charge (int): elementary particle charge, in # of Coulomb charges
             (for instance 1 for electron or proton).
         particle_mass_eV (float): particle mass in [eV].
-        total_energy_GeV (float): total energy of the simulated particles in [GeV].
+        total_energy_eV (float): total energy of the simulated particles in [eV].
         gamma_rel (float): relativistic gamma of the simulated particles.
         beta_rel (float): relativistic beta of the simulated particles.
         particle_classical_radius_m (float): the particles' classical radius in [m].
@@ -59,7 +59,7 @@ class BeamParameters:
     n_part: int = field(init=False)
     particle_charge: int = field(init=False)
     particle_mass_eV: float = field(init=False)
-    total_energy_GeV: float = field(init=False)
+    total_energy_eV: float = field(init=False)
     gamma_rel: float = field(init=False)
     beta_rel: float = field(init=False)
     particle_classical_radius_m: float = field(init=False)
@@ -70,7 +70,7 @@ class BeamParameters:
         self.n_part = particles.weight[0] * particles.gamma0.shape[0]
         self.particle_charge = particles.q0
         self.particle_mass_eV = particles.mass0
-        self.total_energy_GeV = np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2) * 1e-9
+        self.total_energy_eV = np.sqrt(particles.p0c[0] ** 2 + particles.mass0**2)
         self.gamma_rel = particles.gamma0[0]
         self.beta_rel = particles.beta0[0]
         self.particle_classical_radius_m = particles.get_classical_particle_radius0()

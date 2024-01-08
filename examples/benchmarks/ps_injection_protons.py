@@ -156,7 +156,7 @@ for turn in range(1, nturns):
     bunch_l = bunch_length(
         optics.circumference,
         harmonic_number,
-        beam_params.total_energy_GeV,
+        beam_params.total_energy_eV * 1e-9,  # needed in GeV
         optics.slip_factor,
         sigma_e,
         beam_params.beta_rel,
@@ -202,7 +202,7 @@ for turn in range(1, nturns):
     bunch_l = bunch_length(
         optics.circumference,
         harmonic_number,
-        beam_params.total_energy_GeV,
+        beam_params.total_energy_eV * 1e-9,  # needed in GeV
         optics.slip_factor,
         sigma_e,
         beam_params.beta_rel,

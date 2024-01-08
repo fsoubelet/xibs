@@ -160,7 +160,10 @@ class AnalyticalIBS(ABC):
         # fmt: off
         Etrans = (  
             5e8
-            * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_eV * 1e-9)  # energies needed in GeV
+            * (self.beam_parameters.gamma_rel
+               * self.beam_parameters.total_energy_eV * 1e-9  # total energy needed in GeV
+               - self.beam_parameters.particle_mass_eV * 1e-9  # particle mass needed in GeV
+            )
             * (geom_epsx / _bx_bar)
         )
         # fmt: on
