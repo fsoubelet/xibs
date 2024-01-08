@@ -170,3 +170,36 @@ It is also possible to query the `beam` in use for the currently active sequence
 
         # Let's assume your `cpymad.madx.Madx` instance is already defined
         beam_params = BeamParameters.from_madx(madx)
+
+
+.. _xibs-faq-geom-norm-emittances:
+
+Geomettric or Normalized Emittances
+-----------------------------------
+
+Some functions in `xibs` require emittances to be provided as input, for instance `~xibs.analytical.BjorkenMtingwaIBS.growth_rates`.
+In all such cases, while internally `xibs` uses geomtric emittances for computations (as they are the values used in the implemented formulae), it is possible to provide either the geometric or the normalized emittances.
+
+For these functions the API will ask for both `epsx` and `epsy` arguments, and offer an optional boolean argument `normalized_emittances` which defaults to `False`.
+If set to `True`, then the provided emittances are assumed to be the normalized ones, and will be converted to geometric emittances internally.
+
+For instance for the `~.BjorkenMtingwaIBS.growth_rates` method, the API is:
+
+.. code-block:: python
+
+    # Let's assume your `BjorkenMtingwaIBS` or `NagaitsevIBS` instance has been instantiated
+    IBS = xibs.ibs(beam_params, optics, formalism=...)
+    
+    # Getting growth rates from geometric emittances goes as:
+    rates_geom = IBS.growth_rates(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+
+    # Getting growth rates from normalized emittances goes as:
+    rates_norm = IBS.growth_rates(
+        norm_epsx, norm_epsy, sigma_delta, bunch_length, normalized_emittances=True
+    )
+
+    # The two results are the same
+    assert rates_geom == rates_norm  # this is True
+
+For functions that also return emittance values, such as the `emittance_evolution` method of analytical IBS implementations, the returned values will be the same as the input ones, i.e. if normalized emittances were provided, then normalized emittances will be returned.
+That's as much as the user has to think about this.
