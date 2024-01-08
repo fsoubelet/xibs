@@ -144,28 +144,16 @@ for turn in range(1, nturns):
         )
 
     # Compute the new emittances
-    new_emit_x, new_emit_y, new_sig_delta = IBS.emittance_evolution(
+    new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
         geom_epsx=turn_by_turn.epsilon_x[turn - 1],
         geom_epsy=turn_by_turn.epsilon_y[turn - 1],
         sigma_delta=turn_by_turn.sig_delta[turn - 1],
+        bunch_length=turn_by_turn.bunch_length[turn - 1],
         # dt = 1.0 / IBS.optics.revolution_frequency,  # default value
     )
 
-    # compute bunch length analytically as the Particles object hasn't changed
-    sigma_e = new_sig_delta * IBS.beam_parameters.beta_rel**2
-    bunch_l = ion_bunch_length(
-        optics.circumference,
-        harmonic_number,
-        beam_params.total_energy_eV * 1e-9,  # needed in GeV
-        optics.slip_factor,
-        sigma_e,
-        beam_params.beta_rel,
-        rf_voltage * 1e-3,  # has to be provided in [MV]
-        beam_params.particle_charge,
-    )
-
     # Update the records with the new values
-    turn_by_turn.bunch_length[turn] = bunch_l
+    turn_by_turn.bunch_length[turn] = new_bunch_length
     turn_by_turn.sig_delta[turn] = new_sig_delta
     turn_by_turn.epsilon_x[turn] = new_emit_x
     turn_by_turn.epsilon_y[turn] = new_emit_y
@@ -197,17 +185,7 @@ for turn in range(1, nturns):
     )
 
     # Compute bunch length analytically as the Particles object hasn't changed
-    sigma_e = new_sig_delta * MIBS.betar**2
-    bunch_l = ion_bunch_length(
-        optics.circumference,
-        harmonic_number,
-        beam_params.total_energy_eV * 1e-9,  # needed in GeV
-        optics.slip_factor,
-        sigma_e,
-        beam_params.beta_rel,
-        rf_voltage * 1e-3,  # has to be provided in [MV]
-        beam_params.particle_charge,
-    )
+    bunch_l  = old_turn_by_turn.bunch_length[turn - 1] * np.exp(dt * float(0.5 * MIBS.Ipp))
 
     # Update the records with the new values
     old_turn_by_turn.bunch_length[turn] = bunch_l
