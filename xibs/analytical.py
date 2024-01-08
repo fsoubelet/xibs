@@ -1061,11 +1061,12 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
 
     def growth_rates(
         self,
-        geom_epsx: float,
-        geom_epsy: float,
+        epsx: float,
+        epsy: float,
         sigma_delta: float,
         bunch_length: float,
         bunched: bool = True,
+        normalized_emittances: bool = False,
         integration_intervals: int = 17,
     ) -> IBSGrowthRates:
         r"""
@@ -1093,12 +1094,20 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
                 - Defines sub-intervals and integrates the above over all of them, getting growth rates at each element in the lattice.
                 - Averages the results over the full circumference of the machine.
 
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
+
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
             bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
             integration_intervals (int): the number of sub-intervals to use when integrating the
                 integrands of Eq (8) of the MAD-X note. Please DO NOT change this parameter unless
                 you know exactly what you are doing, as you might affect convergence. Defaults to 17.
@@ -1108,7 +1117,8 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
         """
         # ----------------------------------------------------------------------------------------------
         # Make sure we are working with geometric emittances
-
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # We warn the user in case the TWISS was not centered - but keep going
         if self.optics._is_centered is False:
