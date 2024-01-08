@@ -398,12 +398,7 @@ class NagaitsevIBS(AnalyticalIBS):
         self.elliptic_integrals: NagaitsevIntegrals = None
 
     def integrals(
-        self,
-        geom_epsx: float = None,
-        geom_epsy: float = None,
-        sigma_delta: float = None,
-        norm_epsx: float = None,
-        norm_epsy: float = None,
+        self, epsx: float, epsy: float, sigma_delta: float, normalized_emittances: bool = False
     ) -> NagaitsevIntegrals:
         r"""
         .. versionadded:: 0.2.0
@@ -426,29 +421,28 @@ class NagaitsevIBS(AnalyticalIBS):
                 - Computes and returns the integrals terms in Eq (30-32).
 
         .. note::
-            Both geometric and normalized emittances can be given as input to this function, and
-            at least one should be provided. Internally, a conversion is done to geometric emittances,
-            which are used in the computations. The returned emittances correspond to the type of those
-            provided: if given normalized emittances this will return a value for normalized emittances.
-            If both are given the geometric ones.
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
 
         Args:
-            geom_epsx (float): horizontal geometric emittance in [m]. Defaults to `None`.
-            geom_epsy (float): vertical geometric emittance in [m]. Defaults to `None`.
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread. Defaults to `None`.
-            norm_epsx (float): horizontal normalized emittance in [m]. Defaults to `None`.
-            norm_epsy (float): vertical normalized emittance in [m]. Defaults to `None`.
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
 
         Returns:
             A `NagaitsevIntegrals` object with the computed integrals for each plane.
         """
         LOGGER.info("Computing Nagaitsev integrals for defined beam and optics parameters")
-        # ----------------------------------------------------------------------------------------------
-        # Make sure we are working with geometric emittances
-        geom_epsx = self._geom_emit_from_input_emits(geom_epsx, norm_epsx)
-        geom_epsy = self._geom_emit_from_input_emits(geom_epsy, norm_epsy)
         # fmt: off
         # All of the following (when type annotated as np.ndarray), hold one value per element in the lattice
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # Computing necessary intermediate terms for the following lines
         sigx: np.ndarray = np.sqrt(self.optics.betx * geom_epsx + (self.optics.dx * sigma_delta)**2)
@@ -501,10 +495,11 @@ class NagaitsevIBS(AnalyticalIBS):
 
     def growth_rates(
         self,
-        geom_epsx: float,
-        geom_epsy: float,
+        epsx: float,
+        epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        normalized_emittances: bool = False,
         compute_integrals: bool = True,
     ) -> IBSGrowthRates:
         r"""
@@ -535,11 +530,19 @@ class NagaitsevIBS(AnalyticalIBS):
                 - Compute for each plane the full result of Eq (30-32), respectively.
                 - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_{\delta}^{2}` (as relevant) to get :math:`1 / \tau`.
 
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
+
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
             compute_integrals (bool): if `True`, the Nagaitsev elliptic integrals will be computed
                 before the growth rates. Defaults to `True`. New in version 0.3.0.
 
@@ -548,7 +551,8 @@ class NagaitsevIBS(AnalyticalIBS):
         """
         # ----------------------------------------------------------------------------------------------
         # Make sure we are working with geometric emittances
-
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # Check that the Nagaitsev integrals have been computed beforehand
         if self.elliptic_integrals is None and compute_integrals is False:
