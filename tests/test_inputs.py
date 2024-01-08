@@ -2,6 +2,8 @@
 Quick tests for the input classes and their initialization.
 """
 import numpy as np
+import xpart as xp
+import xtrack as xt
 
 from scipy.constants import c
 
@@ -210,3 +212,48 @@ def test_init_opticsparameters_from_madx_constructor(
     assert np.isclose(mad_opticsparams.circumference, xt_opticsparams.circumference)
     assert np.isclose(mad_opticsparams.slip_factor, xt_opticsparams.slip_factor, rtol=5e-3)  # within 0.5%
     assert np.isclose(mad_opticsparams.revolution_frequency, xt_opticsparams.revolution_frequency)
+
+
+def test_init_opticsparameters_from_line_warns_on_coupling(madx_lhc_injection_protons, caplog):
+    """
+    Check that the OpticsParameters, when initializing from MAD-X (cpymad),
+    checks and warns if betatron coupling is present in the machine. Because the
+    saved line has no element_refs for unpowered elements at save time, we load
+    the line from MAD-X sequence.
+    """
+    # --------------------------------------------------------------------
+    # Get the MAD-X instance and power a skew quadrupole to induce coupling
+    # then create a line from the sequence
+    madx, _ = madx_lhc_injection_protons  # fully set up from the config file
+    madx.input("kqsx3.r1 = 1e-3;")  # Skewquad in IR1, will make ~5e-3 cminus
+    line = xt.Line.from_madx_sequence(madx.sequence.lhcb1, allow_thick=True)
+    line.particle_ref = xp.Particles(mass0=xp.PROTON_MASS_EV, q0=1, gamma0=madx.sequence.lhcb1.beam.gamma)
+
+    # --------------------------------------------------------------------
+    # Initialize OpticsParameters and check a warning for coupling was raised
+    opticsparams = OpticsParameters.from_line(line)
+
+    for record in caplog.records:  # check the logging message
+        assert record.levelname == "WARNING"
+        assert "There is betatron coupling in the machine" in record.message
+        assert "not taken into account in analytical calculations" in record.message
+
+
+def test_init_opticsparameters_from_madx_warns_on_coupling(madx_lhc_injection_protons, caplog):
+    """
+    Check that the OpticsParameters, when initializing from MAD-X (cpymad),
+    checks and warns if betatron coupling is present in the machine.
+    """
+    # --------------------------------------------------------------------
+    # Get the MAD-X instance and power a skew quadrupole to induce coupling
+    madx, _ = madx_lhc_injection_protons  # fully set up from the config file
+    madx.input("kqsx3.r1 = 1e-3;")  # Skewquad in IR1, will make ~5e-3 cminus
+
+    # --------------------------------------------------------------------
+    # Initialize OpticsParameters and check a warning for coupling was raised
+    opticsparams = OpticsParameters.from_madx(madx)
+
+    for record in caplog.records:  # check the logging message
+        assert record.levelname == "WARNING"
+        assert "There is betatron coupling in the machine" in record.message
+        assert "not taken into account in analytical calculations" in record.message

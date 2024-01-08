@@ -182,7 +182,9 @@ class AnalyticalIBS(ABC):
         # Calculate 'rmin' as larger of classical distance of closest approach or quantum mechanical
         # diffraction limit from nuclear radius
         rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
-        rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_eV * 1e-9))  # energy in GeV
+        rminqm = (
+            hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_eV * 1e-9))
+        )  # energy in GeV
         # ----------------------------------------------------------------------------------------------
         # Now compute the impact parameters and finally Coulomb logarithm
         bmin = max(rmincl, rminqm)
@@ -1055,7 +1057,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
             integration_intervals (int): the number of sub-intervals to use when integrating the
                 integrands of Eq (8) of the MAD-X note. Please DO NOT change this parameter unless
-                you know exactly what you are doing. Defaults to 17.
+                you know exactly what you are doing, as you might affect convergence. Defaults to 17.
 
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.

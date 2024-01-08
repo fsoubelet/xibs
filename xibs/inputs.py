@@ -261,6 +261,13 @@ class OpticsParameters:
         gamma_tr = madx.table.summ.gammatr[0]  # transition gamma
         slipfactor = (1 / (gamma_tr**2)) - (1 / (gamma_rel**2))  # use the xsuite convention!
 
+        cminus = madx.table.summ.dqmin[0]  # just to check coupling
+        if not np.isclose(cminus, 0, atol=0, rtol=1e-4):  # there is some betatron coupling
+            LOGGER.warning(
+                f"There is betatron coupling in the machine (|Cminus| = {cminus:.3f}),"
+                "which is not taken into account in analytical calculations."
+            )
+
         LOGGER.debug("Initializing OpticsParameters from determined parameters")
         return cls(twiss, slipfactor, frev_hz)
 
@@ -284,6 +291,12 @@ class OpticsParameters:
         method = kwargs.pop("method", "4d")  # by default 4D, can be overriden
         LOGGER.debug("Running TWISS for on the line")
         twiss = line.twiss(method=method, **kwargs)
+
+        if not np.isclose(twiss.c_minus, 0, atol=0, rtol=1e-4):  # there is some betatron coupling
+            LOGGER.warning(
+                f"There is betatron coupling in the machine (|Cminus| = {twiss.c_minus:.3f}),"
+                "which is not taken into account in analytical calculations."
+            )
 
         LOGGER.debug("Initializing OpticsParameters from determined parameters")
         return cls(twiss)
