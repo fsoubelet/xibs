@@ -209,7 +209,7 @@ class AnalyticalIBS(ABC):
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
             normalized_emittances (bool): whether the provided emittances are
-                normalized or not. Defaults to `False`.
+                normalized or not. Defaults to `False` (assume geometric emittances).
 
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
@@ -219,8 +219,14 @@ class AnalyticalIBS(ABC):
         )
 
     def emittance_evolution(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
-    ) -> Tuple[float, float, float]:
+        self,
+        epsx: float,
+        epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        dt: float = None,
+        normalized_emittances: bool = False,
+    ) -> Tuple[float, float, float, float]:
         r"""
         .. versionadded:: 0.2.0
 
@@ -246,14 +252,23 @@ class AnalyticalIBS(ABC):
 
                 \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
 
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations. The returned emittances correspond to
+            the type of those provided: if given normalized emittances this function will return values that
+            correspond to the new normalized emittances.
 
         Args:
-            geom_epsx (float): horizontal geometric emittance in [m].
-            geom_epsy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             dt (float, optional): the time interval to use, in [s]. Default to the inverse
                 of the revolution frequency, :math:`1 / f_{rev}`.
             bunch_length (float): the bunch length in [m].
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
 
         Raises:
             ValueError: if the ``IBS`` growth rates have not yet been computed.
@@ -264,7 +279,8 @@ class AnalyticalIBS(ABC):
         """
         # ----------------------------------------------------------------------------------------------
         # Make sure we are working with geometric emittances
-
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
         if self.ibs_growth_rates is None:
@@ -285,6 +301,10 @@ class AnalyticalIBS(ABC):
         new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
         new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
         new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we return the same type of emittances as the user provided
+        new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
+        new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
         return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
 
     def _normalized_emittance(self, geometric_emittance: float) -> float:
