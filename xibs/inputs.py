@@ -44,7 +44,7 @@ class BeamParameters:
         n_part (int): number of simulated particles.
         particle_charge (int): elementary particle charge, in # of Coulomb charges
             (for instance 1 for electron or proton).
-        particle_mass_GeV (float): particle mass in [GeV].
+        particle_mass_eV (float): particle mass in [eV].
         total_energy_GeV (float): total energy of the simulated particles in [GeV].
         gamma_rel (float): relativistic gamma of the simulated particles.
         beta_rel (float): relativistic beta of the simulated particles.
