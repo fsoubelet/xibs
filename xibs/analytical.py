@@ -265,9 +265,7 @@ class AnalyticalIBS(ABC):
 
                 \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
 
-                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
-
-                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
+                \sigma_{\delta, z}^{N+1} &= \sigma_{\delta, z}^{N} * e^{t / 2 \tau_{z}}
 
         .. note::
             Both geometric or normalized emittances can be given as input to this function, and it is assumed
