@@ -194,19 +194,22 @@ class AnalyticalIBS(ABC):
     @abstractmethod
     def growth_rates(
         self,
-        geom_epsx: float,
-        geom_epsy: float,
+        epsx: float,
+        epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        normalized_emittances: bool = False,
     ) -> IBSGrowthRates:
         r"""
         Method to compute the IBS growth rates.
 
         Args:
-            geom_epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False`.
 
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
@@ -338,9 +341,10 @@ class AnalyticalIBS(ABC):
         Returns:
             The geometric emittance in [m].
         """
-        if geom_emit is not None:  # geom is provided, return it
+        if geom_emit is not None:  # geom is provided (even if norm too), return it
             return geom_emit
         elif geom_emit is None and norm_emit is not None:  # norm is provided, return geom from norm
+            self._user_gave_geom_emits = False
             return self._geometric_emittance(norm_emit)
         else:  # neither geom or norm emit provided, raise and error
             raise RuntimeError(
@@ -373,7 +377,14 @@ class NagaitsevIBS(AnalyticalIBS):
         # This self-updates when computed, but can be overwritten by the user
         self.elliptic_integrals: NagaitsevIntegrals = None
 
-    def integrals(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> NagaitsevIntegrals:
+    def integrals(
+        self,
+        geom_epsx: float = None,
+        geom_epsy: float = None,
+        sigma_delta: float = None,
+        norm_epsx: float = None,
+        norm_epsy: float = None,
+    ) -> NagaitsevIntegrals:
         r"""
         .. versionadded:: 0.2.0
 
@@ -394,15 +405,28 @@ class NagaitsevIBS(AnalyticalIBS):
                 - Computes the :math:`S_p, S_x` and :math:`S_{xp}` terms from Eq (33-35).
                 - Computes and returns the integrals terms in Eq (30-32).
 
+        .. note::
+            Both geometric and normalized emittances can be given as input to this function, and
+            at least one should be provided. Internally, a conversion is done to geometric emittances,
+            which are used in the computations. The returned emittances correspond to the type of those
+            provided: if given normalized emittances this will return a value for normalized emittances.
+            If both are given the geometric ones.
+
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
+            geom_epsx (float): horizontal geometric emittance in [m]. Defaults to `None`.
+            geom_epsy (float): vertical geometric emittance in [m]. Defaults to `None`.
+            sigma_delta (float): momentum spread. Defaults to `None`.
+            norm_epsx (float): horizontal normalized emittance in [m]. Defaults to `None`.
+            norm_epsy (float): vertical normalized emittance in [m]. Defaults to `None`.
 
         Returns:
             A `NagaitsevIntegrals` object with the computed integrals for each plane.
         """
         LOGGER.info("Computing Nagaitsev integrals for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = self._geom_emit_from_input_emits(geom_epsx, norm_epsx)
+        geom_epsy = self._geom_emit_from_input_emits(geom_epsy, norm_epsy)
         # fmt: off
         # All of the following (when type annotated as np.ndarray), hold one value per element in the lattice
         # ----------------------------------------------------------------------------------------------
