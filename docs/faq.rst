@@ -213,9 +213,6 @@ Bunched and Coasting Beams
 Users may want to obtain IBS growth rates for simulations in which they have coasting beams.
 This is possible, through currently only in the Bjorken & Mtingwa formalism.
 
-.. warning::
-    Keep in mind that for a coasting beam case the bunch length should be adapted, and is generally taken as the circumference of the machine.
-
 The `~.BjorkenMtingwaIBS.growth_rates` method provides a `bunched` boolean argument, which defaults to `True`, corresponding to a bunched beam case.
 To adapt the growth rates calculation for a coasting beam, one simply has to set this argument to `False`:
 
