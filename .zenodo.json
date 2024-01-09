@@ -1,0 +1,22 @@
+{
+    "creators": [
+        {
+            "name": "Felix Soubelet",
+            "affiliation": "CERN",
+            "orcid": "0000-0001-8012-1440"
+        },
+        {
+            "name": "Michail Zampetakis",
+            "affiliation": "CERN",
+            "orcid": "0000-0001-9394-928X"
+        },
+        {
+            "name": "Sofia Kostoglou",
+            "affiliation": "CERN",
+            "orcid": "0000-0002-7387-904X"
+        }
+    ],
+    "title": "xibs",
+    "license": "Apache-2.0",
+    "description": "Intra-Beam Scattering Modelling Prototype"
+}

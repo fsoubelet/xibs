@@ -19,6 +19,7 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 import warnings
 
+from abc import ABC, abstractmethod
 from dataclasses import astuple, dataclass
 from logging import getLogger
 from typing import Callable, Tuple
@@ -76,22 +77,19 @@ class IBSGrowthRates:
     Tz: float
 
 
-# ----- Classes to Compute Analytical IBS Growth Rates ----- #
+# ----- Abstract Base Class to Inherit from ----- #
 
 
-class NagaitsevIBS:
+class AnalyticalIBS(ABC):
     r"""
-    .. versionadded:: 0.2.0
+    .. versionadded:: 0.4.0
 
-    A single class to compute Nagaitsev integrals (see
-    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
-    and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
+    Abstract base class for analytical IBS calculations, from which all
+    implementations inherit.
 
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for the calculations.
         optics (OpticsParameters): the optics parameters to use for the calculations.
-        elliptic_integrals (NagaitsevIntegrals): the computed elliptic integrals. This
-            self-updates when they are computed with the `integrals` method.
         ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
             when they are computed with the `growth_rates` method.
     """
@@ -99,16 +97,13 @@ class NagaitsevIBS:
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
-        # These self-update when they are computed, but can be overwritten by the user
-        self.elliptic_integrals: NagaitsevIntegrals = None
+        # This one self-updates when computed, but can be overwritten by the user
         self.ibs_growth_rates: IBSGrowthRates = None
 
     def __str__(self) -> str:
-        has_integrals = self.elliptic_integrals is not None
-        has_growth_rates = self.ibs_growth_rates is not None
+        has_growth_rates = isinstance(self.ibs_growth_rates, IBSGrowthRates)  # False if default value of None
         return (
-            "NagaitsevIBS object for analytical IBS calculations.\n"
-            f"Elliptic integrals computed: {has_integrals}\n"
+            f"{self.__class__.__name__} object for analytical IBS calculations.\n"
             f"IBS growth rates computed: {has_growth_rates}"
         )
 
@@ -116,34 +111,52 @@ class NagaitsevIBS:
         return self.__str__()
 
     def coulomb_log(
-        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
+        self,
+        epsx: float,
+        epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        bunched: bool = True,
+        normalized_emittances: bool = False,
     ) -> float:
         r"""
         .. versionadded:: 0.2.0
 
         Calculates the Coulomb logarithm based on the beam parameters and optics the class
         was initiated with. For a good introductory resource on the Coulomb Log, see:
-        https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html
+        https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html.
 
         .. note::
-            This function follows the exact computing implementation of the Coulomb log
-            calculation in the ``MAD-X`` source code, which ine can find in the file
-            `MAD-X/src/ibsdb.f90` as the `twclog` subroutine. It is computed as
-            :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`. Here :math:`r_{max}`
-            denotes the smaller of :math:`\sigma_x` and the Debye length; while :math:`r_{min}`
-            is the larger of the classical distance of closest approach and the quantum
-            diffraction limit from the nuclear radius.
+            This function follows the formulae in :cite:`AIP:Anderson:Physics_Vade_Mecum`. The
+            Coulomb log is computed as :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`.
+            Here :math:`r_{max}` denotes the smaller of :math:`\sigma_x` and the Debye length; while
+            :math:`r_{min}` is the larger of the classical distance of closest approach and the
+            quantum diffraction limit from the nuclear radius. It is the calculation that is done by
+            ``MAD-X`` (see the `twclog` subroutine in the `MAD-X/src/ibsdb.f90` source file).
+
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
 
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
 
         Returns:
             The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
         """
-        LOGGER.debug("Computing Coulomb logarithm for definded beam and optics parameters")
+        LOGGER.debug("Computing Coulomb logarithm for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # Interpolated beta and dispersion functions for the average calculation below
         LOGGER.debug("Interpolating beta and dispersion functions")
@@ -166,7 +179,10 @@ class NagaitsevIBS:
         # fmt: off
         Etrans = (  
             5e8
-            * (self.beam_parameters.gamma_rel * self.beam_parameters.total_energy_GeV - self.beam_parameters.particle_mass_GeV)
+            * (self.beam_parameters.gamma_rel
+               * self.beam_parameters.total_energy_eV * 1e-9  # total energy needed in GeV
+               - self.beam_parameters.particle_mass_eV * 1e-9  # particle mass needed in GeV
+            )
             * (geom_epsx / _bx_bar)
         )
         # fmt: on
@@ -174,27 +190,208 @@ class NagaitsevIBS:
         # ----------------------------------------------------------------------------------------------
         # Compute sigmas in each dimension
         sigma_x_cm = 100 * np.sqrt(geom_epsx * _bx_bar + (_dx_bar * sigma_delta) ** 2)
-        sigma_y_cm = 100 * np.sqrt(geom_epxy * _by_bar + (_dy_bar * sigma_delta) ** 2)
+        sigma_y_cm = 100 * np.sqrt(geom_epsy * _by_bar + (_dy_bar * sigma_delta) ** 2)
         sigma_t_cm = 100 * bunch_length
         # ----------------------------------------------------------------------------------------------
         # Calculate beam volume to get density (in cm^{-3}) then Debye length
-        volume = 8.0 * np.sqrt(np.pi**3) * sigma_x_cm * sigma_y_cm * sigma_t_cm
+        if bunched is True:  # bunched beam
+            volume = 8.0 * np.sqrt(np.pi**3) * sigma_x_cm * sigma_y_cm * sigma_t_cm
+        else:  # coasting beam
+            volume = 4.0 * np.pi * sigma_x_cm * sigma_y_cm * 100 * self.optics.circumference
         density = self.beam_parameters.n_part / volume
-        debyul = 743.4 * np.sqrt(TempeV / density) / self.beam_parameters.particle_charge  # Debye length?
+        debyul = 743.4 * np.sqrt(TempeV / density) / self.beam_parameters.particle_charge
         # ----------------------------------------------------------------------------------------------
         # Calculate 'rmin' as larger of classical distance of closest approach or quantum mechanical
         # diffraction limit from nuclear radius
         rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
-        rminqm = hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_GeV))
+        rminqm = (
+            hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_eV * 1e-9))
+        )  # energy in GeV
         # ----------------------------------------------------------------------------------------------
         # Now compute the impact parameters and finally Coulomb logarithm
         bmin = max(rmincl, rminqm)
         bmax = min(sigma_x_cm, debyul)
         return np.log(bmax / bmin)
 
-    # This is 'Nagaitsev_Integrals' from Michalis's old code but it stops a bit earlier and really returns the integrals
-    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
-    def integrals(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> NagaitsevIntegrals:
+    @abstractmethod
+    def growth_rates(
+        self,
+        epsx: float,
+        epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        bunched: bool = True,
+        normalized_emittances: bool = False,
+    ) -> IBSGrowthRates:
+        r"""
+        Method to compute the IBS growth rates.
+
+        Args:
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
+            sigma_delta (float): momentum spread.
+            bunch_length (float): the bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
+
+        Returns:
+            An `IBSGrowthRates` object with the computed growth rates for each plane.
+        """
+        raise NotImplementedError(
+            "This method should be implemented in all child classes, but it hasn't been for this one."
+        )
+
+    def emittance_evolution(
+        self,
+        epsx: float,
+        epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        dt: float = None,
+        normalized_emittances: bool = False,
+    ) -> Tuple[float, float, float, float]:
+        r"""
+        .. versionadded:: 0.2.0
+
+        Analytically computes the new emittances after a given time step `dt` has
+        ellapsed, from initial values, based on the ``IBS`` growth rates.
+
+        .. warning::
+            This calculation is done by building on the ``IBS`` growth rates. If the
+            latter have not been computed yet, this method will raise an error. Please
+            remember to call the instance's `growth_rates` method first.
+
+        .. tip::
+            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
+            according to the following, where :math:`N` represents the time step:
+
+            .. math::
+
+                T_{x,y,z} &= 1 / \tau_{x,y,z}
+
+                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
+
+                \sigma_{\delta, z}^{N+1} &= \sigma_{\delta, z}^{N} * e^{t / 2 \tau_{z}}
+
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations. The returned emittances correspond to
+            the type of those provided: if given normalized emittances this function will return values that
+            correspond to the new normalized emittances.
+
+        Args:
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
+            sigma_delta (float): momentum spread.
+            dt (float, optional): the time interval to use, in [s]. Default to the inverse
+                of the revolution frequency, :math:`1 / f_{rev}`.
+            bunch_length (float): the bunch length in [m].
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
+
+        Raises:
+            ValueError: if the ``IBS`` growth rates have not yet been computed.
+
+        Returns:
+            A tuple with the new horizontal & vertical geometric emittances, the new
+            momentum spread and the new bunch length, after the time step has ellapsed.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
+        # ----------------------------------------------------------------------------------------------
+        # Check that the IBS growth rates have been computed beforehand
+        if self.ibs_growth_rates is None:
+            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
+            raise ValueError(
+                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
+                "Please call the `growth_rates` method first."
+            )
+        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
+        # ----------------------------------------------------------------------------------------------
+        # Set the time step to 1 / frev if not provided
+        if dt is None:
+            LOGGER.debug("No time step provided, defaulting to 1 / frev")
+            dt = 1 / self.optics.revolution_frequency
+        # ----------------------------------------------------------------------------------------------
+        # Compute new emittances and return them. Here we multiply because T = 1 / tau
+        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
+        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
+        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we return the same type of emittances as the user provided
+        new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
+        new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
+        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
+
+    def _normalized_emittance(self, geometric_emittance: float) -> float:
+        r"""
+        .. versionadded:: 0.4.0
+
+        Computes normalized emittance from the geometric one, using relativistic
+        beta and gamma from the the instance's beam parameters attribute.
+
+        Args:
+            geometric_emittance (float): geometric emittance in [m].
+            beta_ref (float): relativistic beta.
+            gamma_rel (float): relativistic gamma.
+
+        Returns:
+            The normalized emittance in [m].
+        """
+        return geometric_emittance * self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel
+
+    def _geometric_emittance(self, normalized_emittance: float) -> float:
+        r"""
+        .. versionadded:: 0.4.0
+
+        Computes geometric emittance from the normalized one, using relativistic
+        beta and gamma from the the instance's beam parameters attribute.
+
+        Args:
+            normalized_emittance (float): normalized emittance in [m].
+            beta_ref (float): relativistic beta.
+            gamma_rel (float): relativistic gamma.
+
+        Returns:
+            The geometric emittance in [m].
+        """
+        return normalized_emittance / (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)
+
+
+# ----- Classes to Compute Analytical IBS Growth Rates ----- #
+
+
+class NagaitsevIBS(AnalyticalIBS):
+    r"""
+    .. versionadded:: 0.2.0
+
+    A single class to compute Nagaitsev integrals (see
+    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
+    and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
+
+    Attributes:
+        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
+        optics (OpticsParameters): the optics parameters to use for the calculations.
+        elliptic_integrals (NagaitsevIntegrals): the computed elliptic integrals. This
+            self-updates when they are computed with the `integrals` method.
+        ibs_growth_rates (IBSGrowthRates): the computed IBS growth rates. This self-updates
+            when they are computed with the `growth_rates` method.
+    """
+
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+        super().__init__(beam_params, optics)
+        # This self-updates when computed, but can be overwritten by the user
+        self.elliptic_integrals: NagaitsevIntegrals = None
+
+    def integrals(
+        self, epsx: float, epsy: float, sigma_delta: float, normalized_emittances: bool = False
+    ) -> NagaitsevIntegrals:
         r"""
         .. versionadded:: 0.2.0
 
@@ -215,10 +412,18 @@ class NagaitsevIBS:
                 - Computes the :math:`S_p, S_x` and :math:`S_{xp}` terms from Eq (33-35).
                 - Computes and returns the integrals terms in Eq (30-32).
 
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
+
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
+            sigma_delta (float): momentum spread. Defaults to `None`.
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
 
         Returns:
             A `NagaitsevIntegrals` object with the computed integrals for each plane.
@@ -226,6 +431,10 @@ class NagaitsevIBS:
         LOGGER.info("Computing Nagaitsev integrals for defined beam and optics parameters")
         # fmt: off
         # All of the following (when type annotated as np.ndarray), hold one value per element in the lattice
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # Computing necessary intermediate terms for the following lines
         sigx: np.ndarray = np.sqrt(self.optics.betx * geom_epsx + (self.optics.dx * sigma_delta)**2)
@@ -276,14 +485,14 @@ class NagaitsevIBS:
         self.elliptic_integrals = result
         return result
 
-    # This is the end of the calculations in 'Nagaitsev_Integrals' from Michalis's old code (the last 3 lines essentially)
-    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL there
     def growth_rates(
         self,
-        geom_epsx: float,
-        geom_epsy: float,
+        epsx: float,
+        epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        bunched: bool = True,
+        normalized_emittances: bool = False,
         compute_integrals: bool = True,
     ) -> IBSGrowthRates:
         r"""
@@ -314,17 +523,41 @@ class NagaitsevIBS:
                 - Compute for each plane the full result of Eq (30-32), respectively.
                 - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_{\delta}^{2}` (as relevant) to get :math:`1 / \tau`.
 
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
+
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            bunched (bool): UNIMPLEMENTED AT THE MOMENT. Whether the beam is bunched or not (coasting).
+                Defaults to `True`.
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
             compute_integrals (bool): if `True`, the Nagaitsev elliptic integrals will be computed
                 before the growth rates. Defaults to `True`. New in version 0.3.0.
 
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
         """
+        # ----------------------------------------------------------------------------------------------
+        # Catch and raise an error if the user asks for coasting beam (not implemented yet)
+        if bunched is False:
+            LOGGER.error(
+                "Computing growth rates for coasting beams is currently not supported in this class."
+            )
+            raise NotImplementedError(
+                "Calculation for coasting beams is not implemented yet in this formalism."
+                "Please use the BjorkenMtignwaIBS class instead, which supports this feature."
+            )
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # Check that the Nagaitsev integrals have been computed beforehand
         if self.elliptic_integrals is None and compute_integrals is False:
@@ -360,76 +593,8 @@ class NagaitsevIBS:
         self.ibs_growth_rates = result
         return result
 
-    # This is 'emit_evol' from Michalis's old code
-    # The arguments used to be named Emit_x, Emit_y, Sig_M, BunchL (unused) and dt there
-    def emittance_evolution(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
-    ) -> Tuple[float, float, float]:
-        r"""
-        .. versionadded:: 0.2.0
 
-        Analytically computes the new emittances after a given time step `dt` has
-        ellapsed, from initial values, based on the ``IBS`` growth rates.
-
-        .. warning::
-            This calculation is done by building on the ``IBS`` growth rates. If the
-            latter have not been computed yet, this method will raise an error. Please
-            remember to call the instance's `growth_rates` method first.
-
-        .. tip::
-            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
-            according to the following, where :math:`N` represents the time step:
-
-            .. math::
-
-                T_{x,y,z} &= 1 / \tau_{x,y,z}
-
-                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
-
-                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
-
-                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
-
-
-        Args:
-            geom_epsx (float): horizontal geometric emittance in [m].
-            geom_epsy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
-            dt (float, optional): the time interval to use, in [s]. Default to the inverse
-                of the revolution frequency, :math:`1 / f_{rev}`.
-            bunch_length (float): the bunch length in [m].
-
-        Raises:
-            ValueError: if the ``IBS`` growth rates have not yet been computed.
-
-        Returns:
-            A tuple with the new horizontal & vertical geometric emittances as well as the new
-            momentum spread, after the time step has ellapsed.
-        """
-        # ----------------------------------------------------------------------------------------------
-        # Check that the IBS growth rates have been computed beforehand
-        if self.ibs_growth_rates is None:
-            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise ValueError(
-                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
-                "Please call the `growth_rates` method first."
-            )
-        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
-        # ----------------------------------------------------------------------------------------------
-        # Set the time step to 1 / frev if not provided
-        if dt is None:
-            LOGGER.debug("No time step provided, defaulting to 1 / frev")
-            dt = 1 / self.optics.revolution_frequency
-        # ----------------------------------------------------------------------------------------------
-        # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
-        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
-        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
-
-
-class BjorkenMtingwaIBS:
+class BjorkenMtingwaIBS(AnalyticalIBS):
     r"""
     .. versionadded:: 0.3.0
 
@@ -454,54 +619,7 @@ class BjorkenMtingwaIBS:
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        self.beam_parameters: BeamParameters = beam_params
-        self.optics: OpticsParameters = optics
-        # These self-update when they are computed, but can be overwritten by the user
-        self.ibs_growth_rates: IBSGrowthRates = None
-
-    def __str__(self) -> str:
-        has_growth_rates = self.ibs_growth_rates is not None
-        return (
-            "BjorkenMtingwaIBS object for analytical IBS calculations.\n"
-            f"IBS growth rates computed: {has_growth_rates}"
-        )
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-    def coulomb_log(
-        self, geom_epsx: float, geom_epxy: float, sigma_delta: float, bunch_length: float
-    ) -> float:
-        r"""
-        .. versionadded:: 0.3.0
-
-        Calculates the Coulomb logarithm based on the beam parameters and optics the class
-        was initiated with. For a good introductory resource on the Coulomb Log, see:
-        https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html
-
-        .. note::
-            This function follows the exact computing implementation of the Coulomb log
-            calculation in the ``MAD-X`` source code, which ine can find in the file
-            `MAD-X/src/ibsdb.f90` as the `twclog` subroutine. It is computed as
-            :math:`\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})`. Here :math:`r_{max}`
-            denotes the smaller of :math:`\sigma_x` and the Debye length; while :math:`r_{min}`
-            is the larger of the classical distance of closest approach and the quantum
-            diffraction limit from the nuclear radius.
-
-        Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
-            bunch_length (float): bunch length in [m].
-
-        Returns:
-            The dimensionless Coulomb logarithm :math:`\ln \left( \Lambda \right)`.
-        """
-        # We call the NagaitsevIBS class to compute the Coulomb log, it is a little bit
-        # of runtime overhead but I don't want to duplicate the code.
-        return NagaitsevIBS(self.beam_parameters, self.optics).coulomb_log(
-            geom_epsx, geom_epxy, sigma_delta, bunch_length
-        )
+        super().__init__(beam_params, optics)
 
     def _Gamma(
         self,
@@ -521,25 +639,33 @@ class BjorkenMtingwaIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
-            bunched (bool): whether the beam is bunched or coasting, as there is a factor
-                :math:`\sqrt(2)` between the two. Defaults to `True`.
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
 
         Returns:
             The computed :math:`\Gamma` value.
         """
-        factor = 1 if bunched is True else np.sqrt(2)  # for coasting beams we will divide by sqrt(2)
         # fmt: off
-        _gamma = (
-            (2 * np.pi) ** 3
-            * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel) ** 3
-            * (self.beam_parameters.particle_mass_GeV * 1e6)**3  # use mass in eV like in .growth_rates method (the m^3 terms cancel out)
-            * geom_epsx
-            * geom_epsy
-            * sigma_delta
-            * bunch_length
-        )
+        if bunched is True:
+            return (
+                (2 * np.pi)**3
+                * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)**3
+                * (self.beam_parameters.particle_mass_eV * 1e-3)**3  # use mass in MeV like in .growth_rates method (the m^3 terms cancel out)
+                * geom_epsx
+                * geom_epsy
+                * sigma_delta
+                * bunch_length
+            )
+        else:  # we have coasting beam
+            return (
+                4 * np.pi**(5/2)
+                * (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)**3
+                * (self.beam_parameters.particle_mass_eV * 1e-3)**3  # use mass in MeV like in .growth_rates method (the m^3 terms cancel out)
+                * geom_epsx
+                * geom_epsy
+                * sigma_delta
+                * self.optics.circumference
+            )
         # fmt: on
-        return _gamma / factor
 
     def _a(self, geom_epsx: float, geom_epsy: float, sigma_delta: float) -> ArrayLike:
         """Computes the a term of Table 1 in the MAD-X note."""
@@ -867,7 +993,12 @@ class BjorkenMtingwaIBS:
         return bz
 
     def _constants(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        bunched: bool = True,
     ) -> Tuple[float, ArrayLike, ArrayLike, float]:
         r"""
         .. versionadded:: 0.3.0
@@ -885,6 +1016,7 @@ class BjorkenMtingwaIBS:
             epxy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
 
         Returns:
             Four variables corresponding to the common, horizontal, vertical and longitudinal
@@ -916,15 +1048,15 @@ class BjorkenMtingwaIBS:
         Hx: np.ndarray = (Dx**2 + betx**2 * phix**2) / betx
         # ----------------------------------------------------------------------------------------------
         # Compute the Coulomb logarithm and the common constant term in Eq (8) (the first fraction)
-        coulomb_logarithm: float = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        coulomb_logarithm: float = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
         common_constant_term: float = (
             np.pi**2
             * self.beam_parameters.particle_classical_radius_m**2
             * c
-            * (self.beam_parameters.particle_mass_GeV * 1e6)** 3  # use mass in eV like in ._Gamma method (the m^3 terms cancel out)
+            * (self.beam_parameters.particle_mass_eV * 1e-3)** 3  # use mass in MeV like in ._Gamma method (the m^3 terms cancel out)
             * self.beam_parameters.n_part
             * coulomb_logarithm
-            / (self.beam_parameters.gamma_rel * self._Gamma(geom_epsx, geom_epsy, sigma_delta, bunch_length))
+            / (self.beam_parameters.gamma_rel * self._Gamma(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched))
         )
         # ----------------------------------------------------------------------------------------------
         # fmt: on
@@ -938,10 +1070,12 @@ class BjorkenMtingwaIBS:
 
     def growth_rates(
         self,
-        geom_epsx: float,
-        geom_epsy: float,
+        epsx: float,
+        epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        bunched: bool = True,
+        normalized_emittances: bool = False,
         integration_intervals: int = 17,
     ) -> IBSGrowthRates:
         r"""
@@ -969,18 +1103,31 @@ class BjorkenMtingwaIBS:
                 - Defines sub-intervals and integrates the above over all of them, getting growth rates at each element in the lattice.
                 - Averages the results over the full circumference of the machine.
 
+        .. note::
+            Both geometric or normalized emittances can be given as input to this function, and it is assumed
+            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
+            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
+            geometric emittances, which are used in the computations.
+
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            epsx (float): horizontal geometric or normalized emittance in [m].
+            epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
+            normalized_emittances (bool): whether the provided emittances are
+                normalized or not. Defaults to `False` (assume geometric emittances).
             integration_intervals (int): the number of sub-intervals to use when integrating the
                 integrands of Eq (8) of the MAD-X note. Please DO NOT change this parameter unless
-                you know exactly what you are doing. Defaults to 17.
+                you know exactly what you are doing, as you might affect convergence. Defaults to 17.
 
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
         """
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances
+        geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
+        geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         # ----------------------------------------------------------------------------------------------
         # We warn the user in case the TWISS was not centered - but keep going
         if self.optics._is_centered is False:
@@ -1007,7 +1154,7 @@ class BjorkenMtingwaIBS:
         # Getting the constant term and the bracket terms from Eq (8) of the MAD-X note
         LOGGER.debug("Computing common constant term and bracket terms from Eq (8) of the MAD-X note")
         common_constant_term, bracket_x, bracket_y, bracket_z = self._constants(
-            geom_epsx, geom_epsy, sigma_delta, bunch_length
+            geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched
         )
         # ----------------------------------------------------------------------------------------------
         # Defining the integrands from Eq (8) of the MAD-X note, for each plane (remember these functions
@@ -1080,69 +1227,3 @@ class BjorkenMtingwaIBS:
         # Self-update the instance's attributes and then return the results
         self.ibs_growth_rates = result
         return result
-
-    def emittance_evolution(
-        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float = None
-    ) -> Tuple[float, float, float]:
-        r"""
-        .. versionadded:: 0.3.0
-
-        Analytically computes the new emittances after a given time step `dt` has
-        ellapsed, from initial values, based on the ``IBS`` growth rates.
-
-        .. warning::
-            This calculation is done by building on the ``IBS`` growth rates. If the
-            latter have not been computed yet, this method will raise an error. Please
-            remember to call the instance's `growth_rates` method first.
-
-        .. tip::
-            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
-            according to the following, where :math:`N` represents the time step:
-
-            .. math::
-
-                T_{x,y,z} &= 1 / \tau_{x,y,z}
-
-                \varepsilon_{x,y}^{N+1} &= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}
-
-                \sigma_{\delta}^{N+1} &= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}
-
-                \sigma_{z}^{N+1} &= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}
-
-
-        Args:
-            geom_epsx (float): horizontal geometric emittance in [m].
-            geom_epsy (float): vertical geometric emittance in [m].
-            sigma_delta (float): momentum spread.
-            dt (float, optional): the time interval to use, in [s]. Default to the inverse
-                of the revolution frequency, :math:`1 / f_{rev}`.
-            bunch_length (float): the bunch length in [m].
-
-        Raises:
-            ValueError: if the ``IBS`` growth rates have not yet been computed.
-
-        Returns:
-            A tuple with the new horizontal & vertical geometric emittances as well as the new
-            momentum spread, after the time step has ellapsed.
-        """
-        # ----------------------------------------------------------------------------------------------
-        # Check that the IBS growth rates have been computed beforehand
-        if self.ibs_growth_rates is None:
-            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise ValueError(
-                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
-                "Please call the `growth_rates` method first."
-            )
-        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
-        # ----------------------------------------------------------------------------------------------
-        # Set the time step to 1 / frev if not provided
-        if dt is None:
-            LOGGER.debug("No time step provided, defaulting to 1 / frev")
-            dt = 1 / self.optics.revolution_frequency
-        # ----------------------------------------------------------------------------------------------
-        # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
-        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
-        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length

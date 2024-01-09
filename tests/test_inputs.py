@@ -2,6 +2,8 @@
 Quick tests for the input classes and their initialization.
 """
 import numpy as np
+import xpart as xp
+import xtrack as xt
 
 from scipy.constants import c
 
@@ -25,8 +27,8 @@ def test_init_beamparameters(madx_sps_injection_protons, xtrack_sps_injection_pr
     # Perform checks
     assert np.isclose(beamparams.n_part, madx.sequence.sps.beam.npart)
     assert np.isclose(beamparams.particle_charge, p0.q0)
-    assert np.isclose(beamparams.particle_mass_GeV, p0.mass0 * 1e-9)
-    assert np.isclose(beamparams.total_energy_GeV, np.sqrt(p0.p0c[0] ** 2 + p0.mass0**2) * 1e-9)
+    assert np.isclose(beamparams.particle_mass_eV, p0.mass0)
+    assert np.isclose(beamparams.total_energy_eV, np.sqrt(p0.p0c[0] ** 2 + p0.mass0**2))
     assert np.isclose(beamparams.gamma_rel, p0.gamma0[0])
     assert np.isclose(beamparams.beta_rel, p0.beta0[0])
     assert np.isclose(beamparams.particle_classical_radius_m, p0.get_classical_particle_radius0())
@@ -51,9 +53,9 @@ def test_init_beamparameters_from_madx(madx_sps_injection_protons, xtrack_sps_in
     assert np.isclose(from_madx.n_part, madx.sequence.sps.beam.npart)
     assert np.isclose(from_madx.particle_charge, madx.sequence.sps.beam.charge)
     assert np.isclose(from_madx.particle_charge, from_part.particle_charge)
-    assert np.isclose(from_madx.particle_mass_GeV, madx.sequence.sps.beam.mass)
-    assert np.isclose(from_madx.particle_mass_GeV, from_part.particle_mass_GeV)
-    assert np.isclose(from_madx.total_energy_GeV, from_part.total_energy_GeV)
+    assert np.isclose(from_madx.particle_mass_eV, madx.sequence.sps.beam.mass * 1e9)  # it is in GeV in MAD-X
+    assert np.isclose(from_madx.particle_mass_eV, from_part.particle_mass_eV)
+    assert np.isclose(from_madx.total_energy_eV, from_part.total_energy_eV)
     assert np.isclose(from_madx.gamma_rel, madx.sequence.sps.beam.gamma)
     assert np.isclose(from_madx.gamma_rel, from_part.gamma_rel)
     assert np.isclose(from_madx.beta_rel, madx.sequence.sps.beam.beta)
@@ -76,8 +78,8 @@ def test_init_beamparameters_from_line(xtrack_sps_injection_protons):
     # Perform checks - the MAD-X and line are equivalent so this should work
     assert np.isclose(from_line.n_part, from_part.n_part)
     assert np.isclose(from_line.particle_charge, from_part.particle_charge)
-    assert np.isclose(from_line.particle_mass_GeV, from_part.particle_mass_GeV)
-    assert np.isclose(from_line.total_energy_GeV, from_part.total_energy_GeV)
+    assert np.isclose(from_line.particle_mass_eV, from_part.particle_mass_eV)
+    assert np.isclose(from_line.total_energy_eV, from_part.total_energy_eV)
     assert np.isclose(from_line.gamma_rel, from_part.gamma_rel)
     assert np.isclose(from_line.beta_rel, from_part.beta_rel)
     assert np.isclose(from_line.particle_classical_radius_m, from_part.particle_classical_radius_m)
@@ -210,3 +212,48 @@ def test_init_opticsparameters_from_madx_constructor(
     assert np.isclose(mad_opticsparams.circumference, xt_opticsparams.circumference)
     assert np.isclose(mad_opticsparams.slip_factor, xt_opticsparams.slip_factor, rtol=5e-3)  # within 0.5%
     assert np.isclose(mad_opticsparams.revolution_frequency, xt_opticsparams.revolution_frequency)
+
+
+def test_init_opticsparameters_from_line_warns_on_coupling(madx_lhc_injection_protons, caplog):
+    """
+    Check that the OpticsParameters, when initializing from MAD-X (cpymad),
+    checks and warns if betatron coupling is present in the machine. Because the
+    saved line has no element_refs for unpowered elements at save time, we load
+    the line from MAD-X sequence.
+    """
+    # --------------------------------------------------------------------
+    # Get the MAD-X instance and power a skew quadrupole to induce coupling
+    # then create a line from the sequence
+    madx, _ = madx_lhc_injection_protons  # fully set up from the config file
+    madx.input("kqsx3.r1 = 1e-3;")  # Skewquad in IR1, will make ~5e-3 cminus
+    line = xt.Line.from_madx_sequence(madx.sequence.lhcb1, allow_thick=True)
+    line.particle_ref = xp.Particles(mass0=xp.PROTON_MASS_EV, q0=1, gamma0=madx.sequence.lhcb1.beam.gamma)
+
+    # --------------------------------------------------------------------
+    # Initialize OpticsParameters and check a warning for coupling was raised
+    opticsparams = OpticsParameters.from_line(line)
+
+    for record in caplog.records:  # check the logging message
+        assert record.levelname == "WARNING"
+        assert "There is betatron coupling in the machine" in record.message
+        assert "not taken into account in analytical calculations" in record.message
+
+
+def test_init_opticsparameters_from_madx_warns_on_coupling(madx_lhc_injection_protons, caplog):
+    """
+    Check that the OpticsParameters, when initializing from MAD-X (cpymad),
+    checks and warns if betatron coupling is present in the machine.
+    """
+    # --------------------------------------------------------------------
+    # Get the MAD-X instance and power a skew quadrupole to induce coupling
+    madx, _ = madx_lhc_injection_protons  # fully set up from the config file
+    madx.input("kqsx3.r1 = 1e-3;")  # Skewquad in IR1, will make ~5e-3 cminus
+
+    # --------------------------------------------------------------------
+    # Initialize OpticsParameters and check a warning for coupling was raised
+    opticsparams = OpticsParameters.from_madx(madx)
+
+    for record in caplog.records:  # check the logging message
+        assert record.levelname == "WARNING"
+        assert "There is betatron coupling in the machine" in record.message
+        assert "not taken into account in analytical calculations" in record.message
