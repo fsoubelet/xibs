@@ -220,6 +220,7 @@ class AnalyticalIBS(ABC):
         epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        bunched: bool = True,
         normalized_emittances: bool = False,
     ) -> IBSGrowthRates:
         r"""
@@ -230,6 +231,7 @@ class AnalyticalIBS(ABC):
             epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
             normalized_emittances (bool): whether the provided emittances are
                 normalized or not. Defaults to `False` (assume geometric emittances).
 
@@ -393,6 +395,7 @@ class AnalyticalIBS(ABC):
 
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
+
 
 # TODO: add bunched to growth rates here too (and propagate to call to coulog)
 class NagaitsevIBS(AnalyticalIBS):
