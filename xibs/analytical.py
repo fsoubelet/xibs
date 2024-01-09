@@ -397,7 +397,6 @@ class AnalyticalIBS(ABC):
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
 
 
-# TODO: add bunched to growth rates here too (and propagate to call to coulog)
 class NagaitsevIBS(AnalyticalIBS):
     r"""
     .. versionadded:: 0.2.0
@@ -522,6 +521,7 @@ class NagaitsevIBS(AnalyticalIBS):
         epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        bunched: bool = True,
         normalized_emittances: bool = False,
         compute_integrals: bool = True,
     ) -> IBSGrowthRates:
@@ -564,6 +564,8 @@ class NagaitsevIBS(AnalyticalIBS):
             epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
+            bunched (bool): UNIMPLEMENTED AT THE MOMENT. Whether the beam is bunched or not (coasting).
+                Defaults to `True`.
             normalized_emittances (bool): whether the provided emittances are
                 normalized or not. Defaults to `False` (assume geometric emittances).
             compute_integrals (bool): if `True`, the Nagaitsev elliptic integrals will be computed
@@ -572,6 +574,16 @@ class NagaitsevIBS(AnalyticalIBS):
         Returns:
             An `IBSGrowthRates` object with the computed growth rates for each plane.
         """
+        # ----------------------------------------------------------------------------------------------
+        # Catch and raise an error if the user asks for coasting beam (not implemented yet)
+        if bunched is False:
+            LOGGER.error(
+                "Computing growth rates for coasting beams is currently not supported in this class."
+            )
+            raise NotImplementedError(
+                "Calculation for coasting beams is not implemented yet in this formalism."
+                "Please use the BjorkenMtignwaIBS class instead, which supports this feature."
+            )
         # ----------------------------------------------------------------------------------------------
         # Make sure we are working with geometric emittances
         geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
