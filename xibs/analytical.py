@@ -363,36 +363,6 @@ class AnalyticalIBS(ABC):
         """
         return normalized_emittance / (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)
 
-    def _geom_emit_from_input_emits(self, geom_emit: float = None, norm_emit: float = None) -> float:
-        """
-        .. versionadded:: 0.4.0
-
-        Get the geometric emittance from the hypothetical and optional input pair
-        of [geometric, normalized] emittance. If the geometric one is provided, it
-        is directly returned (even if the normalized one is provided too). If only
-        the normalized one is provided, it is converted to geometric. If none are
-        provided, a `RuntimeError` is raised.
-
-        Args:
-            geom_emit (float): the geometric emittance in [m]. Defaults to `None`.
-            norm_emit (float): the normalized emittance in [m] . Defaults to `None`.
-
-        Raises:
-            RuntimeError: if neither of the two inputs is given.
-
-        Returns:
-            The geometric emittance in [m].
-        """
-        if geom_emit is not None:  # geom is provided (even if norm too), return it
-            return geom_emit
-        elif geom_emit is None and norm_emit is not None:  # norm is provided, return geom from norm
-            self._user_gave_geom_emits = False
-            return self._geometric_emittance(norm_emit)
-        else:  # neither geom or norm emit provided, raise and error
-            raise RuntimeError(
-                "At least one of the geometric or normalized emittances has to be provided, but none was given."
-            )
-
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
 
