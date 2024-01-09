@@ -116,6 +116,7 @@ class AnalyticalIBS(ABC):
         epsy: float,
         sigma_delta: float,
         bunch_length: float,
+        bunched: bool = True,
         normalized_emittances: bool = False,
     ) -> float:
         r"""
@@ -144,6 +145,7 @@ class AnalyticalIBS(ABC):
             epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): bunch length in [m].
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
             normalized_emittances (bool): whether the provided emittances are
                 normalized or not. Defaults to `False` (assume geometric emittances).
 
@@ -192,9 +194,12 @@ class AnalyticalIBS(ABC):
         sigma_t_cm = 100 * bunch_length
         # ----------------------------------------------------------------------------------------------
         # Calculate beam volume to get density (in cm^{-3}) then Debye length
-        volume = 8.0 * np.sqrt(np.pi**3) * sigma_x_cm * sigma_y_cm * sigma_t_cm
+        if bunched is True:  # bunched beam
+            volume = 8.0 * np.sqrt(np.pi**3) * sigma_x_cm * sigma_y_cm * sigma_t_cm
+        else:  # coasting beam
+            volume = 4.0 * np.pi * sigma_x_cm * sigma_y_cm * 100 * self.optics.circumference
         density = self.beam_parameters.n_part / volume
-        debyul = 743.4 * np.sqrt(TempeV / density) / self.beam_parameters.particle_charge  # Debye length?
+        debyul = 743.4 * np.sqrt(TempeV / density) / self.beam_parameters.particle_charge
         # ----------------------------------------------------------------------------------------------
         # Calculate 'rmin' as larger of classical distance of closest approach or quantum mechanical
         # diffraction limit from nuclear radius
@@ -389,7 +394,7 @@ class AnalyticalIBS(ABC):
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
 
-
+# TODO: add bunched to growth rates here too (and propagate to call to coulog)
 class NagaitsevIBS(AnalyticalIBS):
     r"""
     .. versionadded:: 0.2.0
@@ -1058,7 +1063,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
         Hx: np.ndarray = (Dx**2 + betx**2 * phix**2) / betx
         # ----------------------------------------------------------------------------------------------
         # Compute the Coulomb logarithm and the common constant term in Eq (8) (the first fraction)
-        coulomb_logarithm: float = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        coulomb_logarithm: float = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
         common_constant_term: float = (
             np.pi**2
             * self.beam_parameters.particle_classical_radius_m**2
