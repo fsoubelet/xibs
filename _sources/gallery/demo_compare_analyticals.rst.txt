@@ -101,6 +101,7 @@ creates corresponding `~xibs.analytical.BjorkenMtingwaIBS` and
 
     Setting up MAD-X for lhc_top_protons case
     Calling extra file at 'acc-models-lhc/strengths/ATS_Nominal/2023/ats_30cm.madx'
+    There is betatron coupling in the machine (|Cminus| = 0.000),which is not taken into account in analytical calculations.
 
 
 
@@ -158,7 +159,7 @@ Comparing Analytical Evolution for a Time Period
 We will analytically look at the evolution through time by looping, just as in
 the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` and 
 :ref:`Nagaitsev <demo-analytical-nagaitsev>` analytical examples, respectively.
-Let's do so for 10 hours, recomputing the growth rates every 30 minutes.
+Let's do so for 10 hours of beam time, recomputing the growth rates every 30 minutes.
 
 .. GENERATED FROM PYTHON SOURCE LINES 86-129
 
@@ -217,7 +218,7 @@ Let's do so for 10 hours, recomputing the growth rates every 30 minutes.
 .. GENERATED FROM PYTHON SOURCE LINES 130-132
 
 With the settings above and this loop, we compute the emittances
-every second but we only update the growth rates every 20 minutes.
+every second but we only update the growth rates every 30 minutes.
 
 .. GENERATED FROM PYTHON SOURCE LINES 132-207
 
@@ -421,7 +422,7 @@ includes vertical dispersion which is not taken into consideration by the
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 43.358 seconds)
+   **Total running time of the script:** (1 minutes 45.113 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_compare_analyticals.py:

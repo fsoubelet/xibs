@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>API Reference — xibs 0.3.0 documentation</title>
+<title>API Reference — xibs 0.4.0 documentation</title>
 <link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
 <link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
@@ -21,7 +21,7 @@
   <![endif]-->
 <script src="../_static/jquery.js?v=5d32c60e"></script>
 <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="../_static/documentation_options.js?v=e259d695"></script>
+<script src="../_static/documentation_options.js?v=6c02275b"></script>
 <script src="../_static/doctools.js?v=888ff710"></script>
 <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -41,7 +41,7 @@
 <a href="../index.html">
 </a>
 <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
 <form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -104,6 +104,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#geomettric-or-normalized-emittances">Geomettric or Normalized Emittances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#bunched-and-coasting-beams">Bunched and Coasting Beams</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
@@ -159,8 +161,8 @@ it will not be kept in the instance’s attributes.</p>
 <li><p><strong>n_part</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- number of simulated particles.</p></li>
 <li><p><strong>particle_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- elementary particle charge, in # of Coulomb charges
 (for instance 1 for electron or proton).</p></li>
-<li><p><strong>particle_mass_GeV</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- particle mass in [GeV].</p></li>
-<li><p><strong>total_energy_GeV</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- total energy of the simulated particles in [GeV].</p></li>
+<li><p><strong>particle_mass_eV</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- particle mass in [eV].</p></li>
+<li><p><strong>total_energy_eV</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- total energy of the simulated particles in [eV].</p></li>
 <li><p><strong>gamma_rel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- relativistic gamma of the simulated particles.</p></li>
 <li><p><strong>beta_rel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- relativistic beta of the simulated particles.</p></li>
 <li><p><strong>particle_classical_radius_m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the particles’ classical radius in [m].</p></li>
@@ -384,6 +386,140 @@ Should your scenario not satisfy the following assumptions, the results might no
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.analytical.</span></span><span class="sig-name descname"><span class="pre">AnalyticalIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/analytical.html#AnalyticalIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+</div>
+<p>Abstract base class for analytical IBS calculations, from which all
+implementations inherit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations.</p></li>
+<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations.</p></li>
+<li><p><strong>ibs_growth_rates</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">IBSGrowthRates</span></code>) -- the computed IBS growth rates. This self-updates
+when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">coulomb_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunched</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized_emittances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#AnalyticalIBS.coulomb_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.2.0.</span></p>
+</div>
+<p>Calculates the Coulomb logarithm based on the beam parameters and optics the class
+was initiated with. For a good introductory resource on the Coulomb Log, see:
+<a class="reference external" href="https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html">https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function follows the formulae in <span id="id3">[<a class="reference internal" href="../bibliography.html#id7" title="H. L, Anderson. AIP 50th Anniversary: Physics Vade Mecum. American Institute of Physics, 1981. ISBN 978-0883182895.">HLAnderson81</a>]</span>. The
+Coulomb log is computed as <span class="math notranslate nohighlight">\(\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})\)</span>.
+Here <span class="math notranslate nohighlight">\(r_{max}\)</span> denotes the smaller of <span class="math notranslate nohighlight">\(\sigma_x\)</span> and the Debye length; while
+<span class="math notranslate nohighlight">\(r_{min}\)</span> is the larger of the classical distance of closest approach and the
+quantum diffraction limit from the nuclear radius. It is the calculation that is done by
+<code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> (see the <code class="xref py py-obj docutils literal notranslate"><span class="pre">twclog</span></code> subroutine in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MAD-X/src/ibsdb.f90</span></code> source file).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both geometric or normalized emittances can be given as input to this function, and it is assumed
+the user provides geomettric emittances. If normalized ones are given the <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_emittances</span></code>
+parameter should be set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> (it defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>). Internally, a conversion is done to
+geometric emittances, which are used in the computations.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric or normalized emittance in [m].</p></li>
+<li><p><strong>epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric or normalized emittance in [m].</p></li>
+<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
+<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- bunch length in [m].</p></li>
+<li><p><strong>bunched</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the beam is bunched or not (coasting). Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>.</p></li>
+<li><p><strong>normalized_emittances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the provided emittances are
+normalized or not. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a> (assume geometric emittances).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The dimensionless Coulomb logarithm <span class="math notranslate nohighlight">\(\ln \left( \Lambda \right)\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">emittance_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized_emittances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#AnalyticalIBS.emittance_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.2.0.</span></p>
+</div>
+<p>Analytically computes the new emittances after a given time step <code class="xref py py-obj docutils literal notranslate"><span class="pre">dt</span></code> has
+ellapsed, from initial values, based on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This calculation is done by building on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates. If the
+latter have not been computed yet, this method will raise an error. Please
+remember to call the instance’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method first.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The calculation is an exponential growth based on the rates <span class="math notranslate nohighlight">\(T_{x,y,z}\)</span>. It goes
+according to the following, where <span class="math notranslate nohighlight">\(N\)</span> represents the time step:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}T_{x,y,z} &amp;= 1 / \tau_{x,y,z}\\\varepsilon_{x,y}^{N+1} &amp;= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}\\\sigma_{\delta, z}^{N+1} &amp;= \sigma_{\delta, z}^{N} * e^{t / 2 \tau_{z}}\end{aligned}\end{align} \]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both geometric or normalized emittances can be given as input to this function, and it is assumed
+the user provides geomettric emittances. If normalized ones are given the <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_emittances</span></code>
+parameter should be set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> (it defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>). Internally, a conversion is done to
+geometric emittances, which are used in the computations. The returned emittances correspond to
+the type of those provided: if given normalized emittances this function will return values that
+correspond to the new normalized emittances.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric or normalized emittance in [m].</p></li>
+<li><p><strong>epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric or normalized emittance in [m].</p></li>
+<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
+<li><p><strong>dt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float,</span> <span class="pre">optional</span></code>) -- the time interval to use, in [s]. Default to the inverse
+of the revolution frequency, <span class="math notranslate nohighlight">\(1 / f_{rev}\)</span>.</p></li>
+<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
+<li><p><strong>normalized_emittances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the provided emittances are
+normalized or not. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a> (assume geometric emittances).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates have not yet been computed.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple with the new horizontal &amp; vertical geometric emittances, the new
+momentum spread and the new bunch length, after the time step has ellapsed.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunched</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized_emittances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#AnalyticalIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Method to compute the IBS growth rates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric or normalized emittance in [m].</p></li>
+<li><p><strong>epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric or normalized emittance in [m].</p></li>
+<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
+<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
+<li><p><strong>bunched</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the beam is bunched or not (coasting). Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>.</p></li>
+<li><p><strong>normalized_emittances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the provided emittances are
+normalized or not. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a> (assume geometric emittances).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSGrowthRates</span></code> object with the computed growth rates for each plane.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.analytical.</span></span><span class="sig-name descname"><span class="pre">BjorkenMtingwaIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
@@ -391,7 +527,7 @@ Should your scenario not satisfy the following assumptions, the results might no
 <p>A single class to compute the IBS growth rates according to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Bjorken</span> <span class="pre">&amp;</span> <span class="pre">Mtingwa</span></code> formalism.
 The exact approach follows the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> implementation, which has corrected B&amp;M in order to
 take in consideration the vertical dispersion values (see the relevant note about the changes
-at <span id="id3">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>). It initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an
+at <span id="id4">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>). It initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an
 <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -413,81 +549,7 @@ when they are computed with the <code class="xref py py-obj docutils literal not
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">coulomb_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS.coulomb_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.3.0.</span></p>
-</div>
-<p>Calculates the Coulomb logarithm based on the beam parameters and optics the class
-was initiated with. For a good introductory resource on the Coulomb Log, see:
-<a class="reference external" href="https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html">https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html</a></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This function follows the exact computing implementation of the Coulomb log
-calculation in the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> source code, which ine can find in the file
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">MAD-X/src/ibsdb.f90</span></code> as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">twclog</span></code> subroutine. It is computed as
-<span class="math notranslate nohighlight">\(\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})\)</span>. Here <span class="math notranslate nohighlight">\(r_{max}\)</span>
-denotes the smaller of <span class="math notranslate nohighlight">\(\sigma_x\)</span> and the Debye length; while <span class="math notranslate nohighlight">\(r_{min}\)</span>
-is the larger of the classical distance of closest approach and the quantum
-diffraction limit from the nuclear radius.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
-<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
-<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- bunch length in [m].</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The dimensionless Coulomb logarithm <span class="math notranslate nohighlight">\(\ln \left( \Lambda \right)\)</span>.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">emittance_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS.emittance_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.3.0.</span></p>
-</div>
-<p>Analytically computes the new emittances after a given time step <code class="xref py py-obj docutils literal notranslate"><span class="pre">dt</span></code> has
-ellapsed, from initial values, based on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This calculation is done by building on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates. If the
-latter have not been computed yet, this method will raise an error. Please
-remember to call the instance’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method first.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>The calculation is an exponential growth based on the rates <span class="math notranslate nohighlight">\(T_{x,y,z}\)</span>. It goes
-according to the following, where <span class="math notranslate nohighlight">\(N\)</span> represents the time step:</p>
-<div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}T_{x,y,z} &amp;= 1 / \tau_{x,y,z}\\\varepsilon_{x,y}^{N+1} &amp;= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}\\\sigma_{\delta}^{N+1} &amp;= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}\\\sigma_{z}^{N+1} &amp;= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}\end{aligned}\end{align} \]</div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>geom_epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>geom_epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
-<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
-<li><p><strong>dt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float,</span> <span class="pre">optional</span></code>) -- the time interval to use, in [s]. Default to the inverse
-of the revolution frequency, <span class="math notranslate nohighlight">\(1 / f_{rev}\)</span>.</p></li>
-<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates have not yet been computed.</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A tuple with the new horizontal &amp; vertical geometric emittances as well as the new
-momentum spread, after the time step has ellapsed.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">17</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunched</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized_emittances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_intervals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">17</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#BjorkenMtingwaIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3.0.</span></p>
 </div>
@@ -505,7 +567,7 @@ observe some slight discrepancies with the <code class="docutils literal notrans
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The calculation is done according to the following steps, which are related to different
-equations in <span id="id4">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>:</p>
+equations in <span id="id5">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Adjusts the <span class="math notranslate nohighlight">\(D_x, D_y, D^{\prime}_{x}, D^{\prime}_{y}\)</span> terms (multiply by <span class="math notranslate nohighlight">\(\beta_{rel}\)</span>) to be in the <span class="math notranslate nohighlight">\(pt\)</span> frame.</p></li>
@@ -517,16 +579,26 @@ equations in <span id="id4">[<a class="reference internal" href="../bibliography
 </ul>
 </div></blockquote>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both geometric or normalized emittances can be given as input to this function, and it is assumed
+the user provides geomettric emittances. If normalized ones are given the <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_emittances</span></code>
+parameter should be set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> (it defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>). Internally, a conversion is done to
+geometric emittances, which are used in the computations.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric or normalized emittance in [m].</p></li>
+<li><p><strong>epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric or normalized emittance in [m].</p></li>
 <li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
 <li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
+<li><p><strong>bunched</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the beam is bunched or not (coasting). Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>.</p></li>
+<li><p><strong>normalized_emittances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the provided emittances are
+normalized or not. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a> (assume geometric emittances).</p></li>
 <li><p><strong>integration_intervals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- the number of sub-intervals to use when integrating the
 integrands of Eq (8) of the MAD-X note. Please DO NOT change this parameter unless
-you know exactly what you are doing. Defaults to 17.</p></li>
+you know exactly what you are doing, as you might affect convergence. Defaults to 17.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -559,7 +631,7 @@ you know exactly what you are doing. Defaults to 17.</p></li>
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>A single class to compute Nagaitsev integrals (see
-<span id="id5">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>)
+<span id="id6">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>)
 and IBS growth rates. It initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -575,87 +647,13 @@ when they are computed with the <code class="xref py py-obj docutils literal not
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">coulomb_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.coulomb_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.2.0.</span></p>
-</div>
-<p>Calculates the Coulomb logarithm based on the beam parameters and optics the class
-was initiated with. For a good introductory resource on the Coulomb Log, see:
-<a class="reference external" href="https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html">https://docs.plasmapy.org/en/stable/notebooks/formulary/coulomb.html</a></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This function follows the exact computing implementation of the Coulomb log
-calculation in the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> source code, which ine can find in the file
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">MAD-X/src/ibsdb.f90</span></code> as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">twclog</span></code> subroutine. It is computed as
-<span class="math notranslate nohighlight">\(\ln \left( \Lambda \right) = \ln(r_{max} / r_{min})\)</span>. Here <span class="math notranslate nohighlight">\(r_{max}\)</span>
-denotes the smaller of <span class="math notranslate nohighlight">\(\sigma_x\)</span> and the Debye length; while <span class="math notranslate nohighlight">\(r_{min}\)</span>
-is the larger of the classical distance of closest approach and the quantum
-diffraction limit from the nuclear radius.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
-<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
-<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- bunch length in [m].</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The dimensionless Coulomb logarithm <span class="math notranslate nohighlight">\(\ln \left( \Lambda \right)\)</span>.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">emittance_evolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.emittance_evolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.2.0.</span></p>
-</div>
-<p>Analytically computes the new emittances after a given time step <code class="xref py py-obj docutils literal notranslate"><span class="pre">dt</span></code> has
-ellapsed, from initial values, based on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This calculation is done by building on the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates. If the
-latter have not been computed yet, this method will raise an error. Please
-remember to call the instance’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method first.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>The calculation is an exponential growth based on the rates <span class="math notranslate nohighlight">\(T_{x,y,z}\)</span>. It goes
-according to the following, where <span class="math notranslate nohighlight">\(N\)</span> represents the time step:</p>
-<div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}T_{x,y,z} &amp;= 1 / \tau_{x,y,z}\\\varepsilon_{x,y}^{N+1} &amp;= \varepsilon_{x,y}^{N} * e^{t / \tau_{x,y}}\\\sigma_{\delta}^{N+1} &amp;= \sigma_{\delta}^{N} * e^{t / 2 \tau_{z}}\\\sigma_{z}^{N+1} &amp;= \sigma_{z}^{N} * e^{t / 2 \tau_{z}}\end{aligned}\end{align} \]</div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>geom_epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>geom_epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
-<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
-<li><p><strong>dt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float,</span> <span class="pre">optional</span></code>) -- the time interval to use, in [s]. Default to the inverse
-of the revolution frequency, <span class="math notranslate nohighlight">\(1 / f_{rev}\)</span>.</p></li>
-<li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates have not yet been computed.</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A tuple with the new horizontal &amp; vertical geometric emittances as well as the new
-momentum spread, after the time step has ellapsed.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_integrals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunched</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized_emittances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_integrals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSGrowthRates</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>Computes the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates, named <span class="math notranslate nohighlight">\(T_x, T_y\)</span> and <span class="math notranslate nohighlight">\(T_z\)</span> in this
 code base, from Nagaitsev integrals. These correspond to the <span class="math notranslate nohighlight">\(1 / \tau\)</span> term,
-for each plane, of Eq (28) in <span id="id6">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>,
+for each plane, of Eq (28) in <span id="id7">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>,
 respectively. The instance attribute <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.ibs_growth_rates</span></code> is automatically updated
 with the results of this method when it is called.</p>
 <div class="admonition note">
@@ -672,7 +670,7 @@ We are working on implementing it for a future version.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The calculation is done according to the following steps, which are related to different
-equations in <span id="id7">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
+equations in <span id="id8">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Get the Nagaitsev integrals from the instance attributes (integrals of Eq (30-32)).</p></li>
@@ -683,13 +681,24 @@ equations in <span id="id7">[<a class="reference internal" href="../bibliography
 </ul>
 </div></blockquote>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both geometric or normalized emittances can be given as input to this function, and it is assumed
+the user provides geomettric emittances. If normalized ones are given the <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_emittances</span></code>
+parameter should be set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> (it defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>). Internally, a conversion is done to
+geometric emittances, which are used in the computations.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric or normalized emittance in [m].</p></li>
+<li><p><strong>epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric or normalized emittance in [m].</p></li>
 <li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
 <li><p><strong>bunch_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- the bunch length in [m].</p></li>
+<li><p><strong>bunched</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- UNIMPLEMENTED AT THE MOMENT. Whether the beam is bunched or not (coasting).
+Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>.</p></li>
+<li><p><strong>normalized_emittances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the provided emittances are
+normalized or not. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a> (assume geometric emittances).</p></li>
 <li><p><strong>compute_integrals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- if <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, the Nagaitsev elliptic integrals will be computed
 before the growth rates. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>. New in version 0.3.0.</p></li>
 </ul>
@@ -701,19 +710,19 @@ before the growth rates. Defaults to <a class="reference external" href="https:/
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">integrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NagaitsevIntegrals</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.integrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">integrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epsx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized_emittances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NagaitsevIntegrals</span></span></span><a class="reference internal" href="../_modules/xibs/analytical.html#NagaitsevIBS.integrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
 <p>Computes the Nagaitsev integrals, named <span class="math notranslate nohighlight">\(I_x, I_y\)</span> and <span class="math notranslate nohighlight">\(I_z\)</span> in this code base.</p>
 <p>These correspond to the integrals inside of Eq (32), (31) and (30) in
-<span id="id8">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>, respectively.
+<span id="id9">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>, respectively.
 The instance attribute <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.elliptic_integrals</span></code> is automatically updated
 with the results of this method. It is used for other calculations.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The calculation is done according to the following steps, which are related to different
-equations in <span id="id9">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
+equations in <span id="id10">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Computes various intermediate terms and then <span class="math notranslate nohighlight">\(a_x, a_y, a_s, a_1\)</span> and <span class="math notranslate nohighlight">\(a_2\)</span> constants from Eq (18-21).</p></li>
@@ -724,12 +733,21 @@ equations in <span id="id9">[<a class="reference internal" href="../bibliography
 </ul>
 </div></blockquote>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both geometric or normalized emittances can be given as input to this function, and it is assumed
+the user provides geomettric emittances. If normalized ones are given the <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_emittances</span></code>
+parameter should be set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> (it defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>). Internally, a conversion is done to
+geometric emittances, which are used in the computations.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric emittance in [m].</p></li>
-<li><p><strong>epxy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric emittance in [m].</p></li>
-<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread.</p></li>
+<li><p><strong>epsx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal geometric or normalized emittance in [m].</p></li>
+<li><p><strong>epsy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical geometric or normalized emittance in [m].</p></li>
+<li><p><strong>sigma_delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- momentum spread. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>.</p></li>
+<li><p><strong>normalized_emittances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) -- whether the provided emittances are
+normalized or not. Defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a> (assume geometric emittances).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -793,7 +811,7 @@ In the simple formalism, the applied IBS kicks are determined from Nagaitsev int
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">KineticCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#KineticCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Container dataclass for kinetic IBS coefficients. These are computed from the diffusion
-and friction ones according to <span id="id10">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
+and friction ones according to <span id="id11">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py">
@@ -802,7 +820,7 @@ and friction ones according to <span id="id10">[<a class="reference internal" hr
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
 <p>A single class to compute the IBS diffusion and friction coefficients according
-to the kinetic IBS formalism of <span id="id11">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
+to the kinetic IBS formalism of <span id="id12">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
 The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -827,7 +845,7 @@ the <code class="xref py py-obj docutils literal notranslate"><span class="pre">
 <p><span class="versionmodified added">New in version 0.4.0.</span></p>
 </div>
 <p>A single class to compute the simple IBS kicks based on the analytical results obtained with
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.analytical</span></code>. The kicks are implemented according to <span id="id12">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.analytical</span></code>. The kicks are implemented according to <span id="id13">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.
 The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -851,7 +869,7 @@ The class initiates from a <code class="xref py py-obj docutils literal notransl
 <p>Analytical calculation for bunch length for protons / electrons (from Wiedermann’s book).
 This is a linear approximation which assumes that particles are in the center of the bucket
 only / mostly.</p>
-<div class="admonition-todo admonition" id="id13">
+<div class="admonition-todo admonition" id="id14">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -913,7 +931,7 @@ here.</p>
 <p>Analytical calculation for bunch length for ions (from Wiedermann’s book). This calculation
 does not work too well if the bucket is full. Implementation so far as I can tell is as used
 in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS).</p>
-<div class="admonition-todo admonition" id="id14">
+<div class="admonition-todo admonition" id="id15">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -969,7 +987,7 @@ instance 1 for electron or proton).</p></li>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
-<p>Phi parameter of Eq (15) in <span id="id15">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
+<p>Phi parameter of Eq (15) in <span id="id16">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Frequently Asked Questions — xibs 0.3.0 documentation</title>
+<title>Frequently Asked Questions — xibs 0.4.0 documentation</title>
 <link href="_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
 <link href="_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
 <link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
@@ -21,7 +21,7 @@
   <![endif]-->
 <script src="_static/jquery.js?v=5d32c60e"></script>
 <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="_static/documentation_options.js?v=e259d695"></script>
+<script src="_static/documentation_options.js?v=6c02275b"></script>
 <script src="_static/doctools.js?v=888ff710"></script>
 <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -40,7 +40,7 @@
 <a href="index.html">
 </a>
 <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
 <form action="search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -103,6 +103,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#geomettric-or-normalized-emittances">Geomettric or Normalized Emittances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bunched-and-coasting-beams">Bunched and Coasting Beams</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bibliography.html">Reference Bibliography</a></li>
@@ -152,7 +154,7 @@ It goes very simply as:</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+<p>Since <code class="docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
 It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.
 It goes according to:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `xtrack.Line` is already defined</span>
@@ -163,7 +165,7 @@ It goes according to:</p>
 </section>
 <section id="instantiating-opticsparameters-from-mad-x">
 <span id="xibs-faq-optics-params-from-madx"></span><h3>Instantiating OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code><a class="headerlink" href="#instantiating-opticsparameters-from-mad-x" title="Link to this heading"></a></h3>
-<p>For those using for instance <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> and looking to only use the analytical calculations of <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> without setting up a whole <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>, it is possible to instantiate the <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result.</p>
+<p>For those using for instance <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> and looking to only use the analytical calculations of <code class="docutils literal notranslate"><span class="pre">xibs</span></code> without setting up a whole <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>, it is possible to instantiate the <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> from a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result.</p>
 <p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result is expected in the form of a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with all lowercase columns and values, as given by <code class="xref py py-obj docutils literal notranslate"><span class="pre">cpymad</span></code>.
 Some additional attributes not present in <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code>’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code> result are expected to be provided at instantiation time, namely the revolution frequency and slip factor.
 These quantities can be computed from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> after a <code class="xref py py-obj docutils literal notranslate"><span class="pre">twiss</span></code>, as shown below:</p>
@@ -183,7 +185,7 @@ These quantities can be computed from <code class="docutils literal notranslate"
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+<p>Since <code class="docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
 It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `cpymad.madx.Madx` instance is already defined</span>
 <span class="n">optics_params</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="o">.</span><span class="n">from_madx</span><span class="p">(</span><span class="n">madx</span><span class="p">)</span>
@@ -220,7 +222,7 @@ This would go as:</p>
 <span id="xibs-faq-beam-params-from-line"></span><h3>Instantiating BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code><a class="headerlink" href="#instantiating-beamparameters-from-an-xtrack-line" title="Link to this heading"></a></h3>
 <p>The default mode to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> is from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object.
 As seen just above, it is possible to use an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>’s reference particle to do so.</p>
-<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+<p>Since <code class="docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
 It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.
 It goes according to:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `xtrack.Line` is already defined</span>
@@ -250,7 +252,7 @@ It goes according to:</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
+<p>Since <code class="docutils literal notranslate"><span class="pre">xibs</span></code> version 0.3.0, there is a convenience method to do the above automatically for the user.
 It is documented in the <a class="reference internal" href="modules/index.html#xibs-inputs"><span class="std std-ref">API reference</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your `cpymad.madx.Madx` instance is already defined</span>
 <span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="o">.</span><span class="n">from_madx</span><span class="p">(</span><span class="n">madx</span><span class="p">)</span>
@@ -258,6 +260,51 @@ It is documented in the <a class="reference internal" href="modules/index.html#x
 </div>
 </div>
 </section>
+</section>
+<section id="geomettric-or-normalized-emittances">
+<span id="xibs-faq-geom-norm-emittances"></span><h2>Geomettric or Normalized Emittances<a class="headerlink" href="#geomettric-or-normalized-emittances" title="Link to this heading"></a></h2>
+<p>Some functions in <code class="docutils literal notranslate"><span class="pre">xibs</span></code> require emittances to be provided as input, for instance <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code>.
+In all such cases, while internally <code class="docutils literal notranslate"><span class="pre">xibs</span></code> uses geomtric emittances for computations (as they are the values used in the implemented formulae), it is possible to provide either the geometric or the normalized emittances.</p>
+<p>For these functions the API will ask for both <code class="xref py py-obj docutils literal notranslate"><span class="pre">epsx</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">epsy</span></code> arguments, and offer an optional boolean argument <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_emittances</span></code> which defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>.
+If set to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, then the provided emittances are assumed to be the normalized ones, and will be converted to geometric emittances internally.</p>
+<p>For instance for the <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method, the API is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your beam and optics parameters have been instantiated</span>
+<span class="n">IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">ibs</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">,</span> <span class="n">formalism</span><span class="o">=...</span><span class="p">)</span>
+
+<span class="c1"># Getting growth rates from geometric emittances goes as:</span>
+<span class="n">rates_geom</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+
+<span class="c1"># Getting growth rates from normalized emittances goes as:</span>
+<span class="n">rates_norm</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span>
+    <span class="n">norm_epsx</span><span class="p">,</span> <span class="n">norm_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">normalized_emittances</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># The two results are the same</span>
+<span class="k">assert</span> <span class="n">rates_geom</span> <span class="o">==</span> <span class="n">rates_norm</span>  <span class="c1"># this is True</span>
+</pre></div>
+</div>
+<p>For functions that also return emittance values, such as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code> method of analytical IBS implementations, the returned values will be the same as the input ones, i.e. if normalized emittances were provided, then normalized emittances will be returned.
+That’s as much as the user has to think about this.</p>
+</section>
+<section id="bunched-and-coasting-beams">
+<span id="xibs-faq-bunched-coasting-beams"></span><h2>Bunched and Coasting Beams<a class="headerlink" href="#bunched-and-coasting-beams" title="Link to this heading"></a></h2>
+<p>Users may want to obtain IBS growth rates for simulations in which they have coasting beams.
+This is possible, through currently only in the Bjorken &amp; Mtingwa formalism.</p>
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method provides a <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunched</span></code> boolean argument, which defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, corresponding to a bunched beam case.
+To adapt the growth rates calculation for a coasting beam, one simply has to set this argument to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your beam and optics parameters have been instantiated</span>
+<span class="n">IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">analytical</span><span class="o">.</span><span class="n">BjorkenMtingwaIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
+
+<span class="c1"># Getting growth rates for a bunched beam (default)</span>
+<span class="n">rates_bunched</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">psx</span><span class="p">,</span> <span class="n">epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+
+<span class="c1"># Getting growth rates for a coasting beam</span>
+<span class="n">rates_coasting</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">epsx</span><span class="p">,</span> <span class="n">epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">bunched</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># The two of course yield different values</span>
+<span class="k">assert</span> <span class="n">rates_bunched</span> <span class="o">!=</span> <span class="n">rates_coasting</span>  <span class="c1"># this is True</span>
+</pre></div>
+</div>
 </section>
 </section>
 </div>

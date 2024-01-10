@@ -134,6 +134,32 @@
         ]
       },
       "doc_lineno": 169
+    },
+    {
+      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.ibs(beam_params, optics, formalism=...)\n\n# Getting growth rates from geometric emittances goes as:\nrates_geom = IBS.growth_rates(geom_epsx, geom_epsy, sigma_delta, bunch_length)\n\n# Getting growth rates from normalized emittances goes as:\nrates_norm = IBS.growth_rates(\n    norm_epsx, norm_epsy, sigma_delta, bunch_length, normalized_emittances=True\n)\n\n# The two results are the same\nassert rates_geom == rates_norm  # this is True",
+      "names": [],
+      "example": {
+        "document": "faq",
+        "ref_id": "geomettric-or-normalized-emittances",
+        "headings": [
+          "Frequently Asked Questions",
+          "Geomettric or Normalized Emittances"
+        ]
+      },
+      "doc_lineno": 188
+    },
+    {
+      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)\n\n# Getting growth rates for a bunched beam (default)\nrates_bunched = IBS.growth_rates(psx, epsy, sigma_delta, bunch_length)\n\n# Getting growth rates for a coasting beam\nrates_coasting = IBS.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched=False)\n\n# The two of course yield different values\nassert rates_bunched != rates_coasting  # this is True",
+      "names": [],
+      "example": {
+        "document": "faq",
+        "ref_id": "bunched-and-coasting-beams",
+        "headings": [
+          "Frequently Asked Questions",
+          "Bunched and Coasting Beams"
+        ]
+      },
+      "doc_lineno": 219
     }
   ],
   "gallery/demo_analytical_bjorken_mtingwa_emittances": [],

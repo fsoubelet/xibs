@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution &mdash; xibs 0.3.0 documentation</title>
+  <title>Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution &mdash; xibs 0.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=e259d695"></script>
+        <script src="../_static/documentation_options.js?v=6c02275b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -49,7 +49,7 @@
             
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -112,6 +112,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#geomettric-or-normalized-emittances">Geomettric or Normalized Emittances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#bunched-and-coasting-beams">Bunched and Coasting Beams</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
@@ -161,7 +163,7 @@ energy, aka 450 GeV.</p>
 <span class="kn">import</span> <span class="nn">xpart</span> <span class="k">as</span> <span class="nn">xp</span>
 <span class="kn">import</span> <span class="nn">xtrack</span> <span class="k">as</span> <span class="nn">xt</span>
 
-<span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <span class="n">BjorkenMtingwaIBS</span>
+<span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">BjorkenMtingwaIBS</span></a>
 <span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
 
 <a href="https://docs.python.org/3/library/stdtypes.html#dict.update" title="builtins.dict.update" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-method"><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span></a><span class="p">(</span>
@@ -377,7 +379,7 @@ optics parameters of the line. For each of these a specific <code class="xref py
 is provided in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code> module.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
 <span class="n">optics</span> <span class="o">=</span> <span class="n">OpticsParameters</span><span class="p">(</span><span class="n">twiss</span><span class="p">)</span>
-<span class="n">IBS</span> <span class="o">=</span> <span class="n">BjorkenMtingwaIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
+<span class="n">IBS</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">BjorkenMtingwaIBS</span></a><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Just like for NagaitsevIBS, we can ask for the <strong>IBS</strong> growth rates to be computed
@@ -392,8 +394,8 @@ internally each time they are computed.</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Twiss was not calculated at center of elements
-IBSGrowthRates(Tx=5.7460590262617716e-05, Ty=-4.580191393654989e-08, Tz=2.558635523801702e-05)
-IBSGrowthRates(Tx=5.7460590262617716e-05, Ty=-4.580191393654989e-08, Tz=2.558635523801702e-05)
+IBSGrowthRates(Tx=5.828437767342454e-05, Ty=-4.7762988964079386e-08, Tz=2.5431215365156987e-05)
+IBSGrowthRates(Tx=5.828437767342454e-05, Ty=-4.7762988964079386e-08, Tz=2.5431215365156987e-05)
 </pre></div>
 </div>
 </section>
@@ -411,10 +413,10 @@ is the default value used if it is not provided.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next time step bunch length = </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Next time step geometrical epsilon_x = 4.088433134696615e-09 m
-Next time step geometrical epsilon_y = 5.207457203873339e-09 m
-Next time step sigma_delta = 0.00030567911246873663
-Next time step bunch length = 0.22540378850346873 m
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Next time step geometrical epsilon_x = 4.137798065094086e-09 m
+Next time step geometrical epsilon_y = 4.999320576613711e-09 m
+Next time step sigma_delta = 0.0003102126276088951
+Next time step bunch length = 0.2228946973289506 m
 </pre></div>
 </div>
 </section>
@@ -468,8 +470,8 @@ compute-intensive process.</p>
 
     <span class="c1"># ----- Compute the new emittances ----- #</span>
     <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_emit_x</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_emit_y</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_sig_delta</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">emittance_evolution</span><span class="p">(</span>
-        <span class="n">geom_epsx</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
-        <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">geom_epsy</span></a><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">epsx</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">epsy</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
         <span class="n">sigma_delta</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">sig_delta</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
         <span class="n">bunch_length</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">bunch_length</span></a><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># get at next second</span>
@@ -588,7 +590,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 44.222 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 43.331 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-analytical-bjorken-mtingwa-emittances-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/ecda9ce448dc36dbc3ce2891b29ff0bc/demo_analytical_bjorken_mtingwa_emittances.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_analytical_bjorken_mtingwa_emittances.ipynb</span></code></a></p>

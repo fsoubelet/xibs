@@ -271,8 +271,8 @@ internally each time they are computed.
  .. code-block:: none
 
     Twiss was not calculated at center of elements
-    IBSGrowthRates(Tx=5.7460590262617716e-05, Ty=-4.580191393654989e-08, Tz=2.558635523801702e-05)
-    IBSGrowthRates(Tx=5.7460590262617716e-05, Ty=-4.580191393654989e-08, Tz=2.558635523801702e-05)
+    IBSGrowthRates(Tx=5.828437767342454e-05, Ty=-4.7762988964079386e-08, Tz=2.5431215365156987e-05)
+    IBSGrowthRates(Tx=5.828437767342454e-05, Ty=-4.7762988964079386e-08, Tz=2.5431215365156987e-05)
 
 
 
@@ -306,10 +306,10 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 4.088433134696615e-09 m
-    Next time step geometrical epsilon_y = 5.207457203873339e-09 m
-    Next time step sigma_delta = 0.00030567911246873663
-    Next time step bunch length = 0.22540378850346873 m
+    Next time step geometrical epsilon_x = 4.137798065094086e-09 m
+    Next time step geometrical epsilon_y = 4.999320576613711e-09 m
+    Next time step sigma_delta = 0.0003102126276088951
+    Next time step bunch length = 0.2228946973289506 m
 
 
 
@@ -372,8 +372,8 @@ compute-intensive process.
 
         # ----- Compute the new emittances ----- #
         new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
-            geom_epsx=turn_by_turn.epsilon_x[sec - 1],
-            geom_epsy=turn_by_turn.epsilon_y[sec - 1],
+            epsx=turn_by_turn.epsilon_x[sec - 1],
+            epsy=turn_by_turn.epsilon_y[sec - 1],
             sigma_delta=turn_by_turn.sig_delta[sec - 1],
             bunch_length=turn_by_turn.bunch_length[sec - 1],
             dt = 1.0  # get at next second
@@ -524,7 +524,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 44.222 seconds)
+   **Total running time of the script:** (0 minutes 43.331 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_bjorken_mtingwa_emittances.py:

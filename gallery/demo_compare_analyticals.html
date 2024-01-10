@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Comparison of Analytical IBS Growth Rates and Emittances Evolution &mdash; xibs 0.3.0 documentation</title>
+  <title>Comparison of Analytical IBS Growth Rates and Emittances Evolution &mdash; xibs 0.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=e259d695"></script>
+        <script src="../_static/documentation_options.js?v=6c02275b"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -48,7 +48,7 @@
             
           </a>
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -111,6 +111,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../faq.html#instantiating-beamparameters-from-mad-x">Instantiating BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#geomettric-or-normalized-emittances">Geomettric or Normalized Emittances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#bunched-and-coasting-beams">Bunched and Coasting Beams</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
@@ -199,6 +201,7 @@ creates corresponding <code class="xref py py-obj docutils literal notranslate">
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Setting up MAD-X for lhc_top_protons case
 Calling extra file at &#39;acc-models-lhc/strengths/ATS_Nominal/2023/ats_30cm.madx&#39;
+There is betatron coupling in the machine (|Cminus| = 0.000),which is not taken into account in analytical calculations.
 </pre></div>
 </div>
 <p>Here <code class="xref py py-obj docutils literal notranslate"><span class="pre">params</span></code> hold the properties we want to be analytically tracking.
@@ -230,7 +233,7 @@ Crossing angles in IP1/5: 160.0, 160.0 micro-radians
 <p>We will analytically look at the evolution through time by looping, just as in
 the <a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#demo-analytical-bjorken-mtingwa"><span class="std std-ref">Bjorken-Mtingwa</span></a> and
 <a class="reference internal" href="demo_analytical_nagaitsev_emittances.html#demo-analytical-nagaitsev"><span class="std std-ref">Nagaitsev</span></a> analytical examples, respectively.
-Let’s do so for 10 hours, recomputing the growth rates every 30 minutes.</p>
+Let’s do so for 10 hours of beam time, recomputing the growth rates every 30 minutes.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Duration to track for and frequency at which to re-compute the growth rates, both in [s]</span>
 <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nsecs</span></a> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">3_600</span>  <span class="c1"># that&#39;s 10h</span>
 <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ibs_step</span></a> <span class="o">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">60</span>  <span class="c1"># re-compute rates every 30min</span>
@@ -275,7 +278,7 @@ Let’s do so for 10 hours, recomputing the growth rates every 30 minutes.</p>
 </pre></div>
 </div>
 <p>With the settings above and this loop, we compute the emittances
-every second but we only update the growth rates every 20 minutes.</p>
+every second but we only update the growth rates every 30 minutes.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nsecs</span></a><span class="p">):</span>
     <span class="c1"># ----- Potentially re-compute the IBS growth rates ----- #</span>
     <span class="k">if</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">%</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ibs_step</span></a> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sec</span></a> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
@@ -438,7 +441,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">analytical</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 43.358 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 45.113 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-compare-analyticals-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/e7d7c058e6d7b1bd1854bc6bdc5a280b/demo_compare_analyticals.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_compare_analyticals.ipynb</span></code></a></p>

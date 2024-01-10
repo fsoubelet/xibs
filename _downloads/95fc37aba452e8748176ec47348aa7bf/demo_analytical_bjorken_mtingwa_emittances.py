@@ -202,8 +202,8 @@ for sec in range(1, nsecs):
 
     # ----- Compute the new emittances ----- #
     new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
-        geom_epsx=turn_by_turn.epsilon_x[sec - 1],
-        geom_epsy=turn_by_turn.epsilon_y[sec - 1],
+        epsx=turn_by_turn.epsilon_x[sec - 1],
+        epsy=turn_by_turn.epsilon_y[sec - 1],
         sigma_delta=turn_by_turn.sig_delta[sec - 1],
         bunch_length=turn_by_turn.bunch_length[sec - 1],
         dt = 1.0  # get at next second

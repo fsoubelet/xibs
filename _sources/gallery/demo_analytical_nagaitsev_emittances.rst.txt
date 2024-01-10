@@ -255,8 +255,8 @@ object and will be updated internally each time they are computed.
 
  .. code-block:: none
 
-    NagaitsevIntegrals(Ix=8.054321119596657e+19, Iy=1.475120919635158e+17, Iz=5.983720787348584e+23)
-    NagaitsevIntegrals(Ix=8.054321119596657e+19, Iy=1.475120919635158e+17, Iz=5.983720787348584e+23)
+    NagaitsevIntegrals(Ix=7.91962959055529e+19, Iy=1.460420647814896e+17, Iz=5.88914235293675e+23)
+    NagaitsevIntegrals(Ix=7.91962959055529e+19, Iy=1.460420647814896e+17, Iz=5.88914235293675e+23)
 
 
 
@@ -286,8 +286,8 @@ are computed.
 
  .. code-block:: none
 
-    IBSGrowthRates(Tx=366.3329367157667, Ty=102.14637398609214, Tz=90.51155335991919)
-    IBSGrowthRates(Tx=366.3329367157667, Ty=102.14637398609214, Tz=90.51155335991919)
+    IBSGrowthRates(Tx=363.34518745594977, Ty=102.95690318202689, Tz=88.44423907436632)
+    IBSGrowthRates(Tx=363.34518745594977, Ty=102.95690318202689, Tz=88.44423907436632)
 
 
 
@@ -328,10 +328,10 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 1.0016575516875124e-10 m
-    Next time step geometrical epsilon_y = 6.576689733638122e-13 m
-    Next time step sigma_delta = 0.0017351274937179467
-    Next time step bunch length = 0.0015973165029909181 m
+    Next time step geometrical epsilon_x = 1.0114231242104473e-10 m
+    Next time step geometrical epsilon_y = 6.579738850431414e-13 m
+    Next time step sigma_delta = 0.0017574372975352132
+    Next time step bunch length = 0.001569400685201067 m
 
 
 
@@ -395,8 +395,8 @@ as this computation is the most compute-intensive process.
 
         # ----- Compute the new emittances ----- #
         new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
-            geom_epsx=turn_by_turn.epsilon_x[turn - 1],
-            geom_epsy=turn_by_turn.epsilon_y[turn - 1],
+            epsx=turn_by_turn.epsilon_x[turn - 1],
+            epsy=turn_by_turn.epsilon_y[turn - 1],
             sigma_delta=turn_by_turn.sig_delta[turn - 1],
             bunch_length=turn_by_turn.bunch_length[turn - 1],
             # dt = 1.0 / IBS.optics.revolution_frequency,  # default value
@@ -534,7 +534,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 22.809 seconds)
+   **Total running time of the script:** (0 minutes 23.763 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_nagaitsev_emittances.py:
