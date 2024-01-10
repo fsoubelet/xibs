@@ -82,7 +82,7 @@ plt.show()
 # We will analytically look at the evolution through time by looping, just as in
 # the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` and 
 # :ref:`Nagaitsev <demo-analytical-nagaitsev>` analytical examples, respectively.
-# Let's do so for 10 hours, recomputing the growth rates every 30 minutes.
+# Let's do so for 10 hours of beam time, recomputing the growth rates every 30 minutes.
 
 # Duration to track for and frequency at which to re-compute the growth rates, both in [s]
 nsecs = 10 * 3_600  # that's 10h
@@ -128,7 +128,7 @@ madx_tbt.bl[0] = bm_tbt.bl[0] = nag_tbt.bl[0] = params.bunch_length
 
 #############################################################################
 # With the settings above and this loop, we compute the emittances
-# every second but we only update the growth rates every 20 minutes.
+# every second but we only update the growth rates every 30 minutes.
 
 for sec in range(1, nsecs):
     # ----- Potentially re-compute the IBS growth rates ----- #

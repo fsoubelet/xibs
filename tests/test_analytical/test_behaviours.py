@@ -8,9 +8,13 @@ of both anyway.
 
 We also check for instance that the BjorkenMtingwaIBS issues a warning when it is
 asked to compute IBS growth rates with a Twiss that was not centered.
+
+We also check that providing (equivalent) geometric or normalized emittances does
+not change the results of the calculations.
 """
 import logging
 
+import numpy as np
 import pytest
 
 from xibs.analytical import BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS, NagaitsevIntegrals
@@ -118,3 +122,171 @@ def test_bjorken_mtingwa_growth_rates_warns_if_twiss_not_centered(
     record = caplog.records[0]  # check just the first logging message
     assert record.levelname == "WARNING"
     assert "Twiss was not calculated at center of elements" in record.message
+
+
+def test_nagaitsev_integrals_equivalent_with_geometric_and_normalized_emittances(madx_ps_injection_protons):
+    """
+    Checking that NagaitsevIBS.integrals returns the same result when providing
+    (equivalent) geometric or normalized emittances.
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = NagaitsevIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Get the integrals with geometric emittances
+    integrals_from_geom = IBS.integrals(params.geom_epsx, params.geom_epsy, params.sig_delta)
+    # --------------------------------------------------------------------
+    # Get the integrals with normalized emittances
+    norm_emit_x = params.geom_epsx * beamparams.beta_rel * beamparams.gamma_rel
+    norm_emit_y = params.geom_epsy * beamparams.beta_rel * beamparams.gamma_rel
+    integrals_from_norm = IBS.integrals(
+        norm_emit_x, norm_emit_y, params.sig_delta, normalized_emittances=True
+    )
+    # --------------------------------------------------------------------
+    # Check the results are the same
+    assert integrals_from_geom == integrals_from_norm
+
+
+def test_nagaitsev_growth_rates_equivalent_with_geometric_and_normalized_emittances(
+    madx_ps_injection_protons,
+):
+    """
+    Checking that NagaitsevIBS.growth_rates returns the same result when providing
+    (equivalent) geometric or normalized emittances.
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = NagaitsevIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Get the growth rates with geometric emittances
+    rates_from_geom = IBS.growth_rates(
+        params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length
+    )
+    # --------------------------------------------------------------------
+    # Get the growth rates with normalized emittances
+    norm_emit_x = params.geom_epsx * beamparams.beta_rel * beamparams.gamma_rel
+    norm_emit_y = params.geom_epsy * beamparams.beta_rel * beamparams.gamma_rel
+    rates_from_norm = IBS.growth_rates(
+        norm_emit_x, norm_emit_y, params.sig_delta, params.bunch_length, normalized_emittances=True
+    )
+    # --------------------------------------------------------------------
+    # Check the results are the same
+    assert rates_from_geom == rates_from_norm
+
+
+def test_bjorken_mtingwa_growth_rates_equivalent_with_geometric_and_normalized_emittances(
+    madx_ps_injection_protons,
+):
+    """
+    Checking that BjorkenMtingwaIBS.growth_rates returns the same result when providing
+    (equivalent) geometric or normalized emittances.
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = BjorkenMtingwaIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Get the growth rates with geometric emittances
+    rates_from_geom = IBS.growth_rates(
+        params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length
+    )
+    # --------------------------------------------------------------------
+    # Get the growth rates with normalized emittances
+    norm_emit_x = params.geom_epsx * beamparams.beta_rel * beamparams.gamma_rel
+    norm_emit_y = params.geom_epsy * beamparams.beta_rel * beamparams.gamma_rel
+    rates_from_norm = IBS.growth_rates(
+        norm_emit_x, norm_emit_y, params.sig_delta, params.bunch_length, normalized_emittances=True
+    )
+    # --------------------------------------------------------------------
+    # Check the results are the same
+    assert rates_from_geom == rates_from_norm
+
+
+def test_analytical_emittance_evolution_equivalent_with_geometric_and_normalized_emittances(
+    madx_ps_injection_protons,
+):
+    """
+    Checking that BjorkenMtingwaIBS.growth_rates returns the same result when providing
+    (equivalent) geometric or normalized emittances.
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    MIBS = BjorkenMtingwaIBS(beamparams, opticsparams)
+    NIBS = NagaitsevIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Get the growth rates for both
+    MIBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
+    NIBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
+    # --------------------------------------------------------------------
+    # Get equivalent normalized emittances from those in params
+    norm_emit_x = params.geom_epsx * beamparams.beta_rel * beamparams.gamma_rel
+    norm_emit_y = params.geom_epsy * beamparams.beta_rel * beamparams.gamma_rel
+    # --------------------------------------------------------------------
+    # Get the new_emittances with geometric emittances for both and check equality
+    new_emitx_geom_bm, new_emity_geom_bm, _, _ = MIBS.emittance_evolution(
+        params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length
+    )
+    new_emitx_geom_nag, new_emity_geom_nag, _, _ = NIBS.emittance_evolution(
+        params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length
+    )
+    assert np.isclose(new_emitx_geom_bm, new_emitx_geom_nag, atol=0, rtol=1e-3)  # allow 0.1% deviation
+    assert np.isclose(new_emity_geom_bm, new_emity_geom_nag, atol=0, rtol=1e-3)  # allow 0.1% deviation
+    # --------------------------------------------------------------------
+    # Get the new_emittances with normalized emittances for both and check equality
+    new_emitx_norm_bm, new_emity_norm_bm, _, _ = MIBS.emittance_evolution(
+        norm_emit_x, norm_emit_y, params.sig_delta, params.bunch_length, normalized_emittances=True
+    )
+    new_emitx_norm_nag, new_emity_norm_nag, _, _ = NIBS.emittance_evolution(
+        norm_emit_x, norm_emit_y, params.sig_delta, params.bunch_length, normalized_emittances=True
+    )
+    assert np.isclose(new_emitx_norm_bm, new_emitx_norm_nag, atol=0, rtol=1e-3)  # allow 0.1% deviation
+    assert np.isclose(new_emity_norm_bm, new_emity_norm_nag, atol=0, rtol=1e-3)  # allow 0.1% deviation
+    # --------------------------------------------------------------------
+    # Check that the equivalence of all returned results: geom <-> norm conversion still holds
+    assert np.isclose(
+        new_emitx_geom_bm * beamparams.beta_rel * beamparams.gamma_rel, new_emitx_norm_bm, atol=0, rtol=1e-3
+    )  # allow 0.1% deviation
+    assert np.isclose(
+        new_emity_geom_bm * beamparams.beta_rel * beamparams.gamma_rel, new_emity_norm_bm, atol=0, rtol=1e-3
+    )  # allow 0.1% deviation
+
+
+def test_coulomb_log_equivalent_with_geometric_and_normalized_emittances(
+    madx_ps_injection_protons,
+):
+    """
+    Checking that BjorkenMtingwaIBS.growth_rates returns the same result when providing
+    (equivalent) geometric or normalized emittances.
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = BjorkenMtingwaIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Get the Coulomb log with geometric emittances
+    coulog_from_geom = IBS.coulomb_log(
+        params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length
+    )
+    # --------------------------------------------------------------------
+    # Get the Coulomb log with normalized emittances
+    norm_emit_x = params.geom_epsx * beamparams.beta_rel * beamparams.gamma_rel
+    norm_emit_y = params.geom_epsy * beamparams.beta_rel * beamparams.gamma_rel
+    coulog_from_norm = IBS.coulomb_log(
+        norm_emit_x, norm_emit_y, params.sig_delta, params.bunch_length, normalized_emittances=True
+    )
+    # --------------------------------------------------------------------
+    # Check the results are the same
+    assert coulog_from_geom == coulog_from_norm
