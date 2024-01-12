@@ -160,7 +160,7 @@ class KickBasedIBS(ABC):
 
     @abstractmethod
     def compute_kick_coefficients(
-        self, particles: "xpart.Particles"
+        self, particles: "xpart.Particles", **kwargs
     ) -> Union[DiffusionCoefficients, FrictionCoefficients, KineticCoefficients]:
         r"""
         .. versionadded:: 0.5.0
@@ -170,6 +170,9 @@ class KickBasedIBS(ABC):
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
+            **kwargs: any keyword arguments will be passed to the growth rates calculation call
+                (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
+                and `bunch_length` are already provided.
         """
         raise NotImplementedError(
             "This method should be implemented in all child classes, but it hasn't been for this one."
@@ -195,6 +198,7 @@ class KickBasedIBS(ABC):
 
 
 # TODO: update docstring when set on interface
+# From what I understand, the SimpleKicks builds on the analytical growth rates.
 class SimpleKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.5.0
@@ -210,7 +214,7 @@ class SimpleKickIBS(KickBasedIBS):
         self.coefficients: DiffusionCoefficients = None  # TODO: check this
 
     # TODO: double check the return signature after clarifying all coefficients with Michalis
-    def compute_kick_coefficients(self, particles: "xpart.Particles") -> DiffusionCoefficients:
+    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> DiffusionCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
@@ -223,6 +227,9 @@ class SimpleKickIBS(KickBasedIBS):
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
+            **kwargs: any keyword arguments will be passed to the growth rates calculation call
+                (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
+                and `bunch_length` are already provided.
 
         Returns:
             A `DiffusionCoefficients` object with the computed diffusion coefficients.
@@ -248,7 +255,7 @@ class SimpleKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Computing the growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
-            geom_epsx, geom_epsy, sigma_delta, bunch_length
+            geom_epsx, geom_epsy, sigma_delta, bunch_length, **kwargs
         )
         Tx, Ty, Tz = astuple(growth_rates)
         # TODO: figure out why Michalis did not allow negative values?
@@ -347,7 +354,7 @@ class KineticKickIBS(KickBasedIBS):
         # These self-update when computed, but can be overwritten by the user
         self.coefficients: DiffusionCoefficients = None  # TODO: check this
 
-    def compute_kick_coefficients(self, particles: "xpart.Particles") -> DiffusionCoefficients:
+    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> DiffusionCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
@@ -360,6 +367,9 @@ class KineticKickIBS(KickBasedIBS):
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
+            **kwargs: any keyword arguments will be passed to the growth rates calculation call
+                (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
+                and `bunch_length` are already provided. TODO: check we actually do that.
 
         Returns:
             A ??? object with the computed diffusion coefficients.
