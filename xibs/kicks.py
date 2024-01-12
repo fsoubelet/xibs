@@ -24,6 +24,7 @@ from xibs.dispatch import ibs
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
+
 # ----- Dataclasses to store results ----- #
 
 
@@ -72,6 +73,7 @@ class KineticCoefficients:
 # ----- Abstract Base Class to Inherit from ----- #
 
 
+# TODO: adapt docstring
 class KickBasedIBS(ABC):
     r"""
     .. versionadded:: 0.5.0
@@ -79,7 +81,6 @@ class KickBasedIBS(ABC):
     Abstract base class for kick-based IBS effects, from which all
     implementations inherit.
 
-    # TODO: adapt this
     Attributes:
         analytical_ibs (AnalyticalIBS): an analytical IBS class to compute growth rates.
         beam_parameters (BeamParameters): the beam parameters to use for analytical IBS.
