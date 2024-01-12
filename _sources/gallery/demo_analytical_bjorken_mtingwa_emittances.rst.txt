@@ -271,8 +271,8 @@ internally each time they are computed.
  .. code-block:: none
 
     Twiss was not calculated at center of elements
-    IBSGrowthRates(Tx=5.828437767342454e-05, Ty=-4.7762988964079386e-08, Tz=2.5431215365156987e-05)
-    IBSGrowthRates(Tx=5.828437767342454e-05, Ty=-4.7762988964079386e-08, Tz=2.5431215365156987e-05)
+    IBSGrowthRates(Tx=5.7587336500286195e-05, Ty=-4.655179559570993e-08, Tz=2.5122790078119042e-05)
+    IBSGrowthRates(Tx=5.7587336500286195e-05, Ty=-4.655179559570993e-08, Tz=2.5122790078119042e-05)
 
 
 
@@ -306,10 +306,10 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 4.137798065094086e-09 m
-    Next time step geometrical epsilon_y = 4.999320576613711e-09 m
-    Next time step sigma_delta = 0.0003102126276088951
-    Next time step bunch length = 0.2228946973289506 m
+    Next time step geometrical epsilon_x = 4.117549079499973e-09 m
+    Next time step geometrical epsilon_y = 5.109771005208864e-09 m
+    Next time step sigma_delta = 0.0003098298163796511
+    Next time step bunch length = 0.22369728455001786 m
 
 
 
@@ -524,7 +524,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 43.331 seconds)
+   **Total running time of the script:** (0 minutes 46.670 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_bjorken_mtingwa_emittances.py:
