@@ -19,8 +19,7 @@ import numpy as np
 
 from numpy.typing import ArrayLike
 
-from xibs.analytical import AnalyticalIBS, IBSGrowthRates
-from xibs.dispatch import ibs
+from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -91,8 +90,10 @@ class KickBasedIBS(ABC):
     # provide the bp and op, then each subclass hardcodes the formalism? Give choice and use
     # the dispatcher to call the one asked for by the user? Need to talk with Michalis to
     # understand the implications of Simple vs Kinetic.
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters, formalism: str) -> None:
-        self.analytical_ibs: AnalyticalIBS = ibs(beam_params, optics, formalism)
+    def __init__(
+        self, beam_params: BeamParameters, optics: OpticsParameters, analytical_implementation: AnalyticalIBS
+    ) -> None:
+        self.analytical_ibs: AnalyticalIBS = analytical_implementation(beam_params, optics)
         self.beam_parameters: BeamParameters = self.analytical_ibs.beam_parameters
         self.optics: OpticsParameters = self.analytical_ibs.optics
         # These self-update when computed, but can be overwritten by the user
@@ -100,7 +101,7 @@ class KickBasedIBS(ABC):
         self.friction_coefficients: FrictionCoefficients = None
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__} object for kick-based IBS calculations.\n"
+        return f"{self.__class__.__name__} object for kick-based IBS calculations."
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -156,7 +157,6 @@ class KickBasedIBS(ABC):
         counts_normed, bin_edges = np.histogram(zeta, bin_edges, density=True)  # density=True to normalize
         return np.interp(zeta, bin_centers, counts_normed)
 
-    # TODO: implement signature and leave up to inherited class?
     @abstractmethod
     def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
         r"""
@@ -167,8 +167,6 @@ class KickBasedIBS(ABC):
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
         """
-        # TODO: remember I will move the 2 * sigma_t * sqrt(pi) term out of line-density and it should be
-        # computed here instead
         raise NotImplementedError(
             "This method should be implemented in all child classes, but it hasn't been for this one."
         )
@@ -177,6 +175,7 @@ class KickBasedIBS(ABC):
 # ----- Classes to Compute and Apply IBS Kicks ----- #
 
 
+# TODO: update docstring
 # In here we do need Nagaitsev results, so the kick method will trigger computing NagaitsevIntegrals?
 class SimpleKickIBS(KickBasedIBS):
     r"""
@@ -185,16 +184,31 @@ class SimpleKickIBS(KickBasedIBS):
     A single class to compute the simple IBS kicks based on the analytical results obtained with
     `xibs.analytical`. The kicks are implemented according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
     The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
-
-    Attributes:
-        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
-        optics (OpticsParameters): the optics parameters to use for the calculations.
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        super().__init__(beam_params, optics, formalism="nagaitsev")  # TODO: hard-code?
+        super().__init__(beam_params, optics, analytical_implementation=NagaitsevIBS)  # TODO: hard-code?
+
+    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
+        r"""
+        .. versionadded:: 0.5.0
+
+        Abstract method to apply IBS kicks to a `xpart.Particles` object.
+
+        Args:
+            particles (xpart.Particles): the particles to apply the IBS kicks to.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Determine scaling factor corresponding to in 2 * sigma_t * sqrt(pi) Eq (8) of reference
+        zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
+        bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
+        scaling_factor = 2 * np.pi * bunch_length_rms
+        # ----------------------------------------------------------------------------------------------
+        # TODO: implement the rest
+        pass
 
 
+# TODO: update docstring
 # It does not seem like any of the calculations in here need Nagaitsev results. Could use B&M?
 class KineticKickIBS(KickBasedIBS):
     r"""
@@ -217,4 +231,22 @@ class KineticKickIBS(KickBasedIBS):
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        super().__init__(beam_params, optics, formalism="nagaitsev")  # TODO: hard-code?
+        super().__init__(beam_params, optics, analytical_implementation=NagaitsevIBS)  # TODO: hard-code?
+
+    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
+        r"""
+        .. versionadded:: 0.5.0
+
+        Abstract method to apply IBS kicks to a `xpart.Particles` object.
+
+        Args:
+            particles (xpart.Particles): the particles to apply the IBS kicks to.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Determine scaling factor corresponding to in 2 * sigma_t * sqrt(pi) Eq (8) of reference
+        zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
+        bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
+        scaling_factor = 2 * np.pi * bunch_length_rms
+        # ----------------------------------------------------------------------------------------------
+        # TODO: implement the rest
+        pass
