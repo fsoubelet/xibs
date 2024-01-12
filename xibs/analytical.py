@@ -36,7 +36,6 @@ from xibs.formulary import phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
-warnings.filterwarnings("ignore")  # scipy integration routines might warn for subdivisions
 
 # ----- Dataclasses to store results ----- #
 
