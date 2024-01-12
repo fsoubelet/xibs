@@ -12,8 +12,9 @@ In the simple formalism, the applied IBS kicks are determined from Nagaitsev int
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import astuple, dataclass
 from logging import getLogger
+from typing import Union
 
 import numpy as np
 
@@ -25,6 +26,7 @@ from xibs.inputs import BeamParameters, OpticsParameters
 LOGGER = getLogger(__name__)
 
 # ----- Dataclasses to store results ----- #
+# TODO: clarify the difference between these with Michalis
 
 
 @dataclass
@@ -127,7 +129,6 @@ class KickBasedIBS(ABC):
                 - Computes a (normalized) histogram of the longitudinal coordinates, with the determined bins.
                 - Computes and returns the line density :math:`\rho{t}`.
 
-
         Args:
             particles (xpart.Particles): the `xpart.Particles` object to compute the line density for.
             n_slices (int): the number of slices to use for the computation of the bins.
@@ -158,10 +159,28 @@ class KickBasedIBS(ABC):
         return np.interp(zeta, bin_centers, counts_normed)
 
     @abstractmethod
+    def compute_kick_coefficients(
+        self, particles: "xpart.Particles"
+    ) -> Union[DiffusionCoefficients, FrictionCoefficients, KineticCoefficients]:
+        r"""
+        .. versionadded:: 0.5.0
+
+        TODO: fix docstring when all is set.
+        Abstract method to determine the "coefficients" used in the determination of the IBS kicks.
+
+        Args:
+            particles (xpart.Particles): the particles to apply the IBS kicks to.
+        """
+        raise NotImplementedError(
+            "This method should be implemented in all child classes, but it hasn't been for this one."
+        )
+
+    @abstractmethod
     def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
         r"""
         .. versionadded:: 0.5.0
 
+        TODO: fix docstring when all is set.
         Abstract method to apply IBS kicks to a `xpart.Particles` object.
 
         Args:
@@ -175,8 +194,7 @@ class KickBasedIBS(ABC):
 # ----- Classes to Compute and Apply IBS Kicks ----- #
 
 
-# TODO: update docstring
-# In here we do need Nagaitsev results, so the kick method will trigger computing NagaitsevIntegrals?
+# TODO: update docstring when set on interface
 class SimpleKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.5.0
@@ -188,28 +206,130 @@ class SimpleKickIBS(KickBasedIBS):
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         super().__init__(beam_params, optics, analytical_implementation=NagaitsevIBS)  # TODO: hard-code?
+        # These self-update when computed, but can be overwritten by the user
+        self.coefficients: DiffusionCoefficients = None  # TODO: check this
 
-    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
+    # TODO: double check the return signature after clarifying all coefficients with Michalis
+    def compute_kick_coefficients(self, particles: "xpart.Particles") -> DiffusionCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
-        Abstract method to apply IBS kicks to a `xpart.Particles` object.
+        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
+
+        .. note::
+            This functionality is separate from the kick application because it internally triggers
+            the computation of the analytical growth rates, and we don't necessarily want to
+            recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
+
+        Returns:
+            A `DiffusionCoefficients` object with the computed diffusion coefficients.
         """
         # ----------------------------------------------------------------------------------------------
-        # Determine scaling factor corresponding to in 2 * sigma_t * sqrt(pi) Eq (8) of reference
+        # Compute the (geometric) emittances, momentum spread and bunch length from the Particles object
+        LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
+        sigma_delta: float = np.std(particles.delta[particles.state > 0])
+        bunch_length: float = np.std(particles.zeta[particles.state > 0])
+        sigma_x: float = np.std(particles.x[particles.state > 0])
+        sigma_y: float = np.std(particles.y[particles.state > 0])
+        # TODO: Why does Michalis take only the first value of d[xy] and bet[xy] in here?
+        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
+        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
+        # ----------------------------------------------------------------------------------------------
+        # Computing momentum - TODO: same here, why the first value??
+        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(
+            1 + self.optics.alfx[0] ** 2
+        )
+        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(
+            1 + self.optics.alfy[0] ** 2
+        )
+        # ----------------------------------------------------------------------------------------------
+        # Computing the growth rates
+        growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
+            geom_epsx, geom_epsy, sigma_delta, bunch_length
+        )
+        Tx, Ty, Tz = astuple(growth_rates)
+        # TODO: figure out why Michalis did not allow negative values?
+        Tx = 0 if Tx < 0 else Tx
+        Ty = 0 if Ty < 0 else Ty
+        Tz = 0 if Tz < 0 else Tz
+        # ----------------------------------------------------------------------------------------------
+        # Compute the "kicks coefficients" (DSx, DSy, DSz from Michalis' mess)
+        LOGGER.debug("Computing and applying the kicks to the particles")
+        DSx = sigma_px_normalized * np.sqrt(2 * Tx / self.optics.revolution_frequency)
+        DSy = sigma_py_normalized * np.sqrt(2 * Ty / self.optics.revolution_frequency)
+        DSz = (
+            sigma_delta
+            * np.sqrt(2 * Tz / self.optics.revolution_frequency)
+            * self.beam_parameters.beta_rel**2
+        )
+        result = DiffusionCoefficients(DSx, DSy, DSz)
+        # ----------------------------------------------------------------------------------------------
+        # Self-update the instance's attributes and then return the results
+        self.coefficients = result
+        return result
+
+    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:
+        r"""
+        .. versionadded:: 0.5.0
+
+        Compute the momentum kick to apply based on the provided `xpart.Particles` object and the
+        analytical growth rates for the lattice. The kicks are implemented according to Eq (8) of
+        :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
+
+        Args:
+            particles (xpart.Particles): the `xpart.Particles` object to compute the line density for.
+            n_slices (int): the number of slices to use for the computation of the bins.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Check that the kick coefficients have been computed beforehand
+        if self.coefficients is None:
+            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
+            raise ValueError(
+                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
+                "Please call the `compute_kick_coefficients` method first."
+            )
+        # ----------------------------------------------------------------------------------------------
+        # Compute the line density - this is the rho(t) term in Eq (8) of reference
+        rho_t: np.ndarray = self.line_density(particles, n_slices)
+        # ----------------------------------------------------------------------------------------------
+        # Determine scaling factor, corresponding to in 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
         bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        scaling_factor = 2 * np.pi * bunch_length_rms
+        scaling_factor: float = 2 * np.pi * bunch_length_rms
         # ----------------------------------------------------------------------------------------------
-        # TODO: implement the rest
-        pass
+        # Determining kicks to apply - this corresponds to the full result of Eq (8) of reference
+        LOGGER.debug("Determining kicks to apply")
+        _size_x = particles.px[particles.state > 0].shape[0]
+        delta_px: np.ndarray = (
+            np.random.normal(loc=0, scale=self.coefficients.Dx, size=_size_x)
+            * np.sqrt(rho_t)
+            * np.sqrt(scaling_factor)
+        )
+        _size_y = particles.py[particles.state > 0].shape[0]
+        delta_py: np.ndarray = (
+            np.random.normal(loc=0, scale=self.coefficients.Dy, size=_size_y)
+            * np.sqrt(rho_t)
+            * np.sqrt(scaling_factor)
+        )
+        _size_delta = particles.delta[particles.state > 0].shape[0]
+        delta_delta: np.ndarray = (
+            np.random.normal(loc=0, scale=self.coefficients.Dz, size=_size_delta)
+            * np.sqrt(rho_t)
+            * np.sqrt(scaling_factor)
+        )
+        # ----------------------------------------------------------------------------------------------
+        # Apply the kicks to the particles
+        particles.px[particles.state > 0] += delta_px
+        particles.py[particles.state > 0] += delta_py
+        particles.delta[particles.state > 0] += delta_delta
 
 
-# TODO: update docstring
-# It does not seem like any of the calculations in here need Nagaitsev results. Could use B&M?
+# TODO: update docstring when set on interface
+# It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev
+# formalism for some reason? Will need to clarify with him.
 class KineticKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.5.0
@@ -219,25 +339,43 @@ class KineticKickIBS(KickBasedIBS):
     The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
 
     Attributes:
-        beam_parameters (BeamParameters): the beam parameters to use for the calculations.
-        optics (OpticsParameters): the optics parameters to use for the calculations.
-        diffusion_coeffs (DiffusionCoefficients): the computed diffusion coefficients. This
-            self-updates when they are computed with the `kinetic_coefficients` method.
-        friction_coeffs (FrictionCoefficients): the computed friction coefficients. This
-            self-updates when they are computed with the `kinetic_coefficients` method.
-        kinectic_coeffs (KineticCoefficients): the computed kinetic coefficients from which
-            the kinetic kicks are determined. This self-updates when they are computed with
-            the `kinetic_coefficients` method?
+
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         super().__init__(beam_params, optics, analytical_implementation=NagaitsevIBS)  # TODO: hard-code?
+        # These self-update when computed, but can be overwritten by the user
+        self.coefficients: DiffusionCoefficients = None  # TODO: check this
 
-    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
+    def compute_kick_coefficients(self, particles: "xpart.Particles") -> DiffusionCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
-        Abstract method to apply IBS kicks to a `xpart.Particles` object.
+        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
+
+        .. note::
+            This functionality is separate from the kick application because it internally triggers
+            the computation of the analytical growth rates, and we don't necessarily want to
+            recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.
+
+        Args:
+            particles (xpart.Particles): the particles to apply the IBS kicks to.
+
+        Returns:
+            A ??? object with the computed diffusion coefficients.
+        """
+        # ----------------------------------------------------------------------------------------------
+        result = 1
+        # ----------------------------------------------------------------------------------------------
+        # Self-update the instance's attributes and then return the results
+        self.coefficients = result
+        return result
+
+    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:
+        r"""
+        .. versionadded:: 0.5.0
+
+        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
