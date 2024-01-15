@@ -2,6 +2,7 @@
 Tests in here check that errors that should be raised by the kick classes
 (SimpleKickIBS and KineticKickIBS) are indeed raised.
 """
+import logging
 
 import pytest
 
@@ -9,28 +10,25 @@ from xibs.inputs import BeamParameters, OpticsParameters
 from xibs.kicks import SimpleKickIBS
 
 
-def test_analytical_ibs_emittance_evolution_raises_if_no_growth_rates(
-    xtrack_ps_injection_protons, IBSClass, caplog
-):
+def test_simple_kick_raises_if_below_transition(madx_ps_injection_protons, caplog):
     """
-    Checking that NagaitsevIBS.emittance_evolution raises and error if the calculation
-    of the growth rates has not been performed beforehand.
+    Checking that SimpleKickIBS initialization raises an error if it detects that the
+    machine operates below transition, as it is not adapted for this.
     """
+    caplog.set_level(logging.INFO)
     # --------------------------------------------------------------------
-    # Load xsuite line (PS here because it's smaller/faster) and init IBS
-    line = xtrack_ps_injection_protons
-    twiss = line.twiss(method="4d")
-    opticsparams = OpticsParameters(twiss)
-    beamparams = BeamParameters(line.particle_ref)
-    beamparams.n_part = int(8.1e8)  # value doesn't matter much
-    IBS = IBSClass(beamparams, opticsparams)
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    assert opticsparams.slip_factor < 0  # make sure the test case is correct: below transition
     # --------------------------------------------------------------------
-    # Check the error is raised by .emittance_evolution
-    with pytest.raises(ValueError):
-        IBS.emittance_evolution(2e-6, 2e-6, 1e-5, 1e-5)  # random values as they don't matter
+    # Check the error is raised by initilalization of SimpleKickIBS
+    with pytest.raises(NotImplementedError):
+        IBS = SimpleKickIBS(beamparams, opticsparams)
 
     for record in caplog.records:  # check the logging message
         assert record.levelname == "ERROR"
-        assert (
-            "Attempted to compute emittance evolution without having computed growth rates" in record.message
-        )
+        assert "The provided optics parameters indication that the machine is below transition," in record.message
+        assert "which is incompatible with SimpleKickIBS (see documentation)" in record.message
+        assert "Use the kinetic formalism with KineticKickIBS instead." in record.message
