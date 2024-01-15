@@ -217,7 +217,7 @@ Bunched and Coasting Beams
 
 .. admonition:: This section in short
 
-    To simulate coasting beams, set `bunched=False` when calling the `.growth_rates` method. Two cases appear:
+    To simulate coasting beams, set `bunched=False` when calling the `.growth_rates` method and stop caring about the `bunch_length` argument. Two cases appear:
 
         - With `~.BjorkenMtingwaIBS` analytical expressions are adapted, leading to correct results.
         - With `~.NagaitsevIBS` an approximation is made using as bunch length :math:`C / 2 \pi` and a deviation to correct results might be observed. A warning will be logged to the user.
@@ -242,3 +242,6 @@ To adapt the growth rates calculation for a coasting beam, one simply has to set
 
     # The two of course yield different values
     assert rates_bunched != rates_coasting  # this is True
+
+
+Note that in both cases, the provided `bunch_length` argument is irrelevant: if using `BjorkenMtingwaIBS` the changes to analytical formulae take it out of the equation, and if using `NagaitsevIBS` it is ignored in favor of :math:`C / 2 \pi`.
