@@ -13,9 +13,6 @@ not change the results of the calculations.
 """
 import logging
 
-import numpy as np
-import pytest
-
 from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 from xibs.kicks import SimpleKickIBS
@@ -34,7 +31,7 @@ def test_simple_kick_chooses_bjorken_mtingwa_with_vertical_dispersion(
     # --------------------------------------------------------------------
     # Get the inputs from MAD-X and initialize IBS class
     madx, params = madx_lhc_injection_protons_with_vertical_disp  # fully set up from the config file
-    opticsparams = OpticsParameters.from_madx(madx)
+    opticsparams = OpticsParameters.from_madx(madx)  # logs warning because of betatron coupling
     beamparams = BeamParameters.from_madx(madx)
     caplog.set_level(logging.INFO)  # now let's capture the interesting messages
     IBS = SimpleKickIBS(beamparams, opticsparams)
