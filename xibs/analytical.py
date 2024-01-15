@@ -177,7 +177,7 @@ class AnalyticalIBS(ABC):
         # ----------------------------------------------------------------------------------------------
         # Calculate transverse temperature as 2*P*X, i.e. assume the transverse energy is temperature/2
         # fmt: off
-        Etrans = (  
+        Etrans = (
             5e8
             * (self.beam_parameters.gamma_rel
                * self.beam_parameters.total_energy_eV * 1e-9  # total energy needed in GeV
@@ -523,13 +523,16 @@ class NagaitsevIBS(AnalyticalIBS):
             If these have not been computed yet, this method will first log a message and compute them, then
             compute the growth rates.
 
-        .. note::
+        .. admonition:: Geometric or Normalized Emittances
+
             Both geometric or normalized emittances can be given as input to this function, and it is assumed
             the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
             parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
-            geometric emittances, which are used in the computations.
+            geometric emittances, which are used in the computations. For more information please see the
+            following :ref:`section of the FAQ <xibs-faq-geom-norm-emittances>`.
 
-        .. note::
+        .. admonition:: Coasting Beams
+
             It is possible in this formalism to get an approximation in the case of coasting beams by providing
             `bunched=False`. This will as a bunch length :math:`C / 2 \pi` with C the circumference (or length)
             of the machine, and a warning will be logged for the user. Additionally the appropriate adjustement
@@ -1112,11 +1115,13 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
                 - Defines sub-intervals and integrates the above over all of them, getting growth rates at each element in the lattice.
                 - Averages the results over the full circumference of the machine.
 
-        .. note::
+        .. admonition:: Geometric or Normalized Emittances
+
             Both geometric or normalized emittances can be given as input to this function, and it is assumed
             the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
             parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
-            geometric emittances, which are used in the computations.
+            geometric emittances, which are used in the computations. For more information please see the
+            following :ref:`section of the FAQ <xibs-faq-geom-norm-emittances>`.
 
         Args:
             epsx (float): horizontal geometric or normalized emittance in [m].
