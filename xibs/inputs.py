@@ -313,7 +313,7 @@ def _is_twiss_centered(twiss: "pandas.DataFrame") -> bool:  # noqa: F821
     If the `twiss` was obtained from ``xsuite`` it is never centered and this function
     is not necessary.
 
-    .. tip::
+    .. hint::
         The check is performed as in the Fortran code of the ``IBS`` module in ``MAD-X``.
         We skip all rows in the table until we get to the first element with non-zero length,
         note its `s` position, then the `s` and `l` of the next element. We compare the

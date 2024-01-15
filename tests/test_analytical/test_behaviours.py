@@ -290,3 +290,32 @@ def test_coulomb_log_equivalent_with_geometric_and_normalized_emittances(
     # --------------------------------------------------------------------
     # Check the results are the same
     assert coulog_from_geom == coulog_from_norm
+
+
+def test_nagaitsev_warns_on_coasting_beams(xtrack_ps_injection_protons, caplog):
+    """
+    Checking that NagaitsevIBS.growth_rates logs a warning when provided with `bunch=False`
+    (coasting beam) before computing the growth rates.
+    """
+    # --------------------------------------------------------------------
+    # Load xsuite line (PS here because it's smaller/faster) and get IBS growth rates
+    line = xtrack_ps_injection_protons
+    twiss = line.twiss(method="4d")
+    opticsparams = OpticsParameters(twiss)
+    beamparams = BeamParameters(line.particle_ref)
+    beamparams.n_part = int(8.1e8)  # value doesn't matter much
+    IBS = NagaitsevIBS(beamparams, opticsparams)
+    IBS.growth_rates(2e-6, 2e-6, 1e-5, 1e-5, bunched=False)  # random values as they don't matter
+    # --------------------------------------------------------------------
+    # Check the logged warning message
+    for record in caplog.records:
+        assert record.levelname == "WARNING"
+        assert (
+            "Using 'bunched=False' in this formalism makes the approximation of bunch length = C/(2*pi)."
+            in record.message
+        )
+        assert "Please use the BjorkenMtingwaIBS class for fully accurate results." in record.message
+    # --------------------------------------------------------------------
+    # Check the growth rates were indeed computed
+    assert IBS.ibs_growth_rates is not None
+    assert isinstance(IBS.ibs_growth_rates, IBSGrowthRates)

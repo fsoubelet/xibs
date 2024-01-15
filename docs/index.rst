@@ -89,7 +89,7 @@ You can install it simply from with `pip`, from ``PyPI``, in a virtual environme
 
    python -m pip install xibs
 
-.. tip::
+.. hint::
     Don't know what a virtual environment is or how to set it up?
     Here is a good primer on `virtual environments <https://realpython.com/python-virtual-environments-a-primer/>`_ by `RealPython`.
 
