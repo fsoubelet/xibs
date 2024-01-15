@@ -21,7 +21,9 @@ from xibs.inputs import BeamParameters, OpticsParameters
 from xibs.kicks import SimpleKickIBS
 
 
-def test_simple_kick_chooses_bjorkenmtingwa_with_vertical_dispersion(madx_lhc_injection_protons_with_vertical_disp, caplog):
+def test_simple_kick_chooses_bjorkenmtingwa_with_vertical_dispersion(
+    madx_lhc_injection_protons_with_vertical_disp, caplog
+):
     """
     Checking that SimpleKickIBS initialization logs a message about its choice of analytical
     formalism and makes the correct one when no vertical dispersion is in the machine, aka
@@ -47,13 +49,17 @@ def test_simple_kick_chooses_bjorkenmtingwa_with_vertical_dispersion(madx_lhc_in
     # of overriding it
     record = caplog.records[0]  # formalism choice info should be in the first logged message
     assert record.levelname == "INFO"
-    assert "Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism" in record.message
+    assert (
+        "Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism"
+        in record.message
+    )
     record = caplog.records[-1]  # overriding possibility should be in the last logged message
     assert record.levelname == "INFO"
     assert (
         "This can be overridden manually, by explicitely setting the self.analytical_ibs attribute"
         in record.message
     )
+
 
 def test_simple_kick_chooses_nagaitsev_without_vertical_dispersion(madx_sps_injection_protons, caplog):
     """
