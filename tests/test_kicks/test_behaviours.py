@@ -21,7 +21,7 @@ from xibs.inputs import BeamParameters, OpticsParameters
 from xibs.kicks import SimpleKickIBS
 
 
-def test_simple_kick_chooses_bjorkenmtingwa_with_vertical_dispersion(
+def test_simple_kick_chooses_bjorken_mtingwa_with_vertical_dispersion(
     madx_lhc_injection_protons_with_vertical_disp, caplog
 ):
     """
