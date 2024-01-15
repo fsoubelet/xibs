@@ -125,15 +125,15 @@ Instantiating BeamParameters from an `xtrack.Line`
 The default mode to instantiate a `BeamParameters` is from an `xpart.Particles` object.
 As seen just above, it is possible to use an `xtrack.Line`'s reference particle to do so.
 
+.. note::
+    Since ``xibs`` version 0.3.0, there is a convenience method to do the above automatically for the user.
+    It is documented in the :ref:`API reference <xibs-inputs>`.
+    It goes according to:
 
-Since ``xibs`` version 0.3.0, there is a convenience method to do the above automatically for the user.
-It is documented in the :ref:`API reference <xibs-inputs>`.
-It goes according to:
+    .. code-block:: python
 
-.. code-block:: python
-
-    # Let's assume your `xtrack.Line` is already defined
-    beam_params = BeamParameters.from_line(line, n_part=5e5)  # need to provide n_part
+        # Let's assume your `xtrack.Line` is already defined
+        beam_params = BeamParameters.from_line(line, n_part=5e5)  # need to provide n_part
 
 
 .. _xibs-faq-beam-params-from-madx:
@@ -177,6 +177,11 @@ It is also possible to query the `beam` in use for the currently active sequence
 Geomettric or Normalized Emittances
 -----------------------------------
 
+.. admonition:: This section in short
+
+    Both can be used, simply set the `normalized_emittances` parameter accordingly when calling functions asking for emittances.
+    Where emittances are returned, the same type as the input ones can be expected.
+
 Some functions in ``xibs`` require emittances to be provided as input, for instance `~xibs.analytical.BjorkenMtingwaIBS.growth_rates`.
 In all such cases, while internally ``xibs`` uses geomtric emittances for computations (as they are the values used in the implemented formulae), it is possible to provide either the geometric or the normalized emittances.
 
@@ -210,16 +215,24 @@ That's as much as the user has to think about this.
 Bunched and Coasting Beams
 --------------------------
 
-Users may want to obtain IBS growth rates for simulations in which they have coasting beams.
-This is possible, through currently only in the Bjorken & Mtingwa formalism.
+.. admonition:: This section in short
 
-The `~.BjorkenMtingwaIBS.growth_rates` method provides a `bunched` boolean argument, which defaults to `True`, corresponding to a bunched beam case.
+    To simulate coasting beams, set `bunched=False` when calling the `.growth_rates` method. Two cases appear:
+
+        - With `~.BjorkenMtingwaIBS` analytical expressions are adapted, leading to correct results.
+        - With `~.NagaitsevIBS` an approximation is made using as bunch length :math:`C / 2 \pi` and a deviation to correct results might be observed. A warning will be logged to the user.
+
+It is possible in ``xibs`` to obtain analytical IBS growth rates for simulations dealing with coasting beams.
+The functionality is implemented in both analytical classes, `~.BjorkenMtingwaIBS` and `~.NagaitsevIBS`, though in the latter an approximation is made and resulting values should be expected to deviate from the correct ones.
+
+The `.growth_rates` in both classes method provides a `bunched` boolean argument, which defaults to `True`, corresponding to a bunched beam case.
 To adapt the growth rates calculation for a coasting beam, one simply has to set this argument to `False`:
 
 .. code-block:: python
 
     # Let's assume your beam and optics parameters have been instantiated
     IBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)
+    # IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)  # alternatively
 
     # Getting growth rates for a bunched beam (default)
     rates_bunched = IBS.growth_rates(psx, epsy, sigma_delta, bunch_length)
