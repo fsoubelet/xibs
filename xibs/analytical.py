@@ -262,7 +262,7 @@ class AnalyticalIBS(ABC):
             latter have not been computed yet, this method will raise an error. Please
             remember to call the instance's `growth_rates` method first.
 
-        .. tip::
+        .. hint::
             The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes
             according to the following, where :math:`N` represents the time step:
 
@@ -402,7 +402,7 @@ class NagaitsevIBS(AnalyticalIBS):
         The instance attribute `self.elliptic_integrals` is automatically updated
         with the results of this method. It is used for other calculations.
 
-        .. tip::
+        .. hint::
             The calculation is done according to the following steps, which are related to different
             equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:
 
@@ -504,16 +504,12 @@ class NagaitsevIBS(AnalyticalIBS):
         respectively. The instance attribute `self.ibs_growth_rates` is automatically updated
         with the results of this method when it is called.
 
-        .. note::
-            This calculation is done by building on the Nagaitsev integrals. If the
-            latter have not been computed yet, this method will first log a message
-            and compute them, then compute the growth rates.
-
         .. warning::
-            Currently this calculation does not take into account vertical dispersion.
-            We are working on implementing it for a future version.
+            Currently this calculation does not take into account vertical dispersion. Should you have
+            any in your lattice, please use the BjorkenMtingwaIBS class instead, which supports it fully.
+            Supporting vertical dispersion in NagaitsevIBS might be implemented in a future version.
 
-        .. tip::
+        .. hint::
             The calculation is done according to the following steps, which are related to different
             equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:
 
@@ -523,19 +519,32 @@ class NagaitsevIBS(AnalyticalIBS):
                 - Compute for each plane the full result of Eq (30-32), respectively.
                 - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_{\delta}^{2}` (as relevant) to get :math:`1 / \tau`.
 
+            **Note:** As one can see above, this calculation is done by building on the Nagaitsev integrals.
+            If these have not been computed yet, this method will first log a message and compute them, then
+            compute the growth rates.
+
         .. note::
             Both geometric or normalized emittances can be given as input to this function, and it is assumed
             the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`
             parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to
             geometric emittances, which are used in the computations.
 
+        .. note::
+            It is possible in this formalism to get an approximation in the case of coasting beams by providing
+            `bunched=False`. This will as a bunch length :math:`C / 2 \pi` with C the circumference (or length)
+            of the machine, and a warning will be logged for the user. Additionally the appropriate adjustement
+            will be made in the Coulomb logarithm calculation, and the resulting growth rates will be divided by
+            a factor 2 before being returned (see :cite:`ICHEA:Piwinski:IntraBeamScattering`). For fully accurate
+            results in the case of coasting beams, please use the `BjorkenMtingwaIBS` class instead.
+
         Args:
             epsx (float): horizontal geometric or normalized emittance in [m].
             epsy (float): vertical geometric or normalized emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
-            bunched (bool): UNIMPLEMENTED AT THE MOMENT. Whether the beam is bunched or not (coasting).
-                Defaults to `True`.
+            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`. Please note
+                that this will do an approximation using `bunch_length=C/(2*pi)`. For fully accurate results
+                in the case of coasting beams, please use the BjorkenMtingwaIBS class instead.
             normalized_emittances (bool): whether the provided emittances are
                 normalized or not. Defaults to `False` (assume geometric emittances).
             compute_integrals (bool): if `True`, the Nagaitsev elliptic integrals will be computed
@@ -547,13 +556,11 @@ class NagaitsevIBS(AnalyticalIBS):
         # ----------------------------------------------------------------------------------------------
         # Catch and raise an error if the user asks for coasting beam (not implemented yet)
         if bunched is False:
-            LOGGER.error(
-                "Computing growth rates for coasting beams is currently not supported in this class."
+            LOGGER.warning(
+                "Using 'bunched=False' in this formalism makes the approximation of bunch length = C/(2*pi). "
+                "Please use the BjorkenMtingwaIBS class for fully accurate results."
             )
-            raise NotImplementedError(
-                "Calculation for coasting beams is not implemented yet in this formalism."
-                "Please use the BjorkenMtignwaIBS class instead, which supports this feature."
-            )
+            bunch_length: float = self.optics.circumference / (2 * np.pi)
         # ----------------------------------------------------------------------------------------------
         # Make sure we are working with geometric emittances
         geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
@@ -572,7 +579,7 @@ class NagaitsevIBS(AnalyticalIBS):
         LOGGER.info("Computing IBS growth rates for defined beam and optics parameters")
         # ----------------------------------------------------------------------------------------------
         # Get the Coulomb logarithm and the rest of the constant term in Eq (30-32)
-        coulomb_logarithm = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        coulomb_logarithm = self.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
         # Then the rest of the constant term in the equation
         # fmt: off
         rest_of_constant_term = (
@@ -584,9 +591,11 @@ class NagaitsevIBS(AnalyticalIBS):
         # ----------------------------------------------------------------------------------------------
         # Compute the full result of Eq (30-32) for each plane | make sure to convert back to float
         Ix, Iy, Iz = astuple(self.elliptic_integrals)
-        Tx = float(Ix * full_constant_term / geom_epsx)
-        Ty = float(Iy * full_constant_term / geom_epsy)
-        Tz = float(Iz * full_constant_term / sigma_delta**2)
+        # Below: if coasting beams since we use bunch_length=C/(2*pi) we have to divide rates by 2 (see Piwinski)
+        factor = 1.0 if bunched is True else 2.0
+        Tx = float(Ix * full_constant_term / geom_epsx) / factor
+        Ty = float(Iy * full_constant_term / geom_epsy) / factor
+        Tz = float(Iz * full_constant_term / sigma_delta**2) / factor
         result = IBSGrowthRates(Tx, Ty, Tz)
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
@@ -1092,7 +1101,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             flag `centre=true` to the ``TWISS`` command in ``MAD-X`` for instance. If not, one might
             observe some slight discrepancies with the ``MAD-X`` values.
 
-        .. tip::
+        .. hint::
             The calculation is done according to the following steps, which are related to different
             equations in :cite:`CERN:Antoniou:Revision_IBS_MADX`:
 
