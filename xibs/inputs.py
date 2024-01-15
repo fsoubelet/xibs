@@ -155,7 +155,8 @@ class OpticsParameters:
             is an init-only parameter used for instanciation and it will not be kept in
             the instance's attributes.
         _slipfactor (Optional[float]): the slip factor for the machine. Only required if
-            the ``twiss`` argument is a ``MAD-X`` twiss dataframe.
+            the ``twiss`` argument is a ``MAD-X`` twiss dataframe. See below for the sign
+            convention used.
         _frev_hz (Optional[float]): the revolution frequency for the machine in [Hz].
             Only required if the ``twiss`` argument is a ``MAD-X`` twiss dataframe.
 
@@ -163,7 +164,8 @@ class OpticsParameters:
     Attributes:
         s (ArrayLike): longitudinal positions of the machine elements in [m].
         circumference (float): machine circumference in [m].
-        slip_factor (float): slip factor of the machine.
+        slip_factor (float): slip factor of the machine. We are using the Xsuite convention,
+            where the slip factor is *positive above transition*.
         revolution_frequency (float): revolution frequency of the machine in [Hz].
         betx (ArrayLike): horizontal beta functions in [m].
         bety (ArrayLike): vertical beta functions in [m].
@@ -264,7 +266,7 @@ class OpticsParameters:
         cminus = madx.table.summ.dqmin[0]  # just to check coupling
         if not np.isclose(cminus, 0, atol=0, rtol=1e-4):  # there is some betatron coupling
             LOGGER.warning(
-                f"There is betatron coupling in the machine (|Cminus| = {cminus:.3f}),"
+                f"There is betatron coupling in the machine (|Cminus| = {cminus:.3e}),"
                 "which is not taken into account in analytical calculations."
             )
 
