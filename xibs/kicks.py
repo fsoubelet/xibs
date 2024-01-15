@@ -4,10 +4,10 @@
 IBS: Applying Kicks
 -------------------
 
-Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: kinetic and simple.
+Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: simple and kinetic kicks.
 
+In the simple formalism, the applied IBS kicks are determined from analytical IBS growth rates, which are computed internally according to either (see :ref:`xibs-analytical`).
 In the kinetic formalism, the applied IBS kicks are determined from computed diffusion and friction terms.
-In the simple formalism, the applied IBS kicks are determined from Nagaitsev integrals (see :ref:`xibs-analytical`).
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
@@ -75,7 +75,6 @@ class IBSKickCoefficients:
 # ----- Abstract Base Class to Inherit from ----- #
 
 
-# TODO: adapt docstring
 class KickBasedIBS(ABC):
     r"""
     .. versionadded:: 0.5.0
@@ -203,15 +202,52 @@ class SimpleKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.5.0
 
+
+    .. warning::
+        Beware: this implementation is only valid **above** transition energy.
+
     A single class to compute the simple IBS kicks based on the analytical results obtained with
     `xibs.analytical`. The kicks are implemented according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
     The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
+
+    Attributes:
+        beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
+        optics (OpticsParameters): the optics parameters to use for the IBS computations.
+        analytical_ibs (AnalyticalIBS): an internal analytical class for growth rates calculation.
+        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This self-updates
+            when they are computed with the `compute_kick_coefficients` method.
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        super().__init__(beam_params, optics, analytical_implementation=NagaitsevIBS)  # TODO: hard-code?
-        # These self-update when computed, but can be overwritten by the user
-        self.coefficients: DiffusionCoefficients = None  # TODO: check this
+        # TODO: document the below in class docstring
+        """We check for vdisp and use either BjorkenMtingwaIBS or NagaitsevIBS depending on what we see. The analytical
+        approach can be overridden by the user by simply changing the"""
+        super().__init__(beam_params, optics)  # also sets self.kick_coefficients
+        # First, we check that we are above transition and raise and error if not (not applicable)
+        if self.optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
+            LOGGER.error(
+                "The provided optics parameters indication that the machine is below transition, which is incompatible with "
+                "SimpleKickIBS (see documentation). Use the kinetic formalism with KineticKickIBS instead."
+            )
+            raise NotImplementedError(
+                "SimpleKickIBS is not compatible with machine operating below transition. Please see the documentation and "
+                "use the kinetic formalism with KineticKickIBS instead."
+            )
+        # Analytical implementation for growth rates calculation, can be overridden by the user
+        if np.count_nonzero(self.optics.dy) != 0:
+            LOGGER.info(
+                "Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism"
+            )
+            self.analytical_ibs = BjorkenMtingwaIBS(beam_params, optics)
+        else:
+            LOGGER.info("No vertical dispersion in the lattice, using Nagaitsev formalism")
+            self.analytical_ibs = NagaitsevIBS(beam_params, optics)
+        LOGGER.info(
+            "This can be overridden manually, by explicitely setting the self.analytical_ibs attribute"
+        )
+        # Make sure to point these to the right ones so we don't have out of sync attributes
+        self.beam_parameters = self.analytical_ibs.beam_parameters
+        self.optics = self.analytical_ibs.optics
 
     # TODO: double check the return signature after clarifying all coefficients with Michalis
     def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> DiffusionCoefficients:
@@ -350,9 +386,10 @@ class KineticKickIBS(KickBasedIBS):
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        super().__init__(beam_params, optics, analytical_implementation=NagaitsevIBS)  # TODO: hard-code?
+        super().__init__(beam_params, optics)  # also sets self.kick_coefficients
         # These self-update when computed, but can be overwritten by the user
-        self.coefficients: DiffusionCoefficients = None  # TODO: check this
+        self.diffusion_coefficients: DiffusionCoefficients = None
+        self.friction_coefficients: FrictionCoefficients = None
 
     def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> DiffusionCoefficients:
         r"""
