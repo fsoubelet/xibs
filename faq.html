@@ -299,7 +299,7 @@ That’s as much as the user has to think about this.</p>
 <span id="xibs-faq-bunched-coasting-beams"></span><h2>Bunched and Coasting Beams<a class="headerlink" href="#bunched-and-coasting-beams" title="Link to this heading"></a></h2>
 <div class="admonition-this-section-in-short admonition">
 <p class="admonition-title">This section in short</p>
-<p>To simulate coasting beams, set <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunched=False</span></code> when calling the <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method. Two cases appear:</p>
+<p>To simulate coasting beams, set <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunched=False</span></code> when calling the <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method and stop caring about the <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunch_length</span></code> argument. Two cases appear:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>With <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> analytical expressions are adapted, leading to correct results.</p></li>
@@ -325,6 +325,7 @@ To adapt the growth rates calculation for a coasting beam, one simply has to set
 <span class="k">assert</span> <span class="n">rates_bunched</span> <span class="o">!=</span> <span class="n">rates_coasting</span>  <span class="c1"># this is True</span>
 </pre></div>
 </div>
+<p>Note that in both cases, the provided <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunch_length</span></code> argument is irrelevant: if using <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> the changes to analytical formulae take it out of the equation, and if using <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> it is ignored in favor of <span class="math notranslate nohighlight">\(C / 2 \pi\)</span>.</p>
 </section>
 </section>
 </div>
