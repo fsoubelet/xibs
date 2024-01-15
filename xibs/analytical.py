@@ -100,7 +100,9 @@ class AnalyticalIBS(ABC):
         self.ibs_growth_rates: IBSGrowthRates = None
 
     def __str__(self) -> str:
-        has_growth_rates = isinstance(self.ibs_growth_rates, IBSGrowthRates)  # False if default value of None
+        has_growth_rates = isinstance(
+            self.ibs_growth_rates, IBSGrowthRates
+        )  # False if default for value of None
         return (
             f"{self.__class__.__name__} object for analytical IBS calculations.\n"
             f"IBS growth rates computed: {has_growth_rates}"

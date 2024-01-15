@@ -60,15 +60,16 @@ class FrictionCoefficients:
 
 
 @dataclass
-class KineticCoefficients:
+class IBSKickCoefficients:
     """
-    Container dataclass for kinetic IBS coefficients. These are computed from the diffusion
-    and friction ones according to :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
+    Container dataclass for all IBS kick coefficients. These can be the coeffients from simple kicks,
+    computed from analytical growth rates, or kinetic coefficients computed from the diffusion and
+    friction ones according to :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
     """
 
-    Tx: float
-    Ty: float
-    Tz: float
+    Kx: float
+    Ky: float
+    Kz: float
 
 
 # ----- Abstract Base Class to Inherit from ----- #
@@ -83,27 +84,28 @@ class KickBasedIBS(ABC):
     implementations inherit.
 
     Attributes:
-        analytical_ibs (AnalyticalIBS): an analytical IBS class to compute growth rates.
-        beam_parameters (BeamParameters): the beam parameters to use for analytical IBS.
-        optics (OpticsParameters): the optics parameters to use for the analytical IBS.
+        beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
+        optics (OpticsParameters): the optics parameters to use for the IBS computations.
+        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This self-updates
+            when they are computed with the `compute_kick_coefficients` method.
     """
 
-    # TODO: make a choice on the user API (do we give a formalism, provide the rates?)
-    # provide the bp and op, then each subclass hardcodes the formalism? Give choice and use
-    # the dispatcher to call the one asked for by the user? Need to talk with Michalis to
-    # understand the implications of Simple vs Kinetic.
-    def __init__(
-        self, beam_params: BeamParameters, optics: OpticsParameters, analytical_implementation: AnalyticalIBS
-    ) -> None:
-        self.analytical_ibs: AnalyticalIBS = analytical_implementation(beam_params, optics)
-        self.beam_parameters: BeamParameters = self.analytical_ibs.beam_parameters
-        self.optics: OpticsParameters = self.analytical_ibs.optics
+    # TODO: confirm choice. We take beam and optics params to keep constant API through all classes
+    # SimpleKicks will also create an analytical instance from these
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+        self.beam_parameters: BeamParameters = beam_params
+        self.optics: OpticsParameters = optics
         # These self-update when computed, but can be overwritten by the user
-        self.diffusion_coefficients: DiffusionCoefficients = None
-        self.friction_coefficients: FrictionCoefficients = None
+        self.kick_coefficients: IBSKickCoefficients = None
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__} object for kick-based IBS calculations."
+        has_kick_coefficients = isinstance(
+            self.kick_coefficients, IBSKickCoefficients
+        )  # False if default for value of None
+        return (
+            f"{self.__class__.__name__} object for kick-based IBS calculations."
+            f"IBS kick coefficients computed: {has_kick_coefficients}"
+        )
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -159,9 +161,7 @@ class KickBasedIBS(ABC):
         return np.interp(zeta, bin_centers, counts_normed)
 
     @abstractmethod
-    def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs
-    ) -> Union[DiffusionCoefficients, FrictionCoefficients, KineticCoefficients]:
+    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
