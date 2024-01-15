@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.analytical &mdash; xibs 0.4.0 documentation</title>
+  <title>xibs.analytical &mdash; xibs 0.4.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=6c02275b"></script>
+        <script src="../../_static/documentation_options.js?v=c87aa342"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.4.0
+                0.4.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -329,7 +329,7 @@
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Calculate transverse temperature as 2*P*X, i.e. assume the transverse energy is temperature/2</span>
         <span class="c1"># fmt: off</span>
-        <span class="n">Etrans</span> <span class="o">=</span> <span class="p">(</span>  
+        <span class="n">Etrans</span> <span class="o">=</span> <span class="p">(</span>
             <span class="mf">5e8</span>
             <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">gamma_rel</span>
                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">total_energy_eV</span> <span class="o">*</span> <span class="mf">1e-9</span>  <span class="c1"># total energy needed in GeV</span>
@@ -420,7 +420,7 @@
 <span class="sd">            latter have not been computed yet, this method will raise an error. Please</span>
 <span class="sd">            remember to call the instance&#39;s `growth_rates` method first.</span>
 
-<span class="sd">        .. tip::</span>
+<span class="sd">        .. hint::</span>
 <span class="sd">            The calculation is an exponential growth based on the rates :math:`T_{x,y,z}`. It goes</span>
 <span class="sd">            according to the following, where :math:`N` represents the time step:</span>
 
@@ -566,7 +566,7 @@
 <span class="sd">        The instance attribute `self.elliptic_integrals` is automatically updated</span>
 <span class="sd">        with the results of this method. It is used for other calculations.</span>
 
-<span class="sd">        .. tip::</span>
+<span class="sd">        .. hint::</span>
 <span class="sd">            The calculation is done according to the following steps, which are related to different</span>
 <span class="sd">            equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:</span>
 
@@ -671,16 +671,12 @@
 <span class="sd">        respectively. The instance attribute `self.ibs_growth_rates` is automatically updated</span>
 <span class="sd">        with the results of this method when it is called.</span>
 
-<span class="sd">        .. note::</span>
-<span class="sd">            This calculation is done by building on the Nagaitsev integrals. If the</span>
-<span class="sd">            latter have not been computed yet, this method will first log a message</span>
-<span class="sd">            and compute them, then compute the growth rates.</span>
-
 <span class="sd">        .. warning::</span>
-<span class="sd">            Currently this calculation does not take into account vertical dispersion.</span>
-<span class="sd">            We are working on implementing it for a future version.</span>
+<span class="sd">            Currently this calculation does not take into account vertical dispersion. Should you have</span>
+<span class="sd">            any in your lattice, please use the BjorkenMtingwaIBS class instead, which supports it fully.</span>
+<span class="sd">            Supporting vertical dispersion in NagaitsevIBS might be implemented in a future version.</span>
 
-<span class="sd">        .. tip::</span>
+<span class="sd">        .. hint::</span>
 <span class="sd">            The calculation is done according to the following steps, which are related to different</span>
 <span class="sd">            equations in :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`:</span>
 
@@ -690,19 +686,35 @@
 <span class="sd">                - Compute for each plane the full result of Eq (30-32), respectively.</span>
 <span class="sd">                - Plug these into Eq (28) and divide by either :math:`\varepsilon_x, \varepsilon_y` or :math:`\sigma_{\delta}^{2}` (as relevant) to get :math:`1 / \tau`.</span>
 
-<span class="sd">        .. note::</span>
+<span class="sd">            **Note:** As one can see above, this calculation is done by building on the Nagaitsev integrals.</span>
+<span class="sd">            If these have not been computed yet, this method will first log a message and compute them, then</span>
+<span class="sd">            compute the growth rates.</span>
+
+<span class="sd">        .. admonition:: Geometric or Normalized Emittances</span>
+
 <span class="sd">            Both geometric or normalized emittances can be given as input to this function, and it is assumed</span>
 <span class="sd">            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`</span>
 <span class="sd">            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to</span>
-<span class="sd">            geometric emittances, which are used in the computations.</span>
+<span class="sd">            geometric emittances, which are used in the computations. For more information please see the</span>
+<span class="sd">            following :ref:`section of the FAQ &lt;xibs-faq-geom-norm-emittances&gt;`.</span>
+
+<span class="sd">        .. admonition:: Coasting Beams</span>
+
+<span class="sd">            It is possible in this formalism to get an approximation in the case of coasting beams by providing</span>
+<span class="sd">            `bunched=False`. This will as a bunch length :math:`C / 2 \pi` with C the circumference (or length)</span>
+<span class="sd">            of the machine, and a warning will be logged for the user. Additionally the appropriate adjustement</span>
+<span class="sd">            will be made in the Coulomb logarithm calculation, and the resulting growth rates will be divided by</span>
+<span class="sd">            a factor 2 before being returned (see :cite:`ICHEA:Piwinski:IntraBeamScattering`). For fully accurate</span>
+<span class="sd">            results in the case of coasting beams, please use the `BjorkenMtingwaIBS` class instead.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            epsx (float): horizontal geometric or normalized emittance in [m].</span>
 <span class="sd">            epsy (float): vertical geometric or normalized emittance in [m].</span>
 <span class="sd">            sigma_delta (float): momentum spread.</span>
 <span class="sd">            bunch_length (float): the bunch length in [m].</span>
-<span class="sd">            bunched (bool): UNIMPLEMENTED AT THE MOMENT. Whether the beam is bunched or not (coasting).</span>
-<span class="sd">                Defaults to `True`.</span>
+<span class="sd">            bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`. Please note</span>
+<span class="sd">                that this will do an approximation using `bunch_length=C/(2*pi)`. For fully accurate results</span>
+<span class="sd">                in the case of coasting beams, please use the BjorkenMtingwaIBS class instead.</span>
 <span class="sd">            normalized_emittances (bool): whether the provided emittances are</span>
 <span class="sd">                normalized or not. Defaults to `False` (assume geometric emittances).</span>
 <span class="sd">            compute_integrals (bool): if `True`, the Nagaitsev elliptic integrals will be computed</span>
@@ -714,13 +726,11 @@
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Catch and raise an error if the user asks for coasting beam (not implemented yet)</span>
         <span class="k">if</span> <span class="n">bunched</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="s2">&quot;Computing growth rates for coasting beams is currently not supported in this class.&quot;</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Using &#39;bunched=False&#39; in this formalism makes the approximation of bunch length = C/(2*pi). &quot;</span>
+                <span class="s2">&quot;Please use the BjorkenMtingwaIBS class for fully accurate results.&quot;</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s2">&quot;Calculation for coasting beams is not implemented yet in this formalism.&quot;</span>
-                <span class="s2">&quot;Please use the BjorkenMtignwaIBS class instead, which supports this feature.&quot;</span>
-            <span class="p">)</span>
+            <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Make sure we are working with geometric emittances</span>
         <span class="n">geom_epsx</span> <span class="o">=</span> <span class="n">epsx</span> <span class="k">if</span> <span class="n">normalized_emittances</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometric_emittance</span><span class="p">(</span><span class="n">epsx</span><span class="p">)</span>
@@ -739,7 +749,7 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Computing IBS growth rates for defined beam and optics parameters&quot;</span><span class="p">)</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Get the Coulomb logarithm and the rest of the constant term in Eq (30-32)</span>
-        <span class="n">coulomb_logarithm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coulomb_log</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+        <span class="n">coulomb_logarithm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coulomb_log</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">bunched</span><span class="p">)</span>
         <span class="c1"># Then the rest of the constant term in the equation</span>
         <span class="c1"># fmt: off</span>
         <span class="n">rest_of_constant_term</span> <span class="o">=</span> <span class="p">(</span>
@@ -751,9 +761,11 @@
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Compute the full result of Eq (30-32) for each plane | make sure to convert back to float</span>
         <span class="n">Ix</span><span class="p">,</span> <span class="n">Iy</span><span class="p">,</span> <span class="n">Iz</span> <span class="o">=</span> <span class="n">astuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elliptic_integrals</span><span class="p">)</span>
-        <span class="n">Tx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Ix</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">geom_epsx</span><span class="p">)</span>
-        <span class="n">Ty</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Iy</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">geom_epsy</span><span class="p">)</span>
-        <span class="n">Tz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Iz</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Below: if coasting beams since we use bunch_length=C/(2*pi) we have to divide rates by 2 (see Piwinski)</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">bunched</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="mf">2.0</span>
+        <span class="n">Tx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Ix</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">geom_epsx</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span>
+        <span class="n">Ty</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Iy</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">geom_epsy</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span>
+        <span class="n">Tz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Iz</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">IBSGrowthRates</span><span class="p">(</span><span class="n">Tx</span><span class="p">,</span> <span class="n">Ty</span><span class="p">,</span> <span class="n">Tz</span><span class="p">)</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Self-update the instance&#39;s attributes and then return the results</span>
@@ -1265,7 +1277,7 @@
 <span class="sd">            flag `centre=true` to the ``TWISS`` command in ``MAD-X`` for instance. If not, one might</span>
 <span class="sd">            observe some slight discrepancies with the ``MAD-X`` values.</span>
 
-<span class="sd">        .. tip::</span>
+<span class="sd">        .. hint::</span>
 <span class="sd">            The calculation is done according to the following steps, which are related to different</span>
 <span class="sd">            equations in :cite:`CERN:Antoniou:Revision_IBS_MADX`:</span>
 
@@ -1276,11 +1288,13 @@
 <span class="sd">                - Defines sub-intervals and integrates the above over all of them, getting growth rates at each element in the lattice.</span>
 <span class="sd">                - Averages the results over the full circumference of the machine.</span>
 
-<span class="sd">        .. note::</span>
+<span class="sd">        .. admonition:: Geometric or Normalized Emittances</span>
+
 <span class="sd">            Both geometric or normalized emittances can be given as input to this function, and it is assumed</span>
 <span class="sd">            the user provides geomettric emittances. If normalized ones are given the `normalized_emittances`</span>
 <span class="sd">            parameter should be set to `True` (it defaults to `False`). Internally, a conversion is done to</span>
-<span class="sd">            geometric emittances, which are used in the computations.</span>
+<span class="sd">            geometric emittances, which are used in the computations. For more information please see the</span>
+<span class="sd">            following :ref:`section of the FAQ &lt;xibs-faq-geom-norm-emittances&gt;`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            epsx (float): horizontal geometric or normalized emittance in [m].</span>
