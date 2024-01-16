@@ -13,7 +13,7 @@ def test_analytical_ibs_emittance_evolution_raises_if_no_growth_rates(
     xtrack_ps_injection_protons, IBSClass, caplog
 ):
     """
-    Checking that NagaitsevIBS.emittance_evolution raises and error if the calculation
+    Checking that AnalyticalIBS.emittance_evolution raises and error if the calculation
     of the growth rates has not been performed beforehand.
     """
     # --------------------------------------------------------------------
