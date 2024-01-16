@@ -368,7 +368,7 @@ class SimpleKickIBS(KickBasedIBS):
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
-        if self.coefficients is None:
+        if self.kick_coefficients is None:
             LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
             raise AttributeError(
                 "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
