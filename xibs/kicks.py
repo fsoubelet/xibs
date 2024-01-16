@@ -90,8 +90,9 @@ class KickBasedIBS(ABC):
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
         optics (OpticsParameters): the optics parameters to use for the IBS computations.
-        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This self-updates
-            when they are computed with the `compute_kick_coefficients` method. Can also be set manually.
+        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This
+            attribute self-updates when they are computed with the `compute_kick_coefficients`
+            method. It can also be set manually.
     """
 
     # TODO: confirm choice. We take beam and optics params to keep constant API through all classes
@@ -112,8 +113,6 @@ class KickBasedIBS(ABC):
     def __repr__(self) -> str:
         return self.__str__()
 
-    # TODO: remember I moved the 2 * sigma_t * sqrt(pi) term out of this function. It should be
-    # computed and included by the kick application method
     def line_density(self, particles: "xpart.Particles", n_slices: int) -> ArrayLike:
         r"""
         .. versionadded:: 0.5.0
@@ -167,33 +166,26 @@ class KickBasedIBS(ABC):
         r"""
         .. versionadded:: 0.5.0
 
-        TODO: fix docstring when all is set.
-        Abstract method to determine the "coefficients" used in the determination of the IBS kicks.
+        Abstract method to determine the kick coefficients used in the determination of the IBS
+        to be applied. It returns an `IBSKickCoefficients` object with the computed coefficients.
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
-            **kwargs: any keyword arguments will be passed to the growth rates calculation call
-                (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
-                and `bunch_length` are already provided.
         """
-        raise NotImplementedError(
-            "This method should be implemented in all child classes, but it hasn't been for this one."
-        )
+        ...
 
     @abstractmethod
     def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
         r"""
         .. versionadded:: 0.5.0
 
-        TODO: fix docstring when all is set.
-        Abstract method to apply IBS kicks to a `xpart.Particles` object.
+        Abstract method to determine and apply IBS kicks to a `xpart.Particles` object. The
+        momenta kicks are determined from the `self.kick_coefficients` attribute.
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
         """
-        raise NotImplementedError(
-            "This method should be implemented in all child classes, but it hasn't been for this one."
-        )
+        ...
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
@@ -413,8 +405,21 @@ class KineticKickIBS(KickBasedIBS):
     to the kinetic IBS formalism of :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
     The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
 
-    Attributes:
+    TODO: reference, details etc.
 
+    Attributes:
+        beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
+        optics (OpticsParameters): the optics parameters to use for the IBS computations.
+        diffusion_coefficients (DiffusionCoefficients): the computed diffusion coefficients
+            from the kinetic theory. This attribute self-updates when coefficients are computed
+            with the `compute_kick_coefficients` method. It can also be set manually.
+        friction_coefficients (FrictionCoefficients): the computed friction coefficients
+            from the kinetic theory. This attribute self-updates when coefficients are computed
+            with the `compute_kick_coefficients` method. It can also be set manually.
+        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients from
+            the kinetic theory, determined from the diffusion and friction coefficients. This
+            attribute self-updates when coefficients are computed with the `compute_kick_coefficients`
+            method. It can also be set manually.
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
@@ -439,7 +444,7 @@ class KineticKickIBS(KickBasedIBS):
             **kwargs: any keyword arguments will be passed to ???.
 
         Returns:
-            A ??? object with the computed diffusion coefficients.
+            An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
         result = 1
