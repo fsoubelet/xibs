@@ -296,7 +296,7 @@ class OpticsParameters:
 
         if not np.isclose(twiss.c_minus, 0, atol=0, rtol=1e-4):  # there is some betatron coupling
             LOGGER.warning(
-                f"There is betatron coupling in the machine (|Cminus| = {twiss.c_minus:.3f}),"
+                f"There is betatron coupling in the machine (|Cminus| = {twiss.c_minus:.3e}),"
                 "which is not taken into account in analytical calculations."
             )
 
