@@ -266,7 +266,7 @@ class OpticsParameters:
         cminus = madx.table.summ.dqmin[0]  # just to check coupling
         if not np.isclose(cminus, 0, atol=0, rtol=1e-4):  # there is some betatron coupling
             LOGGER.warning(
-                f"There is betatron coupling in the machine (|Cminus| = {cminus:.3e}),"
+                f"There is betatron coupling in the machine (|Cminus| = {cminus:.3e}), "
                 "which is not taken into account in analytical calculations."
             )
 
