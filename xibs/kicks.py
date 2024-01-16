@@ -387,12 +387,13 @@ class SimpleKickIBS(KickBasedIBS):
         # We create the random distribution with loc=0, scale=kick coefficient & size as determined above
         # fmt: off
         LOGGER.debug("Determining kicks to apply")
-        delta_px: np.ndarray = np.random.normal(0, self.coefficients.Kx, _size_x) * np.sqrt(rho_t)
-        delta_py: np.ndarray = np.random.normal(0, self.coefficients.Ky, _size_y) * np.sqrt(rho_t)
-        delta_delta: np.ndarray = np.random.normal(0, self.coefficients.Kz, _size_delta) * np.sqrt(rho_t)
+        delta_px: np.ndarray = np.random.normal(0, self.kick_coefficients.Kx, _size_x) * np.sqrt(rho_t)
+        delta_py: np.ndarray = np.random.normal(0, self.kick_coefficients.Ky, _size_y) * np.sqrt(rho_t)
+        delta_delta: np.ndarray = np.random.normal(0, self.kick_coefficients.Kz, _size_delta) * np.sqrt(rho_t)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles
+        LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
         particles.px[particles.state > 0] += delta_px
         particles.py[particles.state > 0] += delta_py
         particles.delta[particles.state > 0] += delta_delta
