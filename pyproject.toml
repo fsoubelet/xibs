@@ -128,7 +128,7 @@ source = ["xibs/"]  # Tell coverage.py to assess this only (redundant with '--co
 
 [tool.coverage.report]
 ignore_errors = true  # Ignore source code that can’t be found, emit a warning instead
-omit = ["xibs/_old_michalis.py", "xibs/kicks.py"]  # TODO: remove the latter once kicks are implemented
+omit = ["xibs/_old_michalis.py"]
 skip_empty = true  # Don’t report files that have no executable code (e.g. __init__.py).
 precision = 2  # Number of digits after the decimal point to display for reported coverage 
 
