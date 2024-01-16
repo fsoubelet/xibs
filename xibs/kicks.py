@@ -26,7 +26,6 @@ from xibs.inputs import BeamParameters, OpticsParameters
 LOGGER = getLogger(__name__)
 
 # ----- Dataclasses to store results ----- #
-# TODO: clarify the difference between these with Michalis
 
 
 @dataclass
@@ -95,8 +94,6 @@ class KickBasedIBS(ABC):
             method. It can also be set manually.
     """
 
-    # TODO: confirm choice. We take beam and optics params to keep constant API through all classes
-    # SimpleKicks will also create an analytical instance from these
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
@@ -123,7 +120,7 @@ class KickBasedIBS(ABC):
         denser parts of the bunch will receive a larger kick, and vice versa. See section III.C of
         the above reference details.
 
-        .. tip::
+        .. hint::
             The calculation is done according to the following steps:
 
                 - Gets the longitudinal coordinates of the active particles (state > 0) in the `Particles` object.
@@ -184,6 +181,9 @@ class KickBasedIBS(ABC):
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
+
+        Raises:
+            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
         ...
 
@@ -191,8 +191,6 @@ class KickBasedIBS(ABC):
 # ----- Classes to Compute and Apply IBS Kicks ----- #
 
 
-# TODO: update docstring when set on interface
-# From what I understand, the SimpleKicks builds on the analytical growth rates.
 class SimpleKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.5.0
@@ -239,28 +237,27 @@ class SimpleKickIBS(KickBasedIBS):
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         super().__init__(beam_params, optics)  # also sets self.kick_coefficients
         # First, we check that we are above transition and raise and error if not (not applicable)
+        # fmt: off
         if self.optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
             LOGGER.error(
-                "The provided optics parameters indication that the machine is below transition, which is incompatible with "
-                "SimpleKickIBS (see documentation). Use the kinetic formalism with KineticKickIBS instead."
+                "The provided optics parameters indication that the machine is below transition, "
+                "which is incompatible with SimpleKickIBS (see documentation). "
+                "Use the kinetic formalism with KineticKickIBS instead."
             )
             raise NotImplementedError(
-                "SimpleKickIBS is not compatible with machine operating below transition. Please see the documentation and "
-                "use the kinetic formalism with KineticKickIBS instead."
+                "SimpleKickIBS is not compatible with machine operating below transition. "
+                "Please see the documentation and use the kinetic formalism with KineticKickIBS instead."
             )
         # Analytical implementation for growth rates calculation, can be overridden by the user
         if np.count_nonzero(self.optics.dy) != 0:
-            LOGGER.info(
-                "Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism"
-            )
+            LOGGER.info("Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism")
             self.analytical_ibs = BjorkenMtingwaIBS(beam_params, optics)
         else:
             LOGGER.info("No vertical dispersion in the lattice, using Nagaitsev formalism")
             self.analytical_ibs = NagaitsevIBS(beam_params, optics)
-        LOGGER.info(
-            "This can be overridden manually, by explicitely setting the self.analytical_ibs attribute"
-        )
+        LOGGER.info("This can be overridden manually, by explicitely setting the self.analytical_ibs attribute")
         # Make sure to point these to the right ones so we don't have out of sync attributes
+        # fmt: on
         self.beam_parameters = self.analytical_ibs.beam_parameters
         self.optics = self.analytical_ibs.optics
 
@@ -316,8 +313,8 @@ class SimpleKickIBS(KickBasedIBS):
         # fmt: off
         # TODO: why do we take normalized here?
         # TODO: why does Michalis take just the first value of alphas?
-        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
-        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
+        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0]**2)
+        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0]**2)
         # ----------------------------------------------------------------------------------------------
         # Determine scaling factor, corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
@@ -359,14 +356,18 @@ class SimpleKickIBS(KickBasedIBS):
         :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
 
         Args:
-            particles (xpart.Particles): the `xpart.Particles` object to compute the line density for.
-            n_slices (int): the number of slices to use for the computation of the bins.
+            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
+            n_slices (int): the number of slices to use for the computation of the line density.
+                Defaults to 40.
+
+        Raises:
+            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
         if self.coefficients is None:
             LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
-            raise ValueError(
+            raise AttributeError(
                 "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
                 "Please call the `compute_kick_coefficients` method first."
             )
@@ -394,7 +395,6 @@ class SimpleKickIBS(KickBasedIBS):
         particles.delta[particles.state > 0] += delta_delta
 
 
-# TODO: update docstring when set on interface
 # It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev
 # formalism for some reason? Will need to clarify with him.
 class KineticKickIBS(KickBasedIBS):
@@ -460,13 +460,13 @@ class KineticKickIBS(KickBasedIBS):
         TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
+            n_slices (int): the number of slices to use for the computation of the line density.
+                Defaults to 40.
+
+        Raises:
+            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
         # ----------------------------------------------------------------------------------------------
-        # Determine scaling factor corresponding to in 2 * sigma_t * sqrt(pi) Eq (8) of reference
-        zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
-        bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        scaling_factor = 2 * np.pi * bunch_length_rms
-        # ----------------------------------------------------------------------------------------------
-        # TODO: implement the rest
+        # TODO: implement
         pass
