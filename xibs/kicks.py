@@ -34,9 +34,9 @@ class DiffusionCoefficients:
     """Container dataclass for kinetic IBS diffusion coefficients.
 
     Args:
-        Dx (float): horizontal diffusion coefficient in [1/s].
-        Dy (float): vertical diffusion coefficient in [1/s].
-        Dz (float): longitudinal diffusion coefficient in [1/s].
+        Dx (float): horizontal diffusion coefficient.
+        Dy (float): vertical diffusion coefficient.
+        Dz (float): longitudinal diffusion coefficient.
     """
 
     Dx: float
@@ -49,9 +49,9 @@ class FrictionCoefficients:
     """Container dataclass for kinetic IBS friction coefficients.
 
     Args:
-        Fx (float): horizontal friction coefficient in [1/s].
-        Fy (float): vertical friction coefficient in [1/s].
-        Fz (float): longitudinal friction coefficient in [1/s].
+        Fx (float): horizontal friction coefficient.
+        Fy (float): vertical friction coefficient.
+        Fz (float): longitudinal friction coefficient.
     """
 
     Fx: float
@@ -65,6 +65,11 @@ class IBSKickCoefficients:
     Container dataclass for all IBS kick coefficients. These can be the coeffients from simple kicks,
     computed from analytical growth rates, or kinetic coefficients computed from the diffusion and
     friction ones according to :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
+
+    Args:
+        Kx (float): horizontal kick coefficient.
+        Ky (float): vertical kick coefficient.
+        Kz (float): longitudinal kick coefficient.
     """
 
     Kx: float
