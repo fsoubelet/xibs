@@ -211,7 +211,7 @@ for turn in range(1, nturns):
     )
 
     # Compute bunch length analytically as the Particles object hasn't changed
-    bunch_l  = old_turn_by_turn.bunch_length[turn - 1] * np.exp(dt * float(0.5 * MIBS.Ipp))
+    bunch_l = old_turn_by_turn.bunch_length[turn - 1] * np.exp(dt * float(0.5 * MIBS.Ipp))
 
     # Update the records with the new values
     old_turn_by_turn.bunch_length[turn] = bunch_l
