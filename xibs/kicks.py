@@ -103,9 +103,7 @@ class KickBasedIBS(ABC):
         self.kick_coefficients: IBSKickCoefficients = None
 
     def __str__(self) -> str:
-        has_kick_coefficients = isinstance(
-            self.kick_coefficients, IBSKickCoefficients
-        )  # False if default for value of None
+        has_kick_coefficients = isinstance(self.kick_coefficients, IBSKickCoefficients)
         return (
             f"{self.__class__.__name__} object for kick-based IBS calculations."
             f"IBS kick coefficients computed: {has_kick_coefficients}"
