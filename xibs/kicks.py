@@ -322,15 +322,12 @@ class SimpleKickIBS(KickBasedIBS):
         # Determine scaling factor, corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
         bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        # print(bunch_length_rms)
         scaling_factor: float = float(2 * np.pi * bunch_length_rms)
-        # print(scaling_factor)
         # ----------------------------------------------------------------------------------------------
         # Computing the analytical IBS growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
             geom_epsx, geom_epsy, sigma_delta, bunch_length, **kwargs
         )
-        # print(growth_rates)
         Tx, Ty, Tz = astuple(growth_rates)
         # ----------------------------------------------------------------------------------------------
         # Making sure we do not have negative growth rates (see class docstring warning for detail)
@@ -341,14 +338,10 @@ class SimpleKickIBS(KickBasedIBS):
             LOGGER.info("At least one IBS growth rate was negative, and was set to 0.")
         # ----------------------------------------------------------------------------------------------
         # Compute the kick coefficients - this is sigma_{pu} in Eq (8) of reference
+        # TODO: why do we use beta_rel**2 for z coefficient?
         LOGGER.debug("Computing and applying the kicks to the particles")
         Kx: float = scaling_factor * sigma_px_normalized * np.sqrt(2 * Tx / self.optics.revolution_frequency)
-        # print(f"Ty = {Ty}")
-        # print(f"Scaling factor: {scaling_factor}")
-        # print(f"sigma_py_normalized: {sigma_py_normalized}")
-        # print(f"Revolution frequency: {self.optics.revolution_frequency}")
         Ky: float = scaling_factor * sigma_py_normalized * np.sqrt(2 * Ty / self.optics.revolution_frequency)
-        # TODO: why do we use beta_rel**2 for z coefficient?
         Kz: float = scaling_factor * sigma_delta * np.sqrt(2 * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
         result = IBSKickCoefficients(Kx, Ky, Kz)
         # fmt: on
