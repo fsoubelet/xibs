@@ -272,8 +272,7 @@ class SimpleKickIBS(KickBasedIBS):
         self.beam_parameters = self.analytical_ibs.beam_parameters
         self.optics = self.analytical_ibs.optics
 
-    # TODO: double check the return signature after clarifying all coefficients with Michalis
-    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> DiffusionCoefficients:
+    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
