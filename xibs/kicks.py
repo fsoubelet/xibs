@@ -423,7 +423,7 @@ class KineticKickIBS(KickBasedIBS):
         self.diffusion_coefficients: DiffusionCoefficients = None
         self.friction_coefficients: FrictionCoefficients = None
 
-    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> DiffusionCoefficients:
+    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
@@ -436,9 +436,7 @@ class KineticKickIBS(KickBasedIBS):
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
-            **kwargs: any keyword arguments will be passed to the growth rates calculation call
-                (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
-                and `bunch_length` are already provided. TODO: check we actually do that.
+            **kwargs: any keyword arguments will be passed to ???.
 
         Returns:
             A ??? object with the computed diffusion coefficients.
