@@ -6,15 +6,14 @@ IBS: Applying Kicks
 
 Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: simple and kinetic kicks.
 
-In the simple formalism, the applied IBS kicks are determined from analytical IBS growth rates, which are computed internally according to either (see :ref:`xibs-analytical`).
-In the kinetic formalism, the applied IBS kicks are determined from computed diffusion and friction terms.
+In the simple formalism, the applied IBS kicks are determined from analytical IBS growth rates, which are computed internally (see :ref:`xibs-analytical`).
+In the kinetic formalism, which adapts the kinetic theory of gases, the applied IBS kicks are determined from computed diffusion and friction terms.
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 from abc import ABC, abstractmethod
 from dataclasses import astuple, dataclass
 from logging import getLogger
-from typing import Union
 
 import numpy as np
 
@@ -110,7 +109,7 @@ class KickBasedIBS(ABC):
     def __repr__(self) -> str:
         return self.__str__()
 
-    def line_density(self, particles: "xpart.Particles", n_slices: int) -> ArrayLike:
+    def line_density(self, particles: "xpart.Particles", n_slices: int) -> ArrayLike:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 
@@ -159,7 +158,9 @@ class KickBasedIBS(ABC):
         return np.interp(zeta, bin_centers, counts_normed)
 
     @abstractmethod
-    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> IBSKickCoefficients:
+    def compute_kick_coefficients(
+        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+    ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
@@ -172,7 +173,7 @@ class KickBasedIBS(ABC):
         ...
 
     @abstractmethod
-    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:
+    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 
@@ -251,17 +252,19 @@ class SimpleKickIBS(KickBasedIBS):
         # Analytical implementation for growth rates calculation, can be overridden by the user
         if np.count_nonzero(self.optics.dy) != 0:
             LOGGER.info("Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism")
-            self.analytical_ibs = BjorkenMtingwaIBS(beam_params, optics)
+            self.analytical_ibs: AnalyticalIBS = BjorkenMtingwaIBS(beam_params, optics)
         else:
             LOGGER.info("No vertical dispersion in the lattice, using Nagaitsev formalism")
-            self.analytical_ibs = NagaitsevIBS(beam_params, optics)
+            self.analytical_ibs: AnalyticalIBS = NagaitsevIBS(beam_params, optics)
         LOGGER.info("This can be overridden manually, by explicitely setting the self.analytical_ibs attribute")
         # Make sure to point these to the right ones so we don't have out of sync attributes
         # fmt: on
         self.beam_parameters = self.analytical_ibs.beam_parameters
         self.optics = self.analytical_ibs.optics
 
-    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> IBSKickCoefficients:
+    def compute_kick_coefficients(
+        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+    ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
@@ -347,7 +350,7 @@ class SimpleKickIBS(KickBasedIBS):
         self.coefficients = result
         return result
 
-    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:
+    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 
@@ -428,7 +431,9 @@ class KineticKickIBS(KickBasedIBS):
         self.diffusion_coefficients: DiffusionCoefficients = None
         self.friction_coefficients: FrictionCoefficients = None
 
-    def compute_kick_coefficients(self, particles: "xpart.Particles", **kwargs) -> IBSKickCoefficients:
+    def compute_kick_coefficients(
+        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+    ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
 
@@ -453,7 +458,7 @@ class KineticKickIBS(KickBasedIBS):
         self.coefficients = result
         return result
 
-    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:
+    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 

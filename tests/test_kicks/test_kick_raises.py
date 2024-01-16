@@ -7,7 +7,7 @@ import logging
 import pytest
 
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import KickBasedIBS, SimpleKickIBS, KineticKickIBS
+from xibs.kicks import KickBasedIBS, KineticKickIBS, SimpleKickIBS
 
 
 def test_simple_kick_raises_if_below_transition(madx_ps_injection_protons, caplog):
@@ -38,9 +38,7 @@ def test_simple_kick_raises_if_below_transition(madx_ps_injection_protons, caplo
 
 
 @pytest.mark.parametrize("IBSClass", [SimpleKickIBS, KineticKickIBS])
-def test_apply_ibs_kick_raises_if_no_coefficients(
-    xtrack_sps_injection_protons, IBSClass, caplog
-):
+def test_apply_ibs_kick_raises_if_no_coefficients(xtrack_sps_injection_protons, IBSClass, caplog):
     """
     Checking that KickBasedIBS.apply_ibs_kick raises and error if the calculation
     of the kick coefficients has not been performed beforehand.
@@ -50,7 +48,7 @@ def test_apply_ibs_kick_raises_if_no_coefficients(
     # Load xsuite line (PS here because it's smaller/faster) and init IBS
     line = xtrack_sps_injection_protons
     opticsparams = OpticsParameters.from_line(line)
-    beamparams = BeamParameters.from_line(line, n_part=8.1e8) # n_part doesn't matter
+    beamparams = BeamParameters.from_line(line, n_part=8.1e8)  # n_part doesn't matter
     IBS: KickBasedIBS = IBSClass(beamparams, opticsparams)
     # --------------------------------------------------------------------
     # Check the error is raised by .emittance_evolution
