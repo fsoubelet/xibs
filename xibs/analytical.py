@@ -294,7 +294,7 @@ class AnalyticalIBS(ABC):
                 normalized or not. Defaults to `False` (assume geometric emittances).
 
         Raises:
-            ValueError: if the ``IBS`` growth rates have not yet been computed.
+            AttributeError: if the ``IBS`` growth rates have not yet been computed.
 
         Returns:
             A tuple with the new horizontal & vertical geometric emittances, the new
@@ -308,7 +308,7 @@ class AnalyticalIBS(ABC):
         # Check that the IBS growth rates have been computed beforehand
         if self.ibs_growth_rates is None:
             LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise ValueError(
+            raise AttributeError(
                 "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
                 "Please call the `growth_rates` method first."
             )

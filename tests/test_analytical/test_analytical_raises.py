@@ -26,7 +26,7 @@ def test_analytical_ibs_emittance_evolution_raises_if_no_growth_rates(
     IBS = IBSClass(beamparams, opticsparams)
     # --------------------------------------------------------------------
     # Check the error is raised by .emittance_evolution
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         IBS.emittance_evolution(2e-6, 2e-6, 1e-5, 1e-5)  # random values as they don't matter
 
     for record in caplog.records:  # check the logging message
