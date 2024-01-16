@@ -38,6 +38,7 @@ class Params:
 
 # ----- Wrapping functions for setups ----- #
 
+
 def get_madx_ibs_growth_rates(madx: Madx) -> Tuple[float, float, float]:
     """
     Calls IBS module in MAD-X and return the horizontal, vertical and longitudinal growth rates.
@@ -78,7 +79,9 @@ def setup_madx_from_config(madx: Madx, config: Dict, remove_crossing_angles: boo
     lhc_xing_knobs = config.get("lhc_xing_knobs", ())  # IP crossing knobs, only in LHC configs
 
     # ----- Beam, sequence and get parameters from Twiss & Summ tables ----- #
-    madx.command.beam(particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge)
+    madx.command.beam(
+        particle=particle, energy=energy_GeV, mass=particle_mass_GeV, charge=particle_charge
+    )
     madx.call(file=sequence)
     madx.call(file=opticsfile)
     madx.use(sequence=sequence_name)
@@ -124,7 +127,9 @@ def setup_madx_from_config(madx: Madx, config: Dict, remove_crossing_angles: boo
     madx.sequence[sequence_name].beam.sigt = bunch_length_m  # set the bunch length (in [m])
     madx.sequence[sequence_name].beam.sige = dee  # set the relative energy spread
     madx.sequence[sequence_name].beam.npart = bunch_intensity  # number of particles per bunch
-    madx.command.twiss(centre=True)  # center=True in TWISS has a low impact on IBS growth rates calculations
+    madx.command.twiss(
+        centre=True
+    )  # center=True in TWISS has a low impact on IBS growth rates calculations
 
     # ----- Return the values we need for the IBS calculations ----- #
     return Params(geom_epsx=geom_epsx, geom_epsy=geom_epsy, sig_delta=dpp, bunch_length=bunch_length_m)
@@ -153,7 +158,9 @@ def prepare_ibs(madx: Madx) -> BjorkenMtingwaIBS:
     return BjorkenMtingwaIBS(beam_params, optics_params), NagaitsevIBS(beam_params, optics_params)
 
 
-def prepare_all(**kwargs) -> Tuple[Params, Madx, BjorkenMtingwaIBS, NagaitsevIBS]:  # noqa: F821
+def prepare_all(
+    **kwargs,
+) -> Tuple[Params, Madx, BjorkenMtingwaIBS, NagaitsevIBS]:  # noqa: F821
     configname = kwargs.pop("configname", "lhc_injection_protons")
     extrafile = kwargs.pop("extrafile", None)
     params, madx = prepare_madx(configname, extrafile, **kwargs)

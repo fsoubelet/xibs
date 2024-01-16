@@ -13,6 +13,9 @@ We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
 for a positron beam.
 """
 # sphinx_gallery_thumbnail_number = 2
+import logging
+import warnings
+
 from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
@@ -23,6 +26,12 @@ import xtrack as xt
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 
+warnings.simplefilter("ignore")  # for this tutorial's clarity
+logging.basicConfig(
+    level=logging.WARNING,
+    format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+    datefmt="%H:%M:%S",
+)
 plt.rcParams.update(
     {
         "font.family": "serif",
@@ -145,9 +154,9 @@ print(growth_rates)
 print(IBS.ibs_growth_rates)
 
 ###############################################################################
-# Please note that the `IBS.growth_rates` method by default re-computes the 
+# Please note that the `IBS.growth_rates` method by default re-computes the
 # integrals before computing the growth rates. This convenient as usually, one
-# needs to update the integrals when they want to update the growth rates. It 
+# needs to update the integrals when they want to update the growth rates. It
 # can be disabled by setting the `compute_integrals` argument to `False`.
 
 ###############################################################################
@@ -177,6 +186,7 @@ print(f"Next time step bunch length = {new_bunch_length} m")
 nturns = 10_000  # number of turns to loop for
 ibs_step = 200  # frequency at which to re-compute the growth rates in [turns]
 turns = np.arange(nturns, dtype=int)  # array of turns
+
 
 # Set up a dataclass to store the results
 @dataclass
@@ -236,9 +246,7 @@ for turn in range(1, nturns):
 # of the IBS growth rates re-computation. After this is done running, we can plot
 # the evolutions across the turns:
 
-fig, axs = plt.subplot_mosaic(
-    [["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7)
-)
+fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7))
 
 axs["epsx"].plot(turns, 1e10 * turn_by_turn.epsilon_x, lw=2)
 axs["epsy"].plot(turns, 1e13 * turn_by_turn.epsilon_y, lw=2)
