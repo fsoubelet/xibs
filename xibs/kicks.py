@@ -121,7 +121,7 @@ class KickBasedIBS(ABC):
         .. versionadded:: 0.5.0
 
         Returns the "line density" of the `Particles` object, along its longitudinal axis, which
-        corresponds to the :math:`\rho{t}` term in Eq (8) of :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
+        corresponds to the :math:`\rho_t(t)` term in Eq (8) of :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
         The density is used as a weight factor for the application of IBS kicks: particles in the
         denser parts of the bunch will receive a larger kick, and vice versa. See section III.C of
         the above reference details.
@@ -133,7 +133,7 @@ class KickBasedIBS(ABC):
                 - Determines coordinate cuts at front and back of the bunch, as well as slice width.
                 - Determines bin edges and bin centers for the distribution for the chosen number of slices.
                 - Computes a (normalized) histogram of the longitudinal coordinates, with the determined bins.
-                - Computes and returns the line density :math:`\rho{t}`.
+                - Computes and returns the line density :math:`\rho_t(t)`.
 
         Args:
             particles (xpart.Particles): the `xpart.Particles` object to compute the line density for.
@@ -279,61 +279,83 @@ class SimpleKickIBS(KickBasedIBS):
         r"""
         .. versionadded:: 0.5.0
 
-        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
+        Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this
+        code base, from analytical growth rates. The coefficients correspond to the right-hand
+        side of Eq (8) in :cite:`PRAB:Bruce:Simple_IBS_Kicks` without the line density :math:`\rho_t(t)`
+        and random component :math:`r`.
+
+        The kick coefficient corresponds to the scale of the generated random distribution :math:`r` and
+        is expressed as :math:`K_u = \sigma_{p_u} \sqrt{2 T^{-1}_{IBS_u} T_{rev} \sigma_t \sqrt{\pi}}`.
 
         .. note::
-            This functionality is separate from the kick application because it internally triggers
-            the computation of the analytical growth rates, and we don't necessarily want to
-            recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.
+            This functionality is separate from the kick application as it internally
+            triggers the computation of the analytical growth rates. Since this step
+            is computationally intensive and one might not necessarily want to recompute
+            the rates before every kick application.
+
+        .. hint::
+            The calculation is done according to the following steps, which are related to
+            different terms in Eq (8) of :cite:`PRAB:Bruce:Simple_IBS_Kicks`:
+
+                - Computes various properties from the non-lost particles in the bunch (:math:`\sigma_{x,y,\delta,t}`).
+                - Computes the standard deviation of momenta for each plane (:math:`\sigma_{p_u}`).
+                - Computes the constant term :math:`\sqrt{2 T_{rev} \sqrt{\pi}}`.
+                - Computes the analytical growth rates :math:`T_{x,y,z}` (:math:`T^{-1}_{IBS_u}` in Eq (8)).
+                - Computes, stores and returns the kick coefficients.
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
             **kwargs: any keyword arguments will be passed to the growth rates calculation call
                 (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
-                and `bunch_length` are already provided.
+                and `bunch_length` are already provided, as positional-only arguments.
 
         Returns:
-            A `DiffusionCoefficients` object with the computed diffusion coefficients.
+            An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
         # Compute the (geometric) emittances, momentum spread and bunch length from the Particles object
         LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
-        sigma_delta: float = np.std(particles.delta[particles.state > 0])
         bunch_length: float = np.std(particles.zeta[particles.state > 0])
+        sigma_delta: float = np.std(particles.delta[particles.state > 0])
         sigma_x: float = np.std(particles.x[particles.state > 0])
         sigma_y: float = np.std(particles.y[particles.state > 0])
         # TODO: Why does Michalis take only the first value of d[xy] and bet[xy] in here?
         geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
         geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
         # ----------------------------------------------------------------------------------------------
-        # Computing momentum - TODO: same here, why the first value??
-        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(
-            1 + self.optics.alfx[0] ** 2
-        )
-        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(
-            1 + self.optics.alfy[0] ** 2
-        )
+        # Computing standard deviation of momenta, corresponding to sigma_{pu} in Eq (8) of reference
+        # fmt: off
+        # TODO: why do we take normalized here?
+        # TODO: why does Michalis take just the first value of alphas?
+        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
+        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
         # ----------------------------------------------------------------------------------------------
-        # Computing the growth rates
+        # Determine scaling factor, corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
+        zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
+        bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
+        scaling_factor: float = 2 * np.pi * bunch_length_rms
+        # ----------------------------------------------------------------------------------------------
+        # Computing the analytical IBS growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
             geom_epsx, geom_epsy, sigma_delta, bunch_length, **kwargs
         )
         Tx, Ty, Tz = astuple(growth_rates)
-        # TODO: figure out why Michalis did not allow negative values?
-        Tx = 0 if Tx < 0 else Tx
-        Ty = 0 if Ty < 0 else Ty
-        Tz = 0 if Tz < 0 else Tz
         # ----------------------------------------------------------------------------------------------
-        # Compute the "kicks coefficients" (DSx, DSy, DSz from Michalis' mess)
+        # Making sure we do not have negative growth rates (see class docstring warning for detail)
+        # The below is essentially "rate = 0 if rate < 0 else rate" for each of them, but with logging
+        for rate_name, rate_value in zip(("Tx", "Ty", "Tz"), (Tx, Ty, Tz)):
+            if rate_value < 0:
+                LOGGER.info(f"Obtained negative {rate_name} growth rate, setting to 0.")
+                rate_value = 0
+        # ----------------------------------------------------------------------------------------------
+        # Compute the kick coefficients - this is sigma_{pu} in Eq (8) of reference
         LOGGER.debug("Computing and applying the kicks to the particles")
-        DSx = sigma_px_normalized * np.sqrt(2 * Tx / self.optics.revolution_frequency)
-        DSy = sigma_py_normalized * np.sqrt(2 * Ty / self.optics.revolution_frequency)
-        DSz = (
-            sigma_delta
-            * np.sqrt(2 * Tz / self.optics.revolution_frequency)
-            * self.beam_parameters.beta_rel**2
-        )
-        result = DiffusionCoefficients(DSx, DSy, DSz)
+        Kx = scaling_factor * sigma_px_normalized * np.sqrt(2 * Tx / self.optics.revolution_frequency)
+        Ky = scaling_factor * sigma_py_normalized * np.sqrt(2 * Ty / self.optics.revolution_frequency)
+        # TODO: why do we use beta_rel**2 for z coefficient?
+        Kz = scaling_factor * sigma_delta * np.sqrt(2 * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
+        result = IBSKickCoefficients(Kx, Ky, Kz)
+        # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
         self.coefficients = result
@@ -360,34 +382,22 @@ class SimpleKickIBS(KickBasedIBS):
                 "Please call the `compute_kick_coefficients` method first."
             )
         # ----------------------------------------------------------------------------------------------
-        # Compute the line density - this is the rho(t) term in Eq (8) of reference
+        # Compute the line density - this is the rho_t(t) term in Eq (8) of reference
         rho_t: np.ndarray = self.line_density(particles, n_slices)
         # ----------------------------------------------------------------------------------------------
-        # Determine scaling factor, corresponding to in 2 * sigma_t * sqrt(pi) in Eq (8) of reference
-        zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
-        bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        scaling_factor: float = 2 * np.pi * bunch_length_rms
+        # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
+        _size_x: float = particles.px[particles.state > 0].shape[0]
+        _size_y: float = particles.py[particles.state > 0].shape[0]
+        _size_delta: float = particles.delta[particles.state > 0].shape[0]
         # ----------------------------------------------------------------------------------------------
         # Determining kicks to apply - this corresponds to the full result of Eq (8) of reference
+        # We create the random distribution with loc=0, scale=kick coefficient & size as determined above
+        # fmt: off
         LOGGER.debug("Determining kicks to apply")
-        _size_x = particles.px[particles.state > 0].shape[0]
-        delta_px: np.ndarray = (
-            np.random.normal(loc=0, scale=self.coefficients.Dx, size=_size_x)
-            * np.sqrt(rho_t)
-            * np.sqrt(scaling_factor)
-        )
-        _size_y = particles.py[particles.state > 0].shape[0]
-        delta_py: np.ndarray = (
-            np.random.normal(loc=0, scale=self.coefficients.Dy, size=_size_y)
-            * np.sqrt(rho_t)
-            * np.sqrt(scaling_factor)
-        )
-        _size_delta = particles.delta[particles.state > 0].shape[0]
-        delta_delta: np.ndarray = (
-            np.random.normal(loc=0, scale=self.coefficients.Dz, size=_size_delta)
-            * np.sqrt(rho_t)
-            * np.sqrt(scaling_factor)
-        )
+        delta_px: np.ndarray = np.random.normal(0, self.coefficients.Kx, _size_x) * np.sqrt(rho_t)
+        delta_py: np.ndarray = np.random.normal(0, self.coefficients.Ky, _size_y) * np.sqrt(rho_t)
+        delta_delta: np.ndarray = np.random.normal(0, self.coefficients.Kz, _size_delta) * np.sqrt(rho_t)
+        # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles
         particles.px[particles.state > 0] += delta_px
