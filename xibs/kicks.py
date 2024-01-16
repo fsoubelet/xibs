@@ -202,26 +202,42 @@ class SimpleKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.5.0
 
+    A single class to compute the simple IBS kicks based on the analytical growth rates.
+    The kicks are implemented according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`, and provide
+    a random distribution of momenta changes based on the growth rates, weighted by the line
+    density of the bunch. The class initiates from a `BeamParameters` and an `OpticsParameters`
+    objects.
 
     .. warning::
-        Beware: this implementation is only valid **above** transition energy.
+        Beware: this implementation is only valid **above** transition energy. Because this
+        formalism implements a weighted random-component kick, it will *always* lead to
+        emittance growth. Below transition it is common to observe negative growth rates,
+        which would lead to emittance *shrinkage* and therefore the provided kick would have
+        the wrong effect. It is also possible to obtain negative growth rates above transition
+        in some scenarios, and internally this implementation sets the growth rate to 0 if it
+        is found negative. When this happens, a message is logged to inform the user.
 
-    A single class to compute the simple IBS kicks based on the analytical results obtained with
-    `xibs.analytical`. The kicks are implemented according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
-    The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
+    .. hint::
+        When determining kick coefficients (see the `compute_kick_coefficients` method), the
+        analytical growth rates are computed. This is done using one of the analytical classes,
+        which is determined internally based on the optics parameters (namely, the presence of
+        vertical dispersion), and set as the `self.analytical_ibs` attribute. Choices are logged
+        for the user. It is always possible to override this choice by manually setting the
+        `self.analytical_ibs` attribute to an instance of the desired analytical implementation
+        (to be found in ``xibs.analytical``). It is also possible for the user to provide their
+        own, custom-made analytical implementation, as long as it inherits from the `AnalyticalIBS`
+        class and implements the API defined therein.
 
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
         optics (OpticsParameters): the optics parameters to use for the IBS computations.
-        analytical_ibs (AnalyticalIBS): an internal analytical class for growth rates calculation.
+        analytical_ibs (AnalyticalIBS): an internal analytical class for growth rates calculation, which
+            is determined automatically. Can be overridden by the user by setting this attribute manually.
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This self-updates
-            when they are computed with the `compute_kick_coefficients` method.
+            when they are computed with the `compute_kick_coefficients` method. Can also be set manually.
     """
 
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        # TODO: document the below in class docstring
-        """We check for vdisp and use either BjorkenMtingwaIBS or NagaitsevIBS depending on what we see. The analytical
-        approach can be overridden by the user by simply changing the"""
         super().__init__(beam_params, optics)  # also sets self.kick_coefficients
         # First, we check that we are above transition and raise and error if not (not applicable)
         if self.optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
