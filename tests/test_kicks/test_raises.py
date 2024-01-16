@@ -29,6 +29,9 @@ def test_simple_kick_raises_if_below_transition(madx_ps_injection_protons, caplo
 
     for record in caplog.records:  # check the logging message
         assert record.levelname == "ERROR"
-        assert "The provided optics parameters indication that the machine is below transition," in record.message
+        assert (
+            "The provided optics parameters indication that the machine is below transition,"
+            in record.message
+        )
         assert "which is incompatible with SimpleKickIBS (see documentation)" in record.message
         assert "Use the kinetic formalism with KineticKickIBS instead." in record.message
