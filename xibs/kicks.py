@@ -304,10 +304,10 @@ class SimpleKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Compute the (geometric) emittances, momentum spread and bunch length from the Particles object
         LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
-        bunch_length: float = np.std(particles.zeta[particles.state > 0])
-        sigma_delta: float = np.std(particles.delta[particles.state > 0])
-        sigma_x: float = np.std(particles.x[particles.state > 0])
-        sigma_y: float = np.std(particles.y[particles.state > 0])
+        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
+        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
+        sigma_x: float = float(np.std(particles.x[particles.state > 0]))
+        sigma_y: float = float(np.std(particles.y[particles.state > 0]))
         # TODO: Why does Michalis take only the first value of d[xy] and bet[xy] in here?
         geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
         geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
@@ -322,32 +322,39 @@ class SimpleKickIBS(KickBasedIBS):
         # Determine scaling factor, corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
         bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        scaling_factor: float = 2 * np.pi * bunch_length_rms
+        # print(bunch_length_rms)
+        scaling_factor: float = float(2 * np.pi * bunch_length_rms)
+        # print(scaling_factor)
         # ----------------------------------------------------------------------------------------------
         # Computing the analytical IBS growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
             geom_epsx, geom_epsy, sigma_delta, bunch_length, **kwargs
         )
+        # print(growth_rates)
         Tx, Ty, Tz = astuple(growth_rates)
         # ----------------------------------------------------------------------------------------------
         # Making sure we do not have negative growth rates (see class docstring warning for detail)
-        # The below is essentially "rate = 0 if rate < 0 else rate" for each of them, but with logging
-        for rate_name, rate_value in zip(("Tx", "Ty", "Tz"), (Tx, Ty, Tz)):
-            if rate_value < 0:
-                LOGGER.info(f"Obtained negative {rate_name} growth rate, setting to 0.")
-                rate_value = 0
+        Tx = 0 if Tx < 0 else Tx
+        Ty = 0 if Ty < 0 else Ty
+        Tz = 0 if Tz < 0 else Tz
+        if any(rate == 0 for rate in [Tx, Ty, Tz]):
+            LOGGER.info("At least one IBS growth rate was negative, and was set to 0.")
         # ----------------------------------------------------------------------------------------------
         # Compute the kick coefficients - this is sigma_{pu} in Eq (8) of reference
         LOGGER.debug("Computing and applying the kicks to the particles")
-        Kx = scaling_factor * sigma_px_normalized * np.sqrt(2 * Tx / self.optics.revolution_frequency)
-        Ky = scaling_factor * sigma_py_normalized * np.sqrt(2 * Ty / self.optics.revolution_frequency)
+        Kx: float = scaling_factor * sigma_px_normalized * np.sqrt(2 * Tx / self.optics.revolution_frequency)
+        # print(f"Ty = {Ty}")
+        # print(f"Scaling factor: {scaling_factor}")
+        # print(f"sigma_py_normalized: {sigma_py_normalized}")
+        # print(f"Revolution frequency: {self.optics.revolution_frequency}")
+        Ky: float = scaling_factor * sigma_py_normalized * np.sqrt(2 * Ty / self.optics.revolution_frequency)
         # TODO: why do we use beta_rel**2 for z coefficient?
-        Kz = scaling_factor * sigma_delta * np.sqrt(2 * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
+        Kz: float = scaling_factor * sigma_delta * np.sqrt(2 * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
         result = IBSKickCoefficients(Kx, Ky, Kz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
-        self.coefficients = result
+        self.kick_coefficients = result
         return result
 
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
