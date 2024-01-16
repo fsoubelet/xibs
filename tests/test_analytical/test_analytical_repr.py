@@ -1,9 +1,5 @@
 """
-Tests in here check that the REPRs of the NagaitsevIBS and 
-the analytical classes for some edge cases. For example, that 
-class logs a message if the calculation of the integrals has not been performed
-beforehand when asking for the growth rates, and then performs the calculation
-(also for the growth rates).
+Tests in here check that the REPRs of the analytical classes work as intended.
 """
 import warnings
 
