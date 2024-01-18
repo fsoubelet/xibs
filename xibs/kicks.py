@@ -14,7 +14,7 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 from abc import ABC, abstractmethod
 from dataclasses import astuple, dataclass
 from logging import getLogger
-
+from typing import Union, Self
 import numpy as np
 
 from numpy.typing import ArrayLike
@@ -23,6 +23,8 @@ from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, Na
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
+
+Scalar = Union[int, float]
 
 # ----- Dataclasses to store results ----- #
 
@@ -73,6 +75,62 @@ class IBSKickCoefficients:
     Kx: float
     Ky: float
     Kz: float
+
+    def __mul__(self, other: Scalar) -> "IBSKickCoefficients":
+        """Multiply the kick coefficients by a scalar."""
+        assert isinstance(other, Scalar), "Can only multiply IBSKickCoefficients by a scalar."
+        return self.__class__(self.Kx * other, self.Ky * other, self.Kz * other)
+
+    def __rmul__(self, other: Scalar) -> "IBSKickCoefficients":
+        """Multiply the kick coefficients by a scalar."""
+        return self.__mul__(other)
+
+    def __pow__(self, other: Scalar) -> "IBSKickCoefficients":
+        """Elevate the kick coefficients to a scalar power."""
+        assert isinstance(other, Scalar), "Can only multiply IBSKickCoefficients by a scalar."
+        return self.__class__(self.Kx**other, self.Ky**other, self.Kz**other)
+
+    def __truediv__(self, other: Scalar) -> "IBSKickCoefficients":
+        """Divide the kick coefficients by a scalar."""
+        assert isinstance(other, Scalar), "Can only divide IBSKickCoefficients by a scalar."
+        return self.__class__(self.Kx / other, self.Ky / other, self.Kz / other)
+    
+    def __floordiv__(self, other: Scalar) -> "IBSKickCoefficients":
+        """Do the Euclidian division of the kick coefficients by a scalar."""
+        assert isinstance(other, Scalar), "Can only divide IBSKickCoefficients by a scalar."
+        return self.__class__(self.Kx // other, self.Ky // other, self.Kz // other)
+
+    def __add__(self, other: Union[Scalar, "IBSKickCoefficients"]) -> "IBSKickCoefficients":
+        """Add a scalar to the kick coefficients, or two kick coefficients."""
+        assert isinstance(other, (Scalar, self.__class__)), "Can only add IBSKickCoefficients to a scalar or another IBSKickCoefficients."
+        if isinstance(other, Scalar):
+            return self.__class__(self.Kx + other, self.Ky + other, self.Kz + other)
+        else:
+            return self.__class__(self.Kx + other.Kx, self.Ky + other.Ky, self.Kz + other.Kz)
+    
+    def __sub__(self, other: Union[Scalar, "IBSKickCoefficients"]) -> "IBSKickCoefficients":
+        """Subtract two kick coefficients."""
+        assert isinstance(other, (Scalar, self.__class__)), "Can only subtract IBSKickCoefficients from a scalar or another IBSKickCoefficients."
+        if isinstance(other, Scalar):
+            return self.__class__(self.Kx - other, self.Ky - other, self.Kz - other)
+        else:
+            return self.__class__(self.Kx - other.Kx, self.Ky - other.Ky, self.Kz - other.Kz)
+
+    def __neg__(self) -> "IBSKickCoefficients":
+        """Negate the kick coefficients."""
+        return self.__class__(-self.Kx, -self.Ky, -self.Kz)
+
+    def __abs__(self) -> "IBSKickCoefficients":
+        """Take the absolute value of the kick coefficients."""
+        return self.__class__(abs(self.Kx), abs(self.Ky), abs(self.Kz))
+
+    def __eq__(self, other: IBSKickCoefficients) -> bool:
+        """Check equality of two kick coefficients."""
+        return self.Kx == other.Kx and self.Ky == other.Ky and self.Kz == other.Kz
+    
+    def __ne__(self, other: IBSKickCoefficients) -> bool:
+        """Check inequality of two kick coefficients."""
+        return not self.__eq__(other)
 
 
 # ----- Abstract Base Class to Inherit from ----- #
