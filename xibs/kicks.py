@@ -312,7 +312,6 @@ class SimpleKickIBS(KickBasedIBS):
         # TODO: Confirm it is because bunch is at element 0 and we want the value where the bunch is?
         geom_epsx: float = (sigma_x**2 - (self.analytical_ibs.optics.dx[0] * sigma_delta)**2) / self.analytical_ibs.optics.betx[0]
         geom_epsy: float = (sigma_y**2 - (self.analytical_ibs.optics.dy[0] * sigma_delta)**2) / self.analytical_ibs.optics.bety[0]
-        # geom_epsy: float = sigma_y**2 / self.analytical_ibs.optics.bety[0]
         # ----------------------------------------------------------------------------------------------
         # Computing standard deviation of momenta, corresponding to sigma_{pu} in Eq (8) of reference
         # fmt: off
