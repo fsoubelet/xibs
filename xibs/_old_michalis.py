@@ -353,6 +353,8 @@ class MichalisIBS:
     def apply_simple_kick(self, particles) -> None:
         """Applies the computed simple kick evolutions from Nagaitsev integrals (via method above) to the particle objects."""
         rho = self.line_density(40, particles)
+        # TODO: why does Michalis use DS[xyz] for the stdev of the distribution when it's a scaling factor?
+        # TODO: this is not what the description of r in the paper says
         Dkick_x = np.random.normal(
             loc=0, scale=self.DSx, size=particles.px[particles.state > 0].shape[0]
         ) * np.sqrt(rho)
@@ -363,6 +365,9 @@ class MichalisIBS:
             loc=0, scale=self.DSz, size=particles.delta[particles.state > 0].shape[0]
         ) * np.sqrt(rho)
 
+        # print(f"His Delta px: {Dkick_x}")
+        # print(f"His Delta py: {Dkick_y}")
+        # print(f"His Delta pz: {Dkick_p}")
         particles.px[particles.state > 0] += Dkick_x
         particles.py[particles.state > 0] += Dkick_y
         particles.delta[particles.state > 0] += Dkick_p
