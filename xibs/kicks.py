@@ -14,7 +14,6 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 from abc import ABC, abstractmethod
 from dataclasses import astuple, dataclass
 from logging import getLogger
-from typing import Union, Self
 import numpy as np
 
 from numpy.typing import ArrayLike
@@ -24,7 +23,6 @@ from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
 
-Scalar = Union[int, float]
 
 # ----- Dataclasses to store results ----- #
 
@@ -75,62 +73,6 @@ class IBSKickCoefficients:
     Kx: float
     Ky: float
     Kz: float
-
-    def __mul__(self, other: Scalar) -> "IBSKickCoefficients":
-        """Multiply the kick coefficients by a scalar."""
-        assert isinstance(other, Scalar), "Can only multiply IBSKickCoefficients by a scalar."
-        return self.__class__(self.Kx * other, self.Ky * other, self.Kz * other)
-
-    def __rmul__(self, other: Scalar) -> "IBSKickCoefficients":
-        """Multiply the kick coefficients by a scalar."""
-        return self.__mul__(other)
-
-    def __pow__(self, other: Scalar) -> "IBSKickCoefficients":
-        """Elevate the kick coefficients to a scalar power."""
-        assert isinstance(other, Scalar), "Can only multiply IBSKickCoefficients by a scalar."
-        return self.__class__(self.Kx**other, self.Ky**other, self.Kz**other)
-
-    def __truediv__(self, other: Scalar) -> "IBSKickCoefficients":
-        """Divide the kick coefficients by a scalar."""
-        assert isinstance(other, Scalar), "Can only divide IBSKickCoefficients by a scalar."
-        return self.__class__(self.Kx / other, self.Ky / other, self.Kz / other)
-    
-    def __floordiv__(self, other: Scalar) -> "IBSKickCoefficients":
-        """Do the Euclidian division of the kick coefficients by a scalar."""
-        assert isinstance(other, Scalar), "Can only divide IBSKickCoefficients by a scalar."
-        return self.__class__(self.Kx // other, self.Ky // other, self.Kz // other)
-
-    def __add__(self, other: Union[Scalar, "IBSKickCoefficients"]) -> "IBSKickCoefficients":
-        """Add a scalar to the kick coefficients, or two kick coefficients."""
-        assert isinstance(other, (Scalar, self.__class__)), "Can only add IBSKickCoefficients to a scalar or another IBSKickCoefficients."
-        if isinstance(other, Scalar):
-            return self.__class__(self.Kx + other, self.Ky + other, self.Kz + other)
-        else:
-            return self.__class__(self.Kx + other.Kx, self.Ky + other.Ky, self.Kz + other.Kz)
-    
-    def __sub__(self, other: Union[Scalar, "IBSKickCoefficients"]) -> "IBSKickCoefficients":
-        """Subtract two kick coefficients."""
-        assert isinstance(other, (Scalar, self.__class__)), "Can only subtract IBSKickCoefficients from a scalar or another IBSKickCoefficients."
-        if isinstance(other, Scalar):
-            return self.__class__(self.Kx - other, self.Ky - other, self.Kz - other)
-        else:
-            return self.__class__(self.Kx - other.Kx, self.Ky - other.Ky, self.Kz - other.Kz)
-
-    def __neg__(self) -> "IBSKickCoefficients":
-        """Negate the kick coefficients."""
-        return self.__class__(-self.Kx, -self.Ky, -self.Kz)
-
-    def __abs__(self) -> "IBSKickCoefficients":
-        """Take the absolute value of the kick coefficients."""
-        return self.__class__(abs(self.Kx), abs(self.Ky), abs(self.Kz))
-
-    def __eq__(self, other: IBSKickCoefficients) -> bool:
-        """Check equality of two kick coefficients."""
-        return self.Kx == other.Kx and self.Ky == other.Ky and self.Kz == other.Kz
-    
-    def __ne__(self, other: IBSKickCoefficients) -> bool:
-        """Check inequality of two kick coefficients."""
-        return not self.__eq__(other)
 
 
 # ----- Abstract Base Class to Inherit from ----- #
@@ -331,7 +273,7 @@ class SimpleKickIBS(KickBasedIBS):
         side of Eq (8) in :cite:`PRAB:Bruce:Simple_IBS_Kicks` without the line density :math:`\rho_t(t)`
         and random component :math:`r`.
 
-        The kick coefficient corresponds to the scale of the generated random distribution :math:`r` and
+        The kick coefficient corresponds to the scaling of the generated random distribution :math:`r` and
         is expressed as :math:`K_u = \sigma_{p_u} \sqrt{2 T^{-1}_{IBS_u} T_{rev} \sigma_t \sqrt{\pi}}`.
 
         .. note::
@@ -441,17 +383,22 @@ class SimpleKickIBS(KickBasedIBS):
         _size_y: float = particles.py[particles.state > 0].shape[0]
         _size_delta: float = particles.delta[particles.state > 0].shape[0]
         # ----------------------------------------------------------------------------------------------
-        # Determining kicks to apply - this corresponds to the full result of Eq (8) of reference
-        # We create the random distribution with loc=0, scale=kick coefficient & size as determined above
+        # Determining kicks - this corresponds to the full result of Eq (8) of reference: a standard normal
+        # distribution (see description: r is Gaussian random number with zero mean and unit standard deviation),
+        # then the rest of the equation as a factor
         # fmt: off
         LOGGER.debug("Determining kicks to apply")
-        delta_px: np.ndarray = np.random.normal(0, self.kick_coefficients.Kx, _size_x) * np.sqrt(rho_t)
-        delta_py: np.ndarray = np.random.normal(0, self.kick_coefficients.Ky, _size_y) * np.sqrt(rho_t)
-        delta_delta: np.ndarray = np.random.normal(0, self.kick_coefficients.Kz, _size_delta) * np.sqrt(rho_t)
+        RNG = np.random.default_rng()
+        delta_px: np.ndarray = RNG.standard_normal(_size_x) * self.kick_coefficients.Kx * np.sqrt(rho_t)
+        delta_py: np.ndarray = RNG.standard_normal(_size_y) * self.kick_coefficients.Ky *  np.sqrt(rho_t)
+        delta_delta: np.ndarray = RNG.standard_normal(_size_delta) * self.kick_coefficients.Kz * np.sqrt(rho_t)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles
         LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
+        # print(f"My Delta px: {delta_px}")
+        # print(f"My Delta py: {delta_py}")
+        # print(f"My Delta delta: {delta_delta}")
         particles.px[particles.state > 0] += delta_px
         particles.py[particles.state > 0] += delta_py
         particles.delta[particles.state > 0] += delta_delta
