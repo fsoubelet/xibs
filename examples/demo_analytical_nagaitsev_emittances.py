@@ -211,7 +211,7 @@ turn_by_turn = Records(
 turn_by_turn.bunch_length[0] = np.std(particles.zeta[particles.state > 0])
 turn_by_turn.sig_delta[0] = sig_delta
 turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
+turn_by_turn.epsilon_y[0] = (sig_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
 
 # We loop here now
 for turn in range(1, nturns):
