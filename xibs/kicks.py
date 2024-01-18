@@ -309,20 +309,21 @@ class SimpleKickIBS(KickBasedIBS):
         sigma_x: float = float(np.std(particles.x[particles.state > 0]))
         sigma_y: float = float(np.std(particles.y[particles.state > 0]))
         # TODO: Why does Michalis take only the first value of d[xy] and bet[xy] in here?
-        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
-        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
+        # TODO: Confirm it is because bunch is at element 0 and we want the value where the bunch is?
+        geom_epsx: float = (sigma_x**2 - (self.analytical_ibs.optics.dx[0] * sigma_delta)**2) / self.analytical_ibs.optics.betx[0]
+        geom_epsy: float = (sigma_y**2 - (self.analytical_ibs.optics.dy[0] * sigma_delta)**2) / self.analytical_ibs.optics.bety[0]
+        # geom_epsy: float = sigma_y**2 / self.analytical_ibs.optics.bety[0]
         # ----------------------------------------------------------------------------------------------
         # Computing standard deviation of momenta, corresponding to sigma_{pu} in Eq (8) of reference
         # fmt: off
-        # TODO: why do we take normalized here?
-        # TODO: why does Michalis take just the first value of alphas?
+        # TODO: why do we take normalized here? How does this normalization work?
         sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0]**2)
         sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0]**2)
         # ----------------------------------------------------------------------------------------------
         # Determine scaling factor, corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
         bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        scaling_factor: float = float(2 * np.pi * bunch_length_rms)
+        scaling_factor: float = float(2 * np.sqrt(np.pi) * bunch_length_rms)
         # ----------------------------------------------------------------------------------------------
         # Computing the analytical IBS growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
@@ -340,8 +341,8 @@ class SimpleKickIBS(KickBasedIBS):
         # Compute the kick coefficients - this is sigma_{pu} in Eq (8) of reference
         # TODO: why do we use beta_rel**2 for z coefficient?
         LOGGER.debug("Computing and applying the kicks to the particles")
-        Kx: float = scaling_factor * sigma_px_normalized * np.sqrt(2 * Tx / self.optics.revolution_frequency)
-        Ky: float = scaling_factor * sigma_py_normalized * np.sqrt(2 * Ty / self.optics.revolution_frequency)
+        Kx: float = scaling_factor * sigma_px_normalized * np.sqrt(2 * Tx / self.analytical_ibs.optics.revolution_frequency)
+        Ky: float = scaling_factor * sigma_py_normalized * np.sqrt(2 * Ty / self.analytical_ibs.optics.revolution_frequency)
         Kz: float = scaling_factor * sigma_delta * np.sqrt(2 * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
         result = IBSKickCoefficients(Kx, Ky, Kz)
         # fmt: on
