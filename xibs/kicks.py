@@ -468,7 +468,7 @@ class ReproductionKick(KickBasedIBS):
         self.optics = self.analytical_ibs.optics
         # fmt: on
 
-    def _factor(particles: "xpart.Particles") -> float:  # noqa: F821
+    def _factor(self, particles: "xpart.Particles") -> float:  # noqa: F821
         # ----------------------------------------------------------------------------------------------
         # Determine scaling factor, corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
