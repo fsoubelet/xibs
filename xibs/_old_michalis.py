@@ -355,19 +355,12 @@ class MichalisIBS:
         rho = self.line_density(40, particles)
         # TODO: why does Michalis use DS[xyz] for the stdev of the distribution when it's a scaling factor?
         # TODO: this is not what the description of r in the paper says
-        Dkick_x = np.random.normal(
-            loc=0, scale=self.DSx, size=particles.px[particles.state > 0].shape[0]
-        ) * np.sqrt(rho)
-        Dkick_y = np.random.normal(
-            loc=0, scale=self.DSy, size=particles.py[particles.state > 0].shape[0]
-        ) * np.sqrt(rho)
-        Dkick_p = np.random.normal(
-            loc=0, scale=self.DSz, size=particles.delta[particles.state > 0].shape[0]
-        ) * np.sqrt(rho)
-
-        # print(f"His Delta px: {Dkick_x}")
-        # print(f"His Delta py: {Dkick_y}")
-        # print(f"His Delta pz: {Dkick_p}")
+        RNG = np.random.default_rng()
+        print(self.DSx, self.DSy, self.DSz)
+        _size: float = particles.px[particles.state > 0].shape[0]  # same for py and delta
+        Dkick_x = RNG.normal(loc=0, scale=self.DSx, size=_size) * np.sqrt(rho)
+        Dkick_y = RNG.normal(loc=0, scale=self.DSy, size=_size) * np.sqrt(rho)
+        Dkick_p = RNG.normal(loc=0, scale=self.DSz, size=_size) * np.sqrt(rho)
         particles.px[particles.state > 0] += Dkick_x
         particles.py[particles.state > 0] += Dkick_y
         particles.delta[particles.state > 0] += Dkick_p
