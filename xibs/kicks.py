@@ -548,9 +548,10 @@ class ReproductionKick(KickBasedIBS):
         # fmt: off
         LOGGER.debug("Determining kicks to apply")
         RNG = np.random.default_rng()
-        delta_px: np.ndarray = RNG.normal(0, self.kick_coefficients.Kx, _size) * np.sqrt(rho_t)
-        delta_py: np.ndarray = RNG.normal(0, self.kick_coefficients.Ky, _size) *  np.sqrt(rho_t)
-        delta_delta: np.ndarray = RNG.normal(0, self.kick_coefficients.Kz, _size) * np.sqrt(rho_t)
+        print(self.kick_coefficients)
+        delta_px: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kx, size=_size) * np.sqrt(rho_t)
+        delta_py: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Ky, size=_size) *  np.sqrt(rho_t)
+        delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles
