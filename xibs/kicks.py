@@ -272,7 +272,7 @@ class SimpleKickIBS(KickBasedIBS):
         self._analytical_ibs = value
         LOGGER.debug("Re-pointing the instance's beam and optics parameters to that of the new analytical implementation")
         self.beam_parameters = self.analytical_ibs.beam_parameters
-        self.optics = self.optics
+        self.optics = self.analytical_ibs.optics
 
     def compute_kick_coefficients(
         self, particles: "xpart.Particles", **kwargs  # noqa: F821
@@ -459,7 +459,7 @@ class ReproductionKick(KickBasedIBS):
         self._analytical_ibs = value
         LOGGER.debug("Re-pointing the instance's beam and optics parameters to that of the new analytical implementation")
         self.beam_parameters = self.analytical_ibs.beam_parameters
-        self.optics = self.optics
+        self.optics = self.analytical_ibs.optics
 
     def _factor(particles: "xpart.Particles") -> float:  # noqa: F821
         # ----------------------------------------------------------------------------------------------
