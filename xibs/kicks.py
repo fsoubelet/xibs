@@ -238,7 +238,7 @@ class SimpleKickIBS(KickBasedIBS):
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         # fmt: off
         # First, we check that we are above transition and raise and error if not (not applicable)
-        if self.optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
+        if optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
             LOGGER.error(
                 "The provided optics parameters indication that the machine is below transition, "
                 "which is incompatible with SimpleKickIBS (see documentation). "
@@ -425,7 +425,7 @@ class ReproductionKick(KickBasedIBS):
     def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
         # fmt: off
         # First, we check that we are above transition and raise and error if not (not applicable)
-        if self.optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
+        if optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
             LOGGER.error(
                 "The provided optics parameters indication that the machine is below transition, "
                 "which is incompatible with SimpleKickIBS (see documentation). "
