@@ -540,7 +540,7 @@ class ReproductionKick(KickBasedIBS):
         rho_t: np.ndarray = self._michalis_line_density(particles, n_slices)  # includes _factor
         # ----------------------------------------------------------------------------------------------
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
-        _size: float = particles.px[particles.state > 0].shape[0]  # same for py and delta
+        _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
         # ----------------------------------------------------------------------------------------------
         # Determining kicks - this corresponds to the full result of Eq (8) of reference: a standard normal
         # distribution (see description: r is Gaussian random number with zero mean and unit standard deviation),
@@ -548,7 +548,6 @@ class ReproductionKick(KickBasedIBS):
         # fmt: off
         LOGGER.debug("Determining kicks to apply")
         RNG = np.random.default_rng()
-        print(self.kick_coefficients)
         delta_px: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kx, size=_size) * np.sqrt(rho_t)
         delta_py: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Ky, size=_size) *  np.sqrt(rho_t)
         delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t)
