@@ -14,6 +14,7 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 from abc import ABC, abstractmethod
 from dataclasses import astuple, dataclass
 from logging import getLogger
+
 import numpy as np
 
 from numpy.typing import ArrayLike
@@ -270,7 +271,9 @@ class SimpleKickIBS(KickBasedIBS):
         """The analytical_ibs has a setter so that .beam_params and .optics are updated when it is set."""
         LOGGER.debug("Overwriting the analytical ibs implementation used for growth rates calculation")
         self._analytical_ibs = value
-        LOGGER.debug("Re-pointing the instance's beam and optics parameters to that of the new analytical implementation")
+        LOGGER.debug(
+            "Re-pointing the instance's beam and optics parameters to that of the new analytical implementation"
+        )
         self.beam_parameters = self.analytical_ibs.beam_parameters
         self.optics = self.analytical_ibs.optics
 
@@ -322,8 +325,8 @@ class SimpleKickIBS(KickBasedIBS):
         sigma_y: float = float(np.std(particles.y[particles.state > 0]))
         # TODO: Why does Michalis take only the first value of d[xy] and bet[xy] in here?
         # TODO: Confirm it is because bunch is at element 0 and we want the value where the bunch is?
-        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta)**2) / self.optics.betx[0]
-        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta)**2) / self.optics.bety[0]
+        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
+        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
         # ----------------------------------------------------------------------------------------------
         # Computing standard deviation of momenta, corresponding to sigma_{pu} in Eq (8) of reference
         # fmt: off
@@ -415,9 +418,11 @@ class SimpleKickIBS(KickBasedIBS):
         particles.py[particles.state > 0] += delta_py
         particles.delta[particles.state > 0] += delta_delta
 
+
 # ---------------------------------------------------------------- #
 # ----- THIS IS TESTING FOR NOW AND SHOULD / WILL BE REMOVED ----- #
 # ---------------------------------------------------------------- #
+
 
 class ReproductionKick(KickBasedIBS):
     """SimpleKickIBS but trying to reproduce exactly the weird things Michalis did."""
@@ -455,11 +460,13 @@ class ReproductionKick(KickBasedIBS):
     @analytical_ibs.setter
     def analytical_ibs(self, value: AnalyticalIBS) -> None:
         """The analytical_ibs has a setter so that .beam_params and .optics are updated when it is set."""
+        # fmt: off
         LOGGER.debug("Overwriting the analytical ibs implementation used for growth rates calculation")
         self._analytical_ibs = value
         LOGGER.debug("Re-pointing the instance's beam and optics parameters to that of the new analytical implementation")
         self.beam_parameters = self.analytical_ibs.beam_parameters
         self.optics = self.analytical_ibs.optics
+        # fmt: on
 
     def _factor(particles: "xpart.Particles") -> float:  # noqa: F821
         # ----------------------------------------------------------------------------------------------
@@ -473,46 +480,9 @@ class ReproductionKick(KickBasedIBS):
         rho_t: np.ndarray = self.line_density(particles, n_slices)
         return rho_t * self._factor(particles)
 
-    # TODO - go from here
     def compute_kick_coefficients(
         self, particles: "xpart.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
-        r"""
-        .. versionadded:: 0.5.0
-
-        Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this
-        code base, from analytical growth rates. The coefficients correspond to the right-hand
-        side of Eq (8) in :cite:`PRAB:Bruce:Simple_IBS_Kicks` without the line density :math:`\rho_t(t)`
-        and random component :math:`r`.
-
-        The kick coefficient corresponds to the scaling of the generated random distribution :math:`r` and
-        is expressed as :math:`K_u = \sigma_{p_u} \sqrt{2 T^{-1}_{IBS_u} T_{rev} \sigma_t \sqrt{\pi}}`.
-
-        .. note::
-            This functionality is separate from the kick application as it internally
-            triggers the computation of the analytical growth rates. Since this step
-            is computationally intensive and one might not necessarily want to recompute
-            the rates before every kick application.
-
-        .. hint::
-            The calculation is done according to the following steps, which are related to
-            different terms in Eq (8) of :cite:`PRAB:Bruce:Simple_IBS_Kicks`:
-
-                - Computes various properties from the non-lost particles in the bunch (:math:`\sigma_{x,y,\delta,t}`).
-                - Computes the standard deviation of momenta for each plane (:math:`\sigma_{p_u}`).
-                - Computes the constant term :math:`\sqrt{2 T_{rev} \sqrt{\pi}}`.
-                - Computes the analytical growth rates :math:`T_{x,y,z}` (:math:`T^{-1}_{IBS_u}` in Eq (8)).
-                - Computes, stores and returns the kick coefficients.
-
-        Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
-            **kwargs: any keyword arguments will be passed to the growth rates calculation call
-                (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
-                and `bunch_length` are already provided, as positional-only arguments.
-
-        Returns:
-            An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
-        """
         # ----------------------------------------------------------------------------------------------
         # Compute the (geometric) emittances, momentum spread and bunch length from the Particles object
         LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
@@ -520,14 +490,13 @@ class ReproductionKick(KickBasedIBS):
         sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
         sigma_x: float = float(np.std(particles.x[particles.state > 0]))
         sigma_y: float = float(np.std(particles.y[particles.state > 0]))
-        # TODO: Why does Michalis take only the first value of d[xy] and bet[xy] in here?
-        # TODO: Confirm it is because bunch is at element 0 and we want the value where the bunch is?
-        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta)**2) / self.optics.betx[0]
-        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta)**2) / self.optics.bety[0]
+        # For d[xy] and bet[xy] we want the value where the bunch is, here we assume at start of machine
+        # but to be modified when we include these things into xtrack
+        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
+        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
         # ----------------------------------------------------------------------------------------------
         # Computing standard deviation of momenta, corresponding to sigma_{pu} in Eq (8) of reference
         # fmt: off
-        # TODO: why do we take normalized here? How does this normalization work?
         sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0]**2)
         sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0]**2)
         # ----------------------------------------------------------------------------------------------
@@ -538,11 +507,11 @@ class ReproductionKick(KickBasedIBS):
         Tx, Ty, Tz = astuple(growth_rates)
         # ----------------------------------------------------------------------------------------------
         # Making sure we do not have negative growth rates (see class docstring warning for detail)
-        Tx = 0 if Tx < 0 else Tx
-        Ty = 0 if Ty < 0 else Ty
-        Tz = 0 if Tz < 0 else Tz
+        Tx = 0.0 if Tx < 0 else float(Tx)
+        Ty = 0.0 if Ty < 0 else float(Ty)
+        Tz = 0.0 if Tz < 0 else float(Tz)
         if any(rate == 0 for rate in (Tx, Ty, Tz)):
-            LOGGER.info("At least one IBS growth rate was negative, and was set to 0.")
+            LOGGER.info("At least one IBS growth rate was negative, and was set to 0")
         # ----------------------------------------------------------------------------------------------
         # Compute the kick coefficients - this is sigma_{pu} in Eq (8) of reference
         # TODO: why do we use beta_rel**2 for z coefficient?
@@ -558,21 +527,6 @@ class ReproductionKick(KickBasedIBS):
         return result
 
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
-        r"""
-        .. versionadded:: 0.5.0
-
-        Compute the momentum kick to apply based on the provided `xpart.Particles` object and the
-        analytical growth rates for the lattice. The kicks are implemented according to Eq (8) of
-        :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
-
-        Args:
-            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
-            n_slices (int): the number of slices to use for the computation of the line density.
-                Defaults to 40.
-
-        Raises:
-            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
-        """
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
         if self.kick_coefficients is None:
@@ -583,12 +537,10 @@ class ReproductionKick(KickBasedIBS):
             )
         # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of reference
-        rho_t: np.ndarray = self.line_density(particles, n_slices)
+        rho_t: np.ndarray = self._michalis_line_density(particles, n_slices)  # includes _factor
         # ----------------------------------------------------------------------------------------------
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
-        _size_x: float = particles.px[particles.state > 0].shape[0]
-        _size_y: float = particles.py[particles.state > 0].shape[0]
-        _size_delta: float = particles.delta[particles.state > 0].shape[0]
+        _size: float = particles.px[particles.state > 0].shape[0]  # same for py and delta
         # ----------------------------------------------------------------------------------------------
         # Determining kicks - this corresponds to the full result of Eq (8) of reference: a standard normal
         # distribution (see description: r is Gaussian random number with zero mean and unit standard deviation),
@@ -596,22 +548,16 @@ class ReproductionKick(KickBasedIBS):
         # fmt: off
         LOGGER.debug("Determining kicks to apply")
         RNG = np.random.default_rng()
-        delta_px: np.ndarray = RNG.standard_normal(_size_x) * self.kick_coefficients.Kx * np.sqrt(rho_t)
-        delta_py: np.ndarray = RNG.standard_normal(_size_y) * self.kick_coefficients.Ky *  np.sqrt(rho_t)
-        delta_delta: np.ndarray = RNG.standard_normal(_size_delta) * self.kick_coefficients.Kz * np.sqrt(rho_t)
+        delta_px: np.ndarray = RNG.normal(0, self.kick_coefficients.Kx, _size) * np.sqrt(rho_t)
+        delta_py: np.ndarray = RNG.normal(0, self.kick_coefficients.Ky, _size) *  np.sqrt(rho_t)
+        delta_delta: np.ndarray = RNG.normal(0, self.kick_coefficients.Kz, _size) * np.sqrt(rho_t)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles
         LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
-        # print(f"My Delta px: {delta_px}")
-        # print(f"My Delta py: {delta_py}")
-        # print(f"My Delta delta: {delta_delta}")
         particles.px[particles.state > 0] += delta_px
         particles.py[particles.state > 0] += delta_py
         particles.delta[particles.state > 0] += delta_delta
-
-
-
 
 
 # It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev
