@@ -356,7 +356,7 @@ class MichalisIBS:
         # TODO: why does Michalis use DS[xyz] for the stdev of the distribution when it's a scaling factor?
         # TODO: this is not what the description of r in the paper says
         RNG = np.random.default_rng()
-        print(self.DSx, self.DSy, self.DSz)
+        print(f"IBSKickCoefficients(Kx={self.DSx}, Ky={self.DSy}, Kz={self.DSz})")
         _size: float = particles.px[particles.state > 0].shape[0]  # same for py and delta
         Dkick_x = RNG.normal(loc=0, scale=self.DSx, size=_size) * np.sqrt(rho)
         Dkick_y = RNG.normal(loc=0, scale=self.DSy, size=_size) * np.sqrt(rho)
