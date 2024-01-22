@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**02:53.190** total execution time for 3 files **from gallery**:
+**02:49.220** total execution time for 3 files **from gallery**:
 
 .. container::
 
@@ -33,11 +33,11 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_gallery_demo_compare_analyticals.py` (``demo_compare_analyticals.py``)
-     - 01:45.170
+     - 01:42.922
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_analytical_bjorken_mtingwa_emittances.py` (``demo_analytical_bjorken_mtingwa_emittances.py``)
-     - 00:44.280
+     - 00:43.396
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_analytical_nagaitsev_emittances.py` (``demo_analytical_nagaitsev_emittances.py``)
-     - 00:23.739
+     - 00:22.902
      - 0.0
