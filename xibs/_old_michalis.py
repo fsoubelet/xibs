@@ -263,7 +263,15 @@ class MichalisIBS:
     def emit_evol_with_SR(
         self, Emit_x, Emit_y, Sig_M, BunchL, EQemitX, EQemitY, EQsigmM, tau_x, tau_y, tau_s, dt
     ) -> Tuple[float, float, float]:
-        """Computes the emittance evolutions from the Nagaitsev integrals, including the effects of synchrotron radiation."""
+        """Computes the emittance evolutions from the Nagaitsev integrals, including the effects of synchrotron radiation.
+        IN XSUITE NEED setting SR and using eneloss_and_damping=True in Twiss
+        EQemitX, EQemitY -> equilibrium emittances of SR AND quatum excitation (otherwise it goes to 0) in [m] (same as Emit_x, Emit_y) -> tw['eq_nemitt_x'], tw['eq_nemitt_x']
+        EQsigmM -> equilibrium momentum spread (Ask Gianni how to convert from tw['eq_nemitt_zeta'])
+        tau_x, tau_y, tau_s -> SR damping times in [s] (same as dt) (damping constants in xtrack.TwissTable)
+        Should be ok to do same evolution for bunch length than sigma_delta (like I did in analytical)
+        REF: Martini paper where he summarizes all the IBS stuff?
+        REF: Wolski book (13.64) but the presence of the 2s might depend on the formalism you're using
+        """
         Evolemx = (
             -EQemitX
             + np.exp(dt * 2 * (float(self.Ixx / 2.0) - 1.0 / tau_x))
