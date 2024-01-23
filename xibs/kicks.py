@@ -359,9 +359,9 @@ class SimpleKickIBS(KickBasedIBS):
         # Compute the kick coefficients - see function docstring for exact definition
         # TODO: why do we use beta_rel**2 for z coefficient?
         LOGGER.debug("Computing and applying the kicks to the particles")
-        Kx: float = sigma_px_normalized * scaling_factor * np.sqrt(2 * Tx / self.optics.revolution_frequency)
-        Ky: float = sigma_py_normalized * scaling_factor * np.sqrt(2 * Ty / self.optics.revolution_frequency)
-        Kz: float = sigma_delta * scaling_factor * np.sqrt(2 * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
+        Kx: float = sigma_px_normalized * np.sqrt(2 * scaling_factor * Tx / self.optics.revolution_frequency)
+        Ky: float = sigma_py_normalized * np.sqrt(2 * scaling_factor * Ty / self.optics.revolution_frequency)
+        Kz: float = sigma_delta * np.sqrt(2 * scaling_factor * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
         result = IBSKickCoefficients(Kx, Ky, Kz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
