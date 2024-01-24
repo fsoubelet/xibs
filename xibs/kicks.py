@@ -355,7 +355,8 @@ class SimpleKickIBS(KickBasedIBS):
             LOGGER.info("At least one IBS growth rate was negative, and was set to 0")
         # ----------------------------------------------------------------------------------------------
         # Compute the kick coefficients - see function docstring for exact definition
-        # TODO: why do we use beta_rel**2 for z coefficient?
+        # For the longitudinal plane, since the values are computed from ΔP/P but applied to the ΔE/E
+        # (the particles.delta in Xsuite), we need to multiply by beta_rel**2 to adapt
         LOGGER.debug("Computing and applying the kicks to the particles")
         Kx: float = sigma_px_normalized * np.sqrt(2 * scaling_factor * Tx / self.optics.revolution_frequency)
         Ky: float = sigma_py_normalized * np.sqrt(2 * scaling_factor * Ty / self.optics.revolution_frequency)
