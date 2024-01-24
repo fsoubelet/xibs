@@ -203,6 +203,8 @@ class SimpleKickIBS(KickBasedIBS):
     by the line density of the bunch. The class initiates from a `BeamParameters` and an
     `OpticsParameters` objects.
 
+    See the :ref:`simple kicks example <demo-simple-kicks>` for detailed usage.
+
     .. warning::
         Beware: this implementation is only valid **above** transition energy. Because
         this formalism implements a weighted random-component kick, it will *always* lead
@@ -427,6 +429,8 @@ class KineticKickIBS(KickBasedIBS):
     A single class to compute the IBS diffusion and friction coefficients according
     to the kinetic IBS formalism of :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
     The class initiates from a `BeamParameters` and an `OpticsParameters` objects.
+
+    See the :ref:`kinetic kicks example <demo-kinetic-kicks>` for detailed usage.
 
     TODO: reference, details etc.
 
