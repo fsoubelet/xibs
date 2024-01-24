@@ -376,6 +376,10 @@ class NagaitsevIBS(AnalyticalIBS):
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
     and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
 
+    See the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` for detailed usage, and the
+    :ref:`Bjorken-Mtingwa example <demo-analytical-bjorken-mtingwa>` for a comparison to the
+    Bjorken-Mtingwa formalism.
+
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for the calculations.
         optics (OpticsParameters): the optics parameters to use for the calculations.
@@ -606,7 +610,6 @@ class NagaitsevIBS(AnalyticalIBS):
         self.ibs_growth_rates = result
         return result
 
-
 class BjorkenMtingwaIBS(AnalyticalIBS):
     r"""
     .. versionadded:: 0.3.0
@@ -616,6 +619,10 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
     take in consideration the vertical dispersion values (see the relevant note about the changes
     at :cite:`CERN:Antoniou:Revision_IBS_MADX`). It initiates from a `BeamParameters` and an
     `OpticsParameters` objects.
+
+    See the :ref:`Bjorken-Mtingwa example <demo-analytical-bjorken-mtingwa>` for detailed usage,
+    and the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` for a comparison to the Nagaitsev
+    formalism.
 
     .. note::
         If possible, when creating the `OpticsParameters` to initiate this class, please do so
