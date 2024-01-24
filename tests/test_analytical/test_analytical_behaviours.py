@@ -42,7 +42,7 @@ def test_nagaitsev_growth_rates_computes_integrals_if_absent(xtrack_ps_injection
     # We use random values as they don't matter but need to specify compute_integrals=False
     IBS.growth_rates(2e-6, 2e-6, 1e-5, 1e-5, compute_integrals=False)
 
-    record = caplog.records[0]  # check just the first logging message
+    record = caplog.records[1]  # check the second logging message since now xdeps logs something first
     assert record.levelname == "INFO"
     assert "Computing growth rates requires having computed Nagaitsev integrals." in record.message
     assert "They will be computed first." in record.message
