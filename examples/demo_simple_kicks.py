@@ -10,6 +10,11 @@ This example shows how to use the `~.xibs.kicks.SimpleKickIBS` class
 to apply IBS kicks to tracked particles based on analytical growth rates.
 It implements IBS kicks based on the formalism described in :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
 
+.. warning::
+    Please note that this kick formalism is **not** valid for any machine operating below
+    transition energy. Details are provided in the :ref:`class's documentation <xibs-kicks>`.
+
+
 We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
 for a positron beam.
 """
@@ -236,6 +241,7 @@ ibs_step = 50  # frequency at which to re-compute the growth rates & kick coeffi
 ###############################################################################
 # We will also set up a dataclass conveniently to store the results:
 
+
 @dataclass
 class Records:
     epsilon_x: np.ndarray
@@ -259,6 +265,7 @@ class Records:
             sigma_delta=np.zeros(n_turns, dtype=float),
             bunch_length=np.zeros(n_turns, dtype=float),
         )
+
 
 # Initialize the dataclasses
 kicked_tbt = Records.init_zeroes(nturns)
