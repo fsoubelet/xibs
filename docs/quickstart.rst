@@ -123,9 +123,12 @@ Both follow the same usage pattern as the analytical formalism, and are initiali
    # Initialize your class
    kinetic_ibs = KineticKickIBS(beam_parameters, optics_parameters)
    simple_ibs = SimpleKickIBS(beam_parameters, optics_parameters)
-   # now compute kicks to apply to particles
+   
+   # Now compute kicks to apply to particles
+   simple_ibs.compute_kick_coefficients(particles)
+   simple_ibs.apply_ibs_kick(particles)
 
-One can find a detailed usage walkthrough of these in the :ref:`kinetic example <demo-kinetic>` and :ref:`simple example <demo-simple>`.
+One can find a detailed usage walkthrough of these in the :ref:`kinetic example <demo-kinetic-kicks>` and :ref:`simple example <demo-simple-kicks>`.
 
 Formalism Dispatch
 ^^^^^^^^^^^^^^^^^^
