@@ -418,11 +418,6 @@ class SimpleKickIBS(KickBasedIBS):
         particles.delta[particles.state > 0] += delta_delta
 
 
-# ---------------------------------------------------------------- #
-# ----- THIS IS TESTING FOR NOW AND SHOULD / WILL BE REMOVED ----- #
-# ---------------------------------------------------------------- #
-
-
 # It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev
 # formalism for some reason? Will need to clarify with him.
 class KineticKickIBS(KickBasedIBS):
