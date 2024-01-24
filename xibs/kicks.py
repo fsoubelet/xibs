@@ -283,8 +283,6 @@ class SimpleKickIBS(KickBasedIBS):
         r"""
         .. versionadded:: 0.5.0
 
-        # TODO: ADAPT HERE TO THE CHANGES IN CALCULATION?
-
         Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this
         code base, from analytical growth rates. The coefficients correspond to the right-hand
         side of Eq (8) in :cite:`PRAB:Bruce:Simple_IBS_Kicks` without the line density :math:`\rho_t(t)`
@@ -313,7 +311,7 @@ class SimpleKickIBS(KickBasedIBS):
             particles (xpart.Particles): the particles to apply the IBS kicks to.
             **kwargs: any keyword arguments will be passed to the growth rates calculation call
                 (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
-                and `bunch_length` are already provided, as positional-only arguments.
+                and `bunch_length` are already provided as positional-only arguments.
 
         Returns:
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
@@ -361,7 +359,7 @@ class SimpleKickIBS(KickBasedIBS):
         LOGGER.debug("Computing and applying the kicks to the particles")
         Kx: float = sigma_px_normalized * np.sqrt(2 * scaling_factor * Tx / self.optics.revolution_frequency)
         Ky: float = sigma_py_normalized * np.sqrt(2 * scaling_factor * Ty / self.optics.revolution_frequency)
-        Kz: float = sigma_delta * np.sqrt(2 * scaling_factor * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2  
+        Kz: float = sigma_delta * np.sqrt(2 * scaling_factor * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2
         result = IBSKickCoefficients(Kx, Ky, Kz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
