@@ -13,7 +13,7 @@ It implements IBS kicks based on the formalism described in :cite:`PRAB:Bruce:Si
 .. warning::
     Please note that this kick formalism is **not** valid for any machine operating below
     transition energy. Details are provided in the :ref:`class's documentation <xibs-kicks>`.
-
+    The class will raise an error at instantiation if the machine is below transition.
 
 We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
 for a positron beam.
