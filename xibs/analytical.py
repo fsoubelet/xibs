@@ -610,6 +610,7 @@ class NagaitsevIBS(AnalyticalIBS):
         self.ibs_growth_rates = result
         return result
 
+
 class BjorkenMtingwaIBS(AnalyticalIBS):
     r"""
     .. versionadded:: 0.3.0
