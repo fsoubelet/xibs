@@ -302,6 +302,15 @@ def xtrack_ps_injection_ions() -> xt.Line:
     return xt.Line.from_json(line_json)
 
 
+# -- CLIC DR fixture -- #
+
+@pytest.fixture(scope="function")
+def xtrack_clic_damping_ring() -> xt.Line:
+    """An `xtrack.Line` of the CLIC DR for positrons."""
+    line_json = LINES_DIR / "clic_damping_ring.json"
+    return xt.Line.from_json(line_json)
+
+
 # ----- Private Utilities ----- #
 
 
