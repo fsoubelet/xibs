@@ -7,6 +7,8 @@ FOR COMPARISONS, PLEASE KEEP IN MIND:
     #  - We are tracking for a small number of turns and particles because otherwise the CI runners will die.
 """
 
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
@@ -140,4 +142,5 @@ def plot_kicks_vs_analytical(kicktbt: Records, analyticaltbt: Records, filename:
     fig.align_ylabels((axs["epsy"], axs["bl"]))
 
     plt.tight_layout()
-    plt.savefig(f"{filename}.pdf", dpi=300)
+    if os.getenv("GITHUB_ACTIONS") == "true" and os.getenv("CI") == "true":
+        plt.savefig(f"{filename}.pdf", dpi=300)
