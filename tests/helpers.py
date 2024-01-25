@@ -5,9 +5,13 @@ from dataclasses import dataclass
 from typing import Dict, Tuple
 
 import numpy as np
+import xpart as xp
+import xtrack as xt
 
 from cpymad.madx import Madx
 from scipy.constants import c
+
+# ----- Helpers for Analytical Tests ----- #
 
 
 @dataclass
@@ -111,6 +115,34 @@ def setup_madx_from_config(madx: Madx, config: Dict, remove_crossing_angles: boo
     return Params(geom_epsx=geom_epsx, geom_epsy=geom_epsy, sig_delta=dpp, bunch_length=bunch_length_m)
 
 
+# ----- Helpers for Kicks Tests ----- #
+
+
+@dataclass
+class Records:
+    epsilon_x: np.ndarray
+    epsilon_y: np.ndarray
+    sigma_delta: np.ndarray
+    bunch_length: np.ndarray
+
+    def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
+        """Automatically update the records at given turn from the xpart.Particles."""
+        self.epsilon_x[turn] = _geom_epsx(parts, twiss)
+        self.epsilon_y[turn] = _geom_epsy(parts, twiss)
+        self.sigma_delta[turn] = _sigma_delta(parts)
+        self.bunch_length[turn] = _bunch_length(parts)
+
+    @classmethod
+    def init_zeroes(cls, n_turns: int) -> "Records":  # noqa: F821
+        """Initialize the dataclass with arrays of zeroes."""
+        return cls(
+            epsilon_x=np.zeros(n_turns, dtype=float),
+            epsilon_y=np.zeros(n_turns, dtype=float),
+            sigma_delta=np.zeros(n_turns, dtype=float),
+            bunch_length=np.zeros(n_turns, dtype=float),
+        )
+
+
 # ----- Private functions ----- #
 
 
@@ -132,3 +164,31 @@ def _bl_to_dpp(
         / np.sqrt(En * harm_number * abs(etap))
         / betar
     )
+
+
+def _bunch_length(parts: xp.Particles) -> float:
+    return np.std(parts.zeta[parts.state > 0])
+
+
+def _sigma_delta(parts: xp.Particles) -> float:
+    return np.std(parts.delta[parts.state > 0])
+
+
+def _geom_epsx(parts: xp.Particles, twiss: xt.TwissTable) -> float:
+    """
+    We index dx and betx at 0 which corresponds to the beginning / end of
+    the line, since this is where / when we will be applying the kicks.
+    """
+    sigma_x = np.std(parts.x[parts.state > 0])
+    sig_delta = _sigma_delta(parts)
+    return (sigma_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
+
+
+def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
+    """
+    We index dy and bety at 0 which corresponds to the beginning / end of
+    the line, since this is where / when we will be applying the kicks.
+    """
+    sigma_y = np.std(parts.y[parts.state > 0])
+    sig_delta = _sigma_delta(parts)
+    return (sigma_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
