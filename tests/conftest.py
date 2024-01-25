@@ -304,6 +304,7 @@ def xtrack_ps_injection_ions() -> xt.Line:
 
 # -- CLIC DR fixture -- #
 
+
 @pytest.fixture(scope="function")
 def xtrack_clic_damping_ring() -> xt.Line:
     """An `xtrack.Line` of the CLIC DR for positrons."""
