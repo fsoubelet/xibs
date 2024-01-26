@@ -48,8 +48,8 @@ jobs:
       - name: Upload plot artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: kicks_plots_artifacts
-          path: "*.pdf"
+          name: ${{ matrix.os }} ${{ matrix.python-version }} kicks plots
+          path: "plots/"
           retention-days: 7
 
       - name: Upload coverage reports to Codecov
