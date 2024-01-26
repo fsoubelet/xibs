@@ -11,7 +11,6 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pytest
 import xpart as xp
 import xtrack as xt
 
@@ -24,7 +23,7 @@ from xibs.kicks import SimpleKickIBS
 
 
 def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
-    """Track particles in the CLIC DR and compare to analytical."""
+    """Track positrons in the CLIC DR and compare to analytical."""
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(4.5e9)
@@ -101,6 +100,169 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     assert pearsonr(kicked_tbt.bunch_length, analytical_tbt.bunch_length).statistic > 0
 
 
+def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
+    """
+    Track Pb ions in the SPS and compare to analytical. For this test we will use fake values
+    for the beam parameters in order to be in a regime that 'stimulates' IBS. This way we have
+    sigmificant emittance growth and not oscillations around a stable point.
+    """
+    # --------------------------------------------------------------------
+    # Some simple parameters
+    bunch_intensity = int(3.5e11)
+    n_part = int(1e3)  # we don't want too many particles for CI
+    sigma_z = 8e-2
+    nemitt_x = 1.0e-6
+    nemitt_y = 0.25e-6
+    harmonic_number = 4653
+    nturns = 1000  # number of turns to loop for
+    ibs_step = 50  # frequency to re-compute the growth rates & kick coefficients in [turns]
+    # --------------------------------------------------------------------
+    # Setup line and particles for tracking
+    line: xt.Line = xtrack_sps_top_ions  # already has particle_ref
+    line["actcse.31632"].lag = 180  # above transition
+    line["actcse.31632"].voltage = 1.7e6  # from config
+    line["actcse.31632"].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
+    line.build_tracker()
+    line.optimize_for_tracking()
+    twiss = line.twiss()
+    particles = xp.generate_matched_gaussian_bunch(
+        num_particles=n_part,
+        total_intensity_particles=bunch_intensity,
+        nemitt_x=nemitt_x,
+        nemitt_y=nemitt_y,
+        sigma_z=sigma_z,
+        line=line,
+    )
+    # --------------------------------------------------------------------
+    # Create the IBS objects
+    beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
+    opticsparams = OpticsParameters.from_line(line)
+    IBS = SimpleKickIBS(beamparams, opticsparams)  # no dy, chooses Nagaitsev
+    NIBS = NagaitsevIBS(beamparams, opticsparams)  # same analytical to compare
+    # --------------------------------------------------------------------
+    # Prepare records for data storage & store the initial values
+    kicked_tbt = Records.init_zeroes(nturns)
+    kicked_tbt.update_at_turn(0, particles, twiss)
+    analytical_tbt = Records.init_zeroes(nturns)
+    analytical_tbt.update_at_turn(0, particles, twiss)
+    # --------------------------------------------------------------------
+    # Do the tracking, with IBS kicks
+    for turn in range(1, nturns):
+        # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
+        if (turn % ibs_step == 0) or (turn == 1):
+            # Compute kick coefficients from the particle distribution at this moment
+            IBS.compute_kick_coefficients(particles)
+            # Compute analytical values from those at the previous turn
+            NIBS.growth_rates(
+                analytical_tbt.epsilon_x[turn - 1],
+                analytical_tbt.epsilon_y[turn - 1],
+                analytical_tbt.sigma_delta[turn - 1],
+                analytical_tbt.bunch_length[turn - 1],
+            )
+        # ----- Manually Apply IBS Kick, Track Turn & get values ----- #
+        IBS.apply_ibs_kick(particles)
+        line.track(particles, num_turns=1)
+        kicked_tbt.update_at_turn(turn, particles, twiss)
+        ana_emit_x, ana_emit_y, ana_sig_delta, ana_bunch_length = NIBS.emittance_evolution(
+            analytical_tbt.epsilon_x[turn - 1],
+            analytical_tbt.epsilon_y[turn - 1],
+            analytical_tbt.sigma_delta[turn - 1],
+            analytical_tbt.bunch_length[turn - 1],
+        )
+        analytical_tbt.epsilon_x[turn] = ana_emit_x
+        analytical_tbt.epsilon_y[turn] = ana_emit_y
+        analytical_tbt.sigma_delta[turn] = ana_sig_delta
+        analytical_tbt.bunch_length[turn] = ana_bunch_length
+    # --------------------------------------------------------------------
+    # Eventually plotting code to upload artifacts and check visually should we want
+    plot_kicks_vs_analytical(kicked_tbt, analytical_tbt, "simple_kicks_sps_top_ions")
+    # --------------------------------------------------------------------
+    # Do some checks - we want some level of positive correlation between kicks and analytical
+    assert pearsonr(kicked_tbt.epsilon_x, analytical_tbt.epsilon_x).statistic > 0
+    assert pearsonr(kicked_tbt.epsilon_y, analytical_tbt.epsilon_y).statistic > 0
+    assert pearsonr(kicked_tbt.sigma_delta, analytical_tbt.sigma_delta).statistic > 0
+    assert pearsonr(kicked_tbt.bunch_length, analytical_tbt.bunch_length).statistic > 0
+
+
+# def test_simple_kicks_lhc_top_ions(xtrack_lhc_top_ions):
+#     """Track Pb ions in the LHC and compare to analytical."""
+#     # --------------------------------------------------------------------
+#     # Some simple parameters
+#     bunch_intensity = int(3.5e8)
+#     n_part = int(1.5e3)  # we don't want too many particles for CI
+#     sigma_z = 9e-2
+#     nemitt_x = 1.65e-6
+#     nemitt_y = 1.65e-6
+#     nturns = 1000  # number of turns to loop for
+#     ibs_step = 50  # frequency to re-compute the growth rates & kick coefficients in [turns]
+#     # --------------------------------------------------------------------
+#     # Setup line and particles for tracking
+#     line: xt.Line = xtrack_lhc_top_ions  # already has particle_ref
+#     # line['actcse.31632'].voltage = 4e6  # from xsuite examples
+#     # line['actcse.31632'].lag = 180  # from xsuite examples
+#     # line['actcse.31632'].frequency = 3e6  # from xsuite examples
+#     line.build_tracker()
+#     line.optimize_for_tracking()
+#     twiss = line.twiss()
+#     particles = xp.generate_matched_gaussian_bunch(
+#         num_particles=n_part,
+#         total_intensity_particles=bunch_intensity,
+#         nemitt_x=nemitt_x,
+#         nemitt_y=nemitt_y,
+#         sigma_z=sigma_z,
+#         line=line,
+#     )
+#     # --------------------------------------------------------------------
+#     # Create the IBS objects
+#     beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
+#     opticsparams = OpticsParameters.from_line(line)
+#     IBS = SimpleKickIBS(beamparams, opticsparams)  # no dy, chooses Nagaitsev
+#     NIBS = NagaitsevIBS(beamparams, opticsparams)
+#     # --------------------------------------------------------------------
+#     # Prepare records for data storage & store the initial values
+#     kicked_tbt = Records.init_zeroes(nturns)
+#     kicked_tbt.update_at_turn(0, particles, twiss)
+#     analytical_tbt = Records.init_zeroes(nturns)
+#     analytical_tbt.update_at_turn(0, particles, twiss)
+#     # --------------------------------------------------------------------
+#     # Do the tracking, with IBS kicks
+#     for turn in range(1, nturns):
+#         # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
+#         if (turn % ibs_step == 0) or (turn == 1):
+#             # Compute kick coefficients from the particle distribution at this moment
+#             IBS.compute_kick_coefficients(particles)
+#             # Compute analytical values from those at the previous turn
+#             NIBS.growth_rates(
+#                 analytical_tbt.epsilon_x[turn - 1],
+#                 analytical_tbt.epsilon_y[turn - 1],
+#                 analytical_tbt.sigma_delta[turn - 1],
+#                 analytical_tbt.bunch_length[turn - 1],
+#             )
+#         # ----- Manually Apply IBS Kick, Track Turn & get values ----- #
+#         IBS.apply_ibs_kick(particles)
+#         line.track(particles, num_turns=1)
+#         kicked_tbt.update_at_turn(turn, particles, twiss)
+#         ana_emit_x, ana_emit_y, ana_sig_delta, ana_bunch_length = NIBS.emittance_evolution(
+#             analytical_tbt.epsilon_x[turn - 1],
+#             analytical_tbt.epsilon_y[turn - 1],
+#             analytical_tbt.sigma_delta[turn - 1],
+#             analytical_tbt.bunch_length[turn - 1],
+#         )
+#         analytical_tbt.epsilon_x[turn] = ana_emit_x
+#         analytical_tbt.epsilon_y[turn] = ana_emit_y
+#         analytical_tbt.sigma_delta[turn] = ana_sig_delta
+#         analytical_tbt.bunch_length[turn] = ana_bunch_length
+#     # --------------------------------------------------------------------
+#     # Eventually plotting code to upload artifacts and check visually should we want
+#     plot_kicks_vs_analytical(kicked_tbt, analytical_tbt, "simple_kicks_lhc_top_ions")
+#     # --------------------------------------------------------------------
+#     # Do some checks - we want some level of positive correlation between kicks and analytical
+#     assert pearsonr(kicked_tbt.epsilon_x, analytical_tbt.epsilon_x).statistic > 0
+#     assert pearsonr(kicked_tbt.epsilon_y, analytical_tbt.epsilon_y).statistic > 0
+#     assert pearsonr(kicked_tbt.sigma_delta, analytical_tbt.sigma_delta).statistic > 0
+#     assert pearsonr(kicked_tbt.bunch_length, analytical_tbt.bunch_length).statistic > 0
+
+
 # ----- Plotting Helper ----- #
 
 
@@ -144,3 +306,4 @@ def plot_kicks_vs_analytical(kicktbt: Records, analyticaltbt: Records, filename:
     plt.tight_layout()
     if os.getenv("GITHUB_ACTIONS") == "true" and os.getenv("CI") == "true":
         plt.savefig(f"{filename}.pdf", dpi=300)
+    # plt.savefig(f"{filename}.pdf", dpi=300)
