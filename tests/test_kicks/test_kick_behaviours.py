@@ -90,3 +90,47 @@ def test_simple_kick_chooses_nagaitsev_without_vertical_dispersion(madx_sps_inje
         "This can be overridden manually, by explicitely setting the self.analytical_ibs attribute"
         in record.message
     )
+
+
+def test_simple_kick_propagates_when_overwriting_analytical_ibs(madx_sps_injection_protons, caplog):
+    """
+    Checking that SimpleKickIBS logs and propagates when the user manually overwrites the
+    analytical_ibs attribute with its own.
+    """
+    caplog.set_level(logging.ERROR)  # so we don't catch warnings from input parameters
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_sps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)  # logs warning because of betatron coupling
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = SimpleKickIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Check that the chosen analytical formalism is Nagaitsev
+    assert isinstance(IBS.analytical_ibs, NagaitsevIBS)
+    # Check proper linking betweeb instance attributes
+    assert IBS.beam_parameters is IBS.analytical_ibs.beam_parameters
+    assert IBS.optics is IBS.analytical_ibs.optics
+    # --------------------------------------------------------------------
+    # Overwrite with a BjorkenMtingwaIBS instance and check
+    newbeamparams = BeamParameters.from_madx(madx)
+    newbeamparams.npart = 50  # easy to check
+    newopticsparams = OpticsParameters.from_madx(madx)
+    newopticsparams.circumference = 100  # easy to check
+    newanalytical = BjorkenMtingwaIBS(newbeamparams, newopticsparams)
+    caplog.set_level(logging.DEBUG)  # now let's capture the interesting messages
+    IBS.analytical_ibs = newanalytical
+    assert isinstance(IBS.analytical_ibs, BjorkenMtingwaIBS)
+    assert IBS.beam_parameters.npart == 50
+    assert IBS.optics.circumference == 100
+    # --------------------------------------------------------------------
+    # Check that the choice has been logged to the user, with the possibility
+    # of overriding it
+    record = caplog.records[0]  # overwriting info in first message
+    assert record.levelname == "DEBUG"
+    assert "Overwriting the analytical ibs implementation used for growth rates calculation" in record.message
+    record = caplog.records[-1]  # propagation info in second (here also last) message
+    assert record.levelname == "DEBUG"
+    assert (
+        "Re-pointing the instance's beam and optics parameters to that of the new analytical implementation"
+        in record.message
+    )
