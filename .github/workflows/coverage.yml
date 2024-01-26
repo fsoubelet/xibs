@@ -48,7 +48,7 @@ jobs:
       - name: Upload plot artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }} ${{ matrix.python-version }} kicks plots
+          name: ${{ matrix.os }}-${{ matrix.python-version }}-kicks-plots
           path: "plots/"
           retention-days: 7
 
