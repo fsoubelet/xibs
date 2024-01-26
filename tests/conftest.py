@@ -328,6 +328,10 @@ def _make_xtrack_line_for_config(config: Dict, p0: xp.Particles) -> xt.Line:
     with Madx() as madx:
         setup_madx_from_config(madx, config)
         seqname = config["sequence_name"]
-        line = xt.Line.from_madx_sequence(madx.sequence[seqname], allow_thick=True)
+        line = xt.Line.from_madx_sequence(
+            madx.sequence[seqname],
+            deferred_expressions=True,
+            allow_thick=True,
+        )
         line.particle_ref = p0  # will be saved in the json file
         return line
