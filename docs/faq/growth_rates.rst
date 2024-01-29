@@ -1,35 +1,36 @@
-.. _xibs-faq-bunched-coasting-beams:
+.. _xibs-faq-geom-norm-emittances:
 
-Bunched and Coasting Beams
---------------------------
+Geometric or Normalized Emittances
+----------------------------------
 
 .. admonition:: This section in short
 
-    To simulate coasting beams, set `bunched=False` when calling the `.growth_rates` method and stop caring about the `bunch_length` argument. Two cases appear:
+    Both can be used, simply set the `normalized_emittances` parameter accordingly when calling functions asking for emittances.
+    Where emittances are returned, the same type as the input ones can be expected.
 
-        - With `~.BjorkenMtingwaIBS` analytical expressions are adapted, leading to correct results.
-        - With `~.NagaitsevIBS` an approximation is made using as bunch length :math:`C / 2 \pi` and a deviation to correct results might be observed. A warning will be logged to the user.
+Some functions in ``xibs`` require emittances to be provided as input, for instance `~xibs.analytical.BjorkenMtingwaIBS.growth_rates`.
+In all such cases, while internally ``xibs`` uses geomtric emittances for computations (as they are the values used in the implemented formulae), it is possible to provide either the geometric or the normalized emittances.
 
-It is possible in ``xibs`` to obtain analytical IBS growth rates for simulations dealing with coasting beams.
-The functionality is implemented in both analytical classes, `~.BjorkenMtingwaIBS` and `~.NagaitsevIBS`, though in the latter an approximation is made and resulting values should be expected to deviate from the correct ones.
+For these functions the API will ask for both `epsx` and `epsy` arguments, and offer an optional boolean argument `normalized_emittances` which defaults to `False`.
+If set to `True`, then the provided emittances are assumed to be the normalized ones, and will be converted to geometric emittances internally.
 
-The `.growth_rates` in both classes method provides a `bunched` boolean argument, which defaults to `True`, corresponding to a bunched beam case.
-To adapt the growth rates calculation for a coasting beam, one simply has to set this argument to `False`:
+For instance for the `~.BjorkenMtingwaIBS.growth_rates` method, the API is:
 
 .. code-block:: python
 
     # Let's assume your beam and optics parameters have been instantiated
-    IBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)
-    # IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)  # alternatively
+    IBS = xibs.ibs(beam_params, optics, formalism=...)
+    
+    # Getting growth rates from geometric emittances goes as:
+    rates_geom = IBS.growth_rates(geom_epsx, geom_epsy, sigma_delta, bunch_length)
 
-    # Getting growth rates for a bunched beam (default)
-    rates_bunched = IBS.growth_rates(psx, epsy, sigma_delta, bunch_length)
+    # Getting growth rates from normalized emittances goes as:
+    rates_norm = IBS.growth_rates(
+        norm_epsx, norm_epsy, sigma_delta, bunch_length, normalized_emittances=True
+    )
 
-    # Getting growth rates for a coasting beam
-    rates_coasting = IBS.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched=False)
+    # The two results are the same
+    assert rates_geom == rates_norm  # this is True
 
-    # The two of course yield different values
-    assert rates_bunched != rates_coasting  # this is True
-
-
-Note that in both cases, the provided `bunch_length` argument is irrelevant: if using `BjorkenMtingwaIBS` the changes to analytical formulae take it out of the equation, and if using `NagaitsevIBS` it is ignored in favor of :math:`C / 2 \pi`.
+For functions that also return emittance values, such as the `emittance_evolution` method of analytical IBS implementations, the returned values will be the same as the input ones, i.e. if normalized emittances were provided, then normalized emittances will be returned.
+That's as much as the user has to think about this.
