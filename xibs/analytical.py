@@ -1,4 +1,4 @@
-"""
+r"""
 .. _xibs-analytical:
 
 IBS: Analytical Calculations
@@ -13,7 +13,9 @@ The formalism from which formulas and calculations are implemented can be found 
     Should your scenario not satisfy the following assumptions, the results might not be accurate:
 
         - It is assumed that beam profiles are Gaussian,
-        - It is assumed that no betatron coupling is present in the machine.
+        - It is assumed that no betatron coupling is present in the machine (or very little, in the order of :math:`\left| C^{-} \right| \le 10^{-4}`).
+
+    Should these assumptions not be satisfied, the results provided by these calculations are not to be entirely discarded but might not be totally accurate.
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
@@ -316,7 +318,7 @@ class AnalyticalIBS(ABC):
             SR to this calculation by providing several keyword arguments corresponding to the
             equilibrium emittances and damping times from SR and quantum excitation. See the list
             of expected kwargs below. A :ref:`dedicated section in the FAQ <xibs-faq-sr-inputs>`
-            provides information on how to obtain these values from ``Xsuite``.
+            provides information on how to obtain these values from ``Xsuite`` or ``MAD-X``.
 
             In case this contribution is included, then the calculation is modified from the one
             shown above, and goes according to :cite:`BOOK:Wolski:Beam_dynamics` (Eq (13.64)) or
