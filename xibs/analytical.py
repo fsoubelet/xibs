@@ -382,7 +382,7 @@ class AnalyticalIBS(ABC):
         # ----------------------------------------------------------------------------------------------
         # Check the kwargs and potentially get the arguments to include synchrotron radiation
         include_synchrotron_radiation = False
-        if len(kwargs.keys() >= 1):  # lets' not check with 'is not None' since default {} kwargs is not None
+        if len(kwargs.keys()) >= 1:  # lets' not check with 'is not None' since default {} kwargs is not None
             LOGGER.debug("Kwargs present, assuming synchrotron radiation is to be included")
             include_synchrotron_radiation = True
             sr_inputs: _SynchrotronRadiationInputs = self._get_synchrotron_radiation_kwargs(**kwargs)
