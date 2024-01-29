@@ -19,7 +19,50 @@ from scipy.stats import pearsonr
 
 from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import SimpleKickIBS
+from xibs.kicks import IBSKickCoefficients, SimpleKickIBS
+
+
+def test_simple_kicks_lead_to_increased_momenta(xtrack_sps_top_ions):
+    """
+    Do an IBS kick on Pb ions in the SPS and make sure the momenta have increased.
+    always be the case in this formalism. Using fake high values for the beam parameters
+    in order to be in a regime that 'stimulates' IBS.
+    """
+    # --------------------------------------------------------------------
+    # Some simple parameters
+    bunch_intensity = int(3.5e11)
+    n_part = int(1e3)  # we don't want too many particles for CI
+    sigma_z = 8e-2
+    nemitt_x = 1.0e-6
+    nemitt_y = 0.25e-6
+    harmonic_number = 4653
+    # --------------------------------------------------------------------
+    # Setup line and particles for tracking
+    line: xt.Line = xtrack_sps_top_ions  # already has particle_ref
+    line["actcse.31632"].lag = 180  # above transition
+    line["actcse.31632"].voltage = 1.7e6  # from config
+    line["actcse.31632"].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
+    particles = xp.generate_matched_gaussian_bunch(
+        num_particles=n_part,
+        total_intensity_particles=bunch_intensity,
+        nemitt_x=nemitt_x,
+        nemitt_y=nemitt_y,
+        sigma_z=sigma_z,
+        line=line,
+    )
+    particles2 = particles.copy()
+    # --------------------------------------------------------------------
+    # Create IBS object, put high kick coefficients and apply IBS kicks
+    beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
+    opticsparams = OpticsParameters.from_line(line)
+    IBS = SimpleKickIBS(beamparams, opticsparams)  # no dy, chooses Nagaitsev
+    IBS.kick_coefficients = IBSKickCoefficients(1e-4, 1e-4, 1e-4)
+    IBS.apply_ibs_kick(particles)
+    # --------------------------------------------------------------------
+    # Compare to initial distribution, make sure momenta have increased
+    assert np.std(particles.px) > np.std(particles2.px)
+    assert np.std(particles.py) > np.std(particles2.py)
+    assert np.std(particles.delta) > np.std(particles2.delta)
 
 
 def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
