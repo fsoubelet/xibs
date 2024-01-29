@@ -17,4 +17,5 @@ This part of the documentation provides sections with answers to common question
 
    input_parameters
    growth_rates
+   radiation
    coasting_beams

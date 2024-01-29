@@ -1,10 +1,10 @@
-.. _xibs-faq-opticsparams:
+.. _xibs-faq-inputparams:
 
-Instantiating OpticsParameters
+Instantiating Input Parameters
 ------------------------------
 
 All classes in this package are instantiated from an `OpticsParameters` and a `BeamsParameters` object.
-This section compiles a few common questions about the former.
+This section compiles a few common questions about each, starting with the former.
 
 
 .. _xibs-faq-optics-params-from-line:
@@ -67,15 +67,6 @@ These quantities can be computed from ``MAD-X`` after a `twiss`, as shown below:
 
         # Let's assume your `cpymad.madx.Madx` instance is already defined
         optics_params = OpticsParameters.from_madx(madx)
-
-
-.. _xibs-faq-beamparams:
-
-Instantiating BeamParameters
-----------------------------
-
-All classes in this package are instantiated from an `OpticsParameters` and a `BeamsParameters` object.
-This section compiles a few common questions about the latter.
 
 
 .. _xibs-faq-beam-params-from-particle-ref:
