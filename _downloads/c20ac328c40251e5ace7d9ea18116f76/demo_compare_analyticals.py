@@ -24,14 +24,23 @@ vertical dispersion through the machine.
 
 """
 # sphinx_gallery_thumbnail_number = 2
+import logging
+import warnings
+
 from dataclasses import dataclass
 from pprint import pprint
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from helpers import prepare_all, _get_dummy_ibs_from_madx_rates
+from helpers import _get_dummy_ibs_from_madx_rates, prepare_all
 
+warnings.simplefilter("ignore")  # for this tutorial's clarity
+logging.basicConfig(
+    level=logging.WARNING,
+    format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+    datefmt="%H:%M:%S",
+)
 plt.rcParams.update(
     {
         "font.family": "serif",
@@ -46,16 +55,16 @@ plt.rcParams.update(
 )
 
 ###############################################################################
-# Let's start by setting up the lattice in ``MAD-X`` (we are using `cpymad` for 
+# Let's start by setting up the lattice in ``MAD-X`` (we are using `cpymad` for
 # this) and our IBS classes. The following helper functions calls a configuration
 # file from this repository's tests, sets up the lattice and beam in ``MAD-X`` and
-# creates corresponding `~xibs.analytical.BjorkenMtingwaIBS` and 
+# creates corresponding `~xibs.analytical.BjorkenMtingwaIBS` and
 # `~xibs.analytical.NagaitsevIBS`.
 
 params, madx, BM_IBS, NAG_IBS = prepare_all(
     configname="lhc_top_protons",  # fetches the config file with this name
     extrafile="acc-models-lhc/strengths/ATS_Nominal/2023/ats_30cm.madx",  # to have xing
-    stdout=False  # don't want the MAD-X output
+    stdout=False,  # don't want the MAD-X output
 )
 
 ###############################################################################
@@ -64,7 +73,7 @@ params, madx, BM_IBS, NAG_IBS = prepare_all(
 # lead to vertical dispersion:
 
 pprint(params)
-print(f"Crossing angles in IP1/5: {madx.globals['on_x1']}, {madx.globals['on_x5']} micro-radians")
+print(f"Crossing angles in IP1/5: {madx.globals['on_x1']}, {madx.globals['on_x5']} urad")
 
 table = madx.table.twiss.dframe()
 plt.figure(figsize=(11, 6))
@@ -80,7 +89,7 @@ plt.show()
 # Comparing Analytical Evolution for a Time Period
 # ------------------------------------------------
 # We will analytically look at the evolution through time by looping, just as in
-# the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` and 
+# the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` and
 # :ref:`Nagaitsev <demo-analytical-nagaitsev>` analytical examples, respectively.
 # Let's do so for 10 hours of beam time, recomputing the growth rates every 30 minutes.
 
@@ -89,6 +98,7 @@ nsecs = 10 * 3_600  # that's 10h
 ibs_step = 30 * 60  # re-compute rates every 30min
 seconds = np.linspace(0, nsecs, nsecs).astype(int)
 beta_rel: float = BM_IBS.beam_parameters.beta_rel
+
 
 # Set up a dataclass to store the results
 @dataclass
@@ -100,24 +110,25 @@ class Records:
     sigd: np.ndarray  # momentum spread
     bl: np.ndarray  # bunch length in [m]
 
+
 # Initialize dataclasses for each approach
 madx_tbt = Records(
     np.zeros(nsecs, dtype=float),
     np.zeros(nsecs, dtype=float),
     np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float)
+    np.zeros(nsecs, dtype=float),
 )
 bm_tbt = Records(
     np.zeros(nsecs, dtype=float),
     np.zeros(nsecs, dtype=float),
     np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float)
+    np.zeros(nsecs, dtype=float),
 )
 nag_tbt = Records(
     np.zeros(nsecs, dtype=float),
     np.zeros(nsecs, dtype=float),
     np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float)
+    np.zeros(nsecs, dtype=float),
 )
 
 # Initialize data at second 0 (initial state) for all structures
@@ -135,7 +146,9 @@ for sec in range(1, nsecs):
     if (sec % ibs_step == 0) or (sec == 1):
         print(f"At {sec}s: re-computing growth rates")
         # For MAD-X - call the 'twiss' then 'ibs' commands (computes from beam attributes)
-        MAD_IBS = _get_dummy_ibs_from_madx_rates(madx)  # calls twiss, ibs, gets rates and puts them in returned 'dummy IBS'
+        MAD_IBS = _get_dummy_ibs_from_madx_rates(
+            madx
+        )  # calls twiss, ibs, gets rates and puts them in returned 'dummy IBS'
         MAD_IBS.beam_parameters = BM_IBS.beam_parameters  # we will want to access these
         MAD_IBS.optics = BM_IBS.optics  # we will want to access these
         # For Bjorken-Mtingwa - compute from values at the previous sec
@@ -209,9 +222,7 @@ for sec in range(1, nsecs):
 # of the IBS growth rates re-computation. After this is done running, we can plot
 # the evolutions across the turns:
 
-fig, axs = plt.subplot_mosaic(
-    [["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7)
-)
+fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7))
 
 # Plotting horizontal emittances
 axs["epsx"].plot(seconds / 3600, 1e10 * madx_tbt.eps_x, lw=2.5, label="MAD-X")

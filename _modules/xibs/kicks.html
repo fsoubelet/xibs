@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.kicks &mdash; xibs 0.4.1 documentation</title>
+  <title>xibs.kicks &mdash; xibs 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=c87aa342"></script>
+        <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -84,6 +84,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 </ul>
@@ -146,17 +153,26 @@
 <span class="sd">IBS: Applying Kicks</span>
 <span class="sd">-------------------</span>
 
-<span class="sd">Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: kinetic and simple.</span>
+<span class="sd">Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: simple and kinetic kicks.</span>
 
-<span class="sd">In the kinetic formalism, the applied IBS kicks are determined from computed diffusion and friction terms.</span>
-<span class="sd">In the simple formalism, the applied IBS kicks are determined from Nagaitsev integrals (see :ref:`xibs-analytical`).</span>
+<span class="sd">In the simple formalism, the applied IBS kicks are determined from analytical IBS growth rates, which are computed internally (see :ref:`xibs-analytical`).</span>
+<span class="sd">In the kinetic formalism, which adapts the kinetic theory of gases, the applied IBS kicks are determined from computed diffusion and friction terms.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># important for sphinx to alias ArrayLike</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">astuple</span><span class="p">,</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <span class="n">NagaitsevIntegrals</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+
+<span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <span class="n">AnalyticalIBS</span><span class="p">,</span> <span class="n">BjorkenMtingwaIBS</span><span class="p">,</span> <span class="n">IBSGrowthRates</span><span class="p">,</span> <span class="n">NagaitsevIBS</span>
 <span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 
 <span class="c1"># ----- Dataclasses to store results ----- #</span>
 
@@ -168,9 +184,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container dataclass for kinetic IBS diffusion coefficients.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        Dx (float): horizontal diffusion coefficient in [1/s].</span>
-<span class="sd">        Dy (float): vertical diffusion coefficient in [1/s].</span>
-<span class="sd">        Dz (float): longitudinal diffusion coefficient in [1/s].</span>
+<span class="sd">        Dx (float): horizontal diffusion coefficient.</span>
+<span class="sd">        Dy (float): vertical diffusion coefficient.</span>
+<span class="sd">        Dz (float): longitudinal diffusion coefficient.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Dx</span><span class="p">:</span> <span class="nb">float</span>
@@ -186,9 +202,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Container dataclass for kinetic IBS friction coefficients.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        Fx (float): horizontal friction coefficient in [1/s].</span>
-<span class="sd">        Fy (float): vertical friction coefficient in [1/s].</span>
-<span class="sd">        Fz (float): longitudinal friction coefficient in [1/s].</span>
+<span class="sd">        Fx (float): horizontal friction coefficient.</span>
+<span class="sd">        Fy (float): vertical friction coefficient.</span>
+<span class="sd">        Fz (float): longitudinal friction coefficient.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">Fx</span><span class="p">:</span> <span class="nb">float</span>
@@ -197,81 +213,488 @@
 
 
 
-<div class="viewcode-block" id="KineticCoefficients">
-<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KineticCoefficients">[docs]</a>
+<div class="viewcode-block" id="IBSKickCoefficients">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.IBSKickCoefficients">[docs]</a>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">KineticCoefficients</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">IBSKickCoefficients</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Container dataclass for kinetic IBS coefficients. These are computed from the diffusion</span>
-<span class="sd">    and friction ones according to :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.</span>
+<span class="sd">    Container dataclass for all IBS kick coefficients. These can be the coeffients from simple kicks,</span>
+<span class="sd">    computed from analytical growth rates, or kinetic coefficients computed from the diffusion and</span>
+<span class="sd">    friction ones according to :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        Kx (float): horizontal kick coefficient.</span>
+<span class="sd">        Ky (float): vertical kick coefficient.</span>
+<span class="sd">        Kz (float): longitudinal kick coefficient.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">Tx</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">Ty</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">Tz</span><span class="p">:</span> <span class="nb">float</span></div>
+    <span class="n">Kx</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Ky</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">Kz</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<span class="c1"># ----- Abstract Base Class to Inherit from ----- #</span>
+
+
+<div class="viewcode-block" id="KickBasedIBS">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KickBasedIBS">[docs]</a>
+<span class="k">class</span> <span class="nc">KickBasedIBS</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. versionadded:: 0.5.0</span>
+
+<span class="sd">    Abstract base class for kick-based IBS effects, from which all</span>
+<span class="sd">    implementations inherit.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for IBS computations.</span>
+<span class="sd">        optics (OpticsParameters): the optics parameters to use for the IBS computations.</span>
+<span class="sd">        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This</span>
+<span class="sd">            attribute self-updates when they are computed with the `compute_kick_coefficients`</span>
+<span class="sd">            method. It can also be set manually.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_params</span><span class="p">:</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="p">:</span> <span class="n">BeamParameters</span> <span class="o">=</span> <span class="n">beam_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span> <span class="o">=</span> <span class="n">optics</span>
+        <span class="c1"># These self-update when computed, but can be overwritten by the user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kick_coefficients</span><span class="p">:</span> <span class="n">IBSKickCoefficients</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">has_kick_coefficients</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kick_coefficients</span><span class="p">,</span> <span class="n">IBSKickCoefficients</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object for kick-based IBS calculations.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;IBS kick coefficients computed: </span><span class="si">{</span><span class="n">has_kick_coefficients</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="KickBasedIBS.line_density">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KickBasedIBS.line_density">[docs]</a>
+    <span class="k">def</span> <span class="nf">line_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.5.0</span>
+
+<span class="sd">        Returns the &quot;line density&quot; of the `Particles` object, along its longitudinal axis, which</span>
+<span class="sd">        corresponds to the :math:`\rho_t(t)` term in Eq (8) of :cite:`PRAB:Bruce:Simple_IBS_Kicks`.</span>
+<span class="sd">        The density is used as a weight factor for the application of IBS kicks: particles in the</span>
+<span class="sd">        denser parts of the bunch will receive a larger kick, and vice versa. See section III.C of</span>
+<span class="sd">        the above reference details.</span>
+
+<span class="sd">        .. hint::</span>
+<span class="sd">            The calculation is done according to the following steps:</span>
+
+<span class="sd">                - Gets the longitudinal coordinates of the active particles (state &gt; 0) in the `Particles` object.</span>
+<span class="sd">                - Determines coordinate cuts at front and back of the bunch, as well as slice width.</span>
+<span class="sd">                - Determines bin edges and bin centers for the distribution for the chosen number of slices.</span>
+<span class="sd">                - Computes a (normalized) histogram of the longitudinal coordinates, with the determined bins.</span>
+<span class="sd">                - Computes and returns the line density :math:`\rho_t(t)`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            particles (xpart.Particles): the `xpart.Particles` object to compute the line density for.</span>
+<span class="sd">            n_slices (int): the number of slices to use for the computation of the bins.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An array with the density values for each slice / bin of the `Particles` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Determine properties from longitudinal particles distribution: cuts, slice width, bunch length</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Determining longitudinal particles distribution properties&quot;</span><span class="p">)</span>
+        <span class="n">zeta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">zeta</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># careful to only consider active particles</span>
+        <span class="n">z_cut_head</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">zeta</span><span class="p">)</span>  <span class="c1"># z cut at front of bunch</span>
+        <span class="n">z_cut_tail</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">zeta</span><span class="p">)</span>  <span class="c1"># z cut at back of bunch</span>
+        <span class="n">slice_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="n">z_cut_head</span> <span class="o">-</span> <span class="n">z_cut_tail</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_slices</span>  <span class="c1"># slice width</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Determine bin edges and bin centers for the distribution</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Determining bin edges and bin centers for the distribution&quot;</span><span class="p">)</span>
+        <span class="n">bin_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+            <span class="n">z_cut_tail</span> <span class="o">-</span> <span class="mf">1e-7</span> <span class="o">*</span> <span class="n">slice_width</span><span class="p">,</span>
+            <span class="n">z_cut_head</span> <span class="o">+</span> <span class="mf">1e-7</span> <span class="o">*</span> <span class="n">slice_width</span><span class="p">,</span>
+            <span class="n">num</span><span class="o">=</span><span class="n">n_slices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">bin_centers</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bin_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Compute histogram on longitudinal distribution then compute and return line density</span>
+        <span class="n">counts_normed</span><span class="p">,</span> <span class="n">bin_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">zeta</span><span class="p">,</span> <span class="n">bin_edges</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># density=True to normalize</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">zeta</span><span class="p">,</span> <span class="n">bin_centers</span><span class="p">,</span> <span class="n">counts_normed</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KickBasedIBS.compute_kick_coefficients">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KickBasedIBS.compute_kick_coefficients">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">compute_kick_coefficients</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>  <span class="c1"># noqa: F821</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IBSKickCoefficients</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.5.0</span>
+
+<span class="sd">        Abstract method to determine the kick coefficients used in the determination of the IBS</span>
+<span class="sd">        to be applied. It returns an `IBSKickCoefficients` object with the computed coefficients.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            particles (xpart.Particles): the particles to apply the IBS kicks to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="KickBasedIBS.apply_ibs_kick">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KickBasedIBS.apply_ibs_kick">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">apply_ibs_kick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.5.0</span>
+
+<span class="sd">        Abstract method to determine and apply IBS kicks to a `xpart.Particles` object. The</span>
+<span class="sd">        momenta kicks are determined from the `self.kick_coefficients` attribute.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            particles (xpart.Particles): the particles to apply the IBS kicks to.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+</div>
 
 
 
 <span class="c1"># ----- Classes to Compute and Apply IBS Kicks ----- #</span>
 
 
-<span class="c1"># In here we do need Nagaitsev results, so the kick method will ask for a NagaitsevIntegrals object.</span>
 <div class="viewcode-block" id="SimpleKickIBS">
 <a class="viewcode-back" href="../../modules/index.html#xibs.kicks.SimpleKickIBS">[docs]</a>
-<span class="k">class</span> <span class="nc">SimpleKickIBS</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">SimpleKickIBS</span><span class="p">(</span><span class="n">KickBasedIBS</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    .. versionadded:: 0.4.0</span>
+<span class="sd">    .. versionadded:: 0.5.0</span>
 
-<span class="sd">    A single class to compute the simple IBS kicks based on the analytical results obtained with</span>
-<span class="sd">    `xibs.analytical`. The kicks are implemented according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`.</span>
-<span class="sd">    The class initiates from a `BeamParameters` and an `OpticsParameters` objects.</span>
+<span class="sd">    A single class to compute the simple IBS kicks based on the analytical growth rates.</span>
+<span class="sd">    The kicks are implemented according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`, and</span>
+<span class="sd">    provide a random distribution of momenta changes based on the growth rates, weighted</span>
+<span class="sd">    by the line density of the bunch. The class initiates from a `BeamParameters` and an</span>
+<span class="sd">    `OpticsParameters` objects.</span>
+
+<span class="sd">    See the :ref:`simple kicks example &lt;demo-simple-kicks&gt;` for detailed usage.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Beware: this implementation is only valid **above** transition energy. Because</span>
+<span class="sd">        this formalism implements a weighted random-component kick, it will *always* lead</span>
+<span class="sd">        to emittance growth. Below transition it is common to observe negative growth rates,</span>
+<span class="sd">        which would lead to emittance *shrinkage* and therefore the provided kick would have</span>
+<span class="sd">        the wrong effect. It is also possible to obtain negative growth rates above transition</span>
+<span class="sd">        in some scenarios, and internally this implementation sets the growth rate to 0 if it</span>
+<span class="sd">        is found negative. When this happens, a message is logged to inform the user. For any</span>
+<span class="sd">        machine operating below transition energy, the kinetic formalism should be used instead</span>
+<span class="sd">        (see the `KineticKickIBS` class).</span>
+
+<span class="sd">    .. hint::</span>
+<span class="sd">        When determining kick coefficients (see the `compute_kick_coefficients` method),</span>
+<span class="sd">        the analytical growth rates are computed. This is done using one of the analytical</span>
+<span class="sd">        classes, which is determined internally based on the optics parameters (namely, the</span>
+<span class="sd">        presence of vertical dispersion), and set as the `self.analytical_ibs` attribute.</span>
+<span class="sd">        Choices are logged to the user. It is always possible to override this choice by</span>
+<span class="sd">        manually setting the `self.analytical_ibs` attribute to an instance of the desired</span>
+<span class="sd">        analytical implementation (to be found in `xibs.analytical`). It is also possible</span>
+<span class="sd">        for the user to provide their own, custom-made analytical implementation, as long as</span>
+<span class="sd">        it inherits from the `AnalyticalIBS` class and implements the API defined therein.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for the calculations.</span>
-<span class="sd">        optics (OpticsParameters): the optics parameters to use for the calculations.</span>
+<span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for IBS computations.</span>
+<span class="sd">        optics (OpticsParameters): the optics parameters to use for the IBS computations.</span>
+<span class="sd">        analytical_ibs (AnalyticalIBS): an internal analytical class for growth rates</span>
+<span class="sd">            calculation, which is determined automatically. Can be overridden by the user</span>
+<span class="sd">            by setting this attribute manually.</span>
+<span class="sd">        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This</span>
+<span class="sd">            self-updates when they are computed with the `compute_kick_coefficients` method.</span>
+<span class="sd">            It can also be set manually.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_params</span><span class="p">:</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="p">:</span> <span class="n">BeamParameters</span> <span class="o">=</span> <span class="n">beam_params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span> <span class="o">=</span> <span class="n">optics</span></div>
+        <span class="c1"># fmt: off</span>
+        <span class="c1"># First, we check that we are above transition and raise and error if not (not applicable)</span>
+        <span class="k">if</span> <span class="n">optics</span><span class="o">.</span><span class="n">slip_factor</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># we are below transition (xsuite convention: slip factor &gt; 0 above)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;The provided optics parameters indication that the machine is below transition, &quot;</span>
+                <span class="s2">&quot;which is incompatible with SimpleKickIBS (see documentation). &quot;</span>
+                <span class="s2">&quot;Use the kinetic formalism with KineticKickIBS instead.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;SimpleKickIBS is not compatible with machine operating below transition. &quot;</span>
+                <span class="s2">&quot;Please see the documentation and use the kinetic formalism with KineticKickIBS instead.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># If we made it here, SimpleKickIBS is a valid implementation, let&#39;s instantiate from KickBasedIBS</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>  <span class="c1"># also sets self.kick_coefficients (to None)</span>
+        <span class="c1"># Analytical implementation for growth rates calculation, can be overridden by the user</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dy</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Non-zero vertical dispersion detected in the lattice, using Bjorken &amp; Mtingwa formalism&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_analytical_ibs</span><span class="p">:</span> <span class="n">AnalyticalIBS</span> <span class="o">=</span> <span class="n">BjorkenMtingwaIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No vertical dispersion in the lattice, using Nagaitsev formalism&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_analytical_ibs</span><span class="p">:</span> <span class="n">AnalyticalIBS</span> <span class="o">=</span> <span class="n">NagaitsevIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;This can be overridden manually, by explicitely setting the self.analytical_ibs attribute&quot;</span><span class="p">)</span>
+        <span class="c1"># fmt: on</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">analytical_ibs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnalyticalIBS</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The analytical IBS implementation used for growth rates calculation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analytical_ibs</span>
+
+    <span class="nd">@analytical_ibs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">analytical_ibs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">AnalyticalIBS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The analytical_ibs has a setter so that .beam_params and .optics are updated when it is set.&quot;&quot;&quot;</span>
+        <span class="c1"># fmt: off</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Overwriting the analytical ibs implementation used for growth rates calculation&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analytical_ibs</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Re-pointing the instance&#39;s beam and optics parameters to that of the new analytical implementation&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analytical_ibs</span><span class="o">.</span><span class="n">beam_parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analytical_ibs</span><span class="o">.</span><span class="n">optics</span>
+        <span class="c1"># fmt: on</span>
+
+<div class="viewcode-block" id="SimpleKickIBS.compute_kick_coefficients">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.SimpleKickIBS.compute_kick_coefficients">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute_kick_coefficients</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>  <span class="c1"># noqa: F821</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IBSKickCoefficients</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.5.0</span>
+
+<span class="sd">        Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this</span>
+<span class="sd">        code base, from analytical growth rates. The coefficients correspond to the right-hand</span>
+<span class="sd">        side of Eq (8) in :cite:`PRAB:Bruce:Simple_IBS_Kicks` without the line density :math:`\rho_t(t)`</span>
+<span class="sd">        and random component :math:`r`.</span>
+
+<span class="sd">        The kick coefficient corresponds to the scaling of the generated random distribution :math:`r` and</span>
+<span class="sd">        is expressed as :math:`K_u = \sigma_{p_u} \sqrt{2 T^{-1}_{IBS_u} T_{rev} \sigma_t \sqrt{\pi}}`.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This functionality is separate from the kick application as it internally</span>
+<span class="sd">            triggers the computation of the analytical growth rates. Since this step</span>
+<span class="sd">            is computationally intensive and one might not necessarily want to recompute</span>
+<span class="sd">            the rates before every kick application.</span>
+
+<span class="sd">        .. hint::</span>
+<span class="sd">            The calculation is done according to the following steps, which are related to</span>
+<span class="sd">            different terms in Eq (8) of :cite:`PRAB:Bruce:Simple_IBS_Kicks`:</span>
+
+<span class="sd">                - Computes various properties from the non-lost particles in the bunch (:math:`\sigma_{x,y,\delta,t}`).</span>
+<span class="sd">                - Computes the standard deviation of momenta for each plane (:math:`\sigma_{p_u}`).</span>
+<span class="sd">                - Computes the constant term :math:`\sqrt{2 T_{rev} \sqrt{\pi}}`.</span>
+<span class="sd">                - Computes the analytical growth rates :math:`T_{x,y,z}` (:math:`T^{-1}_{IBS_u}` in Eq (8)).</span>
+<span class="sd">                - Computes, stores and returns the kick coefficients.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            particles (xpart.Particles): the particles to apply the IBS kicks to.</span>
+<span class="sd">            **kwargs: any keyword arguments will be passed to the growth rates calculation call</span>
+<span class="sd">                (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,</span>
+<span class="sd">                and `bunch_length` are already provided as positional-only arguments.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An `IBSKickCoefficients` object with the computed coefficients used for the kick application.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Compute the momentum spread, bunch length and (geometric) emittances from the Particles object</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing emittances, momentum spread and bunch length from particles&quot;</span><span class="p">)</span>
+        <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">zeta</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">sigma_x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">sigma_y</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="c1"># Indexing: we want the value where the bunch is and assume at start / end of machine which</span>
+        <span class="c1"># is where / when we will apply the kick (do a line.track and then kick). To be modified when</span>
+        <span class="c1"># when we include these things into xtrack, if we want an element that creates the kick.</span>
+        <span class="n">geom_epsx</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">betx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">geom_epsy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma_y</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">dy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">bety</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># fmt: off</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Computing standard deviation of (normalized) momenta, corresponding to sigma_{pu} in Eq (8) of reference</span>
+        <span class="c1"># Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the</span>
+        <span class="c1"># std of p[xy]. If bunch is rotated, the std takes from the &quot;other plane&quot; so we normalize to compensate.</span>
+        <span class="n">sigma_px_normalized</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">px</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">alfx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma_py_normalized</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">particles</span><span class="o">.</span><span class="n">py</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">alfy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Determine the &quot;scaling factor&quot;, corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference</span>
+        <span class="n">zeta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">zeta</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># careful to only consider active particles</span>
+        <span class="n">bunch_length_rms</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">zeta</span><span class="p">)</span>  <span class="c1"># rms bunch length in [m]</span>
+        <span class="n">scaling_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">bunch_length_rms</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Computing the analytical IBS growth rates</span>
+        <span class="n">growth_rates</span><span class="p">:</span> <span class="n">IBSGrowthRates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analytical_ibs</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span>
+            <span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="n">Tx</span><span class="p">,</span> <span class="n">Ty</span><span class="p">,</span> <span class="n">Tz</span> <span class="o">=</span> <span class="n">astuple</span><span class="p">(</span><span class="n">growth_rates</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Making sure we do not have negative growth rates (see class docstring warning for detail)</span>
+        <span class="n">Tx</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">Tx</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">Tx</span><span class="p">)</span>
+        <span class="n">Ty</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">Ty</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">Ty</span><span class="p">)</span>
+        <span class="n">Tz</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">Tz</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">Tz</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">rate</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">rate</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Tx</span><span class="p">,</span> <span class="n">Ty</span><span class="p">,</span> <span class="n">Tz</span><span class="p">)):</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;At least one IBS growth rate was negative, and was set to 0&quot;</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Compute the kick coefficients - see function docstring for exact definition</span>
+        <span class="c1"># For the longitudinal plane, since the values are computed from ΔP/P but applied to the ΔE/E</span>
+        <span class="c1"># (the particles.delta in Xsuite), we need to multiply by beta_rel**2 to adapt</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing and applying the kicks to the particles&quot;</span><span class="p">)</span>
+        <span class="n">Kx</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sigma_px_normalized</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">Tx</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">revolution_frequency</span><span class="p">)</span>
+        <span class="n">Ky</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sigma_py_normalized</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">Ty</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">revolution_frequency</span><span class="p">)</span>
+        <span class="n">Kz</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">scaling_factor</span> <span class="o">*</span> <span class="n">Tz</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">revolution_frequency</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">IBSKickCoefficients</span><span class="p">(</span><span class="n">Kx</span><span class="p">,</span> <span class="n">Ky</span><span class="p">,</span> <span class="n">Kz</span><span class="p">)</span>
+        <span class="c1"># fmt: on</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Self-update the instance&#39;s attributes and then return the results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kick_coefficients</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="c1"># TODO: go over with Michalis on his old code and determine what is being done before porting it</span>
+<div class="viewcode-block" id="SimpleKickIBS.apply_ibs_kick">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.SimpleKickIBS.apply_ibs_kick">[docs]</a>
+    <span class="k">def</span> <span class="nf">apply_ibs_kick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.5.0</span>
+
+<span class="sd">        Compute the momentum kick to apply based on the provided `xpart.Particles` object and the</span>
+<span class="sd">        analytical growth rates for the lattice. The kicks are implemented according to Eq (8) of</span>
+<span class="sd">        :cite:`PRAB:Bruce:Simple_IBS_Kicks`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.</span>
+<span class="sd">            n_slices (int): the number of slices to use for the computation of the line density.</span>
+<span class="sd">                Defaults to 40.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Check that the kick coefficients have been computed beforehand</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kick_coefficients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Attempted to apply IBS kick without having computed kick coefficients first.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;IBS kick coefficients have not been computed yet, cannot apply kick to particles.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Please call the `compute_kick_coefficients` method first.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># fmt: off</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Compute the line density - this is the rho_t(t) term in Eq (8) of reference</span>
+        <span class="n">rho_t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_density</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">)</span>  <span class="c1"># does NOT include _factor</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Determining size of arrays for kicks to apply: only the non-lost particles in the bunch</span>
+        <span class="n">_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">px</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># same for py and delta</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Determining kicks - this corresponds to the full result of Eq (8) of reference</span>
+        <span class="c1"># In theory, .normal(0, 1, _size) * factor and .normal(0, factor, _size) are the same (try it) but</span>
+        <span class="c1"># in practice the resulting kick is not physically accurate. The same is observed in C++ code (see</span>
+        <span class="c1"># for instance BLonD) so we use the coefficients as scale here, which is correct and benchmarked.</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Determining kicks to apply&quot;</span><span class="p">)</span>
+        <span class="n">RNG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+        <span class="n">delta_px</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">RNG</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kick_coefficients</span><span class="o">.</span><span class="n">Kx</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rho_t</span><span class="p">)</span>
+        <span class="n">delta_py</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">RNG</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kick_coefficients</span><span class="o">.</span><span class="n">Ky</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">_size</span><span class="p">)</span> <span class="o">*</span>  <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rho_t</span><span class="p">)</span>
+        <span class="n">delta_delta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">RNG</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kick_coefficients</span><span class="o">.</span><span class="n">Kz</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rho_t</span><span class="p">)</span>
+        <span class="c1"># fmt: on</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Apply the kicks to the particles</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Applying momenta kicks to the particles (on px, py and delta properties)&quot;</span><span class="p">)</span>
+        <span class="n">particles</span><span class="o">.</span><span class="n">px</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta_px</span>
+        <span class="n">particles</span><span class="o">.</span><span class="n">py</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta_py</span>
+        <span class="n">particles</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="n">particles</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta_delta</span></div>
+</div>
 
 
-<span class="c1"># It does not seem like any of the calculations in here need Nagaitsev results.</span>
+
+<span class="c1"># It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev</span>
+<span class="c1"># formalism for some reason? Will need to clarify with him.</span>
 <div class="viewcode-block" id="KineticKickIBS">
 <a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KineticKickIBS">[docs]</a>
-<span class="k">class</span> <span class="nc">KineticKickIBS</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">KineticKickIBS</span><span class="p">(</span><span class="n">KickBasedIBS</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    .. versionadded:: 0.4.0</span>
+<span class="sd">    .. versionadded:: 0.5.0</span>
 
 <span class="sd">    A single class to compute the IBS diffusion and friction coefficients according</span>
 <span class="sd">    to the kinetic IBS formalism of :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.</span>
 <span class="sd">    The class initiates from a `BeamParameters` and an `OpticsParameters` objects.</span>
 
+<span class="sd">    See the :ref:`kinetic kicks example &lt;demo-kinetic-kicks&gt;` for detailed usage.</span>
+
+<span class="sd">    TODO: reference, details etc.</span>
+
 <span class="sd">    Attributes:</span>
-<span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for the calculations.</span>
-<span class="sd">        optics (OpticsParameters): the optics parameters to use for the calculations.</span>
-<span class="sd">        diffusion_coeffs (DiffusionCoefficients): the computed diffusion coefficients. This</span>
-<span class="sd">            self-updates when they are computed with the `kinetic_coefficients` method.</span>
-<span class="sd">        friction_coeffs (FrictionCoefficients): the computed friction coefficients. This</span>
-<span class="sd">            self-updates when they are computed with the `kinetic_coefficients` method.</span>
-<span class="sd">        kinectic_coeffs (KineticCoefficients): the computed kinetic coefficients from which</span>
-<span class="sd">            the kinetic kicks are determined. This self-updates when they are computed with</span>
-<span class="sd">            the `kinetic_coefficients` method?</span>
+<span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for IBS computations.</span>
+<span class="sd">        optics (OpticsParameters): the optics parameters to use for the IBS computations.</span>
+<span class="sd">        diffusion_coefficients (DiffusionCoefficients): the computed diffusion coefficients</span>
+<span class="sd">            from the kinetic theory. This attribute self-updates when coefficients are computed</span>
+<span class="sd">            with the `compute_kick_coefficients` method. It can also be set manually.</span>
+<span class="sd">        friction_coefficients (FrictionCoefficients): the computed friction coefficients</span>
+<span class="sd">            from the kinetic theory. This attribute self-updates when coefficients are computed</span>
+<span class="sd">            with the `compute_kick_coefficients` method. It can also be set manually.</span>
+<span class="sd">        kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients from</span>
+<span class="sd">            the kinetic theory, determined from the diffusion and friction coefficients. This</span>
+<span class="sd">            attribute self-updates when coefficients are computed with the `compute_kick_coefficients`</span>
+<span class="sd">            method. It can also be set manually.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_params</span><span class="p">:</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="p">:</span> <span class="n">BeamParameters</span> <span class="o">=</span> <span class="n">beam_params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span> <span class="o">=</span> <span class="n">optics</span>
-        <span class="c1"># These self-update when they are computed, but can be overwritten by the user</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_coeffs</span><span class="p">:</span> <span class="n">DiffusionCoefficients</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">friction_coeffs</span><span class="p">:</span> <span class="n">FrictionCoefficients</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kinectic_coeffs</span><span class="p">:</span> <span class="n">KineticCoefficients</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>  <span class="c1"># also sets self.kick_coefficients</span>
+        <span class="c1"># These self-update when computed, but can be overwritten by the user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_coefficients</span><span class="p">:</span> <span class="n">DiffusionCoefficients</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">friction_coefficients</span><span class="p">:</span> <span class="n">FrictionCoefficients</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="KineticKickIBS.compute_kick_coefficients">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KineticKickIBS.compute_kick_coefficients">[docs]</a>
+    <span class="k">def</span> <span class="nf">compute_kick_coefficients</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>  <span class="c1"># noqa: F821</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IBSKickCoefficients</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.5.0</span>
+
+<span class="sd">        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This functionality is separate from the kick application because it internally triggers</span>
+<span class="sd">            the computation of the analytical growth rates, and we don&#39;t necessarily want to</span>
+<span class="sd">            recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            particles (xpart.Particles): the particles to apply the IBS kicks to.</span>
+<span class="sd">            **kwargs: any keyword arguments will be passed to ???.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An `IBSKickCoefficients` object with the computed coefficients used for the kick application.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Self-update the instance&#39;s attributes and then return the results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="c1"># TODO: go over with Michalis on his old code and determine what is being done before porting it</span>
+<div class="viewcode-block" id="KineticKickIBS.apply_ibs_kick">
+<a class="viewcode-back" href="../../modules/index.html#xibs.kicks.KineticKickIBS.apply_ibs_kick">[docs]</a>
+    <span class="k">def</span> <span class="nf">apply_ibs_kick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">,</span> <span class="n">n_slices</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. versionadded:: 0.5.0</span>
+
+<span class="sd">        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.</span>
+<span class="sd">            n_slices (int): the number of slices to use for the computation of the line density.</span>
+<span class="sd">                Defaults to 40.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Check that the kick coefficients have been computed beforehand</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Attempted to apply IBS kick without having computed kick coefficients first.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;IBS kick coefficients have not been computed yet, cannot apply kick to particles.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Please call the `compute_kick_coefficients` method first.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># TODO: implement</span>
+        <span class="k">pass</span></div>
+</div>
+
 </pre></div>
 
            </div>

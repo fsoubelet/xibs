@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution &mdash; xibs 0.4.1 documentation</title>
+  <title>Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution &mdash; xibs 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=c87aa342"></script>
+        <script src="../_static/documentation_options.js?v=1dd76d02"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -33,7 +33,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API Reference" href="../modules/index.html" />
+    <link rel="next" title="Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates" href="demo_simple_kicks.html" />
     <link rel="prev" title="Comparison of Analytical IBS Growth Rates and Emittances Evolution" href="demo_compare_analyticals.html" /> 
 </head>
 
@@ -49,7 +49,7 @@
             
           </a>
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -88,6 +88,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 </ul>
@@ -156,7 +163,10 @@ to download the full example code</p>
 to calculate IBS growth rates and emittances evolutions analytically.</p>
 <p>We will demonstrate using an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code> of the <code class="docutils literal notranslate"><span class="pre">CLIC</span></code> damping ring,
 for a positron beam.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass" title="dataclasses.dataclass" class="sphx-glr-backref-module-dataclasses sphx-glr-backref-type-py-function"><span class="n">dataclass</span></a>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass" title="dataclasses.dataclass" class="sphx-glr-backref-module-dataclasses sphx-glr-backref-type-py-function"><span class="n">dataclass</span></a>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -166,6 +176,12 @@ for a positron beam.</p>
 <span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">NagaitsevIBS</span></a>
 <span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
 
+<a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>  <span class="c1"># for this tutorial&#39;s clarity</span>
+<a href="https://docs.python.org/3/library/logging.html#logging.basicConfig" title="logging.basicConfig" class="sphx-glr-backref-module-logging sphx-glr-backref-type-py-function"><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span></a><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span></a><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2">] [</span><span class="si">%(levelname)s</span><span class="s2">] - </span><span class="si">%(module)s</span><span class="s2">.</span><span class="si">%(funcName)s</span><span class="s2">:</span><span class="si">%(lineno)d</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#dict.update" title="builtins.dict.update" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-method"><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span></a><span class="p">(</span>
     <span class="p">{</span>
         <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span>
@@ -378,8 +394,8 @@ object and will be updated internally each time they are computed.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">IBS</span><span class="o">.</span><span class="n">elliptic_integrals</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>NagaitsevIntegrals(Ix=8.016326443147888e+19, Iy=1.4835707755564525e+17, Iz=5.972745199228413e+23)
-NagaitsevIntegrals(Ix=8.016326443147888e+19, Iy=1.4835707755564525e+17, Iz=5.972745199228413e+23)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>NagaitsevIntegrals(Ix=8.125907713990063e+19, Iy=1.4863127510149923e+17, Iz=6.015937459201827e+23)
+NagaitsevIntegrals(Ix=8.125907713990063e+19, Iy=1.4863127510149923e+17, Iz=6.015937459201827e+23)
 </pre></div>
 </div>
 <p>From these the <strong>IBS</strong> growth rates can be computed, which is again done by calling
@@ -392,8 +408,8 @@ are computed.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">IBS</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>IBSGrowthRates(Tx=369.87320345629036, Ty=104.27685168208302, Tz=88.48649735045926)
-IBSGrowthRates(Tx=369.87320345629036, Ty=104.27685168208302, Tz=88.48649735045926)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>IBSGrowthRates(Tx=367.2228423959063, Ty=105.22029288652388, Tz=92.95460201225477)
+IBSGrowthRates(Tx=367.2228423959063, Ty=105.22029288652388, Tz=92.95460201225477)
 </pre></div>
 </div>
 <p>Please note that the <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBS.growth_rates</span></code> method by default re-computes the
@@ -415,10 +431,10 @@ is the default value used if it is not provided.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next time step bunch length = </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Next time step geometrical epsilon_x = 9.944594837629853e-11 m
-Next time step geometrical epsilon_y = 6.525599921245478e-13 m
-Next time step sigma_delta = 0.001759517719191271
-Next time step bunch length = 0.0015845352847165524 m
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Next time step geometrical epsilon_x = 1.0141260779466648e-10 m
+Next time step geometrical epsilon_y = 6.471399220825333e-13 m
+Next time step sigma_delta = 0.0017218929898720643
+Next time step bunch length = 0.0015890221377523794 m
 </pre></div>
 </div>
 </section>
@@ -432,6 +448,7 @@ as this computation is the most compute-intensive process.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a> <span class="o">=</span> <span class="mi">10_000</span>  <span class="c1"># number of turns to loop for</span>
 <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ibs_step</span></a> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># frequency at which to re-compute the growth rates in [turns]</span>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># array of turns</span>
+
 
 <span class="c1"># Set up a dataclass to store the results</span>
 <span class="nd">@dataclass</span>
@@ -456,7 +473,7 @@ as this computation is the most compute-intensive process.</p>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">bunch_length</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">zeta</span></a><span class="p">[</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">particles</span><span class="o">.</span><span class="n">state</span></a> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">sig_delta</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_delta</span>
 <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_x</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;dx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sig_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;betx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_y</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;bety&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">sig_y</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;dy&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sig_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;bety&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="c1"># We loop here now</span>
 <span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">):</span>
@@ -542,9 +559,7 @@ Turn 9800: re-computing the Nagaitsev integrals and growth rates
 <p>Feel free to run this simulation for more turns, or with a different frequency
 of the IBS growth rates re-computation. After this is done running, we can plot
 the evolutions across the turns:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html#matplotlib.pyplot.subplot_mosaic" title="matplotlib.pyplot.subplot_mosaic" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span></a><span class="p">(</span>
-    <span class="p">[[</span><span class="s2">&quot;epsx&quot;</span><span class="p">,</span> <span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">,</span> <span class="s2">&quot;bl&quot;</span><span class="p">]],</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
-<span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html#matplotlib.pyplot.subplot_mosaic" title="matplotlib.pyplot.subplot_mosaic" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span></a><span class="p">([[</span><span class="s2">&quot;epsx&quot;</span><span class="p">,</span> <span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">,</span> <span class="s2">&quot;bl&quot;</span><span class="p">]],</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
 <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <span class="mf">1e10</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_x</span></a><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <span class="mf">1e13</span> <span class="o">*</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn_by_turn</span><span class="o">.</span><span class="n">epsilon_y</span></a><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -580,7 +595,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 22.723 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 22.032 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-analytical-nagaitsev-emittances-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/44753cfd900e08e65d941ea131c64ba9/demo_analytical_nagaitsev_emittances.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_analytical_nagaitsev_emittances.ipynb</span></code></a></p>
@@ -598,7 +613,7 @@ in this example:</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="demo_compare_analyticals.html" class="btn btn-neutral float-left" title="Comparison of Analytical IBS Growth Rates and Emittances Evolution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../modules/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="demo_simple_kicks.html" class="btn btn-neutral float-right" title="Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

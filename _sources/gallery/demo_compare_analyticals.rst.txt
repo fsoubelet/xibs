@@ -40,9 +40,12 @@ vertical dispersion through the machine.
     
         git clone -b 2023 https://gitlab.cern.ch/acc-models/acc-models-lhc.git --depth 1
 
-.. GENERATED FROM PYTHON SOURCE LINES 26-47
+.. GENERATED FROM PYTHON SOURCE LINES 26-56
 
 .. code-block:: Python
+
+    import logging
+    import warnings
 
     from dataclasses import dataclass
     from pprint import pprint
@@ -50,8 +53,14 @@ vertical dispersion through the machine.
     import matplotlib.pyplot as plt
     import numpy as np
 
-    from helpers import prepare_all, _get_dummy_ibs_from_madx_rates
+    from helpers import _get_dummy_ibs_from_madx_rates, prepare_all
 
+    warnings.simplefilter("ignore")  # for this tutorial's clarity
+    logging.basicConfig(
+        level=logging.WARNING,
+        format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+        datefmt="%H:%M:%S",
+    )
     plt.rcParams.update(
         {
             "font.family": "serif",
@@ -72,15 +81,15 @@ vertical dispersion through the machine.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 49-54
+.. GENERATED FROM PYTHON SOURCE LINES 58-63
 
-Let's start by setting up the lattice in ``MAD-X`` (we are using `cpymad` for 
+Let's start by setting up the lattice in ``MAD-X`` (we are using `cpymad` for
 this) and our IBS classes. The following helper functions calls a configuration
 file from this repository's tests, sets up the lattice and beam in ``MAD-X`` and
-creates corresponding `~xibs.analytical.BjorkenMtingwaIBS` and 
+creates corresponding `~xibs.analytical.BjorkenMtingwaIBS` and
 `~xibs.analytical.NagaitsevIBS`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 54-61
+.. GENERATED FROM PYTHON SOURCE LINES 63-70
 
 .. code-block:: Python
 
@@ -88,7 +97,7 @@ creates corresponding `~xibs.analytical.BjorkenMtingwaIBS` and
     params, madx, BM_IBS, NAG_IBS = prepare_all(
         configname="lhc_top_protons",  # fetches the config file with this name
         extrafile="acc-models-lhc/strengths/ATS_Nominal/2023/ats_30cm.madx",  # to have xing
-        stdout=False  # don't want the MAD-X output
+        stdout=False,  # don't want the MAD-X output
     )
 
 
@@ -101,24 +110,23 @@ creates corresponding `~xibs.analytical.BjorkenMtingwaIBS` and
 
     Setting up MAD-X for lhc_top_protons case
     Calling extra file at 'acc-models-lhc/strengths/ATS_Nominal/2023/ats_30cm.madx'
-    There is betatron coupling in the machine (|Cminus| = 0.000),which is not taken into account in analytical calculations.
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 62-65
+.. GENERATED FROM PYTHON SOURCE LINES 71-74
 
 Here `params` hold the properties we want to be analytically tracking.
 We can check that crossing angles are present in the ``MAD-X`` lattice, and
 lead to vertical dispersion:
 
-.. GENERATED FROM PYTHON SOURCE LINES 65-79
+.. GENERATED FROM PYTHON SOURCE LINES 74-88
 
 .. code-block:: Python
 
 
     pprint(params)
-    print(f"Crossing angles in IP1/5: {madx.globals['on_x1']}, {madx.globals['on_x5']} micro-radians")
+    print(f"Crossing angles in IP1/5: {madx.globals['on_x1']}, {madx.globals['on_x5']} urad")
 
     table = madx.table.twiss.dframe()
     plt.figure(figsize=(11, 6))
@@ -147,21 +155,21 @@ lead to vertical dispersion:
            geom_epsy=2.483661433330319e-10,
            sig_delta=4.7170567118141664e-05,
            bunch_length=0.0374740568932693)
-    Crossing angles in IP1/5: 160.0, 160.0 micro-radians
+    Crossing angles in IP1/5: 160.0, 160.0 urad
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 80-86
+.. GENERATED FROM PYTHON SOURCE LINES 89-95
 
 Comparing Analytical Evolution for a Time Period
 ------------------------------------------------
 We will analytically look at the evolution through time by looping, just as in
-the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` and 
+the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` and
 :ref:`Nagaitsev <demo-analytical-nagaitsev>` analytical examples, respectively.
 Let's do so for 10 hours of beam time, recomputing the growth rates every 30 minutes.
 
-.. GENERATED FROM PYTHON SOURCE LINES 86-129
+.. GENERATED FROM PYTHON SOURCE LINES 95-140
 
 .. code-block:: Python
 
@@ -171,6 +179,7 @@ Let's do so for 10 hours of beam time, recomputing the growth rates every 30 min
     ibs_step = 30 * 60  # re-compute rates every 30min
     seconds = np.linspace(0, nsecs, nsecs).astype(int)
     beta_rel: float = BM_IBS.beam_parameters.beta_rel
+
 
     # Set up a dataclass to store the results
     @dataclass
@@ -182,24 +191,25 @@ Let's do so for 10 hours of beam time, recomputing the growth rates every 30 min
         sigd: np.ndarray  # momentum spread
         bl: np.ndarray  # bunch length in [m]
 
+
     # Initialize dataclasses for each approach
     madx_tbt = Records(
         np.zeros(nsecs, dtype=float),
         np.zeros(nsecs, dtype=float),
         np.zeros(nsecs, dtype=float),
-        np.zeros(nsecs, dtype=float)
+        np.zeros(nsecs, dtype=float),
     )
     bm_tbt = Records(
         np.zeros(nsecs, dtype=float),
         np.zeros(nsecs, dtype=float),
         np.zeros(nsecs, dtype=float),
-        np.zeros(nsecs, dtype=float)
+        np.zeros(nsecs, dtype=float),
     )
     nag_tbt = Records(
         np.zeros(nsecs, dtype=float),
         np.zeros(nsecs, dtype=float),
         np.zeros(nsecs, dtype=float),
-        np.zeros(nsecs, dtype=float)
+        np.zeros(nsecs, dtype=float),
     )
 
     # Initialize data at second 0 (initial state) for all structures
@@ -215,12 +225,12 @@ Let's do so for 10 hours of beam time, recomputing the growth rates every 30 min
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 130-132
+.. GENERATED FROM PYTHON SOURCE LINES 141-143
 
 With the settings above and this loop, we compute the emittances
 every second but we only update the growth rates every 30 minutes.
 
-.. GENERATED FROM PYTHON SOURCE LINES 132-207
+.. GENERATED FROM PYTHON SOURCE LINES 143-220
 
 .. code-block:: Python
 
@@ -230,7 +240,9 @@ every second but we only update the growth rates every 30 minutes.
         if (sec % ibs_step == 0) or (sec == 1):
             print(f"At {sec}s: re-computing growth rates")
             # For MAD-X - call the 'twiss' then 'ibs' commands (computes from beam attributes)
-            MAD_IBS = _get_dummy_ibs_from_madx_rates(madx)  # calls twiss, ibs, gets rates and puts them in returned 'dummy IBS'
+            MAD_IBS = _get_dummy_ibs_from_madx_rates(
+                madx
+            )  # calls twiss, ibs, gets rates and puts them in returned 'dummy IBS'
             MAD_IBS.beam_parameters = BM_IBS.beam_parameters  # we will want to access these
             MAD_IBS.optics = BM_IBS.optics  # we will want to access these
             # For Bjorken-Mtingwa - compute from values at the previous sec
@@ -331,20 +343,18 @@ every second but we only update the growth rates every 30 minutes.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 208-211
+.. GENERATED FROM PYTHON SOURCE LINES 221-224
 
 Feel free to run this simulation for more turns, or with a different frequency
 of the IBS growth rates re-computation. After this is done running, we can plot
 the evolutions across the turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 211-261
+.. GENERATED FROM PYTHON SOURCE LINES 224-272
 
 .. code-block:: Python
 
 
-    fig, axs = plt.subplot_mosaic(
-        [["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7)
-    )
+    fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7))
 
     # Plotting horizontal emittances
     axs["epsx"].plot(seconds / 3600, 1e10 * madx_tbt.eps_x, lw=2.5, label="MAD-X")
@@ -403,14 +413,14 @@ the evolutions across the turns:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 262-266
+.. GENERATED FROM PYTHON SOURCE LINES 273-277
 
 Notice how we observe a great agreement between different implementations,
 except for the vertical emittances. This is expected, as the lattice setup
 includes vertical dispersion which is not taken into consideration by the
 `~.xibs.analytical.NagaitsevIBS` formalism.
 
-.. GENERATED FROM PYTHON SOURCE LINES 268-274
+.. GENERATED FROM PYTHON SOURCE LINES 279-285
 
 .. admonition:: References
 
@@ -422,7 +432,7 @@ includes vertical dispersion which is not taken into consideration by the
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 42.135 seconds)
+   **Total running time of the script:** (1 minutes 40.132 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_compare_analyticals.py:

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>API Reference — xibs 0.4.1 documentation</title>
+<title>API Reference — xibs 0.5.0 documentation</title>
 <link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
 <link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
@@ -21,7 +21,7 @@
   <![endif]-->
 <script src="../_static/jquery.js?v=5d32c60e"></script>
 <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="../_static/documentation_options.js?v=c87aa342"></script>
+<script src="../_static/documentation_options.js?v=1dd76d02"></script>
 <script src="../_static/doctools.js?v=888ff710"></script>
 <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -31,7 +31,7 @@
 <link href="../genindex.html" rel="index" title="Index"/>
 <link href="../search.html" rel="search" title="Search"/>
 <link href="../faq.html" rel="next" title="Frequently Asked Questions"/>
-<link href="../gallery/demo_analytical_nagaitsev_emittances.html" rel="prev" title="Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution"/>
+<link href="../gallery/demo_simple_kicks.html" rel="prev" title="Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates"/>
 </head>
 <body class="wy-body-for-nav">
 <div class="wy-grid-for-nav">
@@ -41,7 +41,7 @@
 <a href="../index.html">
 </a>
 <div class="version">
-                0.4.1
+                0.5.0
               </div>
 <div role="search">
 <form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -80,6 +80,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 </ul>
@@ -237,7 +244,8 @@ initiating from a <code class="docutils literal notranslate"><span class="pre">M
 is an init-only parameter used for instanciation and it will not be kept in
 the instance’s attributes.</p></li>
 <li><p><strong>_slipfactor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Optional[float]</span></code>) -- the slip factor for the machine. Only required if
-the <code class="docutils literal notranslate"><span class="pre">twiss</span></code> argument is a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> twiss dataframe.</p></li>
+the <code class="docutils literal notranslate"><span class="pre">twiss</span></code> argument is a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> twiss dataframe. See below for the sign
+convention used.</p></li>
 <li><p><strong>_frev_hz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Optional[float]</span></code>) -- the revolution frequency for the machine in [Hz].
 Only required if the <code class="docutils literal notranslate"><span class="pre">twiss</span></code> argument is a <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> twiss dataframe.</p></li>
 </ul>
@@ -246,7 +254,8 @@ Only required if the <code class="docutils literal notranslate"><span class="pre
 <dd class="field-even"><ul class="simple">
 <li><p><strong>s</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- longitudinal positions of the machine elements in [m].</p></li>
 <li><p><strong>circumference</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- machine circumference in [m].</p></li>
-<li><p><strong>slip_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- slip factor of the machine.</p></li>
+<li><p><strong>slip_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- slip factor of the machine. We are using the Xsuite convention,
+where the slip factor is <em>positive above transition</em>.</p></li>
 <li><p><strong>revolution_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- revolution frequency of the machine in [Hz].</p></li>
 <li><p><strong>betx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- horizontal beta functions in [m].</p></li>
 <li><p><strong>bety</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLike</span></code>) -- vertical beta functions in [m].</p></li>
@@ -488,7 +497,7 @@ normalized or not. Defaults to <a class="reference external" href="https://docs.
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates have not yet been computed.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> growth rates have not yet been computed.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A tuple with the new horizontal &amp; vertical geometric emittances, the new
@@ -529,6 +538,9 @@ The exact approach follows the <code class="docutils literal notranslate"><span 
 take in consideration the vertical dispersion values (see the relevant note about the changes
 at <span id="id4">[<a class="reference internal" href="../bibliography.html#id2" title="F. Antoniou and F. Zimmermann. Revision of Intrabeam Scattering with Non-Ultrarelativistic Corrections and Vertical Dispersion for MAD-X. Technical Report, Cern, Geneva, 2012. URL: https://cds.cern.ch/record/1445924.">AZ12</a>]</span>). It initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an
 <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
+<p>See the <a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#demo-analytical-bjorken-mtingwa"><span class="std std-ref">Bjorken-Mtingwa example</span></a> for detailed usage,
+and the <a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#demo-analytical-nagaitsev"><span class="std std-ref">Nagaitsev example</span></a> for a comparison to the Nagaitsev
+formalism.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If possible, when creating the <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> to initiate this class, please do so
@@ -634,6 +646,9 @@ you know exactly what you are doing, as you might affect convergence. Defaults t
 <p>A single class to compute Nagaitsev integrals (see
 <span id="id6">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>)
 and IBS growth rates. It initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
+<p>See the <a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#demo-analytical-nagaitsev"><span class="std std-ref">Nagaitsev example</span></a> for detailed usage, and the
+<a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#demo-analytical-bjorken-mtingwa"><span class="std std-ref">Bjorken-Mtingwa example</span></a> for a comparison to the
+Bjorken-Mtingwa formalism.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -785,9 +800,9 @@ normalized or not. Defaults to <a class="reference external" href="https://docs.
 </dd></dl>
 <section id="ibs-applying-kicks">
 <span id="xibs-kicks"></span><h2>IBS: Applying Kicks<a class="headerlink" href="#ibs-applying-kicks" title="Link to this heading"></a></h2>
-<p>Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: kinetic and simple.</p>
-<p>In the kinetic formalism, the applied IBS kicks are determined from computed diffusion and friction terms.
-In the simple formalism, the applied IBS kicks are determined from Nagaitsev integrals (see <a class="reference internal" href="#xibs-analytical"><span class="std std-ref">IBS: Analytical Calculations</span></a>).</p>
+<p>Module with user-facing API to compute relevant terms to IBS kicks according to different formalism: simple and kinetic kicks.</p>
+<p>In the simple formalism, the applied IBS kicks are determined from analytical IBS growth rates, which are computed internally (see <a class="reference internal" href="#xibs-analytical"><span class="std std-ref">IBS: Analytical Calculations</span></a>).
+In the kinetic formalism, which adapts the kinetic theory of gases, the applied IBS kicks are determined from computed diffusion and friction terms.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
@@ -796,9 +811,9 @@ In the simple formalism, the applied IBS kicks are determined from Nagaitsev int
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal diffusion coefficient in [1/s].</p></li>
-<li><p><strong>Dy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical diffusion coefficient in [1/s].</p></li>
-<li><p><strong>Dz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- longitudinal diffusion coefficient in [1/s].</p></li>
+<li><p><strong>Dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal diffusion coefficient.</p></li>
+<li><p><strong>Dy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical diffusion coefficient.</p></li>
+<li><p><strong>Dz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- longitudinal diffusion coefficient.</p></li>
 </ul>
 </dd>
 </dl>
@@ -810,61 +825,315 @@ In the simple formalism, the applied IBS kicks are determined from Nagaitsev int
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Fx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal friction coefficient in [1/s].</p></li>
-<li><p><strong>Fy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical friction coefficient in [1/s].</p></li>
-<li><p><strong>Fz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- longitudinal friction coefficient in [1/s].</p></li>
+<li><p><strong>Fx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal friction coefficient.</p></li>
+<li><p><strong>Fy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical friction coefficient.</p></li>
+<li><p><strong>Fz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- longitudinal friction coefficient.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">KineticCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#KineticCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Container dataclass for kinetic IBS coefficients. These are computed from the diffusion
-and friction ones according to <span id="id12">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">IBSKickCoefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Kx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#IBSKickCoefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Container dataclass for all IBS kick coefficients. These can be the coeffients from simple kicks,
+computed from analytical growth rates, or kinetic coefficients computed from the diffusion and
+friction ones according to <span id="id12">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Kx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- horizontal kick coefficient.</p></li>
+<li><p><strong>Ky</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- vertical kick coefficient.</p></li>
+<li><p><strong>Kz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) -- longitudinal kick coefficient.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">KickBasedIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#KickBasedIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>Abstract base class for kick-based IBS effects, from which all
+implementations inherit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for IBS computations.</p></li>
+<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the IBS computations.</p></li>
+<li><p><strong>kick_coefficients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code>) -- the computed IBS kick coefficients. This
+attribute self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code>
+method. It can also be set manually.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_ibs_kick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xpart.Particles</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/xibs/kicks.html#KickBasedIBS.apply_ibs_kick"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>Abstract method to determine and apply IBS kicks to a <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object. The
+momenta kicks are determined from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.kick_coefficients</span></code> attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the particles to apply the IBS kicks to.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kick coefficients have not yet been computed.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_kick_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xpart.Particles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSKickCoefficients</span></span></span><a class="reference internal" href="../_modules/xibs/kicks.html#KickBasedIBS.compute_kick_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>Abstract method to determine the kick coefficients used in the determination of the IBS
+to be applied. It returns an <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code> object with the computed coefficients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the particles to apply the IBS kicks to.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">line_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xpart.Particles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">ArrayLike</span></span></span><a class="reference internal" href="../_modules/xibs/kicks.html#KickBasedIBS.line_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>Returns the “line density” of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Particles</span></code> object, along its longitudinal axis, which
+corresponds to the <span class="math notranslate nohighlight">\(\rho_t(t)\)</span> term in Eq (8) of <span id="id13">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.
+The density is used as a weight factor for the application of IBS kicks: particles in the
+denser parts of the bunch will receive a larger kick, and vice versa. See section III.C of
+the above reference details.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The calculation is done according to the following steps:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Gets the longitudinal coordinates of the active particles (state &gt; 0) in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Particles</span></code> object.</p></li>
+<li><p>Determines coordinate cuts at front and back of the bunch, as well as slice width.</p></li>
+<li><p>Determines bin edges and bin centers for the distribution for the chosen number of slices.</p></li>
+<li><p>Computes a (normalized) histogram of the longitudinal coordinates, with the determined bins.</p></li>
+<li><p>Computes and returns the line density <span class="math notranslate nohighlight">\(\rho_t(t)\)</span>.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object to compute the line density for.</p></li>
+<li><p><strong>n_slices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- the number of slices to use for the computation of the bins.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An array with the density values for each slice / bin of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Particles</span></code> object.</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">KineticKickIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#KineticKickIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
 </div>
 <p>A single class to compute the IBS diffusion and friction coefficients according
-to the kinetic IBS formalism of <span id="id13">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
+to the kinetic IBS formalism of <span id="id14">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
 The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
+<p>See the <span class="xref std std-ref">kinetic kicks example</span> for detailed usage.</p>
+<p>TODO: reference, details etc.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations.</p></li>
-<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations.</p></li>
-<li><p><strong>diffusion_coeffs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionCoefficients</span></code>) -- the computed diffusion coefficients. This
-self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_coefficients</span></code> method.</p></li>
-<li><p><strong>friction_coeffs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">FrictionCoefficients</span></code>) -- the computed friction coefficients. This
-self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_coefficients</span></code> method.</p></li>
-<li><p><strong>kinectic_coeffs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">KineticCoefficients</span></code>) -- the computed kinetic coefficients from which
-the kinetic kicks are determined. This self-updates when they are computed with
-the <code class="xref py py-obj docutils literal notranslate"><span class="pre">kinetic_coefficients</span></code> method?</p></li>
+<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for IBS computations.</p></li>
+<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the IBS computations.</p></li>
+<li><p><strong>diffusion_coefficients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionCoefficients</span></code>) -- the computed diffusion coefficients
+from the kinetic theory. This attribute self-updates when coefficients are computed
+with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code> method. It can also be set manually.</p></li>
+<li><p><strong>friction_coefficients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">FrictionCoefficients</span></code>) -- the computed friction coefficients
+from the kinetic theory. This attribute self-updates when coefficients are computed
+with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code> method. It can also be set manually.</p></li>
+<li><p><strong>kick_coefficients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code>) -- the computed IBS kick coefficients from
+the kinetic theory, determined from the diffusion and friction coefficients. This
+attribute self-updates when coefficients are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code>
+method. It can also be set manually.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">apply_ibs_kick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xpart.Particles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/xibs/kicks.html#KineticKickIBS.apply_ibs_kick"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object to apply <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kicks to.</p></li>
+<li><p><strong>n_slices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- the number of slices to use for the computation of the line density.
+Defaults to 40.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kick coefficients have not yet been computed.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">compute_kick_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xpart.Particles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSKickCoefficients</span></span></span><a class="reference internal" href="../_modules/xibs/kicks.html#KineticKickIBS.compute_kick_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This functionality is separate from the kick application because it internally triggers
+the computation of the analytical growth rates, and we don’t necessarily want to
+recompute these at every turn. Meanwhile, the kicks <strong>should</strong> be applied at every turn.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the particles to apply the IBS kicks to.</p></li>
+<li><p><strong>**kwargs</strong> -- any keyword arguments will be passed to ???.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code> object with the computed coefficients used for the kick application.</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xibs.kicks.</span></span><span class="sig-name descname"><span class="pre">SimpleKickIBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BeamParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OpticsParameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/xibs/kicks.html#SimpleKickIBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
 </div>
-<p>A single class to compute the simple IBS kicks based on the analytical results obtained with
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.analytical</span></code>. The kicks are implemented according to <span id="id14">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.
-The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
+<p>A single class to compute the simple IBS kicks based on the analytical growth rates.
+The kicks are implemented according to <span id="id15">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>, and
+provide a random distribution of momenta changes based on the growth rates, weighted
+by the line density of the bunch. The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
+<p>See the <a class="reference internal" href="../gallery/demo_simple_kicks.html#demo-simple-kicks"><span class="std std-ref">simple kicks example</span></a> for detailed usage.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Beware: this implementation is only valid <strong>above</strong> transition energy. Because
+this formalism implements a weighted random-component kick, it will <em>always</em> lead
+to emittance growth. Below transition it is common to observe negative growth rates,
+which would lead to emittance <em>shrinkage</em> and therefore the provided kick would have
+the wrong effect. It is also possible to obtain negative growth rates above transition
+in some scenarios, and internally this implementation sets the growth rate to 0 if it
+is found negative. When this happens, a message is logged to inform the user. For any
+machine operating below transition energy, the kinetic formalism should be used instead
+(see the <code class="xref py py-obj docutils literal notranslate"><span class="pre">KineticKickIBS</span></code> class).</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>When determining kick coefficients (see the <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code> method),
+the analytical growth rates are computed. This is done using one of the analytical
+classes, which is determined internally based on the optics parameters (namely, the
+presence of vertical dispersion), and set as the <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.analytical_ibs</span></code> attribute.
+Choices are logged to the user. It is always possible to override this choice by
+manually setting the <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.analytical_ibs</span></code> attribute to an instance of the desired
+analytical implementation (to be found in <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs.analytical</span></code>). It is also possible
+for the user to provide their own, custom-made analytical implementation, as long as
+it inherits from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">AnalyticalIBS</span></code> class and implements the API defined therein.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for the calculations.</p></li>
-<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the calculations.</p></li>
+<li><p><strong>beam_parameters</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">BeamParameters</span></code>) -- the beam parameters to use for IBS computations.</p></li>
+<li><p><strong>optics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">OpticsParameters</span></code>) -- the optics parameters to use for the IBS computations.</p></li>
+<li><p><strong>analytical_ibs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AnalyticalIBS</span></code>) -- an internal analytical class for growth rates
+calculation, which is determined automatically. Can be overridden by the user
+by setting this attribute manually.</p></li>
+<li><p><strong>kick_coefficients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code>) -- the computed IBS kick coefficients. This
+self-updates when they are computed with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code> method.
+It can also be set manually.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analytical_ibs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AnalyticalIBS</span></em></dt>
+<dd><p>The analytical IBS implementation used for growth rates calculation.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">apply_ibs_kick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xpart.Particles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/xibs/kicks.html#SimpleKickIBS.apply_ibs_kick"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>Compute the momentum kick to apply based on the provided <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object and the
+analytical growth rates for the lattice. The kicks are implemented according to Eq (8) of
+<span id="id16">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object to apply <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kicks to.</p></li>
+<li><p><strong>n_slices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) -- the number of slices to use for the computation of the line density.
+Defaults to 40.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> -- if the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kick coefficients have not yet been computed.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">compute_kick_coefficients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xpart.Particles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">IBSKickCoefficients</span></span></span><a class="reference internal" href="../_modules/xibs/kicks.html#SimpleKickIBS.compute_kick_coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+</div>
+<p>Computes the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kick coefficients, named <span class="math notranslate nohighlight">\(K_x, K_y\)</span> and <span class="math notranslate nohighlight">\(K_z\)</span> in this
+code base, from analytical growth rates. The coefficients correspond to the right-hand
+side of Eq (8) in <span id="id17">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span> without the line density <span class="math notranslate nohighlight">\(\rho_t(t)\)</span>
+and random component <span class="math notranslate nohighlight">\(r\)</span>.</p>
+<p>The kick coefficient corresponds to the scaling of the generated random distribution <span class="math notranslate nohighlight">\(r\)</span> and
+is expressed as <span class="math notranslate nohighlight">\(K_u = \sigma_{p_u} \sqrt{2 T^{-1}_{IBS_u} T_{rev} \sigma_t \sqrt{\pi}}\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This functionality is separate from the kick application as it internally
+triggers the computation of the analytical growth rates. Since this step
+is computationally intensive and one might not necessarily want to recompute
+the rates before every kick application.</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The calculation is done according to the following steps, which are related to
+different terms in Eq (8) of <span id="id18">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Computes various properties from the non-lost particles in the bunch (<span class="math notranslate nohighlight">\(\sigma_{x,y,\delta,t}\)</span>).</p></li>
+<li><p>Computes the standard deviation of momenta for each plane (<span class="math notranslate nohighlight">\(\sigma_{p_u}\)</span>).</p></li>
+<li><p>Computes the constant term <span class="math notranslate nohighlight">\(\sqrt{2 T_{rev} \sqrt{\pi}}\)</span>.</p></li>
+<li><p>Computes the analytical growth rates <span class="math notranslate nohighlight">\(T_{x,y,z}\)</span> (<span class="math notranslate nohighlight">\(T^{-1}_{IBS_u}\)</span> in Eq (8)).</p></li>
+<li><p>Computes, stores and returns the kick coefficients.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the particles to apply the IBS kicks to.</p></li>
+<li><p><strong>**kwargs</strong> -- any keyword arguments will be passed to the growth rates calculation call
+(<code class="xref py py-obj docutils literal notranslate"><span class="pre">self.analytical_ibs.growth_rates</span></code>). Note that <code class="xref py py-obj docutils literal notranslate"><span class="pre">epsx</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">epsy</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigma_delta</span></code>,
+and <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunch_length</span></code> are already provided as positional-only arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code> object with the computed coefficients used for the kick application.</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 <section id="formulary">
 <span id="xibs-utils"></span><h2>Formulary<a class="headerlink" href="#formulary" title="Link to this heading"></a></h2>
@@ -879,7 +1148,7 @@ The class initiates from a <code class="xref py py-obj docutils literal notransl
 <p>Analytical calculation for bunch length for protons / electrons (from Wiedermann’s book).
 This is a linear approximation which assumes that particles are in the center of the bucket
 only / mostly.</p>
-<div class="admonition-todo admonition" id="id15">
+<div class="admonition-todo admonition" id="id19">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -941,7 +1210,7 @@ here.</p>
 <p>Analytical calculation for bunch length for ions (from Wiedermann’s book). This calculation
 does not work too well if the bucket is full. Implementation so far as I can tell is as used
 in the scripts for LEIR for ions (some MAD-X script that LEIR studies were using for IBS).</p>
-<div class="admonition-todo admonition" id="id16">
+<div class="admonition-todo admonition" id="id20">
 <p class="admonition-title">Todo</p>
 <p>Figure out exactly the formula that was implemented here and reference / document it in the docstring.</p>
 </div>
@@ -997,7 +1266,7 @@ instance 1 for electron or proton).</p></li>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
-<p>Phi parameter of Eq (15) in <span id="id17">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
+<p>Phi parameter of Eq (15) in <span id="id21">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1024,7 +1293,7 @@ instance 1 for electron or proton).</p></li>
 </div>
 </div>
 <footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
-<a accesskey="p" class="btn btn-neutral float-left" href="../gallery/demo_analytical_nagaitsev_emittances.html" rel="prev" title="Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="p" class="btn btn-neutral float-left" href="../gallery/demo_simple_kicks.html" rel="prev" title="Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
 <a accesskey="n" class="btn btn-neutral float-right" href="../faq.html" rel="next" title="Frequently Asked Questions">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
 </div>
 <hr/>

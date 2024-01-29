@@ -30,9 +30,12 @@ to calculate IBS growth rates and emittances evolutions analytically.
 We will demonstrate using the case of the CERN SPS, with protons at top
 energy, aka 450 GeV.
 
-.. GENERATED FROM PYTHON SOURCE LINES 15-38
+.. GENERATED FROM PYTHON SOURCE LINES 15-47
 
 .. code-block:: Python
+
+    import logging
+    import warnings
 
     from dataclasses import dataclass
 
@@ -44,6 +47,12 @@ energy, aka 450 GeV.
     from xibs.analytical import BjorkenMtingwaIBS
     from xibs.inputs import BeamParameters, OpticsParameters
 
+    warnings.simplefilter("ignore")  # for this tutorial's clarity
+    logging.basicConfig(
+        level=logging.WARNING,
+        format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+        datefmt="%H:%M:%S",
+    )
     plt.rcParams.update(
         {
             "font.family": "serif",
@@ -64,12 +73,12 @@ energy, aka 450 GeV.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 40-42
+.. GENERATED FROM PYTHON SOURCE LINES 49-51
 
 Let's start by defining the line and particle information, as well as some
 parameters for later use:
 
-.. GENERATED FROM PYTHON SOURCE LINES 42-56
+.. GENERATED FROM PYTHON SOURCE LINES 51-65
 
 .. code-block:: Python
 
@@ -94,14 +103,14 @@ parameters for later use:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 57-61
+.. GENERATED FROM PYTHON SOURCE LINES 66-70
 
 Setting up line and particles
 -----------------------------
 Let's start by loading the `xtrack.Line`, activating RF cavities and
 generating a matched Gaussian bunch:
 
-.. GENERATED FROM PYTHON SOURCE LINES 61-81
+.. GENERATED FROM PYTHON SOURCE LINES 70-90
 
 .. code-block:: Python
 
@@ -155,12 +164,12 @@ generating a matched Gaussian bunch:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 82-84
+.. GENERATED FROM PYTHON SOURCE LINES 91-93
 
 We can have a look at the generated particles (see the `xsuite user guide
 <https://xsuite.readthedocs.io/en/latest/particlesmanip.html>`_ for more)
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-101
+.. GENERATED FROM PYTHON SOURCE LINES 93-110
 
 .. code-block:: Python
 
@@ -193,12 +202,12 @@ We can have a look at the generated particles (see the `xsuite user guide
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 102-104
+.. GENERATED FROM PYTHON SOURCE LINES 111-113
 
 We can compute initial (geometrical) emittances as well as the bunch length
 from the `xpart.Particles` object:
 
-.. GENERATED FROM PYTHON SOURCE LINES 104-114
+.. GENERATED FROM PYTHON SOURCE LINES 113-123
 
 .. code-block:: Python
 
@@ -219,7 +228,7 @@ from the `xpart.Particles` object:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 115-121
+.. GENERATED FROM PYTHON SOURCE LINES 124-130
 
 Computing IBS Growth Rates
 --------------------------
@@ -228,7 +237,7 @@ simple and is done from both the beam parameters of the particles and the
 optics parameters of the line. For each of these a specific `dataclass`
 is provided in the `~.xibs.inputs` module.
 
-.. GENERATED FROM PYTHON SOURCE LINES 121-126
+.. GENERATED FROM PYTHON SOURCE LINES 130-135
 
 .. code-block:: Python
 
@@ -244,7 +253,7 @@ is provided in the `~.xibs.inputs` module.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 127-133
+.. GENERATED FROM PYTHON SOURCE LINES 136-142
 
 Just like for NagaitsevIBS, we can ask for the **IBS** growth rates to be computed
 with a dedicated function. Notice the class will complain that our provided Twiss
@@ -253,7 +262,7 @@ the moment xtrack does not allow Twissing at the center of elements, but we coul
 get this from MAD-X. These are returned by the function but also stored and updated
 internally each time they are computed.
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-138
+.. GENERATED FROM PYTHON SOURCE LINES 142-147
 
 .. code-block:: Python
 
@@ -270,14 +279,14 @@ internally each time they are computed.
 
  .. code-block:: none
 
-    Twiss was not calculated at center of elements
-    IBSGrowthRates(Tx=5.497397541061886e-05, Ty=-4.384984363013051e-08, Tz=2.472505290300049e-05)
-    IBSGrowthRates(Tx=5.497397541061886e-05, Ty=-4.384984363013051e-08, Tz=2.472505290300049e-05)
+    [07:57:32] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+    IBSGrowthRates(Tx=5.551602202950263e-05, Ty=-4.4365023992283287e-08, Tz=2.4789090918446148e-05)
+    IBSGrowthRates(Tx=5.551602202950263e-05, Ty=-4.4365023992283287e-08, Tz=2.4789090918446148e-05)
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 139-144
+.. GENERATED FROM PYTHON SOURCE LINES 148-153
 
 Computing New Emittances from Growth Rates
 ------------------------------------------
@@ -285,7 +294,7 @@ From these one can compute the emittances at the next time step. For the emittan
 at the next turn, once should use :math:`1 / f_{rev}` as the time step, which
 is the default value used if it is not provided.
 
-.. GENERATED FROM PYTHON SOURCE LINES 144-153
+.. GENERATED FROM PYTHON SOURCE LINES 153-162
 
 .. code-block:: Python
 
@@ -306,15 +315,15 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 4.166331412271756e-09 m
-    Next time step geometrical epsilon_y = 5.2965503337960405e-09 m
-    Next time step sigma_delta = 0.0003069449669299364
-    Next time step bunch length = 0.22618901582795384 m
+    Next time step geometrical epsilon_x = 4.1605508943923134e-09 m
+    Next time step geometrical epsilon_y = 5.272484020013372e-09 m
+    Next time step sigma_delta = 0.00030788225910835455
+    Next time step bunch length = 0.22465765124235318 m
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 154-161
+.. GENERATED FROM PYTHON SOURCE LINES 163-170
 
 Analytical Evolution for a Time Period
 --------------------------------------
@@ -324,7 +333,7 @@ every 10 minutes. The more frequent this update the more physically accurate
 the results will be, but the longer the simulation as this computation is the most
 compute-intensive process.
 
-.. GENERATED FROM PYTHON SOURCE LINES 161-218
+.. GENERATED FROM PYTHON SOURCE LINES 170-229
 
 .. code-block:: Python
 
@@ -332,6 +341,7 @@ compute-intensive process.
     nsecs = 5 * 3_600  # that's 5h
     ibs_step = 10 * 60  # re-compute rates every 10min
     seconds = np.linspace(0, nsecs, nsecs).astype(int)
+
 
     # Set up a dataclass to store the results
     @dataclass
@@ -342,6 +352,7 @@ compute-intensive process.
         epsilon_y: np.ndarray
         sig_delta: np.ndarray
         bunch_length: np.ndarray
+
 
     # Initialize the dataclass
     turn_by_turn = Records(
@@ -376,7 +387,7 @@ compute-intensive process.
             epsy=turn_by_turn.epsilon_y[sec - 1],
             sigma_delta=turn_by_turn.sig_delta[sec - 1],
             bunch_length=turn_by_turn.bunch_length[sec - 1],
-            dt = 1.0  # get at next second
+            dt=1.0,  # get at next second
         )
 
         # ----- Update the records with the new values ----- #
@@ -394,83 +405,81 @@ compute-intensive process.
  .. code-block:: none
 
     At 1s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:33] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 600s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:34] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 1200s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:35] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 1800s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:36] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 2400s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:36] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 3000s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:37] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 3600s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:38] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 4200s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:39] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 4800s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:40] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 5400s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:41] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 6000s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:42] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 6600s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:42] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 7200s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:43] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 7800s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:44] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 8400s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:45] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 9000s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:46] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 9600s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:47] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 10200s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:48] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 10800s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:48] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 11400s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:49] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 12000s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:50] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 12600s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:51] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 13200s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:52] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 13800s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:53] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 14400s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:54] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 15000s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:54] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 15600s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:55] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 16200s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:56] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 16800s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:57] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
     At 17400s: re-computing growth rates
-    Twiss was not calculated at center of elements
+    [07:57:58] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 219-222
+.. GENERATED FROM PYTHON SOURCE LINES 230-233
 
 Feel free to run this simulation for longer, or with a different frequency
 of the IBS growth rates re-computation. After this is done running, we can plot
 the evolutions across the turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 222-254
+.. GENERATED FROM PYTHON SOURCE LINES 233-263
 
 .. code-block:: Python
 
 
-    fig, axs = plt.subplot_mosaic(
-        [["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7)
-    )
+    fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7))
 
     axs["epsx"].plot(seconds / 3600, 1e9 * turn_by_turn.epsilon_x, lw=2)
     axs["epsy"].plot(seconds / 3600, 1e9 * turn_by_turn.epsilon_y, lw=2)
@@ -511,7 +520,7 @@ the evolutions across the turns:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 255-262
+.. GENERATED FROM PYTHON SOURCE LINES 264-271
 
 .. admonition:: References
 
@@ -524,7 +533,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 43.116 seconds)
+   **Total running time of the script:** (0 minutes 40.949 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_bjorken_mtingwa_emittances.py:

@@ -168,6 +168,7 @@
   "gallery/demo_analytical_bjorken_mtingwa_emittances": [],
   "gallery/demo_analytical_nagaitsev_emittances": [],
   "gallery/demo_compare_analyticals": [],
+  "gallery/demo_simple_kicks": [],
   "gallery/index": [],
   "gallery/sg_execution_times": [],
   "index": [],
@@ -241,7 +242,7 @@
       "doc_lineno": 83
     },
     {
-      "source": "from xibs.inputs import BeamParameters, OpticsParameters\nfrom xibs.kicks import KineticKickIBS, SimpleKickIBS\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = BeamParameters(particles)\n\n# Initialize your class\nkinetic_ibs = KineticKickIBS(beam_parameters, optics_parameters)\nsimple_ibs = SimpleKickIBS(beam_parameters, optics_parameters)\n# now compute kicks to apply to particles",
+      "source": "from xibs.inputs import BeamParameters, OpticsParameters\nfrom xibs.kicks import KineticKickIBS, SimpleKickIBS\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = BeamParameters(particles)\n\n# Initialize your class\nkinetic_ibs = KineticKickIBS(beam_parameters, optics_parameters)\nsimple_ibs = SimpleKickIBS(beam_parameters, optics_parameters)\n\n# Now compute kicks to apply to particles\nsimple_ibs.compute_kick_coefficients(particles)\nsimple_ibs.apply_ibs_kick(particles)",
       "names": [],
       "example": {
         "document": "quickstart",
@@ -307,7 +308,7 @@
           "Formalism Dispatch"
         ]
       },
-      "doc_lineno": 136
+      "doc_lineno": 139
     }
   ],
   "sg_execution_times": []

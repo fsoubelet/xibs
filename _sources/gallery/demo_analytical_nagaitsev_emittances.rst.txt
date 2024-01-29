@@ -30,9 +30,12 @@ to calculate IBS growth rates and emittances evolutions analytically.
 We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
 for a positron beam.
 
-.. GENERATED FROM PYTHON SOURCE LINES 15-38
+.. GENERATED FROM PYTHON SOURCE LINES 15-47
 
 .. code-block:: Python
+
+    import logging
+    import warnings
 
     from dataclasses import dataclass
 
@@ -44,6 +47,12 @@ for a positron beam.
     from xibs.analytical import NagaitsevIBS
     from xibs.inputs import BeamParameters, OpticsParameters
 
+    warnings.simplefilter("ignore")  # for this tutorial's clarity
+    logging.basicConfig(
+        level=logging.WARNING,
+        format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+        datefmt="%H:%M:%S",
+    )
     plt.rcParams.update(
         {
             "font.family": "serif",
@@ -64,12 +73,12 @@ for a positron beam.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 40-42
+.. GENERATED FROM PYTHON SOURCE LINES 49-51
 
 Let's start by defining the line and particle information, as well as some
 parameters for later use:
 
-.. GENERATED FROM PYTHON SOURCE LINES 42-53
+.. GENERATED FROM PYTHON SOURCE LINES 51-62
 
 .. code-block:: Python
 
@@ -91,14 +100,14 @@ parameters for later use:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 54-58
+.. GENERATED FROM PYTHON SOURCE LINES 63-67
 
 Setting up line and particles
 -----------------------------
 Let's start by loading the `xtrack.Line`, activating RF cavities and
 generating a matched Gaussian bunch:
 
-.. GENERATED FROM PYTHON SOURCE LINES 58-81
+.. GENERATED FROM PYTHON SOURCE LINES 67-90
 
 .. code-block:: Python
 
@@ -142,12 +151,12 @@ generating a matched Gaussian bunch:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 82-84
+.. GENERATED FROM PYTHON SOURCE LINES 91-93
 
 We can have a look at the generated particles (see the `xsuite user guide
 <https://xsuite.readthedocs.io/en/latest/particlesmanip.html>`_ for more)
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-101
+.. GENERATED FROM PYTHON SOURCE LINES 93-110
 
 .. code-block:: Python
 
@@ -180,12 +189,12 @@ We can have a look at the generated particles (see the `xsuite user guide
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 102-104
+.. GENERATED FROM PYTHON SOURCE LINES 111-113
 
 We can compute initial (geometrical) emittances as well as the bunch length
 from the `xpart.Particles` object:
 
-.. GENERATED FROM PYTHON SOURCE LINES 104-114
+.. GENERATED FROM PYTHON SOURCE LINES 113-123
 
 .. code-block:: Python
 
@@ -206,7 +215,7 @@ from the `xpart.Particles` object:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 115-121
+.. GENERATED FROM PYTHON SOURCE LINES 124-130
 
 Computing Elliptic Integrals and IBS Growth Rates
 -------------------------------------------------
@@ -215,7 +224,7 @@ simple and is done from both the beam parameters of the particles and the
 optics parameters of the line. For each of these a specific `dataclass`
 is provided in the `~.xibs.inputs` module.
 
-.. GENERATED FROM PYTHON SOURCE LINES 121-126
+.. GENERATED FROM PYTHON SOURCE LINES 130-135
 
 .. code-block:: Python
 
@@ -231,14 +240,14 @@ is provided in the `~.xibs.inputs` module.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 127-131
+.. GENERATED FROM PYTHON SOURCE LINES 136-140
 
 As a first step, all calculations in rely on the computing of Nagaitsev integrals
 :cite:p:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`, which is done with
 a dedicated function. These are returned, but also stored internally in the **IBS**
 object and will be updated internally each time they are computed.
 
-.. GENERATED FROM PYTHON SOURCE LINES 131-136
+.. GENERATED FROM PYTHON SOURCE LINES 140-145
 
 .. code-block:: Python
 
@@ -255,13 +264,13 @@ object and will be updated internally each time they are computed.
 
  .. code-block:: none
 
-    NagaitsevIntegrals(Ix=8.016326443147888e+19, Iy=1.4835707755564525e+17, Iz=5.972745199228413e+23)
-    NagaitsevIntegrals(Ix=8.016326443147888e+19, Iy=1.4835707755564525e+17, Iz=5.972745199228413e+23)
+    NagaitsevIntegrals(Ix=8.125907713990063e+19, Iy=1.4863127510149923e+17, Iz=6.015937459201827e+23)
+    NagaitsevIntegrals(Ix=8.125907713990063e+19, Iy=1.4863127510149923e+17, Iz=6.015937459201827e+23)
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-142
+.. GENERATED FROM PYTHON SOURCE LINES 146-151
 
 From these the **IBS** growth rates can be computed, which is again done by calling
 a dedicated function. If the integrals mentioned above have not been computed yet,
@@ -269,7 +278,7 @@ an message will be logged for the user and they will be computed first. Once aga
 these are returned but also stored internally and updated internally each time they
 are computed.
 
-.. GENERATED FROM PYTHON SOURCE LINES 142-147
+.. GENERATED FROM PYTHON SOURCE LINES 151-156
 
 .. code-block:: Python
 
@@ -286,20 +295,20 @@ are computed.
 
  .. code-block:: none
 
-    IBSGrowthRates(Tx=369.87320345629036, Ty=104.27685168208302, Tz=88.48649735045926)
-    IBSGrowthRates(Tx=369.87320345629036, Ty=104.27685168208302, Tz=88.48649735045926)
+    IBSGrowthRates(Tx=367.2228423959063, Ty=105.22029288652388, Tz=92.95460201225477)
+    IBSGrowthRates(Tx=367.2228423959063, Ty=105.22029288652388, Tz=92.95460201225477)
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 148-152
+.. GENERATED FROM PYTHON SOURCE LINES 157-161
 
-Please note that the `IBS.growth_rates` method by default re-computes the 
+Please note that the `IBS.growth_rates` method by default re-computes the
 integrals before computing the growth rates. This convenient as usually, one
-needs to update the integrals when they want to update the growth rates. It 
+needs to update the integrals when they want to update the growth rates. It
 can be disabled by setting the `compute_integrals` argument to `False`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 154-159
+.. GENERATED FROM PYTHON SOURCE LINES 163-168
 
 Computing New Emittances from Growth Rates
 ------------------------------------------
@@ -307,7 +316,7 @@ From these one can compute the emittances at the next time step. For the emittan
 at the next turn, once should use :math:`1 / f_{rev}` as the time step, which
 is the default value used if it is not provided.
 
-.. GENERATED FROM PYTHON SOURCE LINES 159-168
+.. GENERATED FROM PYTHON SOURCE LINES 168-177
 
 .. code-block:: Python
 
@@ -328,15 +337,15 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 9.944594837629853e-11 m
-    Next time step geometrical epsilon_y = 6.525599921245478e-13 m
-    Next time step sigma_delta = 0.001759517719191271
-    Next time step bunch length = 0.0015845352847165524 m
+    Next time step geometrical epsilon_x = 1.0141260779466648e-10 m
+    Next time step geometrical epsilon_y = 6.471399220825333e-13 m
+    Next time step sigma_delta = 0.0017218929898720643
+    Next time step bunch length = 0.0015890221377523794 m
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 169-176
+.. GENERATED FROM PYTHON SOURCE LINES 178-185
 
 Analytical Evolution for Many Turns
 -----------------------------------
@@ -346,7 +355,7 @@ integrals and the IBS growth rates every 200 turns. The more frequent this updat
 the more physically accurate the results will be, but the longer the simulation
 as this computation is the most compute-intensive process.
 
-.. GENERATED FROM PYTHON SOURCE LINES 176-234
+.. GENERATED FROM PYTHON SOURCE LINES 185-244
 
 .. code-block:: Python
 
@@ -354,6 +363,7 @@ as this computation is the most compute-intensive process.
     nturns = 10_000  # number of turns to loop for
     ibs_step = 200  # frequency at which to re-compute the growth rates in [turns]
     turns = np.arange(nturns, dtype=int)  # array of turns
+
 
     # Set up a dataclass to store the results
     @dataclass
@@ -378,7 +388,7 @@ as this computation is the most compute-intensive process.
     turn_by_turn.bunch_length[0] = np.std(particles.zeta[particles.state > 0])
     turn_by_turn.sig_delta[0] = sig_delta
     turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-    turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
+    turn_by_turn.epsilon_y[0] = (sig_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
 
     # We loop here now
     for turn in range(1, nturns):
@@ -470,20 +480,18 @@ as this computation is the most compute-intensive process.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 235-238
+.. GENERATED FROM PYTHON SOURCE LINES 245-248
 
 Feel free to run this simulation for more turns, or with a different frequency
 of the IBS growth rates re-computation. After this is done running, we can plot
 the evolutions across the turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 238-267
+.. GENERATED FROM PYTHON SOURCE LINES 248-275
 
 .. code-block:: Python
 
 
-    fig, axs = plt.subplot_mosaic(
-        [["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7)
-    )
+    fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7))
 
     axs["epsx"].plot(turns, 1e10 * turn_by_turn.epsilon_x, lw=2)
     axs["epsy"].plot(turns, 1e13 * turn_by_turn.epsilon_y, lw=2)
@@ -521,7 +529,7 @@ the evolutions across the turns:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 268-275
+.. GENERATED FROM PYTHON SOURCE LINES 276-283
 
 .. admonition:: References
 
@@ -534,7 +542,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 22.723 seconds)
+   **Total running time of the script:** (0 minutes 22.032 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_nagaitsev_emittances.py:

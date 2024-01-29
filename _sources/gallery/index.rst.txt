@@ -71,6 +71,23 @@ Click on any image thumbnail to see the corresponding example page with and acce
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.kicks.SimpleKickIBS class to apply IBS kicks to tracke...">
+
+.. only:: html
+
+  .. image:: /gallery/images/thumb/sphx_glr_demo_simple_kicks_thumb.svg
+    :alt:
+
+  :ref:`sphx_glr_gallery_demo_simple_kicks.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</div>
+    </div>
+
+
+.. raw:: html
+
     </div>
 
 
@@ -80,6 +97,7 @@ Click on any image thumbnail to see the corresponding example page with and acce
    /gallery/demo_analytical_bjorken_mtingwa_emittances
    /gallery/demo_compare_analyticals
    /gallery/demo_analytical_nagaitsev_emittances
+   /gallery/demo_simple_kicks
 
 
 .. only:: html

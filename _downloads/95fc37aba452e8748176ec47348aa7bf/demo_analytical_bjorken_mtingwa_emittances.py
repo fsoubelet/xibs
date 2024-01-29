@@ -13,6 +13,9 @@ We will demonstrate using the case of the CERN SPS, with protons at top
 energy, aka 450 GeV.
 """
 # sphinx_gallery_thumbnail_number = 2
+import logging
+import warnings
+
 from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
@@ -23,6 +26,12 @@ import xtrack as xt
 from xibs.analytical import BjorkenMtingwaIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 
+warnings.simplefilter("ignore")  # for this tutorial's clarity
+logging.basicConfig(
+    level=logging.WARNING,
+    format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+    datefmt="%H:%M:%S",
+)
 plt.rcParams.update(
     {
         "font.family": "serif",
@@ -163,6 +172,7 @@ nsecs = 5 * 3_600  # that's 5h
 ibs_step = 10 * 60  # re-compute rates every 10min
 seconds = np.linspace(0, nsecs, nsecs).astype(int)
 
+
 # Set up a dataclass to store the results
 @dataclass
 class Records:
@@ -172,6 +182,7 @@ class Records:
     epsilon_y: np.ndarray
     sig_delta: np.ndarray
     bunch_length: np.ndarray
+
 
 # Initialize the dataclass
 turn_by_turn = Records(
@@ -206,7 +217,7 @@ for sec in range(1, nsecs):
         epsy=turn_by_turn.epsilon_y[sec - 1],
         sigma_delta=turn_by_turn.sig_delta[sec - 1],
         bunch_length=turn_by_turn.bunch_length[sec - 1],
-        dt = 1.0  # get at next second
+        dt=1.0,  # get at next second
     )
 
     # ----- Update the records with the new values ----- #
@@ -220,9 +231,7 @@ for sec in range(1, nsecs):
 # of the IBS growth rates re-computation. After this is done running, we can plot
 # the evolutions across the turns:
 
-fig, axs = plt.subplot_mosaic(
-    [["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7)
-)
+fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7))
 
 axs["epsx"].plot(seconds / 3600, 1e9 * turn_by_turn.epsilon_x, lw=2)
 axs["epsy"].plot(seconds / 3600, 1e9 * turn_by_turn.epsilon_y, lw=2)

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.analytical &mdash; xibs 0.4.1 documentation</title>
+  <title>xibs.analytical &mdash; xibs 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=c87aa342"></script>
+        <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -84,6 +84,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 </ul>
@@ -178,7 +185,6 @@
 <span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>  <span class="c1"># scipy integration routines might warn for subdivisions</span>
 
 <span class="c1"># ----- Dataclasses to store results ----- #</span>
 
@@ -251,7 +257,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">:</span> <span class="n">IBSGrowthRates</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">has_growth_rates</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">,</span> <span class="n">IBSGrowthRates</span><span class="p">)</span>  <span class="c1"># False if default value of None</span>
+        <span class="n">has_growth_rates</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">,</span> <span class="n">IBSGrowthRates</span>
+        <span class="p">)</span>  <span class="c1"># False if default for value of None</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object for analytical IBS calculations.</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;IBS growth rates computed: </span><span class="si">{</span><span class="n">has_growth_rates</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -451,7 +459,7 @@
 <span class="sd">                normalized or not. Defaults to `False` (assume geometric emittances).</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if the ``IBS`` growth rates have not yet been computed.</span>
+<span class="sd">            AttributeError: if the ``IBS`` growth rates have not yet been computed.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A tuple with the new horizontal &amp; vertical geometric emittances, the new</span>
@@ -465,7 +473,7 @@
         <span class="c1"># Check that the IBS growth rates have been computed beforehand</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Attempted to compute emittance evolution without having computed growth rates.&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
                 <span class="s2">&quot;IBS growth rates have not been computed yet, cannot compute new emittances.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;Please call the `growth_rates` method first.&quot;</span>
             <span class="p">)</span>
@@ -536,6 +544,10 @@
 <span class="sd">    A single class to compute Nagaitsev integrals (see</span>
 <span class="sd">    :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)</span>
 <span class="sd">    and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.</span>
+
+<span class="sd">    See the :ref:`Nagaitsev example &lt;demo-analytical-nagaitsev&gt;` for detailed usage, and the</span>
+<span class="sd">    :ref:`Bjorken-Mtingwa example &lt;demo-analytical-bjorken-mtingwa&gt;` for a comparison to the</span>
+<span class="sd">    Bjorken-Mtingwa formalism.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        beam_parameters (BeamParameters): the beam parameters to use for the calculations.</span>
@@ -786,6 +798,10 @@
 <span class="sd">    take in consideration the vertical dispersion values (see the relevant note about the changes</span>
 <span class="sd">    at :cite:`CERN:Antoniou:Revision_IBS_MADX`). It initiates from a `BeamParameters` and an</span>
 <span class="sd">    `OpticsParameters` objects.</span>
+
+<span class="sd">    See the :ref:`Bjorken-Mtingwa example &lt;demo-analytical-bjorken-mtingwa&gt;` for detailed usage,</span>
+<span class="sd">    and the :ref:`Nagaitsev example &lt;demo-analytical-nagaitsev&gt;` for a comparison to the Nagaitsev</span>
+<span class="sd">    formalism.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        If possible, when creating the `OpticsParameters` to initiate this class, please do so</span>

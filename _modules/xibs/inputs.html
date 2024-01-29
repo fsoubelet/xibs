@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.inputs &mdash; xibs 0.4.1 documentation</title>
+  <title>xibs.inputs &mdash; xibs 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=c87aa342"></script>
+        <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -84,6 +84,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 </ul>
@@ -308,7 +315,8 @@
 <span class="sd">            is an init-only parameter used for instanciation and it will not be kept in</span>
 <span class="sd">            the instance&#39;s attributes.</span>
 <span class="sd">        _slipfactor (Optional[float]): the slip factor for the machine. Only required if</span>
-<span class="sd">            the ``twiss`` argument is a ``MAD-X`` twiss dataframe.</span>
+<span class="sd">            the ``twiss`` argument is a ``MAD-X`` twiss dataframe. See below for the sign</span>
+<span class="sd">            convention used.</span>
 <span class="sd">        _frev_hz (Optional[float]): the revolution frequency for the machine in [Hz].</span>
 <span class="sd">            Only required if the ``twiss`` argument is a ``MAD-X`` twiss dataframe.</span>
 
@@ -316,7 +324,8 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        s (ArrayLike): longitudinal positions of the machine elements in [m].</span>
 <span class="sd">        circumference (float): machine circumference in [m].</span>
-<span class="sd">        slip_factor (float): slip factor of the machine.</span>
+<span class="sd">        slip_factor (float): slip factor of the machine. We are using the Xsuite convention,</span>
+<span class="sd">            where the slip factor is *positive above transition*.</span>
 <span class="sd">        revolution_frequency (float): revolution frequency of the machine in [Hz].</span>
 <span class="sd">        betx (ArrayLike): horizontal beta functions in [m].</span>
 <span class="sd">        bety (ArrayLike): vertical beta functions in [m].</span>
@@ -417,9 +426,9 @@
         <span class="n">slipfactor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma_tr</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># use the xsuite convention!</span>
 
         <span class="n">cminus</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">summ</span><span class="o">.</span><span class="n">dqmin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># just to check coupling</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">cminus</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>  <span class="c1"># there is some betatron coupling</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">cminus</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>  <span class="c1"># there is some betatron coupling</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;There is betatron coupling in the machine (|Cminus| = </span><span class="si">{</span><span class="n">cminus</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">),&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;There is betatron coupling in the machine (|Cminus| = </span><span class="si">{</span><span class="n">cminus</span><span class="si">:</span><span class="s2">.3e</span><span class="si">}</span><span class="s2">), &quot;</span>
                 <span class="s2">&quot;which is not taken into account in analytical calculations.&quot;</span>
             <span class="p">)</span>
 
@@ -450,9 +459,9 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Running TWISS for on the line&quot;</span><span class="p">)</span>
         <span class="n">twiss</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">twiss</span><span class="o">.</span><span class="n">c_minus</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>  <span class="c1"># there is some betatron coupling</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">twiss</span><span class="o">.</span><span class="n">c_minus</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>  <span class="c1"># there is some betatron coupling</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;There is betatron coupling in the machine (|Cminus| = </span><span class="si">{</span><span class="n">twiss</span><span class="o">.</span><span class="n">c_minus</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">),&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;There is betatron coupling in the machine (|Cminus| = </span><span class="si">{</span><span class="n">twiss</span><span class="o">.</span><span class="n">c_minus</span><span class="si">:</span><span class="s2">.3e</span><span class="si">}</span><span class="s2">),&quot;</span>
                 <span class="s2">&quot;which is not taken into account in analytical calculations.&quot;</span>
             <span class="p">)</span>
 
