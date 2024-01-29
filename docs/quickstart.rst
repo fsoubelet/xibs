@@ -42,7 +42,7 @@ As a first step, all classes encompassing IBS functionality are initialized from
 .. hint::
    
    Please note that while tracking is not necessary to calculate IBS effects (see the Analytical section below), it is necessary to provide an `xpart.Particles` object from which to get required properties.
-   The object does not necessarily need to represent a full generated and matched distribution, see the :doc:`FAQ <faq>` for details.
+   The object does not necessarily need to represent a full generated and matched distribution, see the :doc:`FAQ <faq/index>` for details.
 
 Initializing then requires the following steps:
 
@@ -71,7 +71,7 @@ After this, one can perform IBS calculations through dedicated methods implement
 
 .. note::
    It is also possible to initialize the `BeamParameters` and `OpticsParameters` from a line or a ``MAD-X`` (via `~cpymad`) instance directly with convenience constructor functions.
-   See the :doc:`FAQ <faq>` for details.
+   See the :doc:`FAQ <faq/index>` for details.
 
 Formalism and Models
 --------------------
