@@ -16,6 +16,6 @@ This part of the documentation provides sections with answers to common question
    :maxdepth: 1
 
    input_parameters
-   growth_rates
+   emittance_types
    radiation
    coasting_beams

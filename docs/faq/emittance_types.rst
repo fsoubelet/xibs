@@ -1,7 +1,7 @@
 .. _xibs-faq-geom-norm-emittances:
 
-Geometric or Normalized Emittances
-----------------------------------
+Emittances: Geometric or Normalized
+-----------------------------------
 
 .. admonition:: This section in short
 
