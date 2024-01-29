@@ -57,11 +57,21 @@ Initializing then requires the following steps:
    # Let's say you want a YourChosenFormalismIBS approach
    IBS = YourChosenFormalismIBS(beam_parameters, optics_parameters)
 
-   # Now compute IBS growth rates (and then updated emittances, etc.)
+After this, one can perform IBS calculations through dedicated methods implemented in the class:
+
+.. code-block:: python
+
+   # For analytical classes
    IBS.growth_rates(...)
+   IBS.emittance_evolution(...)
+
+   # For kick classes
+   IBS.compute_kick_coefficients(particles)
+   IBS.apply_ibs_kick(particles)
 
 .. note::
-   It is also possible to initialize the `OpticsParameters` from a ``MAD-X`` twiss table (in the form of a dataframe), see the :doc:`FAQ <faq>` for details.
+   It is also possible to initialize the `BeamParameters` and `OpticsParameters` from a line or a ``MAD-X`` (via `~cpymad`) instance directly with convenience constructor functions.
+   See the :doc:`FAQ <faq>` for details.
 
 Formalism and Models
 --------------------
