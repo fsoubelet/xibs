@@ -82,8 +82,8 @@ Let's assume your sequence and beam are defined, one might get the necessary par
     sr_equilibrium_epsx = madx.globals["eq_eyn"]
 
     # For the geometric ones, simply remove the n in the beam attribute:
-    madx.input("eq_exn = beam->ex;")
-    madx.input("eq_eyn = beam->ey;")
+    madx.input("eq_ex = beam->ex;")
+    madx.input("eq_ey = beam->ey;")
     sr_equilibrium_epsx = madx.globals["eq_ex"]
     sr_equilibrium_epsx = madx.globals["eq_ey"]
 
