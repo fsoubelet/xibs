@@ -36,7 +36,6 @@ from xibs.formulary import phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
-warnings.filterwarnings("ignore")  # scipy integration routines might warn for subdivisions
 
 # ----- Dataclasses to store results ----- #
 
@@ -101,7 +100,9 @@ class AnalyticalIBS(ABC):
         self.ibs_growth_rates: IBSGrowthRates = None
 
     def __str__(self) -> str:
-        has_growth_rates = isinstance(self.ibs_growth_rates, IBSGrowthRates)  # False if default value of None
+        has_growth_rates = isinstance(
+            self.ibs_growth_rates, IBSGrowthRates
+        )  # False if default for value of None
         return (
             f"{self.__class__.__name__} object for analytical IBS calculations.\n"
             f"IBS growth rates computed: {has_growth_rates}"
@@ -293,7 +294,7 @@ class AnalyticalIBS(ABC):
                 normalized or not. Defaults to `False` (assume geometric emittances).
 
         Raises:
-            ValueError: if the ``IBS`` growth rates have not yet been computed.
+            AttributeError: if the ``IBS`` growth rates have not yet been computed.
 
         Returns:
             A tuple with the new horizontal & vertical geometric emittances, the new
@@ -307,7 +308,7 @@ class AnalyticalIBS(ABC):
         # Check that the IBS growth rates have been computed beforehand
         if self.ibs_growth_rates is None:
             LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise ValueError(
+            raise AttributeError(
                 "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
                 "Please call the `growth_rates` method first."
             )
@@ -374,6 +375,10 @@ class NagaitsevIBS(AnalyticalIBS):
     A single class to compute Nagaitsev integrals (see
     :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`)
     and IBS growth rates. It initiates from a `BeamParameters` and an `OpticsParameters` objects.
+
+    See the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` for detailed usage, and the
+    :ref:`Bjorken-Mtingwa example <demo-analytical-bjorken-mtingwa>` for a comparison to the
+    Bjorken-Mtingwa formalism.
 
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for the calculations.
@@ -615,6 +620,10 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
     take in consideration the vertical dispersion values (see the relevant note about the changes
     at :cite:`CERN:Antoniou:Revision_IBS_MADX`). It initiates from a `BeamParameters` and an
     `OpticsParameters` objects.
+
+    See the :ref:`Bjorken-Mtingwa example <demo-analytical-bjorken-mtingwa>` for detailed usage,
+    and the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` for a comparison to the Nagaitsev
+    formalism.
 
     .. note::
         If possible, when creating the `OpticsParameters` to initiate this class, please do so

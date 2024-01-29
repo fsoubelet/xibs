@@ -41,5 +41,15 @@ jobs:
       - name: Install xsuite and pre-compile kernels  # avoids recompiling in every test
         run: python -m pip install xsuite && xsuite-prebuild
 
+      - name: Make directory for plots
+        run: mkdir plots
+
       - name: Run Tests
         run: make tests
+
+      - name: Upload plot artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kicks-plots-${{ matrix.os }}-${{ matrix.python-version }}
+          path: "plots/"
+          retention-days: 7

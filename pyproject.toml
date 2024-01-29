@@ -74,6 +74,7 @@ test = [
   "pytest-cov >= 4.0",
   "pytest-xdist >= 3.0",  # for parallel testing | mostly to help CI
   "coverage[toml] >= 7.0",
+  "matplotlib >= 3.0",
   "cpymad >= 1.14",
   "xtrack>=0.41",
   "xfields>=0.12",  # not an explicit dependency of xtrack but needed
@@ -128,7 +129,7 @@ source = ["xibs/"]  # Tell coverage.py to assess this only (redundant with '--co
 
 [tool.coverage.report]
 ignore_errors = true  # Ignore source code that can’t be found, emit a warning instead
-omit = ["xibs/_old_michalis.py", "xibs/kicks.py"]  # TODO: remove the latter once kicks are implemented
+omit = ["xibs/_old_michalis.py"]
 skip_empty = true  # Don’t report files that have no executable code (e.g. __init__.py).
 precision = 2  # Number of digits after the decimal point to display for reported coverage 
 

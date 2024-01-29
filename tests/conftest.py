@@ -302,6 +302,16 @@ def xtrack_ps_injection_ions() -> xt.Line:
     return xt.Line.from_json(line_json)
 
 
+# -- CLIC DR fixture -- #
+
+
+@pytest.fixture(scope="function")
+def xtrack_clic_damping_ring() -> xt.Line:
+    """An `xtrack.Line` of the CLIC DR for positrons."""
+    line_json = LINES_DIR / "clic_damping_ring.json"
+    return xt.Line.from_json(line_json)
+
+
 # ----- Private Utilities ----- #
 
 
@@ -318,6 +328,10 @@ def _make_xtrack_line_for_config(config: Dict, p0: xp.Particles) -> xt.Line:
     with Madx() as madx:
         setup_madx_from_config(madx, config)
         seqname = config["sequence_name"]
-        line = xt.Line.from_madx_sequence(madx.sequence[seqname], allow_thick=True)
+        line = xt.Line.from_madx_sequence(
+            madx.sequence[seqname],
+            deferred_expressions=True,
+            allow_thick=True,
+        )
         line.particle_ref = p0  # will be saved in the json file
         return line

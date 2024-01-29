@@ -12,10 +12,10 @@ from xibs.kicks import KineticKickIBS, SimpleKickIBS
 @pytest.mark.parametrize(
     "formalism", ["bjorken-mtingwa", "BJORKEN-MTINGWA", "Bjorken-Mtingwa", "b&m", "B&M", "B&m"]
 )
-def test_dispatch_BjorkenMtingwaIBS(formalism, xtrack_ps_injection_protons):
+def test_dispatch_BjorkenMtingwaIBS(formalism, xtrack_sps_injection_protons):
     # --------------------------------------------------------------------
     # Get beam and optics params from the xtrack Line
-    line = xtrack_ps_injection_protons
+    line = xtrack_sps_injection_protons
     beam_params = BeamParameters(line.particle_ref)
     optics_params = OpticsParameters(line.twiss(method="4d"))
     # --------------------------------------------------------------------
@@ -28,10 +28,10 @@ def test_dispatch_BjorkenMtingwaIBS(formalism, xtrack_ps_injection_protons):
 
 
 @pytest.mark.parametrize("formalism", ["nagaitsev", "NAGAITSEV", "Nagaitsev", "nAgaItSEv"])
-def test_dispatch_NagaitsevIBS(formalism, xtrack_ps_injection_protons):
+def test_dispatch_NagaitsevIBS(formalism, xtrack_sps_injection_protons):
     # --------------------------------------------------------------------
     # Get beam and optics params from the xtrack Line
-    line = xtrack_ps_injection_protons
+    line = xtrack_sps_injection_protons
     beam_params = BeamParameters(line.particle_ref)
     optics_params = OpticsParameters(line.twiss(method="4d"))
     # --------------------------------------------------------------------
@@ -44,10 +44,10 @@ def test_dispatch_NagaitsevIBS(formalism, xtrack_ps_injection_protons):
 
 
 @pytest.mark.parametrize("formalism", ["kinetic", "KINETIC", "kINetiC", "kinETic"])
-def test_dispatch_KineticKickIBS(formalism, xtrack_ps_injection_protons):
+def test_dispatch_KineticKickIBS(formalism, xtrack_sps_injection_protons):
     # --------------------------------------------------------------------
     # Get beam and optics params from the xtrack Line
-    line = xtrack_ps_injection_protons
+    line = xtrack_sps_injection_protons
     beam_params = BeamParameters(line.particle_ref)
     optics_params = OpticsParameters(line.twiss(method="4d"))
     # --------------------------------------------------------------------
@@ -60,10 +60,10 @@ def test_dispatch_KineticKickIBS(formalism, xtrack_ps_injection_protons):
 
 
 @pytest.mark.parametrize("formalism", ["simple", "SIMPLE", "sIMPLe", "siMpLe"])
-def test_dispatch_SimpleKickIBS(formalism, xtrack_ps_injection_protons):
+def test_dispatch_SimpleKickIBS(formalism, xtrack_sps_injection_protons):
     # --------------------------------------------------------------------
     # Get beam and optics params from the xtrack Line
-    line = xtrack_ps_injection_protons
+    line = xtrack_sps_injection_protons
     beam_params = BeamParameters(line.particle_ref)
     optics_params = OpticsParameters(line.twiss(method="4d"))
     # --------------------------------------------------------------------

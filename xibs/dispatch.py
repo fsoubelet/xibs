@@ -17,6 +17,7 @@ from xibs.kicks import KineticKickIBS, SimpleKickIBS
 LOGGER = getLogger(__name__)
 
 
+# TODO: adapt docstring when things are clearer on the internals and the kick coefficients
 def ibs(
     beam_params: BeamParameters, optics_params: OpticsParameters, formalism: str
 ) -> Union[BjorkenMtingwaIBS, NagaitsevIBS, KineticKickIBS, SimpleKickIBS]:
