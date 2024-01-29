@@ -105,7 +105,7 @@ Let's assume your sequence and beam are defined, one might get the necessary par
     # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)
     madx.command.twiss(chrom=True)  # chrom to trigger their calculation
     I2 = madx.table.summ.synch_2[0]
-    I4 = madx.table.summ.synch_2[0]
+    I4 = madx.table.summ.synch_4[0]
     jx = 1 - I4 / I2  # horizontal damping partition number
     jz = 2 + I4 / I2  # longitudinal damping partition number
 
