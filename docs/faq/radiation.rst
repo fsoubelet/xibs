@@ -62,7 +62,7 @@ See below:
     # a method of the twiss result, using the equilibrium emittances obtained above.
     # Make sure to use the right type based on the one you retrieved previously
     beam_sizes = twiss.get_beam_covariance(
-        nemitt_x=nemitt_x, nemitt_y=nemitt_y, gemitt_zeta=gemitt_zeta
+        nemitt_x=nemitt_x, nemitt_y=nemitt_y, nemitt_zeta=gemitt_zeta
     )
 
     # The value we want corresponds to the 'sigma_pzeta' key in this result, since in Xsuite
