@@ -31,7 +31,7 @@ Getting SR Parameters from Xsuite
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All necessary parameters can be obtained in the result of a Twiss call on your `xtrack.Line`.
-It is important however to have first configured the radiation model, and to make the Twiss call asking for these results (see the `Xsuite user guide SR page <https://xsuite.readthedocs.io/en/latest/synchrotron_radiation.html>`_).
+It is important however to have first configured the radiation model, and to make the Twiss call asking for these results (see the Xsuite user guide pages on `synchrotron radiation <https://xsuite.readthedocs.io/en/latest/synchrotron_radiation.html>`_ and `Twiss beams sizes <https://xsuite.readthedocs.io/en/latest/twiss.html#beam-sizes-from-twiss-table>`_).
 See below:
 
 .. code-block:: python
@@ -48,16 +48,27 @@ See below:
     sr_tau_x, sr_tau_y, sr_tau_z = twiss["damping_constants_s"]
 
     # The normalized transverse equilibrium emittances, in [m], are provided as:
-    sr_equilibrium_epsx = tw["eq_nemitt_x"]
-    sr_equilibrium_epsy = tw["eq_nemitt_y"]
+    sr_equilibrium_epsx = twiss["eq_nemitt_x"]
+    sr_equilibrium_epsy = twiss["eq_nemitt_y"]
 
     # For the geometric ones, simply replace the n with g in the key:
-    sr_equilibrium_epsx = tw["eq_gemitt_x"]
-    sr_equilibrium_epsy = tw["eq_gemitt_y"]
+    sr_equilibrium_epsx = twiss["eq_gemitt_x"]
+    sr_equilibrium_epsy = twiss["eq_gemitt_y"]
 
-    # The equilibrium momentum spread is not directly provided but can be obtained as:
-    # TODO: figure this out
-    sr_equilibrium_sigma_delta = 1
+    # We will need to store the equilibrium longitudinal emittance too for later
+    sr_eq_zeta = twiss['eq_nemitt_zeta']  # or 'eq_gemitt_zeta' for geometric
+
+    # The equilibrium momentum spread is not directly provided but can be obtained via
+    # a method of the twiss result, using the equilibrium emittances obtained above.
+    # Make sure to use the right type based on the one you retrieved previously
+    beam_sizes = twiss.get_beam_covariance(
+        nemitt_x=nemitt_x, nemitt_y=nemitt_y, gemitt_zeta=gemitt_zeta
+    )
+
+    # The value we want corresponds to the 'sigma_pzeta' key in this result, since in Xsuite
+    # it is equivalent to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23). Take it
+    # at the location of the particles:
+    sr_equilibrium_sigma_delta = beam_sizes["sigma_pzeta"][0]  # 0 for end / start of line
 
 
 Getting SR Parameters from MAD-X
