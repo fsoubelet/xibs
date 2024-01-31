@@ -80,7 +80,7 @@ Let's assume your sequence and beam are defined, one might get the necessary par
 .. code-block:: python
 
     # Make sure to include radiation effects for the active beam
-    madx.input("bean, radiate;")
+    madx.input("beam, radiate;")
 
     # Let's then call the 'emit' command with DELTAP=0, which will update
     # the beam with equilibrium values directly
