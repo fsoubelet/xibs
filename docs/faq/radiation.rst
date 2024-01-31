@@ -52,8 +52,8 @@ See below:
     sr_equilibrium_epsy = twiss["eq_nemitt_y"]
 
     # For the geometric ones, simply replace the n with g in the key:
-    sr_equilibrium_epsx = twiss["eq_gemitt_x"]
-    sr_equilibrium_epsy = twiss["eq_gemitt_y"]
+    # sr_equilibrium_epsx = twiss["eq_gemitt_x"]
+    # sr_equilibrium_epsy = twiss["eq_gemitt_y"]
 
     # We will need to store the equilibrium longitudinal emittance too for later
     sr_eq_zeta = twiss['eq_nemitt_zeta']  # or 'eq_gemitt_zeta' for geometric
@@ -62,7 +62,7 @@ See below:
     # a method of the twiss result, using the equilibrium emittances obtained above.
     # Make sure to use the right type based on the one you retrieved previously
     beam_sizes = twiss.get_beam_covariance(
-        nemitt_x=sr_equilibrium_epsx, nemitt_y=sr_equilibrium_epsy, nemitt_zeta=gemitt_zeta
+        nemitt_x=sr_equilibrium_epsx, nemitt_y=sr_equilibrium_epsy, nemitt_zeta=sr_eq_zeta
     )
 
     # The value we want corresponds to the 'sigma_pzeta' key in this result, since in Xsuite
