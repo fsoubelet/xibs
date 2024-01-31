@@ -76,7 +76,7 @@ test = [
   "coverage[toml] >= 7.0",
   "matplotlib >= 3.0",
   "cpymad >= 1.14",
-  "xtrack>=0.41",
+  "xtrack>=0.50",
   "xfields>=0.12",  # not an explicit dependency of xtrack but needed
   "pyyaml>=6.0",  # to load configs
 ]
