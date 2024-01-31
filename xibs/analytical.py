@@ -358,7 +358,7 @@ class AnalyticalIBS(ABC):
 
                     - `sr_equilibrium_sigma_delta` (float)
                         the equilibrium momentum spread from synchrotron radiation and
-                        quantum excitation. TODO: Ask Gianni how to convert from tw['eq_nemitt_zeta'].
+                        quantum excitation.
 
                     - `sr_tau_x` (float)
                         the horizontal damping time from synchrotron radiation, in [s]
@@ -371,7 +371,6 @@ class AnalyticalIBS(ABC):
                     - `sr_tau_z` (float)
                         the longitudinal damping time from synchrotron radiation, in [s]
                         (should be the same unit as `dt`).
-                        TODO: these are the tw['damping_constants']
 
 
         Raises:
@@ -393,16 +392,17 @@ class AnalyticalIBS(ABC):
         geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
         geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
         if include_synchrotron_radiation is True:
-            sr_inputs.equilibrium_epsx = (
+            sr_eq_geom_epsx = (
                 sr_inputs.equilibrium_epsx
                 if normalized_emittances is False
                 else self._geometric_emittance(sr_inputs.equilibrium_epsx)
             )
-            sr_inputs.equilibrium_epsy = (
+            sr_eq_geom_epsy = (
                 sr_inputs.equilibrium_epsy
                 if normalized_emittances is False
                 else self._geometric_emittance(sr_inputs.equilibrium_epsy)
             )
+            sr_eq_sigma_delta = sr_inputs.equilibrium_sigma_delta
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
         if self.ibs_growth_rates is None:
@@ -427,26 +427,26 @@ class AnalyticalIBS(ABC):
             new_bunch_length: float = bunch_length * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
         else:  # the modified calculation with Synchrotron Radiation contribution
             new_epsx: float = (
-                - sr_inputs.equilibrium_epsx
-                + (sr_inputs.equilibrium_epsx + geom_epsx * self.ibs_growth_rates.Tx * sr_inputs.tau_x * 0.5 - 1)
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tx * 0.5 - 1 / sr_inputs.tau_x))
-            ) / (sr_inputs.tau_x * self.ibs_growth_rates.Tx * 0.5 - 1)
+                - sr_eq_geom_epsx
+                + (sr_eq_geom_epsx + geom_epsx * (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1.0))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Tx / 2 - 1 / sr_inputs.tau_x))
+            ) / (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1)
             new_epsy: float = (
-                -sr_inputs.equilibrium_epsy
-                + (sr_inputs.equilibrium_epsy + geom_epsy * self.ibs_growth_rates.Ty * sr_inputs.tau_y * 0.5 - 1)
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Ty * 0.5 - 1 / sr_inputs.tau_y))
-            ) / (sr_inputs.tau_y * self.ibs_growth_rates.Ty * 0.5 - 1)
+                - sr_eq_geom_epsy
+                + (sr_eq_geom_epsy + geom_epsy * (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Ty / 2 - 1 / sr_inputs.tau_y))
+            ) / (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1)
             # For longitudinal properties, compute the square to avoid too messy code
             new_sigma_delta_square: float = (
-                -sr_inputs.equilibrium_sigma_delta**2
-                + (sr_inputs.equilibrium_sigma_delta**2 + sigma_delta**2 * self.ibs_growth_rates.Tz * sr_inputs.tau_z * 0.5 - 1)
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz * 0.5 - 1 / sr_inputs.tau_z))
-            ) / (sr_inputs.tau_z * self.ibs_growth_rates.Tz * 0.5 - 1)
+                - (sr_eq_sigma_delta**2)
+                + (sr_eq_sigma_delta**2 + sigma_delta**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
+            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
             new_bunch_length_square: float = (
-                -sr_inputs.equilibrium_sigma_delta**2
-                + (sr_inputs.equilibrium_sigma_delta**2 + bunch_length**2 * self.ibs_growth_rates.Tz * sr_inputs.tau_z * 0.5 - 1)
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz * 0.5 - 1 / sr_inputs.tau_z))
-            ) / (sr_inputs.tau_z * self.ibs_growth_rates.Tz * 0.5 - 1)
+                - (sr_eq_sigma_delta**2)
+                + (sr_eq_sigma_delta**2 + bunch_length**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
+            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
             # And then simply get the square root of that for the final results
             new_sigma_delta: float = np.sqrt(new_sigma_delta_square)
             new_bunch_length: float = np.sqrt(new_bunch_length_square)
@@ -455,7 +455,7 @@ class AnalyticalIBS(ABC):
         # Make sure we return the same type of emittances as the user provided
         new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
         new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
-        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
+        return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
 
     def _normalized_emittance(self, geometric_emittance: float) -> float:
         r"""
