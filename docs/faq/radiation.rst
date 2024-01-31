@@ -90,13 +90,13 @@ Let's assume your sequence and beam are defined, one might get the necessary par
     madx.input("eq_exn = beam->exn;")
     madx.input("eq_eyn = beam->eyn;")
     sr_equilibrium_epsx = madx.globals["eq_exn"]
-    sr_equilibrium_epsx = madx.globals["eq_eyn"]
+    sr_equilibrium_epsy = madx.globals["eq_eyn"]
 
     # For the geometric ones, simply remove the n in the beam attribute:
     madx.input("eq_ex = beam->ex;")
     madx.input("eq_ey = beam->ey;")
     sr_equilibrium_epsx = madx.globals["eq_ex"]
-    sr_equilibrium_epsx = madx.globals["eq_ey"]
+    sr_equilibrium_epsy = madx.globals["eq_ey"]
 
     # The equilibrium momentum spread is not directly provided but can be obtained from
     # the relative energy spread using the relativistic beta as:
