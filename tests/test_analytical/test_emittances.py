@@ -5,7 +5,9 @@ The simple and fast case of the PS protons at injection is taken to compute the 
 import numpy as np
 import xtrack as xt
 
-from xibs.analytical import BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
+from cpymad.madx import Madx
+
+from xibs.analytical import BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS, _SynchrotronRadiationInputs
 from xibs.inputs import BeamParameters, OpticsParameters
 
 
@@ -69,3 +71,85 @@ def test_emittance_evolution(madx_ps_injection_protons, xtrack_ps_injection_prot
     assert np.isclose(epsy, 1.6785319939752902e-07, atol=0)
     assert np.isclose(sigd, 0.0002740752903667045, atol=0)
     assert np.isclose(bl, 0.5685069199704035, atol=0)
+
+
+# ----- Helpers ----- #
+
+
+def _get_sr_inputs_from_line(line: xt.Line) -> _SynchrotronRadiationInputs:
+    """As shown in the FAQ. Returns geometric equilibrium emittances."""
+    # Set the radiation mode to 'mean' and call twiss with 'eneloss_and_damping' (see Xsuite user guide)
+    line.configure_radiation(model="mean")
+    twiss: xt.TwissTable = line.twiss(eneloss_and_damping=True)
+
+    # The damping times, in [s] are provided as:
+    sr_tau_x, sr_tau_y, sr_tau_z = twiss["damping_constants_s"]
+
+    # For the geometric equilibrium emittances
+    sr_equilibrium_gepsx = twiss["eq_gemitt_x"]
+    sr_equilibrium_gepsy = twiss["eq_gemitt_y"]
+
+    # We will need to store the equilibrium longitudinal emittance too for later
+    sr_eq_zeta = twiss["eq_gemitt_zeta"]  # or 'eq_gemitt_zeta' for geometric
+
+    # The equilibrium momentum spread is not directly provided but can be obtained via
+    # a method of the twiss result, using the equilibrium emittances obtained above.
+    # Make sure to use the right type based on the one you retrieved previously
+    beam_sizes = twiss.get_beam_covariance(
+        gemitt_x=sr_equilibrium_gepsx, gemitt_y=sr_equilibrium_gepsy, gemitt_zeta=sr_eq_zeta
+    )
+
+    # The value we want corresponds to the 'sigma_pzeta' key in this result, since in Xsuite it is equivalent
+    # to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23). Take it at the location of the particles:
+    sr_equilibrium_sigma_delta = beam_sizes["sigma_pzeta"][0]  # 0 for end / start of line
+
+    # Send back the result
+    return _SynchrotronRadiationInputs(
+        sr_equilibrium_gepsx, sr_equilibrium_gepsy, sr_equilibrium_sigma_delta, sr_tau_x, sr_tau_y, sr_tau_z
+    )
+
+
+def _get_sr_inputs_from_madx(madx: Madx) -> _SynchrotronRadiationInputs:
+    """As shown in the FAQ. Returns geometric equilibrium emittances."""
+    # Set radiation flag on the beam, then call the 'emit' command with DELTAP=0, which will
+    # update the beam with equilibrium values directly
+    madx.input("beam, radiate;")
+    madx.input("emit, deltap=0;")
+
+    # The geometric transverse equilibrium emittances, in [m], are provided as:
+    madx.input("eq_ex = beam->ex;")
+    madx.input("eq_ey = beam->ey;")
+    sr_equilibrium_gepsx = madx.globals["eq_ex"]
+    sr_equilibrium_gepsy = madx.globals["eq_ey"]
+
+    # The equilibrium momentum spread is not directly provided but can be obtained from
+    # the relative energy spread using the relativistic beta as:
+    madx.input("eq_sigd = beam->sige / beam->beta / beam->beta;")
+    sr_equilibrium_sigma_delta = madx.globals["eq_sigd"]
+
+    # We will need to get from the active beam: particle energy, energy loss per
+    # turn (in [GeV]) and the revolution frequency (in [MHz])
+    madx.input("E0 = beam->energy;")
+    madx.input("U0 = beam->U0;")
+    madx.input("frev = beam->freq0;")
+    E0 = madx.globals["E0"] * 1e9
+    U0 = madx.globals["U0"] * 1e9
+    frev = madx.globals["frev"] * 1e6
+
+    # We will need the synchrotron radiation integrals to determine the
+    # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)
+    madx.command.twiss(chrom=True)  # chrom to trigger their calculation
+    I2 = madx.table.summ.synch_2[0]
+    I4 = madx.table.summ.synch_4[0]
+    jx = 1 - I4 / I2  # horizontal damping partition number
+    jz = 2 + I4 / I2  # longitudinal damping partition number
+
+    # This is enough to compute the damping times (see https://arxiv.org/pdf/1507.02213.pdf)
+    sr_tau_x = 2 * E0 * frev / (jx * U0)
+    sr_tau_y = 2 * E0 * frev / U0
+    sr_tau_z = 2 * E0 * frev / (jz * U0)
+
+    # Send back the result
+    return _SynchrotronRadiationInputs(
+        sr_equilibrium_gepsx, sr_equilibrium_gepsy, sr_equilibrium_sigma_delta, sr_tau_x, sr_tau_y, sr_tau_z
+    )
