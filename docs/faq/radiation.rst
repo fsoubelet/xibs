@@ -38,8 +38,6 @@ See below a function that does just so:
 
     def get_sr_inputs_from_line(line: xt.Line, normalized: bool = True) -> tuple[float, ...]:
         """Assumes line has a reference particle and is compatible with SR modes."""
-        line = xt.Line.from_json("path_to_your_file.json")
-
         # Set the radiation mode to 'mean' and call twiss with
         # 'eneloss_and_damping' (see Xsuite user guide)
         line.configure_radiation(model="mean")
