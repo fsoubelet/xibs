@@ -32,44 +32,59 @@ Getting SR Parameters from Xsuite
 
 All necessary parameters can be obtained in the result of a Twiss call on your `xtrack.Line`.
 It is important however to have first configured the radiation model, and to make the Twiss call asking for these results (see the Xsuite user guide pages on `synchrotron radiation <https://xsuite.readthedocs.io/en/latest/synchrotron_radiation.html>`_ and `Twiss beams sizes <https://xsuite.readthedocs.io/en/latest/twiss.html#beam-sizes-from-twiss-table>`_).
-See below:
+See below a function that does just so:
 
 .. code-block:: python
 
-    # Let's assume this loads your line and its reference particle
-    line = xt.Line.from_json("path_to_your_file.json")
+    def get_sr_inputs_from_line(line: xt.Line, normalized: bool = True) -> tuple[float, ...]:
+        """Assumes line has a reference particle and is compatible with SR modes."""
+        line = xt.Line.from_json("path_to_your_file.json")
 
-    # Set the radiation mode to 'mean' and call twiss with 'eneloss_and_damping'
-    # (see Xsuite user guide)
-    line.configure_radiation(model="mean")
-    twiss = line.twiss(eneloss_and_damping=True)
+        # Set the radiation mode to 'mean' and call twiss with
+        # 'eneloss_and_damping' (see Xsuite user guide)
+        line.configure_radiation(model="mean")
+        twiss = line.twiss(eneloss_and_damping=True)
 
-    # The damping times, in [s] are provided as:
-    sr_tau_x, sr_tau_y, sr_tau_z = twiss["damping_constants_s"]
+        # The damping times (in [s]) are provided as:
+        sr_tau_x, sr_tau_y, sr_tau_z = twiss["damping_constants_s"]
 
-    # The normalized transverse equilibrium emittances, in [m], are provided as:
-    sr_equilibrium_epsx = twiss["eq_nemitt_x"]
-    sr_equilibrium_epsy = twiss["eq_nemitt_y"]
+        # The transverse equilibrium emittances (in [m]) are provided as:
+        emit = "nemitt" if normalized is True else "gemitt"
+        sr_equilibrium_epsx = twiss[f"eq_{emit}_x"]
+        sr_equilibrium_epsy = twiss[f"eq_{emit}_y"]
 
-    # For the geometric ones, simply replace the n with g in the key:
-    # sr_equilibrium_epsx = twiss["eq_gemitt_x"]
-    # sr_equilibrium_epsy = twiss["eq_gemitt_y"]
+        # We will need to store the equilibrium longitudinal emittance too for later
+        sr_eq_zeta = twiss['eq_{emit}_zeta']  # or 'eq_gemitt_zeta' for geometric
 
-    # We will need to store the equilibrium longitudinal emittance too for later
-    sr_eq_zeta = twiss['eq_nemitt_zeta']  # or 'eq_gemitt_zeta' for geometric
+        # The equilibrium momentum spread is not directly provided but can be obtained via
+        # a method of the twiss result, using the equilibrium emittances obtained above.
+        if normalized is True:
+            beam_sizes = twiss.get_beam_covariance(
+                nemitt_x=sr_equilibrium_epsx,
+                nemitt_y=sr_equilibrium_epsy,
+                nemitt_zeta=sr_eq_zeta,
+            )
+        else:
+            beam_sizes = twiss.get_beam_covariance(
+                gemitt_x=sr_equilibrium_epsx,
+                gemitt_y=sr_equilibrium_epsy,
+                gemitt_zeta=sr_eq_zeta,
+            )
 
-    # The equilibrium momentum spread is not directly provided but can be obtained via
-    # a method of the twiss result, using the equilibrium emittances obtained above.
-    # Make sure to use the right type based on the one you retrieved previously
-    beam_sizes = twiss.get_beam_covariance(
-        nemitt_x=sr_equilibrium_epsx, nemitt_y=sr_equilibrium_epsy, nemitt_zeta=sr_eq_zeta
-    )
+        # The value we want corresponds to the 'sigma_pzeta' key in this result, since in
+        # Xsuite it is equivalent to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23).
+        # Take it at the location of the particle kicks (start / end of line):
+        sr_equilibrium_sigma_delta = beam_sizes["sigma_pzeta"][0]  # 0 for end / start of line
 
-    # The value we want corresponds to the 'sigma_pzeta' key in this result, since in Xsuite
-    # it is equivalent to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23). Take it
-    # at the location of the particles:
-    sr_equilibrium_sigma_delta = beam_sizes["sigma_pzeta"][0]  # 0 for end / start of line
-
+        # Return results
+        return (
+            sr_equilibrium_epsx,
+            sr_equilibrium_epsy,
+            sr_equilibrium_sigma_delta,
+            sr_tau_x,
+            sr_tau_y,
+            sr_tau_z,
+        )
 
 Getting SR Parameters from MAD-X
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -79,48 +94,56 @@ Let's assume your sequence and beam are defined, one might get the necessary par
 
 .. code-block:: python
 
-    # Make sure to include radiation effects for the active beam
-    madx.input("beam, radiate;")
+    def get_sr_inputs_from_line(madx: cpymad.madx.Madx, normalized: bool = True) -> tuple[float, ...]:
+        """Assumes beam, sequence etc are already defined."""
+        # Make sure to include radiation effects for the active beam
+        madx.input("beam, radiate;")
 
-    # Let's then call the 'emit' command with DELTAP=0, which will update
-    # the beam with equilibrium values directly
-    madx.input("emit, deltap=0;")
+        # Let's then call the 'emit' command with DELTAP=0, which will update
+        # the beam with equilibrium values directly
+        madx.input("emit, deltap=0;")
 
-    # The normalized transverse equilibrium emittances, in [m], are provided as:
-    madx.input("eq_exn = beam->exn;")
-    madx.input("eq_eyn = beam->eyn;")
-    sr_equilibrium_epsx = madx.globals["eq_exn"]
-    sr_equilibrium_epsy = madx.globals["eq_eyn"]
+        # The transverse equilibrium emittances (in [m]) are provided as:
+        suffix = "n" if normalized is True else ""
+        madx.input(f"eq_ex = beam->ex{suffix};")
+        madx.input(f"eq_ey = beam->ey{suffix};")
+        sr_equilibrium_epsx = madx.globals["eq_ex"]
+        sr_equilibrium_epsy = madx.globals["eq_ey"]
 
-    # For the geometric ones, simply remove the n in the beam attribute:
-    madx.input("eq_ex = beam->ex;")
-    madx.input("eq_ey = beam->ey;")
-    sr_equilibrium_epsx = madx.globals["eq_ex"]
-    sr_equilibrium_epsy = madx.globals["eq_ey"]
+        # The equilibrium momentum spread is not directly provided but can be obtained
+        # from the relative energy spread using the relativistic beta as:
+        madx.input("eq_sigd = beam->sige / beam->beta / beam->beta;")
+        sr_equilibrium_sigma_delta = madx.globals["eq_sigd"]
 
-    # The equilibrium momentum spread is not directly provided but can be obtained from
-    # the relative energy spread using the relativistic beta as:
-    madx.input("eq_sigd = beam->sige / beam->beta / beam->beta;")
-    sr_equilibrium_sigma_delta = madx.globals["eq_sigd"]
+        # We will need to get from the active beam: particle energy, energy loss per
+        # turn (in [GeV]) and the revolution frequency (in [MHz])
+        madx.input("E0 = beam->energy;")
+        madx.input("U0 = beam->U0;")
+        madx.input("frev = beam->freq0;")
+        E0 = madx.globals["E0"] * 1e9
+        U0 = madx.globals["U0"] * 1e9
+        frev = madx.globals["frev"] * 1e6
 
-    # We will need to get from the active beam: particle energy, energy loss per
-    # turn (in [GeV]) and the revolution frequency (in [MHz])
-    madx.input("E0 = beam->energy;")
-    madx.input("U0 = beam->U0;")
-    madx.input("frev = beam->freq0;")
-    E0 = madx.globals["E0"] * 1e9
-    U0 = madx.globals["U0"] * 1e9
-    frev = madx.globals["frev"] * 1e6
+        # We will need the synchrotron radiation integrals to determine the
+        # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)
+        madx.command.twiss(chrom=True)  # chrom to trigger their calculation
+        I2 = madx.table.summ.synch_2[0]
+        I4 = madx.table.summ.synch_4[0]
+        jx = 1 - I4 / I2  # horizontal damping partition number
+        jz = 2 + I4 / I2  # longitudinal damping partition number
 
-    # We will need the synchrotron radiation integrals to determine the
-    # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)
-    madx.command.twiss(chrom=True)  # chrom to trigger their calculation
-    I2 = madx.table.summ.synch_2[0]
-    I4 = madx.table.summ.synch_4[0]
-    jx = 1 - I4 / I2  # horizontal damping partition number
-    jz = 2 + I4 / I2  # longitudinal damping partition number
+        # This is enough to compute the damping times
+        # (see https://arxiv.org/pdf/1507.02213.pdf)
+        sr_tau_x = 2 * E0 * frev / (jx * U0)
+        sr_tau_y = 2 * E0 * frev / U0
+        sr_tau_z = 2 * E0 * frev / (jz * U0)
 
-    # This is enough to compute the damping times (see https://arxiv.org/pdf/1507.02213.pdf)
-    sr_tau_x = 2 * E0 * frev / (jx * U0)
-    sr_tau_y = 2 * E0 * frev / U0
-    sr_tau_z = 2 * E0 * frev / (jz * U0)
+        # Return results
+        return (
+            sr_equilibrium_epsx,
+            sr_equilibrium_epsy,
+            sr_equilibrium_sigma_delta,
+            sr_tau_x,
+            sr_tau_y,
+            sr_tau_z,
+        )
