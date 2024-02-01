@@ -17,8 +17,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:  # only one python version on ubuntu-latest
-        os: [ubuntu-latest]
-        python-version: [3.11]
+        os: [macos-latest]
+        python-version: [3.12]
 
     steps:
       - uses: actions/checkout@v4
