@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-14]  # m1 runners are much faster
+        os: [ubuntu-latest]  # m1 runners are much faster
         python-version: [3.12]
 
     steps:

@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:  # only one python version on ubuntu-latest
-        os: [macos-latest]
+        os: [ubuntu-latest]
         python-version: [3.12]
 
     steps:
