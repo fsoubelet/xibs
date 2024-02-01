@@ -7,14 +7,13 @@ import warnings
 
 from dataclasses import dataclass
 from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
-import xpart as xp
 import xtrack as xt
 
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import NagaitsevIBS
-from xibs.formulary import ion_bunch_length
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")  # scipy integration routines might warn

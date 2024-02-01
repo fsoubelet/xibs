@@ -6,6 +6,7 @@ import time
 import warnings
 
 from dataclasses import dataclass
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,7 +33,7 @@ plt.rcParams.update(
 )
 
 # ----- File and parameters ----- #
-line_file = "../lines/chrom-corr_DR.newlattice_2GHz.json"
+filepath = Path(__file__).parent.parent / "lines" / "chrom-corr_DR.newlattice_2GHz.json"
 harmonic_number = 2852
 rf_voltage = 4.5  # in MV
 energy_loss = 0  # let's pretend
@@ -43,7 +44,7 @@ nemitt_y = 3.7033e-09
 n_part = int(5e3)
 
 # ----- Line and particles ----- #
-line = xt.Line.from_json(line_file)
+line = xt.Line.from_json(filepath)
 line.build_tracker(extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
 
 # power accelerating cavities
@@ -171,10 +172,10 @@ for turn in range(1, nturns):
 
     # Compute the new emittances
     new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
-        geom_epsx=turn_by_turn.epsilon_x[turn - 1],
-        geom_epsy=turn_by_turn.epsilon_y[turn - 1],
-        sigma_delta=turn_by_turn.sig_delta[turn - 1],
-        bunch_length=turn_by_turn.bunch_length[turn - 1],
+        turn_by_turn.epsilon_x[turn - 1],
+        turn_by_turn.epsilon_y[turn - 1],
+        turn_by_turn.sig_delta[turn - 1],
+        turn_by_turn.bunch_length[turn - 1],
         # dt = 1.0 / IBS.optics.revolution_frequency,  # default value
     )
 
