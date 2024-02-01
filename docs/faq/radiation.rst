@@ -52,7 +52,7 @@ See below a function that does just so:
         sr_equilibrium_epsy = twiss[f"eq_{emit}_y"]
 
         # We will need to store the equilibrium longitudinal emittance too for later
-        sr_eq_zeta = twiss['eq_{emit}_zeta']  # or 'eq_gemitt_zeta' for geometric
+        sr_eq_zeta = twiss[f"eq_{emit}_zeta"]  # or 'eq_gemitt_zeta' for geometric
 
         # The equilibrium momentum spread is not directly provided but can be obtained via
         # a method of the twiss result, using the equilibrium emittances obtained above.
@@ -83,6 +83,7 @@ See below a function that does just so:
             sr_tau_y,
             sr_tau_z,
         )
+
 
 Getting SR Parameters from MAD-X
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
