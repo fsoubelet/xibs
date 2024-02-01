@@ -57,12 +57,11 @@ line.build_tracker(context)
 line.optimize_for_tracking()
 twiss = line.twiss(method="4d")
 
-# Some important parameters and then particle generation (from Xsuite SPS example)
-n_part = int(5e4)
-bunch_intensity = int(3.5e8)  # from the test config
-sigma_z = 19.7e-2  # from the test config
-nemitt_x = 1.2612e-6  # from the test config
-nemitt_y = 0.9081e-6  # from the test config
+# Using fake values for beam parameters to be in a regime that 'stimulates' IBS
+bunch_intensity = int(3.5e11)  # from the test config
+sigma_z = 8e-2  # from the test config
+nemitt_x = 1.0e-6  # from the test config
+nemitt_y = 0.2e-6  # from the test config
 
 # Let's get our parameters
 beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
@@ -71,13 +70,12 @@ opticsparams = OpticsParameters.from_line(line)
 rf_voltage = 1.7e6  # 1.7MV from the test config
 harmonic_number = 4653
 cavity = "actcse.31632"
-
 line[cavity].lag = 180  # 0 if below transition, 180 if above
 line[cavity].voltage = rf_voltage  # In Xsuite for ions, do not multiply by charge as in MADX
 line[cavity].frequency = opticsparams.revolution_frequency * harmonic_number
 
 # Re-create particles with less elements as tracking takes a while
-n_part = int(1e4)
+n_part = int(2e3)
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
@@ -183,6 +181,8 @@ for turn in range(1, nturns):
     analytical_tbt.sigma_delta[turn] = ana_sig_delta
     analytical_tbt.bunch_length[turn] = ana_bunch_length
 
+
+# ----- Plotting ----- #
 
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(15, 8))
 
