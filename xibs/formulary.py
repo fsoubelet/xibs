@@ -1,5 +1,5 @@
 """
-.. _xibs-utils:
+.. _xibs-formulary:
 
 Formulary
 ---------
@@ -9,8 +9,6 @@ Module with commonly used formulae to compute quantities of interest needed in t
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 import logging
-
-import numpy as np
 
 from numpy.typing import ArrayLike
 
