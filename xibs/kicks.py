@@ -171,7 +171,7 @@ class KickBasedIBS(ABC):
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
         """
-        ...
+        pass
 
     @abstractmethod
     def apply_ibs_kick(self, particles: "xpart.Particles") -> None:  # noqa: F821
@@ -187,7 +187,7 @@ class KickBasedIBS(ABC):
         Raises:
             AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
-        ...
+        pass
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
