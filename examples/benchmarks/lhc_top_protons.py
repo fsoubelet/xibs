@@ -15,7 +15,6 @@ import xtrack as xt
 
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import NagaitsevIBS
-from xibs.formulary import bunch_length
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")  # scipy integration routines might warn

@@ -17,7 +17,7 @@ import xtrack as xt
 from helpers import Records
 from scipy.stats import pearsonr
 
-from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS
+from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 from xibs.kicks import IBSKickCoefficients, SimpleKickIBS
 

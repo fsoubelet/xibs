@@ -6,8 +6,6 @@ import numpy as np
 import xpart as xp
 import xtrack as xt
 
-from cpymad.madx import Madx
-
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS, _SynchrotronRadiationInputs
 from xibs.inputs import BeamParameters, OpticsParameters
