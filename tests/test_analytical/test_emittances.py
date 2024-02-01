@@ -3,8 +3,9 @@ Tests in here check the emittance evolution calculation for both NagaitsevIBS an
 The simple and fast case of the PS protons at injection is taken to compute the growth rates used.
 """
 import numpy as np
-import xtrack as xt
 import xpart as xp
+import xtrack as xt
+
 from cpymad.madx import Madx
 
 from xibs._old_michalis import MichalisIBS
@@ -117,7 +118,9 @@ def test_emittance_evolution_with_synchrotron_radiation(xtrack_clic_damping_ring
     rates = IBSGrowthRates(Tx=1e-6, Ty=1e-6, Tz=1e-5)
     NIBS.ibs_growth_rates = rates
     BMIBS.ibs_growth_rates = rates
-    MIBS.Ixx = rates.Tx; MIBS.Iyy = rates.Ty; MIBS.Ipp = rates.Tz
+    MIBS.Ixx = rates.Tx
+    MIBS.Iyy = rates.Ty
+    MIBS.Ipp = rates.Tz
     # --------------------------------------------------------------------
     # Get the SR inputs needed for the emittance evolution
     sr_inputs = _get_sr_inputs_from_line(line)
@@ -126,16 +129,16 @@ def test_emittance_evolution_with_synchrotron_radiation(xtrack_clic_damping_ring
     # We compare to expected values, for NagaitsevIBS and BjorkenMtingwaIBS
     time_step = 1 / opticsparams.revolution_frequency
     ref_epsx, ref_epsy, ref_sigma_delta = MIBS.emit_evol_with_SR(
-        geom_epsx, 
-        geom_epsy, 
-        sigma_delta, 
-        bunch_length, 
-        sr_inputs.equilibrium_epsx, 
-        sr_inputs.equilibrium_epsy, 
-        sr_inputs.equilibrium_sigma_delta, 
-        sr_inputs.tau_x, 
-        sr_inputs.tau_y, 
-        sr_inputs.tau_z, 
+        geom_epsx,
+        geom_epsy,
+        sigma_delta,
+        bunch_length,
+        sr_inputs.equilibrium_epsx,
+        sr_inputs.equilibrium_epsy,
+        sr_inputs.equilibrium_sigma_delta,
+        sr_inputs.tau_x,
+        sr_inputs.tau_y,
+        sr_inputs.tau_z,
         dt=time_step,
     )
     # --------------------------------------------------------------------
@@ -178,16 +181,16 @@ def test_emittance_evolution_with_synchrotron_radiation(xtrack_clic_damping_ring
     # --------------------------------------------------------------------
     # We can do the same again with 1s as time step
     ref_epsx, ref_epsy, ref_sigma_delta = MIBS.emit_evol_with_SR(
-        geom_epsx, 
-        geom_epsy, 
-        sigma_delta, 
-        bunch_length, 
-        sr_inputs.equilibrium_epsx, 
-        sr_inputs.equilibrium_epsy, 
-        sr_inputs.equilibrium_sigma_delta, 
-        sr_inputs.tau_x, 
-        sr_inputs.tau_y, 
-        sr_inputs.tau_z, 
+        geom_epsx,
+        geom_epsy,
+        sigma_delta,
+        bunch_length,
+        sr_inputs.equilibrium_epsx,
+        sr_inputs.equilibrium_epsy,
+        sr_inputs.equilibrium_sigma_delta,
+        sr_inputs.tau_x,
+        sr_inputs.tau_y,
+        sr_inputs.tau_z,
         dt=1,
     )
     # --------------------------------------------------------------------
@@ -228,83 +231,54 @@ def test_emittance_evolution_with_synchrotron_radiation(xtrack_clic_damping_ring
     assert np.isclose(epsy, ref_epsy, atol=0)
     assert np.isclose(sigd, ref_sigma_delta, atol=0)
 
+
 # ----- Helpers ----- #
 
 
-def _get_sr_inputs_from_line(line: xt.Line) -> _SynchrotronRadiationInputs:
-    """As shown in the FAQ. Returns geometric equilibrium emittances."""
-    # Set the radiation mode to 'mean' and call twiss with 'eneloss_and_damping' (see Xsuite user guide)
+def _get_sr_inputs_from_line(line: xt.Line, normalized: bool = False) -> _SynchrotronRadiationInputs:
+    """From FAQ. Assumes line has a reference particle and is compatible with SR modes."""
+    # Set the radiation mode to 'mean' and call twiss with
+    # 'eneloss_and_damping' (see Xsuite user guide)
     line.configure_radiation(model="mean")
-    twiss: xt.TwissTable = line.twiss(eneloss_and_damping=True)
+    twiss = line.twiss(eneloss_and_damping=True)
 
-    # The damping times, in [s] are provided as:
+    # The damping times (in [s]) are provided as:
     sr_tau_x, sr_tau_y, sr_tau_z = twiss["damping_constants_s"]
 
-    # For the geometric equilibrium emittances
-    sr_equilibrium_gepsx = twiss["eq_gemitt_x"]
-    sr_equilibrium_gepsy = twiss["eq_gemitt_y"]
+    # The transverse equilibrium emittances (in [m]) are provided as:
+    emit = "nemitt" if normalized is True else "gemitt"
+    sr_equilibrium_epsx = twiss[f"eq_{emit}_x"]
+    sr_equilibrium_epsy = twiss[f"eq_{emit}_y"]
 
     # We will need to store the equilibrium longitudinal emittance too for later
-    sr_eq_zeta = twiss["eq_gemitt_zeta"]  # geometric
+    sr_eq_zeta = twiss[f"eq_{emit}_zeta"]
 
     # The equilibrium momentum spread is not directly provided but can be obtained via
     # a method of the twiss result, using the equilibrium emittances obtained above.
-    # Make sure to use the right type based on the one you retrieved previously
-    beam_sizes = twiss.get_beam_covariance(
-        gemitt_x=sr_equilibrium_gepsx, gemitt_y=sr_equilibrium_gepsy, gemitt_zeta=sr_eq_zeta
-    )
+    if normalized is True:
+        beam_sizes = twiss.get_beam_covariance(
+            nemitt_x=sr_equilibrium_epsx,
+            nemitt_y=sr_equilibrium_epsy,
+            nemitt_zeta=sr_eq_zeta,
+        )
+    else:
+        beam_sizes = twiss.get_beam_covariance(
+            gemitt_x=sr_equilibrium_epsx,
+            gemitt_y=sr_equilibrium_epsy,
+            gemitt_zeta=sr_eq_zeta,
+        )
 
-    # The value we want corresponds to the 'sigma_pzeta' key in this result, since in Xsuite it is equivalent
-    # to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23). Take it at the location of the particles:
+    # The value we want corresponds to the 'sigma_pzeta' key in this result, since in
+    # Xsuite it is equivalent to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23).
+    # Take it at the location of the particle kicks (start / end of line):
     sr_equilibrium_sigma_delta = beam_sizes["sigma_pzeta"][0]  # 0 for end / start of line
 
-    # Send back the result
+    # Return results
     return _SynchrotronRadiationInputs(
-        sr_equilibrium_gepsx, sr_equilibrium_gepsy, sr_equilibrium_sigma_delta, sr_tau_x, sr_tau_y, sr_tau_z
-    )
-
-
-def _get_sr_inputs_from_madx(madx: Madx) -> _SynchrotronRadiationInputs:
-    """As shown in the FAQ. Returns geometric equilibrium emittances."""
-    # Set radiation flag on the beam, then call the 'emit' command with DELTAP=0, which will
-    # update the beam with equilibrium values directly
-    madx.input("beam, radiate;")
-    madx.input("emit, deltap=0;")
-
-    # The geometric transverse equilibrium emittances, in [m], are provided as:
-    madx.input("eq_ex = beam->ex;")
-    madx.input("eq_ey = beam->ey;")
-    sr_equilibrium_gepsx = madx.globals["eq_ex"]
-    sr_equilibrium_gepsy = madx.globals["eq_ey"]
-
-    # The equilibrium momentum spread is not directly provided but can be obtained from
-    # the relative energy spread using the relativistic beta as:
-    madx.input("eq_sigd = beam->sige / beam->beta / beam->beta;")
-    sr_equilibrium_sigma_delta = madx.globals["eq_sigd"]
-
-    # We will need to get from the active beam: particle energy, energy loss per
-    # turn (in [GeV]) and the revolution frequency (in [MHz])
-    madx.input("E0 = beam->energy;")
-    madx.input("U0 = beam->U0;")
-    madx.input("frev = beam->freq0;")
-    E0 = madx.globals["E0"] * 1e9
-    U0 = madx.globals["U0"] * 1e9
-    frev = madx.globals["frev"] * 1e6
-
-    # We will need the synchrotron radiation integrals to determine the
-    # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)
-    madx.command.twiss(chrom=True)  # chrom to trigger their calculation
-    I2 = madx.table.summ.synch_2[0]
-    I4 = madx.table.summ.synch_4[0]
-    jx = 1 - I4 / I2  # horizontal damping partition number
-    jz = 2 + I4 / I2  # longitudinal damping partition number
-
-    # This is enough to compute the damping times (see https://arxiv.org/pdf/1507.02213.pdf)
-    sr_tau_x = 2 * E0 * frev / (jx * U0)
-    sr_tau_y = 2 * E0 * frev / U0
-    sr_tau_z = 2 * E0 * frev / (jz * U0)
-
-    # Send back the result
-    return _SynchrotronRadiationInputs(
-        sr_equilibrium_gepsx, sr_equilibrium_gepsy, sr_equilibrium_sigma_delta, sr_tau_x, sr_tau_y, sr_tau_z
+        sr_equilibrium_epsx,
+        sr_equilibrium_epsy,
+        sr_equilibrium_sigma_delta,
+        sr_tau_x,
+        sr_tau_y,
+        sr_tau_z,
     )
