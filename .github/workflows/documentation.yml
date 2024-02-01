@@ -17,8 +17,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: [3.11]
+        os: [macos-14]  # m1 runners are much faster
+        python-version: [3.12]
 
     steps:
       - uses: actions/checkout@v4
