@@ -42,6 +42,11 @@ jobs:
       - name: Install xsuite and pre-compile kernels  # avoids recompiling in every test
         run: python -m pip install xsuite && xsuite-prebuild
 
+      # When xsuite gets to this test it complains about package discovery when compiling and crashes
+      # We run ahead of time to have the kernel already compiled
+      - name: Run a test to compile SR kernels
+        run: python -m pytest tests/test_analytical/test_emittances.py
+
       - name: Make directory for plots
         run: mkdir plots
 
