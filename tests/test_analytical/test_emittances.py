@@ -11,24 +11,12 @@ from xibs.analytical import BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS, _Sy
 from xibs.inputs import BeamParameters, OpticsParameters
 
 
-def test_emittance_evolution(madx_ps_injection_protons, xtrack_ps_injection_protons):
+def test_emittance_evolution(madx_ps_injection_protons):
     # --------------------------------------------------------------------
-    # Get the growth rates from MAD-X
+    # Load the optics and beam parameters from MAD-X
     madx, params = madx_ps_injection_protons  # fully set up from the config file
-    # --------------------------------------------------------------------
-    # Load the optics, from MAD-X for maximum consistency
-    twiss = madx.twiss(centre=True).dframe()
-    seq_name = madx.table.twiss.summary.sequence  # works whichever your sequence
-    frev_hz = madx.sequence[seq_name].beam.freq0 * 1e6  # beware freq0 is in MHz
-    gamma_rel = madx.sequence[seq_name].beam.gamma  # relativistic gamma
-    gamma_tr = madx.table.summ.gammatr[0]  # transition gamma
-    slipfactor = (1 / (gamma_tr**2)) - (1 / (gamma_rel**2))  # use the xsuite convention!
-    opticsparams = OpticsParameters(twiss, slipfactor, frev_hz)
-    # --------------------------------------------------------------------
-    # Load the beam parameters from the equivalent xsuite line
-    line: xt.Line = xtrack_ps_injection_protons
-    beamparams = BeamParameters(line.particle_ref)
-    beamparams.n_part = madx.sequence[seq_name].beam.npart  # as line.particle_ref is only 1 particle
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
     # --------------------------------------------------------------------
     # Set hardcoded growth rates - faster test this way - we don't care about being
     # realistic here, just that with these specific values the computation is correct
