@@ -270,5 +270,5 @@ def plot_kicks_vs_analytical(kicktbt: Records, analyticaltbt: Records, filename:
 
     plt.tight_layout()
     if os.getenv("GITHUB_ACTIONS") == "true" and os.getenv("CI") == "true":
-        plt.savefig(f"plots/{filename}.pdf", dpi=300)
+        plt.savefig(f".plots/{filename}.pdf", dpi=300)
     # plt.savefig(f"{filename}.pdf", dpi=300)
