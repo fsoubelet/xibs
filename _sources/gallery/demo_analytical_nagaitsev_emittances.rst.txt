@@ -264,8 +264,8 @@ object and will be updated internally each time they are computed.
 
  .. code-block:: none
 
-    NagaitsevIntegrals(Ix=8.087703826022046e+19, Iy=1.4676822650031862e+17, Iz=6.005272485403276e+23)
-    NagaitsevIntegrals(Ix=8.087703826022046e+19, Iy=1.4676822650031862e+17, Iz=6.005272485403276e+23)
+    NagaitsevIntegrals(Ix=7.905230791998202e+19, Iy=1.46409748719386e+17, Iz=5.873551004253207e+23)
+    NagaitsevIntegrals(Ix=7.905230791998202e+19, Iy=1.46409748719386e+17, Iz=5.873551004253207e+23)
 
 
 
@@ -295,8 +295,8 @@ are computed.
 
  .. code-block:: none
 
-    IBSGrowthRates(Tx=375.02500534288316, Ty=101.66656691009256, Tz=94.08763964253427)
-    IBSGrowthRates(Tx=375.02500534288316, Ty=101.66656691009256, Tz=94.08763964253427)
+    IBSGrowthRates(Tx=361.2150325810814, Ty=104.75653406453148, Tz=87.89860751590145)
+    IBSGrowthRates(Tx=361.2150325810814, Ty=104.75653406453148, Tz=87.89860751590145)
 
 
 
@@ -337,10 +337,10 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 9.970398433882437e-11 m
-    Next time step geometrical epsilon_y = 6.67163223484646e-13 m
-    Next time step sigma_delta = 0.0017174607892957651
-    Next time step bunch length = 0.0015724113341521952 m
+    Next time step geometrical epsilon_x = 1.0195007539391453e-10 m
+    Next time step geometrical epsilon_y = 6.508319481540774e-13 m
+    Next time step sigma_delta = 0.0017639820003952844
+    Next time step bunch length = 0.0015643267827803785 m
 
 
 
@@ -542,7 +542,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 23.118 seconds)
+   **Total running time of the script:** (0 minutes 22.885 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_nagaitsev_emittances.py:

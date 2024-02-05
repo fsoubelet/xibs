@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" data-content_root="../" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bunched and Coasting Beams — xibs 0.6.0 documentation</title>
+<link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-codeautolink.css?v=125d5c1c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery.css?v=61a4c737" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-binder.css?v=f4aeca0c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-dataframe.css?v=2082cf3c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-dropdown.css?v=995e94df" rel="stylesheet" type="text/css"/>
+<link href="../_static/panels-bootstrap.min.css?v=21c0b90a" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/custom.css?v=0a86e678" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+<script src="../_static/jquery.js?v=5d32c60e"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+<script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+<script src="../_static/doctools.js?v=888ff710"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+<script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="../_static/js/theme.js"></script>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../bibliography.html" rel="next" title="Reference Bibliography"/>
+<link href="radiation.html" rel="prev" title="Synchrotron Radiation Contribution"/>
+</head>
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a href="../index.html">
+</a>
+<div class="version">
+                0.6.0
+              </div>
+<div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+</div>
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#input-data-structures">Input Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formulary">Formulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Frequently Asked Questions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="input_parameters.html">Instantiating Input Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#opticsparameters-from-an-xtrack-line">OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#opticsparameters-from-mad-x">OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#beamparameters-from-an-xtrack-line">BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#beamparameters-from-mad-x">BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="emittance_types.html">Emittances: Geometric or Normalized</a></li>
+<li class="toctree-l2"><a class="reference internal" href="radiation.html">Synchrotron Radiation Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="radiation.html#getting-sr-parameters-from-xsuite">Getting SR Parameters from Xsuite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="radiation.html#getting-sr-parameters-from-mad-x">Getting SR Parameters from MAD-X</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bunched and Coasting Beams</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../index.html">xibs</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Home" class="icon icon-home" href="../index.html"></a></li>
+<li class="breadcrumb-item"><a href="index.html">Frequently Asked Questions</a></li>
+<li class="breadcrumb-item active">Bunched and Coasting Beams</li>
+<li class="wy-breadcrumbs-aside">
+<!-- User defined GitHub URL -->
+<a class="fa fa-github" href="https://github.com/fsoubelet/xibs"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
+<section id="bunched-and-coasting-beams">
+<span id="xibs-faq-bunched-coasting-beams"></span><h1>Bunched and Coasting Beams<a class="headerlink" href="#bunched-and-coasting-beams" title="Link to this heading"></a></h1>
+<div class="admonition-this-section-in-short admonition">
+<p class="admonition-title">This section in short</p>
+<p>To simulate coasting beams, set <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunched=False</span></code> when calling the <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> method and stop caring about the <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunch_length</span></code> argument. Two cases appear:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>With <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> analytical expressions are adapted, leading to correct results.</p></li>
+<li><p>With <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> an approximation is made using as bunch length <span class="math notranslate nohighlight">\(C / 2 \pi\)</span> and a deviation to correct results might be observed. A warning will be logged to the user.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<p>It is possible in <code class="docutils literal notranslate"><span class="pre">xibs</span></code> to obtain analytical IBS growth rates for simulations dealing with coasting beams.
+The functionality is implemented in both analytical classes, <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code>, though in the latter an approximation is made and resulting values should be expected to deviate from the correct ones.</p>
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code> in both classes method provides a <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunched</span></code> boolean argument, which defaults to <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, corresponding to a bunched beam case.
+To adapt the growth rates calculation for a coasting beam, one simply has to set this argument to <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your beam and optics parameters have been instantiated</span>
+<span class="n">IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">analytical</span><span class="o">.</span><span class="n">BjorkenMtingwaIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
+<span class="c1"># IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)  # alternatively</span>
+
+<span class="c1"># Getting growth rates for a bunched beam (default)</span>
+<span class="n">rates_bunched</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">psx</span><span class="p">,</span> <span class="n">epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+
+<span class="c1"># Getting growth rates for a coasting beam</span>
+<span class="n">rates_coasting</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">epsx</span><span class="p">,</span> <span class="n">epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">bunched</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># The two of course yield different values</span>
+<span class="k">assert</span> <span class="n">rates_bunched</span> <span class="o">!=</span> <span class="n">rates_coasting</span>  <span class="c1"># this is True</span>
+</pre></div>
+</div>
+<p>Note that in both cases, the provided <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunch_length</span></code> argument is irrelevant: if using <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code> the changes to analytical formulae take it out of the equation, and if using <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code> it is ignored in favor of <span class="math notranslate nohighlight">\(C / 2 \pi\)</span>.</p>
+</section>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="radiation.html" rel="prev" title="Synchrotron Radiation Contribution"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="n" class="btn btn-neutral float-right" href="../bibliography.html" rel="next" title="Reference Bibliography">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2023, Felix Soubelet.</p>
+</div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+</div>
+</div>
+</section>
+</div>
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" data-content_root="../" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Synchrotron Radiation Contribution — xibs 0.6.0 documentation</title>
+<link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-codeautolink.css?v=125d5c1c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery.css?v=61a4c737" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-binder.css?v=f4aeca0c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-dataframe.css?v=2082cf3c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-dropdown.css?v=995e94df" rel="stylesheet" type="text/css"/>
+<link href="../_static/panels-bootstrap.min.css?v=21c0b90a" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/custom.css?v=0a86e678" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+<script src="../_static/jquery.js?v=5d32c60e"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+<script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+<script src="../_static/doctools.js?v=888ff710"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+<script src="../_static/js/theme.js"></script>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="coasting_beams.html" rel="next" title="Bunched and Coasting Beams"/>
+<link href="emittance_types.html" rel="prev" title="Emittances: Geometric or Normalized"/>
+</head>
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a href="../index.html">
+</a>
+<div class="version">
+                0.6.0
+              </div>
+<div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+</div>
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#input-data-structures">Input Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formulary">Formulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Frequently Asked Questions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="input_parameters.html">Instantiating Input Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#opticsparameters-from-an-xtrack-line">OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#opticsparameters-from-mad-x">OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#beamparameters-from-an-xtrack-line">BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#beamparameters-from-mad-x">BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="emittance_types.html">Emittances: Geometric or Normalized</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Synchrotron Radiation Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-sr-parameters-from-xsuite">Getting SR Parameters from Xsuite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-sr-parameters-from-mad-x">Getting SR Parameters from MAD-X</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="coasting_beams.html">Bunched and Coasting Beams</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../index.html">xibs</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Home" class="icon icon-home" href="../index.html"></a></li>
+<li class="breadcrumb-item"><a href="index.html">Frequently Asked Questions</a></li>
+<li class="breadcrumb-item active">Synchrotron Radiation Contribution</li>
+<li class="wy-breadcrumbs-aside">
+<!-- User defined GitHub URL -->
+<a class="fa fa-github" href="https://github.com/fsoubelet/xibs"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
+<section id="synchrotron-radiation-contribution">
+<span id="xibs-faq-sr-inputs"></span><h1>Synchrotron Radiation Contribution<a class="headerlink" href="#synchrotron-radiation-contribution" title="Link to this heading"></a></h1>
+<div class="admonition-this-section-in-short admonition">
+<p class="admonition-title">This section in short</p>
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code> method of analytical classes can include the contribution of Synchrotron Radiation and quantum excitation.
+It done automatically if specific keyword arguments are provided.
+They are described in the API reference and below, as well as how to obtain them.</p>
+</div>
+<p>When computing analytical emittance evolutions, in some scenarios the contribution of Synchrotron Radiation (SR) and quantum excitation might be significant.
+It is possible to include these contributions on top of the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> ones when calling the <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code> method, by providing the following keyword arguments:</p>
+<ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sr_equilibrium_epsx</span></code>: the horizontal equilibrium emittance due to SR, in [m] (or, if not [m], the same unit as <em>epsx</em> and <em>epsy</em>).</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sr_equilibrium_epsy</span></code>: the vertical equilibrium emittance due to SR, in [m] (or, if not [m], the same unit as <em>epsx</em> and <em>epsy</em>).</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sr_equilibrium_sigma_delta</span></code>: the equilibrium energy spread due to SR.</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sr_tau_x</span></code>: the horizontal damping time due to SR, in [s].</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sr_tau_y</span></code>: the vertical damping time due to SR, in [s].</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sr_tau_z</span></code>: the longitudinal damping time due to SR, in [s].</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is possible to choose to provide normalized or geometric equilibrium emittances, as described in <a class="reference internal" href="emittance_types.html#xibs-faq-geom-norm-emittances"><span class="std std-ref">this section</span></a>.
+What matters is that the same type as <code class="xref py py-obj docutils literal notranslate"><span class="pre">epsx</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">epsy</span></code> is given, as indicated by the <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_emittances</span></code> boolean argument.
+In short: either provide all in geometric or all in normalized units, don’t mix it up.</p>
+</div>
+<p>It is possible to obtain these parameters from either <code class="docutils literal notranslate"><span class="pre">Xsuite</span></code> or <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code>, as will be shown below.</p>
+<section id="getting-sr-parameters-from-xsuite">
+<h2>Getting SR Parameters from Xsuite<a class="headerlink" href="#getting-sr-parameters-from-xsuite" title="Link to this heading"></a></h2>
+<p>All necessary parameters can be obtained in the result of a Twiss call on your <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>.
+It is important however to have first configured the radiation model, and to make the Twiss call asking for these results (see the Xsuite user guide pages on <a class="reference external" href="https://xsuite.readthedocs.io/en/latest/synchrotron_radiation.html">synchrotron radiation</a> and <a class="reference external" href="https://xsuite.readthedocs.io/en/latest/twiss.html#beam-sizes-from-twiss-table">Twiss beams sizes</a>).
+See below a function that does just so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_sr_inputs_from_line</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="n">xt</span><span class="o">.</span><span class="n">Line</span><span class="p">,</span> <span class="n">normalized</span><span class="p">:</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#bool" title="bool"><span class="nb">bool</span></a> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="tuple"><span class="nb">tuple</span></a><span class="p">[</span><a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#float" title="float"><span class="nb">float</span></a><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Assumes line has a reference particle and is compatible with SR modes."""</span>
+    <span class="c1"># Set the radiation mode to 'mean' and call twiss with</span>
+    <span class="c1"># 'eneloss_and_damping' (see Xsuite user guide)</span>
+    <span class="n">line</span><span class="o">.</span><span class="n">configure_radiation</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">)</span>
+    <span class="n">twiss</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">eneloss_and_damping</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The damping times (in [s]) are provided as:</span>
+    <span class="n">sr_tau_x</span><span class="p">,</span> <span class="n">sr_tau_y</span><span class="p">,</span> <span class="n">sr_tau_z</span> <span class="o">=</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">"damping_constants_s"</span><span class="p">]</span>
+
+    <span class="c1"># The transverse equilibrium emittances (in [m]) are provided as:</span>
+    <span class="n">emit</span> <span class="o">=</span> <span class="s2">"nemitt"</span> <span class="k">if</span> <span class="n">normalized</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="s2">"gemitt"</span>
+    <span class="n">sr_equilibrium_epsx</span> <span class="o">=</span> <span class="n">twiss</span><span class="p">[</span><span class="sa">f</span><span class="s2">"eq_</span><span class="si">{</span><span class="n">emit</span><span class="si">}</span><span class="s2">_x"</span><span class="p">]</span>
+    <span class="n">sr_equilibrium_epsy</span> <span class="o">=</span> <span class="n">twiss</span><span class="p">[</span><span class="sa">f</span><span class="s2">"eq_</span><span class="si">{</span><span class="n">emit</span><span class="si">}</span><span class="s2">_y"</span><span class="p">]</span>
+
+    <span class="c1"># We will need to store the equilibrium longitudinal emittance too for later</span>
+    <span class="n">sr_eq_zeta</span> <span class="o">=</span> <span class="n">twiss</span><span class="p">[</span><span class="sa">f</span><span class="s2">"eq_</span><span class="si">{</span><span class="n">emit</span><span class="si">}</span><span class="s2">_zeta"</span><span class="p">]</span>  <span class="c1"># or 'eq_gemitt_zeta' for geometric</span>
+
+    <span class="c1"># The equilibrium momentum spread is not directly provided but can be obtained via</span>
+    <span class="c1"># a method of the twiss result, using the equilibrium emittances obtained above.</span>
+    <span class="k">if</span> <span class="n">normalized</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">beam_sizes</span> <span class="o">=</span> <span class="n">twiss</span><span class="o">.</span><span class="n">get_beam_covariance</span><span class="p">(</span>
+            <span class="n">nemitt_x</span><span class="o">=</span><span class="n">sr_equilibrium_epsx</span><span class="p">,</span>
+            <span class="n">nemitt_y</span><span class="o">=</span><span class="n">sr_equilibrium_epsy</span><span class="p">,</span>
+            <span class="n">nemitt_zeta</span><span class="o">=</span><span class="n">sr_eq_zeta</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">beam_sizes</span> <span class="o">=</span> <span class="n">twiss</span><span class="o">.</span><span class="n">get_beam_covariance</span><span class="p">(</span>
+            <span class="n">gemitt_x</span><span class="o">=</span><span class="n">sr_equilibrium_epsx</span><span class="p">,</span>
+            <span class="n">gemitt_y</span><span class="o">=</span><span class="n">sr_equilibrium_epsy</span><span class="p">,</span>
+            <span class="n">gemitt_zeta</span><span class="o">=</span><span class="n">sr_eq_zeta</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># The value we want corresponds to the 'sigma_pzeta' key in this result, since in</span>
+    <span class="c1"># Xsuite it is equivalent to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23).</span>
+    <span class="c1"># Take it at the location of the particle kicks (start / end of line):</span>
+    <span class="n">sr_equilibrium_sigma_delta</span> <span class="o">=</span> <span class="n">beam_sizes</span><span class="p">[</span><span class="s2">"sigma_pzeta"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># 0 for end / start of line</span>
+
+    <span class="c1"># Return results</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">sr_equilibrium_epsx</span><span class="p">,</span>
+        <span class="n">sr_equilibrium_epsy</span><span class="p">,</span>
+        <span class="n">sr_equilibrium_sigma_delta</span><span class="p">,</span>
+        <span class="n">sr_tau_x</span><span class="p">,</span>
+        <span class="n">sr_tau_y</span><span class="p">,</span>
+        <span class="n">sr_tau_z</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="getting-sr-parameters-from-mad-x">
+<h2>Getting SR Parameters from MAD-X<a class="headerlink" href="#getting-sr-parameters-from-mad-x" title="Link to this heading"></a></h2>
+<p>While a bit more cumbersome, it is possible to get these parameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> as well.
+Let’s assume your sequence and beam are defined, one might get the necessary parameters as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_sr_inputs_from_line</span><span class="p">(</span><span class="n">madx</span><span class="p">:</span> <span class="n">cpymad</span><span class="o">.</span><span class="n">madx</span><span class="o">.</span><span class="n">Madx</span><span class="p">,</span> <span class="n">normalized</span><span class="p">:</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#bool" title="bool"><span class="nb">bool</span></a> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="tuple"><span class="nb">tuple</span></a><span class="p">[</span><a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#float" title="float"><span class="nb">float</span></a><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Assumes beam, sequence etc are already defined."""</span>
+    <span class="c1"># Make sure to include radiation effects for the active beam</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">"beam, radiate;"</span><span class="p">)</span>
+
+    <span class="c1"># Let's then call the 'emit' command with DELTAP=0, which will update</span>
+    <span class="c1"># the beam with equilibrium values directly</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">"emit, deltap=0;"</span><span class="p">)</span>
+
+    <span class="c1"># The transverse equilibrium emittances (in [m]) are provided as:</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s2">"n"</span> <span class="k">if</span> <span class="n">normalized</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">"eq_ex = beam-&gt;ex</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">;"</span><span class="p">)</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">"eq_ey = beam-&gt;ey</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">;"</span><span class="p">)</span>
+    <span class="n">sr_equilibrium_epsx</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="s2">"eq_ex"</span><span class="p">]</span>
+    <span class="n">sr_equilibrium_epsy</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="s2">"eq_ey"</span><span class="p">]</span>
+
+    <span class="c1"># The equilibrium momentum spread is not directly provided but can be obtained</span>
+    <span class="c1"># from the relative energy spread using the relativistic beta as:</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">"eq_sigd = beam-&gt;sige / beam-&gt;beta / beam-&gt;beta;"</span><span class="p">)</span>
+    <span class="n">sr_equilibrium_sigma_delta</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="s2">"eq_sigd"</span><span class="p">]</span>
+
+    <span class="c1"># We will need to get from the active beam: particle energy, energy loss per</span>
+    <span class="c1"># turn (in [GeV]) and the revolution frequency (in [MHz])</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">"E0 = beam-&gt;energy;"</span><span class="p">)</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">"U0 = beam-&gt;U0;"</span><span class="p">)</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">"frev = beam-&gt;freq0;"</span><span class="p">)</span>
+    <span class="n">E0</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="s2">"E0"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e9</span>
+    <span class="n">U0</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="s2">"U0"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e9</span>
+    <span class="n">frev</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="s2">"frev"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e6</span>
+
+    <span class="c1"># We will need the synchrotron radiation integrals to determine the</span>
+    <span class="c1"># damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)</span>
+    <span class="n">madx</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">twiss</span><span class="p">(</span><span class="n">chrom</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># chrom to trigger their calculation</span>
+    <span class="n">I2</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">summ</span><span class="o">.</span><span class="n">synch_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">I4</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">summ</span><span class="o">.</span><span class="n">synch_4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">jx</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">I4</span> <span class="o">/</span> <span class="n">I2</span>  <span class="c1"># horizontal damping partition number</span>
+    <span class="n">jz</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">I4</span> <span class="o">/</span> <span class="n">I2</span>  <span class="c1"># longitudinal damping partition number</span>
+
+    <span class="c1"># This is enough to compute the damping times</span>
+    <span class="c1"># (see https://arxiv.org/pdf/1507.02213.pdf)</span>
+    <span class="n">sr_tau_x</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">E0</span> <span class="o">*</span> <span class="n">frev</span> <span class="o">/</span> <span class="p">(</span><span class="n">jx</span> <span class="o">*</span> <span class="n">U0</span><span class="p">)</span>
+    <span class="n">sr_tau_y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">E0</span> <span class="o">*</span> <span class="n">frev</span> <span class="o">/</span> <span class="n">U0</span>
+    <span class="n">sr_tau_z</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">E0</span> <span class="o">*</span> <span class="n">frev</span> <span class="o">/</span> <span class="p">(</span><span class="n">jz</span> <span class="o">*</span> <span class="n">U0</span><span class="p">)</span>
+
+    <span class="c1"># Return results</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">sr_equilibrium_epsx</span><span class="p">,</span>
+        <span class="n">sr_equilibrium_epsy</span><span class="p">,</span>
+        <span class="n">sr_equilibrium_sigma_delta</span><span class="p">,</span>
+        <span class="n">sr_tau_x</span><span class="p">,</span>
+        <span class="n">sr_tau_y</span><span class="p">,</span>
+        <span class="n">sr_tau_z</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="emittance_types.html" rel="prev" title="Emittances: Geometric or Normalized"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="n" class="btn btn-neutral float-right" href="coasting_beams.html" rel="next" title="Bunched and Coasting Beams">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2023, Felix Soubelet.</p>
+</div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+</div>
+</div>
+</section>
+</div>
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+</body>
+</html>

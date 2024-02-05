@@ -1,61 +1,88 @@
 {
   "bibliography": [],
-  "faq": [
+  "faq/coasting_beams": [
+    {
+      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)\n# IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)  # alternatively\n\n# Getting growth rates for a bunched beam (default)\nrates_bunched = IBS.growth_rates(psx, epsy, sigma_delta, bunch_length)\n\n# Getting growth rates for a coasting beam\nrates_coasting = IBS.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched=False)\n\n# The two of course yield different values\nassert rates_bunched != rates_coasting  # this is True",
+      "names": [],
+      "example": {
+        "document": "faq/coasting_beams",
+        "ref_id": "bunched-and-coasting-beams",
+        "headings": [
+          "Bunched and Coasting Beams",
+          "This section in short"
+        ]
+      },
+      "doc_lineno": 19
+    }
+  ],
+  "faq/emittance_types": [
+    {
+      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.ibs(beam_params, optics, formalism=...)\n\n# Getting growth rates from geometric emittances goes as:\nrates_geom = IBS.growth_rates(geom_epsx, geom_epsy, sigma_delta, bunch_length)\n\n# Getting growth rates from normalized emittances goes as:\nrates_norm = IBS.growth_rates(\n    norm_epsx, norm_epsy, sigma_delta, bunch_length, normalized_emittances=True\n)\n\n# The two results are the same\nassert rates_geom == rates_norm  # this is True",
+      "names": [],
+      "example": {
+        "document": "faq/emittance_types",
+        "ref_id": "emittances-geometric-or-normalized",
+        "headings": [
+          "Emittances: Geometric or Normalized",
+          "This section in short"
+        ]
+      },
+      "doc_lineno": 19
+    }
+  ],
+  "faq/index": [],
+  "faq/input_parameters": [
     {
       "source": "# Let's assume your `xtrack.Line` is already defined\ntwiss = line.twiss(particle_ref=p0)\noptics_params = OpticsParameters(twiss)",
       "names": [],
       "example": {
-        "document": "faq",
-        "ref_id": "instantiating-opticsparameters-from-an-xtrack-line",
+        "document": "faq/input_parameters",
+        "ref_id": "opticsparameters-from-an-xtrack-line",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating OpticsParameters",
-          "Instantiating OpticsParameters from an xtrack.Line"
+          "Instantiating Input Parameters",
+          "OpticsParameters from an xtrack.Line"
         ]
       },
-      "doc_lineno": 31
+      "doc_lineno": 19
     },
     {
       "source": "# Let's assume your `xtrack.Line` is already defined\noptics_params = OpticsParameters.from_line(line)",
       "names": [],
       "example": {
-        "document": "faq",
-        "ref_id": "instantiating-opticsparameters-from-an-xtrack-line",
+        "document": "faq/input_parameters",
+        "ref_id": "opticsparameters-from-an-xtrack-line",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating OpticsParameters",
-          "Instantiating OpticsParameters from an xtrack.Line"
+          "Instantiating Input Parameters",
+          "OpticsParameters from an xtrack.Line"
         ]
       },
-      "doc_lineno": 42
+      "doc_lineno": 30
     },
     {
       "source": "# Let's assume your `cpymad.madx.Madx` instance is already defined\ntwiss = madx.twiss(centre=True).dframe()  # you want a Twiss at element centers\nseq_name = madx.table.twiss.summary.sequence  # works whichever your sequence\n\n# Compute additional required parameters: revolution frequency and slip factor\nfrev_hz = madx.sequence[seq_name].beam.freq0 * 1e6  # beware freq0 is in MHz\ngamma_rel = madx.sequence[seq_name].beam.gamma  # relativistic gamma\ngamma_tr = madx.table.summ.gammatr[0]  # transition gamma\nslipfactor = (1/(gamma_tr**2)) - (1/(gamma_rel**2))  # use the xsuite convention!\n\n# And these have to be provided as additional arguments\noptics_params = OpticsParameters(twiss, slipfactor, frev_hz)",
       "names": [],
       "example": {
-        "document": "faq",
-        "ref_id": "instantiating-opticsparameters-from-mad-x",
+        "document": "faq/input_parameters",
+        "ref_id": "opticsparameters-from-mad-x",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating OpticsParameters",
-          "Instantiating OpticsParameters from MAD-X"
+          "Instantiating Input Parameters",
+          "OpticsParameters from MAD-X"
         ]
       },
-      "doc_lineno": 59
+      "doc_lineno": 47
     },
     {
       "source": "# Let's assume your `cpymad.madx.Madx` instance is already defined\noptics_params = OpticsParameters.from_madx(madx)",
       "names": [],
       "example": {
-        "document": "faq",
-        "ref_id": "instantiating-opticsparameters-from-mad-x",
+        "document": "faq/input_parameters",
+        "ref_id": "opticsparameters-from-mad-x",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating OpticsParameters",
-          "Instantiating OpticsParameters from MAD-X"
+          "Instantiating Input Parameters",
+          "OpticsParameters from MAD-X"
         ]
       },
-      "doc_lineno": 78
+      "doc_lineno": 66
     },
     {
       "source": "import xpart as xp\nfrom xibs.inputs import BeamParameters\n\n# Let's define what one would use as \"reference particle\" for the line and use that\np0 = xp.Particles(p0c=6500e9, q0=1, mass0=xp.PROTON_MASS_EV)\nbeam_params = BeamParameters(p0)\n\n# Now you have to manually set the \"true\" value for '.n_part'\nbeam_parameters.n_part = int(5e5)",
@@ -72,29 +99,27 @@
         }
       ],
       "example": {
-        "document": "faq",
+        "document": "faq/input_parameters",
         "ref_id": "do-i-need-a-full-matched-particle-distribution-for-beamparameters",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating BeamParameters",
+          "Instantiating Input Parameters",
           "Do I need a full matched particle distribution for BeamParameters?"
         ]
       },
-      "doc_lineno": 107
+      "doc_lineno": 86
     },
     {
       "source": "# Let's assume your `xtrack.Line` is already defined\nbeam_params = BeamParameters.from_line(line, n_part=5e5)  # need to provide n_part",
       "names": [],
       "example": {
-        "document": "faq",
-        "ref_id": "instantiating-beamparameters-from-an-xtrack-line",
+        "document": "faq/input_parameters",
+        "ref_id": "beamparameters-from-an-xtrack-line",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating BeamParameters",
-          "Instantiating BeamParameters from an xtrack.Line"
+          "Instantiating Input Parameters",
+          "BeamParameters from an xtrack.Line"
         ]
       },
-      "doc_lineno": 133
+      "doc_lineno": 112
     },
     {
       "source": "# Let's assume your `cpymad.madx.Madx` instance is already defined\nmadx.command.twiss()  # want the table to determine the sequence name and access its beam\nseq_name = madx.table.twiss.summary.sequence  # will give us the active sequence\n\n# Query required parameters from the beam: particle momentum, particle charge,\n# particle rest mass and number of particles in the bunch\np0c_eV = madx.sequence[seq_name].beam.pc * 1e9  # in [GeV] in MAD-X beam, but we want [eV]\nq0 = madx.sequence[seq_name].beam.charge  # electrical particle charge in units of [qp]\nmass0 = madx.sequence[seq_name].beam.mass * 1e9  # rest mass in [eV] | but in [GeV] in MAD-X\nnpart = madx.sequence[seq_name].beam.npart  # number of particles\n\n# Create an xpart.Particles object with this information\nparticle = xp.Particles(p0c=p0c_eV, q0=q0, mass0=mass0)\nbeam_params = BeamParameters(particle)\nbeam_params.n_part = int(npart)  # very important to adjust this!",
@@ -111,58 +136,119 @@
         }
       ],
       "example": {
-        "document": "faq",
-        "ref_id": "instantiating-beamparameters-from-mad-x",
+        "document": "faq/input_parameters",
+        "ref_id": "beamparameters-from-mad-x",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating BeamParameters",
-          "Instantiating BeamParameters from MAD-X"
+          "Instantiating Input Parameters",
+          "BeamParameters from MAD-X"
         ]
       },
-      "doc_lineno": 147
+      "doc_lineno": 126
     },
     {
       "source": "# Let's assume your `cpymad.madx.Madx` instance is already defined\nbeam_params = BeamParameters.from_madx(madx)",
       "names": [],
       "example": {
-        "document": "faq",
-        "ref_id": "instantiating-beamparameters-from-mad-x",
+        "document": "faq/input_parameters",
+        "ref_id": "beamparameters-from-mad-x",
         "headings": [
-          "Frequently Asked Questions",
-          "Instantiating BeamParameters",
-          "Instantiating BeamParameters from MAD-X"
+          "Instantiating Input Parameters",
+          "BeamParameters from MAD-X"
         ]
       },
-      "doc_lineno": 169
+      "doc_lineno": 148
+    }
+  ],
+  "faq/radiation": [
+    {
+      "source": "def get_sr_inputs_from_line(line: xt.Line, normalized: bool = True) -> tuple[float, ...]:\n    \"\"\"Assumes line has a reference particle and is compatible with SR modes.\"\"\"\n    # Set the radiation mode to 'mean' and call twiss with\n    # 'eneloss_and_damping' (see Xsuite user guide)\n    line.configure_radiation(model=\"mean\")\n    twiss = line.twiss(eneloss_and_damping=True)\n\n    # The damping times (in [s]) are provided as:\n    sr_tau_x, sr_tau_y, sr_tau_z = twiss[\"damping_constants_s\"]\n\n    # The transverse equilibrium emittances (in [m]) are provided as:\n    emit = \"nemitt\" if normalized is True else \"gemitt\"\n    sr_equilibrium_epsx = twiss[f\"eq_{emit}_x\"]\n    sr_equilibrium_epsy = twiss[f\"eq_{emit}_y\"]\n\n    # We will need to store the equilibrium longitudinal emittance too for later\n    sr_eq_zeta = twiss[f\"eq_{emit}_zeta\"]  # or 'eq_gemitt_zeta' for geometric\n\n    # The equilibrium momentum spread is not directly provided but can be obtained via\n    # a method of the twiss result, using the equilibrium emittances obtained above.\n    if normalized is True:\n        beam_sizes = twiss.get_beam_covariance(\n            nemitt_x=sr_equilibrium_epsx,\n            nemitt_y=sr_equilibrium_epsy,\n            nemitt_zeta=sr_eq_zeta,\n        )\n    else:\n        beam_sizes = twiss.get_beam_covariance(\n            gemitt_x=sr_equilibrium_epsx,\n            gemitt_y=sr_equilibrium_epsy,\n            gemitt_zeta=sr_eq_zeta,\n        )\n\n    # The value we want corresponds to the 'sigma_pzeta' key in this result, since in\n    # Xsuite it is equivalent to 'sigma_delta' (see Xsuite physics guide, Eq 1.14 and 1.23).\n    # Take it at the location of the particle kicks (start / end of line):\n    sr_equilibrium_sigma_delta = beam_sizes[\"sigma_pzeta\"][0]  # 0 for end / start of line\n\n    # Return results\n    return (\n        sr_equilibrium_epsx,\n        sr_equilibrium_epsy,\n        sr_equilibrium_sigma_delta,\n        sr_tau_x,\n        sr_tau_y,\n        sr_tau_z,\n    )",
+      "names": [
+        {
+          "import_components": [
+            "tuple"
+          ],
+          "code_str": "tuple",
+          "lineno": 1,
+          "end_lineno": 1,
+          "context": "none",
+          "resolved_location": "tuple"
+        },
+        {
+          "import_components": [
+            "float"
+          ],
+          "code_str": "float",
+          "lineno": 1,
+          "end_lineno": 1,
+          "context": "none",
+          "resolved_location": "float"
+        },
+        {
+          "import_components": [
+            "bool"
+          ],
+          "code_str": "bool",
+          "lineno": 1,
+          "end_lineno": 1,
+          "context": "none",
+          "resolved_location": "bool"
+        }
+      ],
+      "example": {
+        "document": "faq/radiation",
+        "ref_id": "getting-sr-parameters-from-xsuite",
+        "headings": [
+          "Synchrotron Radiation Contribution",
+          "This section in short",
+          "Getting SR Parameters from Xsuite"
+        ]
+      },
+      "doc_lineno": 37
     },
     {
-      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.ibs(beam_params, optics, formalism=...)\n\n# Getting growth rates from geometric emittances goes as:\nrates_geom = IBS.growth_rates(geom_epsx, geom_epsy, sigma_delta, bunch_length)\n\n# Getting growth rates from normalized emittances goes as:\nrates_norm = IBS.growth_rates(\n    norm_epsx, norm_epsy, sigma_delta, bunch_length, normalized_emittances=True\n)\n\n# The two results are the same\nassert rates_geom == rates_norm  # this is True",
-      "names": [],
+      "source": "def get_sr_inputs_from_line(madx: cpymad.madx.Madx, normalized: bool = True) -> tuple[float, ...]:\n    \"\"\"Assumes beam, sequence etc are already defined.\"\"\"\n    # Make sure to include radiation effects for the active beam\n    madx.input(\"beam, radiate;\")\n\n    # Let's then call the 'emit' command with DELTAP=0, which will update\n    # the beam with equilibrium values directly\n    madx.input(\"emit, deltap=0;\")\n\n    # The transverse equilibrium emittances (in [m]) are provided as:\n    suffix = \"n\" if normalized is True else \"\"\n    madx.input(f\"eq_ex = beam->ex{suffix};\")\n    madx.input(f\"eq_ey = beam->ey{suffix};\")\n    sr_equilibrium_epsx = madx.globals[\"eq_ex\"]\n    sr_equilibrium_epsy = madx.globals[\"eq_ey\"]\n\n    # The equilibrium momentum spread is not directly provided but can be obtained\n    # from the relative energy spread using the relativistic beta as:\n    madx.input(\"eq_sigd = beam->sige / beam->beta / beam->beta;\")\n    sr_equilibrium_sigma_delta = madx.globals[\"eq_sigd\"]\n\n    # We will need to get from the active beam: particle energy, energy loss per\n    # turn (in [GeV]) and the revolution frequency (in [MHz])\n    madx.input(\"E0 = beam->energy;\")\n    madx.input(\"U0 = beam->U0;\")\n    madx.input(\"frev = beam->freq0;\")\n    E0 = madx.globals[\"E0\"] * 1e9\n    U0 = madx.globals[\"U0\"] * 1e9\n    frev = madx.globals[\"frev\"] * 1e6\n\n    # We will need the synchrotron radiation integrals to determine the\n    # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)\n    madx.command.twiss(chrom=True)  # chrom to trigger their calculation\n    I2 = madx.table.summ.synch_2[0]\n    I4 = madx.table.summ.synch_4[0]\n    jx = 1 - I4 / I2  # horizontal damping partition number\n    jz = 2 + I4 / I2  # longitudinal damping partition number\n\n    # This is enough to compute the damping times\n    # (see https://arxiv.org/pdf/1507.02213.pdf)\n    sr_tau_x = 2 * E0 * frev / (jx * U0)\n    sr_tau_y = 2 * E0 * frev / U0\n    sr_tau_z = 2 * E0 * frev / (jz * U0)\n\n    # Return results\n    return (\n        sr_equilibrium_epsx,\n        sr_equilibrium_epsy,\n        sr_equilibrium_sigma_delta,\n        sr_tau_x,\n        sr_tau_y,\n        sr_tau_z,\n    )",
+      "names": [
+        {
+          "import_components": [
+            "tuple"
+          ],
+          "code_str": "tuple",
+          "lineno": 1,
+          "end_lineno": 1,
+          "context": "none",
+          "resolved_location": "tuple"
+        },
+        {
+          "import_components": [
+            "float"
+          ],
+          "code_str": "float",
+          "lineno": 1,
+          "end_lineno": 1,
+          "context": "none",
+          "resolved_location": "float"
+        },
+        {
+          "import_components": [
+            "bool"
+          ],
+          "code_str": "bool",
+          "lineno": 1,
+          "end_lineno": 1,
+          "context": "none",
+          "resolved_location": "bool"
+        }
+      ],
       "example": {
-        "document": "faq",
-        "ref_id": "geomettric-or-normalized-emittances",
+        "document": "faq/radiation",
+        "ref_id": "getting-sr-parameters-from-mad-x",
         "headings": [
-          "Frequently Asked Questions",
-          "Geomettric or Normalized Emittances",
-          "This section in short"
+          "Synchrotron Radiation Contribution",
+          "This section in short",
+          "Getting SR Parameters from MAD-X"
         ]
       },
-      "doc_lineno": 193
-    },
-    {
-      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)\n# IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)  # alternatively\n\n# Getting growth rates for a bunched beam (default)\nrates_bunched = IBS.growth_rates(psx, epsy, sigma_delta, bunch_length)\n\n# Getting growth rates for a coasting beam\nrates_coasting = IBS.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched=False)\n\n# The two of course yield different values\nassert rates_bunched != rates_coasting  # this is True",
-      "names": [],
-      "example": {
-        "document": "faq",
-        "ref_id": "bunched-and-coasting-beams",
-        "headings": [
-          "Frequently Asked Questions",
-          "Geomettric or Normalized Emittances",
-          "Bunched and Coasting Beams",
-          "This section in short"
-        ]
-      },
-      "doc_lineno": 231
+      "doc_lineno": 94
     }
   ],
   "gallery/demo_analytical_bjorken_mtingwa_emittances": [],
@@ -215,7 +301,7 @@
       "doc_lineno": 23
     },
     {
-      "source": "import xibs\n\n# Let's assume your `line` and `particles` are already defined - from xsuite\noptics_parameters = xibs.inputs.OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = xibs.inputs.BeamParameters(particles)\n\n# Let's say you want a YourChosenFormalismIBS approach\nIBS = YourChosenFormalismIBS(beam_parameters, optics_parameters)\n\n# Now compute IBS growth rates (and then updated emittances, etc.)\nIBS.growth_rates(...)",
+      "source": "import xibs\n\n# Let's assume your `line` and `particles` are already defined - from xsuite\noptics_parameters = xibs.inputs.OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = xibs.inputs.BeamParameters(particles)\n\n# Let's say you want a YourChosenFormalismIBS approach\nIBS = YourChosenFormalismIBS(beam_parameters, optics_parameters)",
       "names": [],
       "example": {
         "document": "quickstart",
@@ -226,6 +312,19 @@
         ]
       },
       "doc_lineno": 49
+    },
+    {
+      "source": "# For analytical classes\nIBS.growth_rates(...)\nIBS.emittance_evolution(...)\n\n# For kick classes\nIBS.compute_kick_coefficients(particles)\nIBS.apply_ibs_kick(particles)",
+      "names": [],
+      "example": {
+        "document": "quickstart",
+        "ref_id": "integration-with-xsuite",
+        "headings": [
+          "Quickstart",
+          "Integration with xsuite"
+        ]
+      },
+      "doc_lineno": 62
     },
     {
       "source": "from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS\nfrom xibs.inputs import BeamParameters, OpticsParameters\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = BeamParameters(particles)\n\n# To get analytical modelling with Nagaitsev' approach\nIBS = NagaitsevIBS(beam_parameters, optics_parameters)\n\n# To get analytical modelling with MAD-X' approach\nIBS = BjorkenMtingwaIBS(beam_parameters, optics_parameters)\n\n# Now compute IBS growth rates (and then updated emittances, etc.)\nIBS.growth_rates(...)",
@@ -239,10 +338,10 @@
           "Analytical Calculations"
         ]
       },
-      "doc_lineno": 83
+      "doc_lineno": 93
     },
     {
-      "source": "from xibs.inputs import BeamParameters, OpticsParameters\nfrom xibs.kicks import KineticKickIBS, SimpleKickIBS\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = BeamParameters(particles)\n\n# Initialize your class\nkinetic_ibs = KineticKickIBS(beam_parameters, optics_parameters)\nsimple_ibs = SimpleKickIBS(beam_parameters, optics_parameters)\n\n# Now compute kicks to apply to particles\nsimple_ibs.compute_kick_coefficients(particles)\nsimple_ibs.apply_ibs_kick(particles)",
+      "source": "from xibs.inputs import BeamParameters, OpticsParameters\nfrom xibs.kicks import KineticKickIBS, SimpleKickIBS\n\n# Let's assume your `line` and `particles` are already defined\noptics_parameters = OpticsParameters(line.twiss(particle_ref=p0))\nbeam_parameters = BeamParameters(particles)\n\n# To get IBS kicks based on analytical growth rates\nIBS = SimpleKickIBS(beam_parameters, optics_parameters)\n\n# To get IBS kicks based on the kinetic theory of gases\nIBS = KineticKickIBS(beam_parameters, optics_parameters)\n\n# Now compute kicks to apply to particles\nIBS.compute_kick_coefficients(particles)\nIBS.apply_ibs_kick(particles)",
       "names": [],
       "example": {
         "document": "quickstart",
@@ -253,7 +352,7 @@
           "Providing Kicks to Particle Distributions"
         ]
       },
-      "doc_lineno": 114
+      "doc_lineno": 124
     },
     {
       "source": "import xibs\n\n# Here is where you would define your inputs\n# Let's assume your `line` and `particles` are already defined\nbeam_parameters = xibs.inputs.BeamParameters(particles)\noptics_parameters = xibs.inputs.OpticsParameters(line.twiss(particle_ref=p0))\n\n# Get the proper modelling class based on the demanded formalism\nBM_IBS = xibs.ibs(beam_parameters, optics_parameters, formalism=\"madx\")\nNAGAITSEV_IBS = xibs.ibs(beam_parameters, optics_parameters, formalism=\"nagaitsev\")\nKINETIC_IBS = xibs.ibs(beam_parameters, optics_parameters, formalism=\"kinetic\")\nSIMPLE_IBS = xibs.ibs(beam_parameters, optics_parameters, formalism=\"simple\")\n\n# You can be sure you will get the appropriate instances\nisinstance(BM_IBS, xibs.analytical.BjorkenMtingwaIBS)  # True\nisinstance(NAGAITSEV_IBS, xibs.analytical.NagaitsevIBS)  # True\nisinstance(KINETIC_IBS, xibs.kicks.KineticKickIBS)  # True\nisinstance(SIMPLE_IBS, xibs.kicks.SimpleKickIBS)  # True\n\n# Now go and do your IBS calculations :)",
@@ -308,7 +407,7 @@
           "Formalism Dispatch"
         ]
       },
-      "doc_lineno": 139
+      "doc_lineno": 151
     }
   ],
   "sg_execution_times": []

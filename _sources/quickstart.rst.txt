@@ -42,7 +42,7 @@ As a first step, all classes encompassing IBS functionality are initialized from
 .. hint::
    
    Please note that while tracking is not necessary to calculate IBS effects (see the Analytical section below), it is necessary to provide an `xpart.Particles` object from which to get required properties.
-   The object does not necessarily need to represent a full generated and matched distribution, see the :doc:`FAQ <faq>` for details.
+   The object does not necessarily need to represent a full generated and matched distribution, see the :doc:`FAQ <faq/index>` for details.
 
 Initializing then requires the following steps:
 
@@ -57,11 +57,21 @@ Initializing then requires the following steps:
    # Let's say you want a YourChosenFormalismIBS approach
    IBS = YourChosenFormalismIBS(beam_parameters, optics_parameters)
 
-   # Now compute IBS growth rates (and then updated emittances, etc.)
+After this, one can perform IBS calculations through dedicated methods implemented in the class:
+
+.. code-block:: python
+
+   # For analytical classes
    IBS.growth_rates(...)
+   IBS.emittance_evolution(...)
+
+   # For kick classes
+   IBS.compute_kick_coefficients(particles)
+   IBS.apply_ibs_kick(particles)
 
 .. note::
-   It is also possible to initialize the `OpticsParameters` from a ``MAD-X`` twiss table (in the form of a dataframe), see the :doc:`FAQ <faq>` for details.
+   It is also possible to initialize the `BeamParameters` and `OpticsParameters` from a line or a ``MAD-X`` (via `~cpymad`) instance directly with convenience constructor functions.
+   See the :doc:`FAQ <faq/index>` for details.
 
 Formalism and Models
 --------------------
@@ -104,12 +114,12 @@ Providing Kicks to Particle Distributions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In order to integrate IBS effects into tracking simulations however, computing IBS kicks to apply to the tracked particles is necessary.
-For this, the ``xibs.kicks`` module is provided, which includes two submodules: `xibs.kicks.simple` and `xibs.kicks.kinetic`.
+For this, the `xibs.kicks` module is provided, which includes two formalism:
 
-The former provides a simple kick calculation according to :cite:`PRAB:Bruce:Simple_IBS_Kicks`, which builds on the analytical formalism values from :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation` and is valid *above transition energy*.
-The latter provides kicks according to the Kinetic theory of gases :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
+   - The ``SimpleKickIBS`` formalism implements kicks described in :cite:`PRAB:Bruce:Simple_IBS_Kicks`, which builds on analytical growth rates values and is valid *above transition energy* only.
+   - The ``KineticKickIBS`` provides kicks according to the kinetic theory of gases :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
 
-Both follow the same usage pattern as the analytical formalism, and are initialized as shown in the section above:
+Both follow the same instantiation pattern as the analytical formalism, and are used as shown below:
 
 .. code-block:: python
 
@@ -120,15 +130,17 @@ Both follow the same usage pattern as the analytical formalism, and are initiali
    optics_parameters = OpticsParameters(line.twiss(particle_ref=p0))
    beam_parameters = BeamParameters(particles)
 
-   # Initialize your class
-   kinetic_ibs = KineticKickIBS(beam_parameters, optics_parameters)
-   simple_ibs = SimpleKickIBS(beam_parameters, optics_parameters)
-   
-   # Now compute kicks to apply to particles
-   simple_ibs.compute_kick_coefficients(particles)
-   simple_ibs.apply_ibs_kick(particles)
+   # To get IBS kicks based on analytical growth rates
+   IBS = SimpleKickIBS(beam_parameters, optics_parameters)
 
-One can find a detailed usage walkthrough of these in the :ref:`kinetic example <demo-kinetic-kicks>` and :ref:`simple example <demo-simple-kicks>`.
+   # To get IBS kicks based on the kinetic theory of gases
+   IBS = KineticKickIBS(beam_parameters, optics_parameters)
+
+   # Now compute kicks to apply to particles
+   IBS.compute_kick_coefficients(particles)
+   IBS.apply_ibs_kick(particles)
+
+One can find a detailed usage walkthrough of these in the :ref:`simple kicks example <demo-simple-kicks>` and :ref:`kinetic kicks example <demo-kinetic-kicks>`.
 
 Formalism Dispatch
 ^^^^^^^^^^^^^^^^^^
