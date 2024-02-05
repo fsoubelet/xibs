@@ -1,4 +1,4 @@
-"""
+r"""
 .. _xibs-analytical:
 
 IBS: Analytical Calculations
@@ -13,7 +13,9 @@ The formalism from which formulas and calculations are implemented can be found 
     Should your scenario not satisfy the following assumptions, the results might not be accurate:
 
         - It is assumed that beam profiles are Gaussian,
-        - It is assumed that no betatron coupling is present in the machine.
+        - It is assumed that no betatron coupling is present in the machine (or very little, in the order of :math:`\left| C^{-} \right| \le 10^{-4}`).
+
+    Should these assumptions not be satisfied, the results provided by these calculations are not to be entirely discarded but might not be totally accurate.
 """
 from __future__ import annotations  # important for sphinx to alias ArrayLike
 
@@ -74,6 +76,30 @@ class IBSGrowthRates:
     Tx: float
     Ty: float
     Tz: float
+
+
+@dataclass
+class _SynchrotronRadiationInputs:
+    """
+    .. versionadded:: 0.6.0
+
+    Container dataclass for SR input into emittance evolutions.
+
+    Args:
+        equilibrium_epsx (float): the horizontal equilibrium emittance from synchrotron radiation and quantum excitation in [m].
+        equilibrium_epsy (float): the vertical equilibrium emittance from synchrotron radiation and quantum excitation in [m].
+        equilibrium_sigma_delta (float): the equilibrium momentum spread from synchrotron radiation and quantum excitation.
+        tau_x (float): the horizontal damping time from synchrotron radiation, in [s].
+        tau_y (float): the vertical damping time from synchrotron radiation, in [s].
+        tau_z (float): the longitudinal damping time from synchrotron radiation, in [s].
+    """
+
+    equilibrium_epsx: float
+    equilibrium_epsy: float
+    equilibrium_sigma_delta: float
+    tau_x: float
+    tau_y: float
+    tau_z: float
 
 
 # ----- Abstract Base Class to Inherit from ----- #
@@ -251,6 +277,7 @@ class AnalyticalIBS(ABC):
         bunch_length: float,
         dt: float = None,
         normalized_emittances: bool = False,
+        **kwargs,
     ) -> Tuple[float, float, float, float]:
         r"""
         .. versionadded:: 0.2.0
@@ -283,6 +310,29 @@ class AnalyticalIBS(ABC):
             the type of those provided: if given normalized emittances this function will return values that
             correspond to the new normalized emittances.
 
+
+        .. admonition:: Synchrotron Radiation
+
+            Synchrotron Radiation can play a significant role in the evolution of the emittances
+            in certain scenarios, particularly for leptons. One can include the contribution of
+            SR to this calculation by providing several keyword arguments corresponding to the
+            equilibrium emittances and damping times from SR and quantum excitation. See the list
+            of expected kwargs below. A :ref:`dedicated section in the FAQ <xibs-faq-sr-inputs>`
+            provides information on how to obtain these values from ``Xsuite`` or ``MAD-X``.
+
+            In case this contribution is included, then the calculation is modified from the one
+            shown above, and goes according to :cite:`BOOK:Wolski:Beam_dynamics` (Eq (13.64)) or
+            :cite:`CAS:Martini:IBS_Anatomy_Theory` (Eq (135)):
+
+            .. math::
+
+                T_{x,y,z} &= 1 / \tau_{x,y,z}^{\mathrm{IBS}}
+
+                \varepsilon_{x,y}^{N+1} &= \left[ - \varepsilon_{x,y}^{\mathrm{SR}eq} + \left( \varepsilon_{x,y}^{\mathrm{SR}eq} + \frac{\varepsilon_{x,y}^{N}}{2 \tau_{x,y}^{\mathrm{IBS}}} \tau_{x,y}^{\mathrm{SR}} - 1 \right) * e^{2 t \left( \frac{1}{2 \tau_{x,y}^{\mathrm{IBS}}} - \frac{1}{\tau_{x,y}^{\mathrm{SR}}} \right)} \right] / \left( \frac{\tau_{x,y}^{\mathrm{SR}}}{2 \tau_{x,y}^{\mathrm{IBS}}} - 1 \right)
+
+                {\sigma_{\delta, z}^{N+1}}^2 &= \left[ - {\sigma_{\delta, z}^{\mathrm{SR}eq}}^2 + \left( {\sigma_{\delta, z}^{\mathrm{SR}eq}}^2 + \frac{{\sigma_{\delta, z}^{N}}^2}{2 \tau_{z}^{\mathrm{IBS}}} \tau_{z}^{\mathrm{SR}} - 1 \right) * e^{2 t \left( \frac{1}{2 \tau_{z}^{\mathrm{IBS}}} - \frac{1}{\tau_{z}^{\mathrm{SR}}} \right)} \right] / \left( \frac{\tau_{z}^{\mathrm{SR}}}{2 \tau_{z}^{\mathrm{IBS}}} - 1 \right)
+
+
         Args:
             epsx (float): horizontal geometric or normalized emittance in [m].
             epsy (float): vertical geometric or normalized emittance in [m].
@@ -292,6 +342,36 @@ class AnalyticalIBS(ABC):
             bunch_length (float): the bunch length in [m].
             normalized_emittances (bool): whether the provided emittances are
                 normalized or not. Defaults to `False` (assume geometric emittances).
+            **kwargs: If keyword arguments are provided, they are considered inputs for the
+                inclusion of synchrotron radiation in the calculation, and the following are
+                expected, case-insensitively:
+
+                    - `sr_equilibrium_epsx` (float)
+                        the horizontal equilibrium emittance from synchrotron radiation
+                        and quantum excitation, in [m]. Should be the same type (geometric
+                        or normalized) as `epsx` and `epsy`.
+
+                    - `sr_equilibrium_epsy` (float)
+                        the vertical equilibrium emittance from synchrotron radiation and
+                        quantum excitation, in [m]. Should be the same type (geometric or
+                        normalized) as `epsx` and `epsy`.
+
+                    - `sr_equilibrium_sigma_delta` (float)
+                        the equilibrium momentum spread from synchrotron radiation and
+                        quantum excitation.
+
+                    - `sr_tau_x` (float)
+                        the horizontal damping time from synchrotron radiation, in [s]
+                        (should be the same unit as `dt`).
+
+                    - `sr_tau_y` (float)
+                        the vertical damping time from synchrotron radiation, in [s]
+                        (should be the same unit as `dt`).
+
+                    - `sr_tau_z` (float)
+                        the longitudinal damping time from synchrotron radiation, in [s]
+                        (should be the same unit as `dt`).
+
 
         Raises:
             AttributeError: if the ``IBS`` growth rates have not yet been computed.
@@ -301,9 +381,28 @@ class AnalyticalIBS(ABC):
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
         # ----------------------------------------------------------------------------------------------
-        # Make sure we are working with geometric emittances
+        # Check the kwargs and potentially get the arguments to include synchrotron radiation
+        include_synchrotron_radiation = False
+        if len(kwargs.keys()) >= 1:  # lets' not check with 'is not None' since default {} kwargs is not None
+            LOGGER.debug("Kwargs present, assuming synchrotron radiation is to be included")
+            include_synchrotron_radiation = True
+            sr_inputs: _SynchrotronRadiationInputs = self._get_synchrotron_radiation_kwargs(**kwargs)
+        # ----------------------------------------------------------------------------------------------
+        # Make sure we are working with geometric emittances (also for SR inputs if given)
         geom_epsx = epsx if normalized_emittances is False else self._geometric_emittance(epsx)
         geom_epsy = epsy if normalized_emittances is False else self._geometric_emittance(epsy)
+        if include_synchrotron_radiation is True:
+            sr_eq_geom_epsx = (
+                sr_inputs.equilibrium_epsx
+                if normalized_emittances is False
+                else self._geometric_emittance(sr_inputs.equilibrium_epsx)
+            )
+            sr_eq_geom_epsy = (
+                sr_inputs.equilibrium_epsy
+                if normalized_emittances is False
+                else self._geometric_emittance(sr_inputs.equilibrium_epsy)
+            )
+            sr_eq_sigma_delta = sr_inputs.equilibrium_sigma_delta
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
         if self.ibs_growth_rates is None:
@@ -320,15 +419,43 @@ class AnalyticalIBS(ABC):
             dt = 1 / self.optics.revolution_frequency
         # ----------------------------------------------------------------------------------------------
         # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        new_epsx: float = geom_epsx * np.exp(dt * float(self.ibs_growth_rates.Tx))
-        new_epsy: float = geom_epsy * np.exp(dt * float(self.ibs_growth_rates.Ty))
-        new_sigma_delta: float = sigma_delta * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
-        new_bunch_length: float = bunch_length * np.exp(dt * float(0.5 * self.ibs_growth_rates.Tz))
+        # fmt: off
+        if include_synchrotron_radiation is False:  # the basic calculation
+            new_epsx: float = geom_epsx * np.exp(dt * self.ibs_growth_rates.Tx)
+            new_epsy: float = geom_epsy * np.exp(dt * self.ibs_growth_rates.Ty)
+            new_sigma_delta: float = sigma_delta * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+            new_bunch_length: float = bunch_length * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+        else:  # the modified calculation with Synchrotron Radiation contribution
+            new_epsx: float = (
+                - sr_eq_geom_epsx
+                + (sr_eq_geom_epsx + geom_epsx * (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1.0))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Tx / 2 - 1 / sr_inputs.tau_x))
+            ) / (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1)
+            new_epsy: float = (
+                - sr_eq_geom_epsy
+                + (sr_eq_geom_epsy + geom_epsy * (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Ty / 2 - 1 / sr_inputs.tau_y))
+            ) / (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1)
+            # For longitudinal properties, compute the square to avoid too messy code
+            new_sigma_delta_square: float = (
+                - (sr_eq_sigma_delta**2)
+                + (sr_eq_sigma_delta**2 + sigma_delta**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
+            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
+            new_bunch_length_square: float = (
+                - (sr_eq_sigma_delta**2)
+                + (sr_eq_sigma_delta**2 + bunch_length**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
+                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
+            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
+            # And then simply get the square root of that for the final results
+            new_sigma_delta: float = np.sqrt(new_sigma_delta_square)
+            new_bunch_length: float = np.sqrt(new_bunch_length_square)
+        # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Make sure we return the same type of emittances as the user provided
         new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
         new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
-        return new_epsx, new_epsy, new_sigma_delta, new_bunch_length
+        return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
 
     def _normalized_emittance(self, geometric_emittance: float) -> float:
         r"""
@@ -363,6 +490,44 @@ class AnalyticalIBS(ABC):
             The geometric emittance in [m].
         """
         return normalized_emittance / (self.beam_parameters.beta_rel * self.beam_parameters.gamma_rel)
+
+    def _get_synchrotron_radiation_kwargs(self, **kwargs) -> _SynchrotronRadiationInputs:
+        r"""
+        .. versionadded:: 0.6.0
+
+        Called in `.emittance_evolution`. Gets the expected synchrotron radiation kwargs,
+        and returns them as a dataclass. Will first convert to lowercase so the user does
+        not have to worry about this.
+
+        Raises:
+            KeyError: if any of the expected kwargs is not provided.
+
+        Returns:
+            The parsed keyword arguments as a `_SynchrotronRadiationInputs` object.
+        """
+        lowercase_kwargs = {key.lower(): value for key, value in kwargs.items()}
+        expected_keys = [
+            "sr_equilibrium_epsx",
+            "sr_equilibrium_epsy",
+            "sr_equilibrium_sigma_delta",
+            "sr_tau_x",
+            "sr_tau_y",
+            "sr_tau_z",
+        ]
+        if any(key not in lowercase_kwargs.keys() for key in expected_keys):
+            LOGGER.error("Missing expected synchrotron radiation kwargs, see raised error message.")
+            raise KeyError(
+                "Not all expected synchrotron radiationkwargs were provided.\n"
+                f"Expected: {expected_keys}, provided: {lowercase_kwargs.keys()}"
+            )
+        return _SynchrotronRadiationInputs(
+            equilibrium_epsx=lowercase_kwargs["sr_equilibrium_epsx"],
+            equilibrium_epsy=lowercase_kwargs["sr_equilibrium_epsy"],
+            equilibrium_sigma_delta=lowercase_kwargs["sr_equilibrium_sigma_delta"],
+            tau_x=lowercase_kwargs["sr_tau_x"],
+            tau_y=lowercase_kwargs["sr_tau_y"],
+            tau_z=lowercase_kwargs["sr_tau_z"],
+        )
 
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #

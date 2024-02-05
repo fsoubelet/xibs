@@ -17,7 +17,7 @@ import xtrack as xt
 from helpers import Records
 from scipy.stats import pearsonr
 
-from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS
+from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 from xibs.kicks import IBSKickCoefficients, SimpleKickIBS
 
@@ -270,5 +270,5 @@ def plot_kicks_vs_analytical(kicktbt: Records, analyticaltbt: Records, filename:
 
     plt.tight_layout()
     if os.getenv("GITHUB_ACTIONS") == "true" and os.getenv("CI") == "true":
-        plt.savefig(f"plots/{filename}.pdf", dpi=300)
+        plt.savefig(f".plots/{filename}.pdf", dpi=300)
     # plt.savefig(f"{filename}.pdf", dpi=300)

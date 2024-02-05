@@ -171,7 +171,7 @@ class KickBasedIBS(ABC):
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
         """
-        ...
+        pass
 
     @abstractmethod
     def apply_ibs_kick(self, particles: "xpart.Particles") -> None:  # noqa: F821
@@ -187,7 +187,7 @@ class KickBasedIBS(ABC):
         Raises:
             AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
-        ...
+        pass
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
@@ -424,7 +424,7 @@ class SimpleKickIBS(KickBasedIBS):
 # formalism for some reason? Will need to clarify with him.
 class KineticKickIBS(KickBasedIBS):
     r"""
-    .. versionadded:: 0.5.0
+    .. versionadded:: 0.7.0
 
     A single class to compute the IBS diffusion and friction coefficients according
     to the kinetic IBS formalism of :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
@@ -459,7 +459,7 @@ class KineticKickIBS(KickBasedIBS):
         self, particles: "xpart.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
         r"""
-        .. versionadded:: 0.5.0
+        .. versionadded:: 0.7.0
 
         TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
 
@@ -484,7 +484,7 @@ class KineticKickIBS(KickBasedIBS):
 
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
         r"""
-        .. versionadded:: 0.5.0
+        .. versionadded:: 0.7.0
 
         TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
 

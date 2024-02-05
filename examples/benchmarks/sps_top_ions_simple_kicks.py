@@ -13,9 +13,9 @@ import xpart as xp
 import xtrack as xt
 
 from xibs._old_michalis import MichalisIBS
-from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS
+from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import ReproductionKick, SimpleKickIBS
+from xibs.kicks import SimpleKickIBS
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -51,18 +51,17 @@ def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
 # ------------------- #
 
 context = xo.ContextCpu(omp_num_threads="auto")
-filepath = Path(__file__).parent.parent / "tests" / "inputs" / "lines" / "sps_top_ions.json"
+filepath = Path(__file__).parent.parent.parent / "tests" / "inputs" / "lines" / "sps_top_ions.json"
 line = xt.Line.from_json(filepath.absolute())
 line.build_tracker(context)
 line.optimize_for_tracking()
 twiss = line.twiss(method="4d")
 
-# Some important parameters and then particle generation (from Xsuite SPS example)
-n_part = int(5e4)
-bunch_intensity = int(3.5e8)  # from the test config
-sigma_z = 19.7e-2  # from the test config
-nemitt_x = 1.2612e-6  # from the test config
-nemitt_y = 0.9081e-6  # from the test config
+# Using fake values for beam parameters to be in a regime that 'stimulates' IBS
+bunch_intensity = int(3.5e11)  # from the test config
+sigma_z = 8e-2  # from the test config
+nemitt_x = 1.0e-6  # from the test config
+nemitt_y = 0.2e-6  # from the test config
 
 # Let's get our parameters
 beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
@@ -71,13 +70,12 @@ opticsparams = OpticsParameters.from_line(line)
 rf_voltage = 1.7e6  # 1.7MV from the test config
 harmonic_number = 4653
 cavity = "actcse.31632"
-
 line[cavity].lag = 180  # 0 if below transition, 180 if above
 line[cavity].voltage = rf_voltage  # In Xsuite for ions, do not multiply by charge as in MADX
 line[cavity].frequency = opticsparams.revolution_frequency * harmonic_number
 
 # Re-create particles with less elements as tracking takes a while
-n_part = int(1e4)
+n_part = int(2e3)
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
@@ -87,7 +85,6 @@ particles = xp.generate_matched_gaussian_bunch(
     line=line,
 )
 particles2 = particles.copy()
-particles3 = particles.copy()
 
 
 # Set up a dataclass to store the results
@@ -121,21 +118,17 @@ turns = np.arange(nturns, dtype=int)  # array of turns
 # Initialize the dataclasses
 my_tbt = Records.init_zeroes(nturns)
 michalis_tbt = Records.init_zeroes(nturns)
-repr_tbt = Records.init_zeroes(nturns)
 analytical_tbt = Records.init_zeroes(nturns)
 
 # Store the initial values
 my_tbt.update_at_turn(0, particles, twiss)
 michalis_tbt.update_at_turn(0, particles2, twiss)
-repr_tbt.update_at_turn(0, particles3, twiss)
 analytical_tbt.update_at_turn(0, particles, twiss)
-
 
 # Re-initialize the IBS classes to be sure
 beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
 opticsparams = OpticsParameters.from_line(line)
 IBS = SimpleKickIBS(beamparams, opticsparams)
-RIBS = ReproductionKick(beamparams, opticsparams)
 NIBS = NagaitsevIBS(beamparams, opticsparams)
 MIBS = MichalisIBS()
 MIBS.set_beam_parameters(line.particle_ref)
@@ -154,7 +147,6 @@ for turn in range(1, nturns):
         )
         # We compute from values at the previous turn
         IBS.compute_kick_coefficients(particles)
-        RIBS.compute_kick_coefficients(particles3)
         MIBS.calculate_simple_kick(particles2)
         NIBS.growth_rates(  # recomputes integrals by default
             analytical_tbt.epsilon_x[turn - 1],
@@ -168,19 +160,14 @@ for turn in range(1, nturns):
     # ----- Apply IBS Kick and Track Turn ----- #
     IBS.apply_ibs_kick(particles)
     MIBS.apply_simple_kick(particles2)
-    RIBS.apply_ibs_kick(particles3)
     line.track(particles, num_turns=1)
     line.track(particles2, num_turns=1)
-    line.track(particles3, num_turns=1)
 
     # ----- Compute Emittances from Particles State for my tracked particles & update records----- #
     my_tbt.update_at_turn(turn, particles, twiss)
 
     # ----- Compute Emittances from Particles State for Michalis' tracked particles & update records----- #
     michalis_tbt.update_at_turn(turn, particles2, twiss)
-
-    # ----- Compute Emittances from Particles State for Michalis' tracked particles & update records----- #
-    repr_tbt.update_at_turn(turn, particles3, twiss)
 
     # ----- Compute analytical Emittances from previous turn values & update records----- #
     ana_emit_x, ana_emit_y, ana_sig_delta, ana_bunch_length = NIBS.emittance_evolution(
@@ -195,6 +182,8 @@ for turn in range(1, nturns):
     analytical_tbt.bunch_length[turn] = ana_bunch_length
 
 
+# ----- Plotting ----- #
+
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(15, 8))
 
 # Plot from my kicks and tracking
@@ -208,12 +197,6 @@ axs["epsx"].plot(turns, michalis_tbt.epsilon_x * 1e8, "-", lw=0.65, label="Micha
 axs["epsy"].plot(turns, michalis_tbt.epsilon_y * 1e8, "-", lw=0.65, label="Michalis")
 axs["sigd"].plot(turns, michalis_tbt.sigma_delta * 1e3, "-", lw=0.65, label="Michalis")
 axs["bl"].plot(turns, michalis_tbt.bunch_length * 1e2, "-", lw=0.65, label="Michalis")
-
-# Plot from ReproductionKick kicks and tracking
-axs["epsx"].plot(turns, repr_tbt.epsilon_x * 1e8, "-", lw=0.65, label="'ReproductionKick'")
-axs["epsy"].plot(turns, repr_tbt.epsilon_y * 1e8, "-", lw=0.65, label="'ReproductionKick'")
-axs["sigd"].plot(turns, repr_tbt.sigma_delta * 1e3, "-", lw=0.65, label="'ReproductionKick'")
-axs["bl"].plot(turns, repr_tbt.bunch_length * 1e2, "-", lw=0.65, label="'ReproductionKick'")
 
 # Plot from analytical values
 axs["epsx"].plot(turns, analytical_tbt.epsilon_x * 1e8, lw=1, label="Analytical")

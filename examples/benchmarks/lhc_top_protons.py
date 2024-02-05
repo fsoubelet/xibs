@@ -6,6 +6,7 @@ import time
 import warnings
 
 from dataclasses import dataclass
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,7 +15,6 @@ import xtrack as xt
 
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import NagaitsevIBS
-from xibs.formulary import bunch_length
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")  # scipy integration routines might warn
@@ -32,7 +32,7 @@ plt.rcParams.update(
 )
 
 # ----- File and parameters (taken from lhc_injection_protons.yml) ----- #
-line_file = "../../tests/inputs/lines/lhc_top_protons.json"
+filepath = Path(__file__).parent.parent.parent / "tests" / "inputs" / "lines" / "lhc_top_protons.json"
 harmonic_number = 35640
 geom_epsx = 2.483661433330319e-10
 geom_epsy = 2.483661433330319e-10
@@ -45,7 +45,7 @@ nemitt_x = 1.8
 nemitt_y = 1.8
 
 # ----- Line and Twiss ----- #
-line = xt.Line.from_json(line_file)
+line = xt.Line.from_json(filepath)
 p0 = line.particle_ref
 line.build_tracker()
 twiss = line.twiss(method="4d")
@@ -146,10 +146,10 @@ for turn in range(1, nturns):
 
     # Compute the new emittances
     new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
-        geom_epsx=turn_by_turn.epsilon_x[turn - 1],
-        geom_epsy=turn_by_turn.epsilon_y[turn - 1],
-        sigma_delta=turn_by_turn.sig_delta[turn - 1],
-        bunch_length=turn_by_turn.bunch_length[turn - 1],
+        turn_by_turn.epsilon_x[turn - 1],
+        turn_by_turn.epsilon_y[turn - 1],
+        turn_by_turn.sig_delta[turn - 1],
+        turn_by_turn.bunch_length[turn - 1],
         # dt = 1.0 / IBS.optics.revolution_frequency,  # default value
     )
 
