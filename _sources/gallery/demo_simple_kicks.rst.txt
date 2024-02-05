@@ -313,8 +313,8 @@ internally in the **IBS** object and will be updated internally each time they a
 
  .. code-block:: none
 
-    IBSKickCoefficients(Kx=8.6570403325861e-09, Ky=4.4249183421170835e-10, Kz=2.109578886480685e-06)
-    IBSKickCoefficients(Kx=8.6570403325861e-09, Ky=4.4249183421170835e-10, Kz=2.109578886480685e-06)
+    IBSKickCoefficients(Kx=8.678753626412231e-09, Ky=4.371947380837311e-10, Kz=2.099797859994091e-06)
+    IBSKickCoefficients(Kx=8.678753626412231e-09, Ky=4.371947380837311e-10, Kz=2.099797859994091e-06)
 
 
 
@@ -1623,7 +1623,7 @@ After this loop is done running, we can plot the evolutions across turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 52.109 seconds)
+   **Total running time of the script:** (3 minutes 54.153 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_simple_kicks.py:

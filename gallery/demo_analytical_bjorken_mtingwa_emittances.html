@@ -341,7 +341,7 @@ Loading line from dict: 100% (9866/9866 iterations)
 Done loading line from dict.
 Compiling ContextCpu kernels...
 Done compiling ContextCpu kernels.
-*** Maximum RMS bunch length 0.23625521889289558m.
+*** Maximum RMS bunch length 0.2362552188928956m.
 ... distance to target bunch length: -2.2500e-01
 ... distance to target bunch length: 4.7282e-03
 ... distance to target bunch length: 4.4422e-03
@@ -352,8 +352,8 @@ Done compiling ContextCpu kernels.
 ... distance to target bunch length: 1.2444e-07
 ... distance to target bunch length: 5.2952e-11
 ... distance to target bunch length: -1.1880e-07
---&gt; Bunch length: 0.22500000005295182
---&gt; Emittance: 1.3099639826909355
+--&gt; Bunch length: 0.22500000005295184
+--&gt; Emittance: 1.3099634251145393
 </pre></div>
 </div>
 <p>We can have a look at the generated particles (see the <a class="reference external" href="https://xsuite.readthedocs.io/en/latest/particlesmanip.html">xsuite user guide</a> for more)</p>
@@ -409,9 +409,9 @@ internally each time they are computed.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">IBS</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[07:57:32] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
-IBSGrowthRates(Tx=5.551602202950263e-05, Ty=-4.4365023992283287e-08, Tz=2.4789090918446148e-05)
-IBSGrowthRates(Tx=5.551602202950263e-05, Ty=-4.4365023992283287e-08, Tz=2.4789090918446148e-05)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[07:45:16] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+IBSGrowthRates(Tx=4.956180935927023e-05, Ty=-4.1249067315597706e-08, Tz=2.4341052691431265e-05)
+IBSGrowthRates(Tx=4.956180935927023e-05, Ty=-4.1249067315597706e-08, Tz=2.4341052691431265e-05)
 </pre></div>
 </div>
 </section>
@@ -429,10 +429,10 @@ is the default value used if it is not provided.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Next time step bunch length = </span><span class="si">{</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">new_bunch_length</span></a><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Next time step geometrical epsilon_x = 4.1605508943923134e-09 m
-Next time step geometrical epsilon_y = 5.272484020013372e-09 m
-Next time step sigma_delta = 0.00030788225910835455
-Next time step bunch length = 0.22465765124235318 m
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Next time step geometrical epsilon_x = 4.511427438376558e-09 m
+Next time step geometrical epsilon_y = 5.253036822261931e-09 m
+Next time step sigma_delta = 0.0003044093237785715
+Next time step bunch length = 0.22799159235368222 m
 </pre></div>
 </div>
 </section>
@@ -503,65 +503,65 @@ compute-intensive process.</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>At 1s: re-computing growth rates
-[07:57:33] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:17] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 600s: re-computing growth rates
-[07:57:34] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:18] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 1200s: re-computing growth rates
-[07:57:35] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:19] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 1800s: re-computing growth rates
-[07:57:36] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:20] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 2400s: re-computing growth rates
-[07:57:36] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:20] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 3000s: re-computing growth rates
-[07:57:37] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:21] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 3600s: re-computing growth rates
-[07:57:38] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:22] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 4200s: re-computing growth rates
-[07:57:39] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:23] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 4800s: re-computing growth rates
-[07:57:40] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:24] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 5400s: re-computing growth rates
-[07:57:41] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:25] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 6000s: re-computing growth rates
-[07:57:42] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:26] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 6600s: re-computing growth rates
-[07:57:42] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:27] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 7200s: re-computing growth rates
-[07:57:43] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:27] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 7800s: re-computing growth rates
-[07:57:44] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:28] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 8400s: re-computing growth rates
-[07:57:45] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:29] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 9000s: re-computing growth rates
-[07:57:46] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:30] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 9600s: re-computing growth rates
-[07:57:47] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:31] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 10200s: re-computing growth rates
-[07:57:48] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:32] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 10800s: re-computing growth rates
-[07:57:48] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:33] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 11400s: re-computing growth rates
-[07:57:49] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:34] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 12000s: re-computing growth rates
-[07:57:50] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:34] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 12600s: re-computing growth rates
-[07:57:51] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:35] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 13200s: re-computing growth rates
-[07:57:52] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:36] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 13800s: re-computing growth rates
-[07:57:53] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:37] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 14400s: re-computing growth rates
-[07:57:54] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:38] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 15000s: re-computing growth rates
-[07:57:54] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:39] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 15600s: re-computing growth rates
-[07:57:55] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:40] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 16200s: re-computing growth rates
-[07:57:56] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:41] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 16800s: re-computing growth rates
-[07:57:57] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:41] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 At 17400s: re-computing growth rates
-[07:57:58] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
+[07:45:42] [WARNING] - analytical.growth_rates:1157 - Twiss was not calculated at center of elements
 </pre></div>
 </div>
 <p>Feel free to run this simulation for longer, or with a different frequency
@@ -606,7 +606,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 40.949 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 43.139 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-analytical-bjorken-mtingwa-emittances-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/ecda9ce448dc36dbc3ce2891b29ff0bc/demo_analytical_bjorken_mtingwa_emittances.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_analytical_bjorken_mtingwa_emittances.ipynb</span></code></a></p>

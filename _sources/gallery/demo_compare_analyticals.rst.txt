@@ -432,7 +432,7 @@ includes vertical dispersion which is not taken into consideration by the
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 40.132 seconds)
+   **Total running time of the script:** (1 minutes 43.062 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_compare_analyticals.py:
