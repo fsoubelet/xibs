@@ -18,8 +18,10 @@ from logging import getLogger
 import numpy as np
 
 from numpy.typing import ArrayLike
+from scipy.integrate import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
+from xibs.formulary import phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -432,8 +434,6 @@ class KineticKickIBS(KickBasedIBS):
 
     See the :ref:`kinetic kicks example <demo-kinetic-kicks>` for detailed usage.
 
-    TODO: reference, details etc.
-
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
         optics (OpticsParameters): the optics parameters to use for the IBS computations.
@@ -455,31 +455,101 @@ class KineticKickIBS(KickBasedIBS):
         self.diffusion_coefficients: DiffusionCoefficients = None
         self.friction_coefficients: FrictionCoefficients = None
 
-    def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs  # noqa: F821
-    ) -> IBSKickCoefficients:
+    def compute_kick_coefficients(self, particles: "xpart.Particles") -> IBSKickCoefficients:  # noqa: F821
         r"""
         .. versionadded:: 0.7.0
 
-        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
+        Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this
+        code base, from the friction and diffusion terms of the kinetic theory as expressed in
+        :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
 
         .. note::
             This functionality is separate from the kick application because it internally triggers
             the computation of the analytical growth rates, and we don't necessarily want to
             recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.
 
+        TODO: do this section once the code is clear. Based on nagaitsev terms for now.
+        .. hint::
+            The calculation is done according to the following steps:
+
+                - Computes 
+
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
-            **kwargs: any keyword arguments will be passed to ???.
+            **kwargs: TODO: allow passing for the coulomb log?any keyword arguments will be passed to ???.
 
         Returns:
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
-        result = 1
+        # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
+        LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
+        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
+        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
+        sigma_x: float = float(np.std(particles.x[particles.state > 0]))
+        sigma_y: float = float(np.std(particles.y[particles.state > 0]))
+        # Indexing: we want the value where the bunch is and assume at start / end of machine which
+        # is where / when we will apply the kick (do a line.track and then kick). To be modified when
+        # when we include these things into xtrack, if we want an element that creates the kick.
+        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
+        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
         # ----------------------------------------------------------------------------------------------
-        # Self-update the instance's attributes and then return the results
-        self.coefficients = result
+        # Computing necessary intermediate terms for the following lines
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, self.optics.dx, self.optics.dpx)
+        # Computing the constants from Eq (18-21) in Nagaitsev paper
+        ax: np.ndarray = self.optics.betx / geom_epsx
+        ay: np.ndarray = self.optics.bety / geom_epsy
+        a_s: np.ndarray = ax * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + 1 / sigma_delta**2
+        a1: np.ndarray = (ax + self.beam_parameters.gamma_rel**2 * a_s) / 2.0
+        a2: np.ndarray = (ax - self.beam_parameters.gamma_rel**2 * a_s) / 2.0
+        sqrt_term = np.sqrt(a2**2 + self.beam_parameters.gamma_rel**2 * ax**2 * phix**2)
+        # ----------------------------------------------------------------------------------------------
+        # These are from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
+        lambda_1: np.ndarray = ay
+        lambda_2: np.ndarray = a1 + sqrt_term
+        lambda_3: np.ndarray = a1 - sqrt_term
+        # ----------------------------------------------------------------------------------------------
+        # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper (at each element of the lattice)
+        LOGGER.debug("Computing elliptic integrals R1, R2 and R3")
+        R1: np.ndarray = elliprd(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
+        R2: np.ndarray = elliprd(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
+        R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
+        # ----------------------------------------------------------------------------------------------
+        # Compute the coulomb logarithm from an analytical class
+        analytical = NagaitsevIBS(self.beam_parameters, self.optics)  # the formalism does not matter
+        coulomb_logarithm: float = analytical.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
+        # ----------------------------------------------------------------------------------------------
+        # Computing the D and F terms from the paper, according to the expressions derived by Michalis
+        # Michail (see his presentation at https://indico.cern.ch/event/1140639)
+        D_sp: np.ndarray = 0.5 * self.beam_parameters.gamma_rel**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        F_sp: np.ndarray = 1.0 * self.beam_parameters.gamma_rel**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        D_sx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        F_sx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        D_sxp: np.ndarray = 3.0 * self.beam_parameters.gamma_rel**2 * phix**2 * ax * (R3 - R2) / sqrt_term
+        # ----------------------------------------------------------------------------------------------
+        # Computing integrands from the terms above (TODO: clarify after more reading)
+        Dx_integrand: np.ndarray = self.optics.betx / (self.optics.circumference * sigma_x * sigma_y) * (D_sx + D_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + D_sxp)
+        Fx_integrand: np.ndarray = self.optics.betx / (self.optics.circumference * sigma_x * sigma_y) * (F_sx + F_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
+        Dy_integrand: np.ndarray = self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (R2 + R3)
+        Fy_integrand: np.ndarray = self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (2 * R1)
+        Dz_integrand: np.ndarray = D_sp / (self.optics.circumference * sigma_x * sigma_y)
+        Fz_integrand: np.ndarray = F_sp / (self.optics.circumference * sigma_x * sigma_y)
+        # ----------------------------------------------------------------------------------------------
+        # Integrating them to obtain the diffusion and friction coefficients
+        Dx: float = np.sum(Dx_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsx
+        Dy: float = np.sum(Dy_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsy
+        Dz: float = np.sum(Dz_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / sigma_delta**2
+        Fx: float = np.sum(Fx_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsx
+        Fy: float = np.sum(Fy_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsy
+        Fz: float = np.sum(Fz_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / sigma_delta**2
+        # ----------------------------------------------------------------------------------------------
+        # Generate and store the coefficients in a DiffusionCoefficients and FrictionCoefficients object
+        self.diffusion_coefficients = DiffusionCoefficients(Dx, Dy, Dz)
+        self.friction_coefficients = FrictionCoefficients(Fx, Fy, Fz)
+        # ----------------------------------------------------------------------------------------------
+        # Self-update the instance's attributes and then return the results: kick coefficients
+        result = IBSKickCoefficients(Dx - Fx, Dy - Fy, Dz - Fz)
+        self.kick_coefficients = result
         return result
 
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
