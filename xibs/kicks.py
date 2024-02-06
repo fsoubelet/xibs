@@ -455,20 +455,25 @@ class KineticKickIBS(KickBasedIBS):
         self.diffusion_coefficients: DiffusionCoefficients = None
         self.friction_coefficients: FrictionCoefficients = None
 
-    def compute_kick_coefficients(self, particles: "xpart.Particles") -> IBSKickCoefficients:  # noqa: F821
+    def compute_kick_coefficients(
+        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+    ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.7.0
 
         Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this
         code base, from the friction and diffusion terms of the kinetic theory as expressed in
-        :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
+        :cite:`NuclInstr:Zenkevich:Kinetic_IBS`. This will compute both diffusion and friction
+        coefficients from this formalism, which will be stored and updated internally into the
+        `diffusion_coefficients` and `friction_coefficients` attributes. It returns an
+        `IBSKickCoefficients` object with the computed coefficients (diffusion - friction).
 
         .. note::
             This functionality is separate from the kick application because it internally triggers
             the computation of the analytical growth rates, and we don't necessarily want to
             recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.
 
-        TODO: do this section once the code is clear. Based on nagaitsev terms for now.
+        TODO: do this section once the code is clearer. Based on nagaitsev terms for now.
         .. hint::
             The calculation is done according to the following steps:
 
@@ -476,7 +481,8 @@ class KineticKickIBS(KickBasedIBS):
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
-            **kwargs: TODO: allow passing for the coulomb log?any keyword arguments will be passed to ???.
+            **kwargs: if `bunched` is found in keyword arguments it will be passed to the
+                coulomb logarithm calculation. A default value of `True` is used.
 
         Returns:
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
@@ -519,6 +525,7 @@ class KineticKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Compute the coulomb logarithm from an analytical class
         analytical = NagaitsevIBS(self.beam_parameters, self.optics)  # the formalism does not matter
+        bunched = kwargs.get("bunched", True)
         coulomb_logarithm: float = analytical.coulomb_log(
             geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched
         )
