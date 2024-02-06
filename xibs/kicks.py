@@ -573,7 +573,8 @@ class KineticKickIBS(KickBasedIBS):
         r"""
         .. versionadded:: 0.7.0
 
-        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
+        Computes the momentum kicks to apply based on the provided `xpart.Particles` object and
+        the previously computed kick coefficients. TODO: ref implementation of kicks.
 
         Args:
             particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
@@ -585,12 +586,79 @@ class KineticKickIBS(KickBasedIBS):
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
-        if self.coefficients is None:
+        if any(
+            coeffs is None
+            for coeffs in [self.kick_coefficients, self.diffusion_coefficients, self.friction_coefficients]
+        ):
             LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
             raise AttributeError(
                 "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
                 "Please call the `compute_kick_coefficients` method first."
             )
         # ----------------------------------------------------------------------------------------------
-        # TODO: implement
-        pass
+        # Compute the line density - this is the rho_t(t) term in Eq (8) of
+        dt: float = 1 / self.optics.revolution_frequency
+        rho_t: np.ndarray = self.line_density(particles, n_slices)
+        # ----------------------------------------------------------------------------------------------
+        # Determining kicks from the friction forces (using friction coefficients)
+        # fmt: on
+        LOGGER.debug("Determining friction kicks")
+        delta_px_friction: np.ndarray = (
+            self.friction_coefficients.Fx
+            * (particles.px[particles.state > 0] - np.mean(particles.px[particles.state > 0]))
+            * dt
+            * rho_t
+        )
+        delta_py_friction: np.ndarray = (
+            self.friction_coefficients.Fy
+            * (particles.py[particles.state > 0] - np.mean(particles.py[particles.state > 0]))
+            * dt
+            * rho_t
+        )
+        delta_delta_friction: np.ndarray = (
+            self.friction_coefficients.Fz
+            * (particles.delta[particles.state > 0] - np.mean(particles.delta[particles.state > 0]))
+            * dt
+            * rho_t
+        )
+        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
+        particles.px[particles.state > 0] -= delta_px_friction
+        particles.py[particles.state > 0] -= delta_py_friction
+        particles.delta[particles.state > 0] -= delta_delta_friction
+        # ----------------------------------------------------------------------------------------------
+        # Compute the momentum spread and standard deviation of (normalized) momenta from particles object
+        # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
+        # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
+        # fmt: off
+        LOGGER.debug("Computing momentum spread and momenta's standard deviations")
+        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
+        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
+        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
+        # ----------------------------------------------------------------------------------------------
+        # Determining kicks from the friction forces (using friction coefficients)
+        LOGGER.debug("Determining diffusion kicks")
+        RNG = np.random.default_rng()
+        # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
+        _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
+        delta_px_diffusion: np.ndarray = (
+            sigma_px_normalized
+            * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
+            * RNG.normal(0, 1, _size)
+            * np.sqrt(rho_t)
+        )
+        delta_py_diffusion: np.ndarray = (
+            sigma_py_normalized
+            * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
+            * RNG.normal(0, 1, _size)
+            * np.sqrt(rho_t)
+        )
+        delta_delta_diffusion: np.ndarray = (
+            sigma_delta
+            * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
+            * RNG.normal(0, 1, _size)
+            * np.sqrt(rho_t)
+        )
+        LOGGER.debug("Applying diffusion kicks to the particles (on px, py and delta properties)")
+        particles.px[particles.state > 0] += delta_px_diffusion
+        particles.py[particles.state > 0] += delta_py_diffusion
+        particles.delta[particles.state > 0] += delta_delta_diffusion
