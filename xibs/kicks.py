@@ -18,7 +18,7 @@ from logging import getLogger
 import numpy as np
 
 from numpy.typing import ArrayLike
-from scipy.integrate import elliprd
+from scipy.special import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
 from xibs.formulary import phi
