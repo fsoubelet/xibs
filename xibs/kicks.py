@@ -472,7 +472,7 @@ class KineticKickIBS(KickBasedIBS):
         .. hint::
             The calculation is done according to the following steps:
 
-                - Computes 
+                - Computes
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
@@ -497,12 +497,14 @@ class KineticKickIBS(KickBasedIBS):
         # Computing necessary intermediate terms for the following lines
         phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, self.optics.dx, self.optics.dpx)
         # Computing the constants from Eq (18-21) in Nagaitsev paper
+        # fmt: off
+        gammar = self.beam_parameters.gamma_rel
         ax: np.ndarray = self.optics.betx / geom_epsx
         ay: np.ndarray = self.optics.bety / geom_epsy
         a_s: np.ndarray = ax * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + 1 / sigma_delta**2
-        a1: np.ndarray = (ax + self.beam_parameters.gamma_rel**2 * a_s) / 2.0
-        a2: np.ndarray = (ax - self.beam_parameters.gamma_rel**2 * a_s) / 2.0
-        sqrt_term = np.sqrt(a2**2 + self.beam_parameters.gamma_rel**2 * ax**2 * phix**2)
+        a1: np.ndarray = (ax + gammar**2 * a_s) / 2.0
+        a2: np.ndarray = (ax - gammar**2 * a_s) / 2.0
+        sqrt_term = np.sqrt(a2**2 + gammar**2 * ax**2 * phix**2)
         # ----------------------------------------------------------------------------------------------
         # These are from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
         lambda_1: np.ndarray = ay
@@ -517,21 +519,36 @@ class KineticKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Compute the coulomb logarithm from an analytical class
         analytical = NagaitsevIBS(self.beam_parameters, self.optics)  # the formalism does not matter
-        coulomb_logarithm: float = analytical.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
+        coulomb_logarithm: float = analytical.coulomb_log(
+            geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched
+        )
         # ----------------------------------------------------------------------------------------------
         # Computing the D and F terms from the paper, according to the expressions derived by Michalis
         # Michail (see his presentation at https://indico.cern.ch/event/1140639)
-        D_sp: np.ndarray = 0.5 * self.beam_parameters.gamma_rel**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        F_sp: np.ndarray = 1.0 * self.beam_parameters.gamma_rel**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        D_sp: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        F_sp: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
         D_sx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
         F_sx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        D_sxp: np.ndarray = 3.0 * self.beam_parameters.gamma_rel**2 * phix**2 * ax * (R3 - R2) / sqrt_term
+        D_sxp: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
         # ----------------------------------------------------------------------------------------------
         # Computing integrands from the terms above (TODO: clarify after more reading)
-        Dx_integrand: np.ndarray = self.optics.betx / (self.optics.circumference * sigma_x * sigma_y) * (D_sx + D_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + D_sxp)
-        Fx_integrand: np.ndarray = self.optics.betx / (self.optics.circumference * sigma_x * sigma_y) * (F_sx + F_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
-        Dy_integrand: np.ndarray = self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (R2 + R3)
-        Fy_integrand: np.ndarray = self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (2 * R1)
+        # fmt: on
+        Dx_integrand: np.ndarray = (
+            self.optics.betx
+            / (self.optics.circumference * sigma_x * sigma_y)
+            * (D_sx + D_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + D_sxp)
+        )
+        Fx_integrand: np.ndarray = (
+            self.optics.betx
+            / (self.optics.circumference * sigma_x * sigma_y)
+            * (F_sx + F_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
+        )
+        Dy_integrand: np.ndarray = (
+            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (R2 + R3)
+        )
+        Fy_integrand: np.ndarray = (
+            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (2 * R1)
+        )
         Dz_integrand: np.ndarray = D_sp / (self.optics.circumference * sigma_x * sigma_y)
         Fz_integrand: np.ndarray = F_sp / (self.optics.circumference * sigma_x * sigma_y)
         # ----------------------------------------------------------------------------------------------
