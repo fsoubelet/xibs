@@ -378,8 +378,8 @@ class MichalisIBS:
     ) -> Tuple[float, float, float, float, float, float]:
         """Computes the kinetic coefficients based on emittances."""
         const = self.CoulogConst(Emit_x, Emit_y, Sig_M, BunchL)
-        sigx = np.sqrt(self.bet_x * Emit_x + (self.eta_x * Sig_M) ** 2)
-        sigy = np.sqrt(self.bet_y * Emit_y + (self.eta_y * Sig_M) ** 2)
+        sigx = np.sqrt(self.bet_x * Emit_x + (self.eta_x * Sig_M) ** 2)[0]
+        sigy = np.sqrt(self.bet_y * Emit_y + (self.eta_y * Sig_M) ** 2)[0]
         ax = self.bet_x / Emit_x
         ay = self.bet_y / Emit_y
         a_s = ax * (self.eta_x**2 / self.bet_x**2 + self.phi_x**2) + 1 / Sig_M**2
@@ -400,7 +400,6 @@ class MichalisIBS:
         D_Sx = 0.5 * (2 * R1 + R2 * (1 - a2 / denom) + R3 * (1 + a2 / denom))
         F_Sx = 1.0 * (R2 * (1 + a2 / denom) + R3 * (1 - a2 / denom))
         D_Sxp = 3.0 * self.gammar**2 * self.phi_x**2 * ax * (R3 - R2) / denom
-
         Dxi = (
             self.bet_x
             / (self.Circu * sigx * sigy)
@@ -415,7 +414,6 @@ class MichalisIBS:
         Fyi = self.bet_y / (self.Circu * sigx * sigy) * (2 * R1)
         Dzi = D_Sp / (self.Circu * sigx * sigy)
         Fzi = F_Sp / (self.Circu * sigx * sigy)
-
         # Dx = np.sum(Dxi * self.dels) * const / Emit_x
         # Fx = np.sum(Fxi * self.dels) * const / Emit_x
         # Dy = np.sum(Dyi * self.dels) * const / Emit_y
@@ -465,9 +463,8 @@ class MichalisIBS:
         Sig_px_norm = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.alf_x[0] ** 2)
         Sig_py_norm = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.alf_y[0] ** 2)
         Sig_delta = np.std(particles.delta[particles.state > 0])
-
+        # Remember rho bellow includes 2 * sqrt(pi) * bunch_length (for some reason)
         rho = self.line_density(40, particles)  # number of slices
-
         # !---------- Friction ----------!
         particles.px[particles.state > 0] -= (
             self.Fx
