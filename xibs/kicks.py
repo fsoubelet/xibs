@@ -579,7 +579,6 @@ class KineticKickIBS(KickBasedIBS):
         # Self-update the instance's attributes and then return the results: kick coefficients
         result = IBSKickCoefficients(Dx - Fx, Dy - Fy, Dz - Fz)
         self.kick_coefficients = result
-        # TODO: all ok with Michalis code up to here
         return result
 
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
@@ -612,7 +611,10 @@ class KineticKickIBS(KickBasedIBS):
         # Compute the line density - this is the rho_t(t) term in Eq (8) of
         dt: float = 1 / self.optics.revolution_frequency
         rho_t: np.ndarray = self.line_density(particles, n_slices)
-        print(rho_t)  # TODO: figure out discrepancy to Michalis, details of implementation again
+        # ----------------------------------------------------------------------------------------------
+        # Compute the bunch_length * 2 * sqrt(pi) factor for the kicks
+        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
+        factor = bunch_length * 2 * np.sqrt(np.pi)
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (using friction coefficients)
         # fmt: on
@@ -622,18 +624,21 @@ class KineticKickIBS(KickBasedIBS):
             * (particles.px[particles.state > 0] - np.mean(particles.px[particles.state > 0]))
             * dt
             * rho_t
+            * factor
         )
         delta_py_friction: np.ndarray = (
             self.friction_coefficients.Fy
             * (particles.py[particles.state > 0] - np.mean(particles.py[particles.state > 0]))
             * dt
             * rho_t
-        )
+            * factor
+        ) 
         delta_delta_friction: np.ndarray = (
             self.friction_coefficients.Fz
             * (particles.delta[particles.state > 0] - np.mean(particles.delta[particles.state > 0]))
             * dt
             * rho_t
+            * factor
         )
         LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
         particles.px[particles.state > 0] -= delta_px_friction
@@ -658,19 +663,19 @@ class KineticKickIBS(KickBasedIBS):
             sigma_px_normalized
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
             * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t)
+            * np.sqrt(rho_t * factor)
         )
         delta_py_diffusion: np.ndarray = (
             sigma_py_normalized
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
             * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t)
+            * np.sqrt(rho_t * factor)
         )
         delta_delta_diffusion: np.ndarray = (
             sigma_delta
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
             * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t)
+            * np.sqrt(rho_t * factor)
         )
         LOGGER.debug("Applying diffusion kicks to the particles (on px, py and delta properties)")
         particles.px[particles.state > 0] += delta_px_diffusion
