@@ -18,6 +18,7 @@ from logging import getLogger
 import numpy as np
 
 from numpy.typing import ArrayLike
+from scipy.constants import c
 from scipy.special import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
@@ -523,12 +524,16 @@ class KineticKickIBS(KickBasedIBS):
         R2: np.ndarray = elliprd(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
         R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
         # ----------------------------------------------------------------------------------------------
-        # Compute the coulomb logarithm from an analytical class
+        # Compute the coulomb logarithm from an analytical class then the rest of the constant term in
+        # Eq (30-32) of Nagaitsev's paper
         analytical = NagaitsevIBS(self.beam_parameters, self.optics)  # the formalism does not matter
         bunched = kwargs.get("bunched", True)
-        coulomb_logarithm: float = analytical.coulomb_log(
-            geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched
+        coulomb_logarithm: float = analytical.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
+        rest_of_constant_term = (
+            self.beam_parameters.n_part * self.beam_parameters.particle_classical_radius_m**2 * c 
+            / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
         )
+        full_constant_term = rest_of_constant_term * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
         # Computing the D and F terms from the paper, according to the expressions derived by Michalis
         # Michail (see his presentation at https://indico.cern.ch/event/1140639)
@@ -560,12 +565,12 @@ class KineticKickIBS(KickBasedIBS):
         Fz_integrand: np.ndarray = F_sp / (self.optics.circumference * sigma_x * sigma_y)
         # ----------------------------------------------------------------------------------------------
         # Integrating them to obtain the diffusion and friction coefficients
-        Dx: float = np.sum(Dx_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsx
-        Dy: float = np.sum(Dy_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsy
-        Dz: float = np.sum(Dz_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / sigma_delta**2
-        Fx: float = np.sum(Fx_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsx
-        Fy: float = np.sum(Fy_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / geom_epsy
-        Fz: float = np.sum(Fz_integrand[:-1] * np.diff(self.optics.s)) * coulomb_logarithm / sigma_delta**2
+        Dx: float = np.sum(Dx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
+        Dy: float = np.sum(Dy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
+        Dz: float = np.sum(Dz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
+        Fx: float = np.sum(Fx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
+        Fy: float = np.sum(Fy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
+        Fz: float = np.sum(Fz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
         # ----------------------------------------------------------------------------------------------
         # Generate and store the coefficients in a DiffusionCoefficients and FrictionCoefficients object
         self.diffusion_coefficients = DiffusionCoefficients(Dx, Dy, Dz)
@@ -574,6 +579,7 @@ class KineticKickIBS(KickBasedIBS):
         # Self-update the instance's attributes and then return the results: kick coefficients
         result = IBSKickCoefficients(Dx - Fx, Dy - Fy, Dz - Fz)
         self.kick_coefficients = result
+        # TODO: all ok with Michalis code up to here
         return result
 
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
@@ -606,6 +612,7 @@ class KineticKickIBS(KickBasedIBS):
         # Compute the line density - this is the rho_t(t) term in Eq (8) of
         dt: float = 1 / self.optics.revolution_frequency
         rho_t: np.ndarray = self.line_density(particles, n_slices)
+        print(rho_t)  # TODO: figure out discrepancy to Michalis, details of implementation again
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (using friction coefficients)
         # fmt: on
