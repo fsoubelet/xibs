@@ -76,7 +76,7 @@ line[cavity].voltage = rf_voltage  # In Xsuite for ions, do not multiply by char
 line[cavity].frequency = opticsparams.revolution_frequency * harmonic_number
 
 # Re-create particles with less elements as tracking takes a while
-n_part = int(2.5e3)
+n_part = int(2e3)
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
