@@ -135,7 +135,7 @@ particles = xp.generate_matched_gaussian_bunch(
 
 # Let's make sure we get logging output to demonstrate
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     stream=sys.stdout,
     format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
     datefmt="%H:%M:%S",
@@ -331,10 +331,10 @@ turns = np.arange(nturns, dtype=int)  # array of turns
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(15, 7))
 
 # Plot from tracked & kicked particles
-axs["epsx"].plot(turns, kicked_tbt.epsilon_x * 1e10, lw=2, label="Kicks")
-axs["epsy"].plot(turns, kicked_tbt.epsilon_y * 1e13, lw=2, label="Kicks")
-axs["sigd"].plot(turns, kicked_tbt.sigma_delta * 1e3, lw=2, label="Kicks")
-axs["bl"].plot(turns, kicked_tbt.bunch_length * 1e3, lw=2, label="Kicks")
+axs["epsx"].plot(turns, kicked_tbt.epsilon_x * 1e10, lw=2, label="Kinetic Kicks")
+axs["epsy"].plot(turns, kicked_tbt.epsilon_y * 1e13, lw=2, label="Kinetic Kicks")
+axs["sigd"].plot(turns, kicked_tbt.sigma_delta * 1e3, lw=2, label="Kinetic Kicks")
+axs["bl"].plot(turns, kicked_tbt.bunch_length * 1e3, lw=2, label="Kinetic Kicks")
 
 # Plot from analytical values
 axs["epsx"].plot(turns, analytical_tbt.epsilon_x * 1e10, lw=2.5, label="Analytical")
