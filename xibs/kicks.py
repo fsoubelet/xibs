@@ -632,7 +632,7 @@ class KineticKickIBS(KickBasedIBS):
             * dt
             * rho_t
             * factor
-        ) 
+        )
         delta_delta_friction: np.ndarray = (
             self.friction_coefficients.Fz
             * (particles.delta[particles.state > 0] - np.mean(particles.delta[particles.state > 0]))
