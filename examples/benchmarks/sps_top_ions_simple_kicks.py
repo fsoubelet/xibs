@@ -59,9 +59,9 @@ twiss = line.twiss(method="4d")
 
 # Using fake values for beam parameters to be in a regime that 'stimulates' IBS
 bunch_intensity = int(3.5e11)  # from the test config
-sigma_z = 8e-2  # from the test config
-nemitt_x = 1.0e-6  # from the test config
-nemitt_y = 0.2e-6  # from the test config
+sigma_z = 8e-2
+nemitt_x = 1.0e-6
+nemitt_y = 0.2e-6
 
 # Let's get our parameters
 beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
