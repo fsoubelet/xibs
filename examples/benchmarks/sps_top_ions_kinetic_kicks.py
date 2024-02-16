@@ -188,10 +188,10 @@ for turn in range(1, nturns):
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(15, 8))
 
 # Plot from my kicks and tracking
-axs["epsx"].plot(turns, my_tbt.epsilon_x * 1e8, lw=1.5, label="Me")
-axs["epsy"].plot(turns, my_tbt.epsilon_y * 1e8, lw=1.5, label="Me")
-axs["sigd"].plot(turns, my_tbt.sigma_delta * 1e3, lw=1.5, label="Me")
-axs["bl"].plot(turns, my_tbt.bunch_length * 1e2, lw=1.5, label="Me")
+axs["epsx"].plot(turns, my_tbt.epsilon_x * 1e8, lw=1.5, label="Xibs")
+axs["epsy"].plot(turns, my_tbt.epsilon_y * 1e8, lw=1.5, label="Xibs")
+axs["sigd"].plot(turns, my_tbt.sigma_delta * 1e3, lw=1.5, label="Xibs")
+axs["bl"].plot(turns, my_tbt.bunch_length * 1e2, lw=1.5, label="Xibs")
 
 # Plot from Michalis kicks and tracking
 axs["epsx"].plot(turns, michalis_tbt.epsilon_x * 1e8, "-", lw=0.75, label="Michalis")
@@ -200,10 +200,10 @@ axs["sigd"].plot(turns, michalis_tbt.sigma_delta * 1e3, "-", lw=0.75, label="Mic
 axs["bl"].plot(turns, michalis_tbt.bunch_length * 1e2, "-", lw=0.75, label="Michalis")
 
 # Plot from analytical values
-axs["epsx"].plot(turns, analytical_tbt.epsilon_x * 1e8, lw=1.5, label="Analytical")
-axs["epsy"].plot(turns, analytical_tbt.epsilon_y * 1e8, lw=1.5, label="Analytical")
-axs["sigd"].plot(turns, analytical_tbt.sigma_delta * 1e3, lw=1.5, label="Analytical")
-axs["bl"].plot(turns, analytical_tbt.bunch_length * 1e2, lw=1.5, label="Analytical")
+axs["epsx"].plot(turns, analytical_tbt.epsilon_x * 1e8, lw=1.5, label="Nagaitsev")
+axs["epsy"].plot(turns, analytical_tbt.epsilon_y * 1e8, lw=1.5, label="Nagaitsev")
+axs["sigd"].plot(turns, analytical_tbt.sigma_delta * 1e3, lw=1.5, label="Nagaitsev")
+axs["bl"].plot(turns, analytical_tbt.bunch_length * 1e2, lw=1.5, label="Nagaitsev")
 
 # Axes parameters
 axs["epsx"].set_ylabel(r"$\varepsilon_x$ [$10^{-8}$m]")
@@ -224,6 +224,7 @@ for axis in axs.values():
 
 fig.align_ylabels((axs["epsx"], axs["sigd"]))
 fig.align_ylabels((axs["epsy"], axs["bl"]))
+fig.suptitle("SPS Top Ions: Kinetic Kicks")
 
 plt.tight_layout()
 plt.show()
