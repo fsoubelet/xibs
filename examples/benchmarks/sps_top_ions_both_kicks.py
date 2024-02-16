@@ -65,10 +65,10 @@ line.optimize_for_tracking()
 twiss = line.twiss(method="4d")
 
 # Using fake values for beam parameters to be in a regime that 'stimulates' IBS
-bunch_intensity = int(3.5e11)  # from the test config
-sigma_z = 5e-2  # from the test config
-nemitt_x = 1.0e-6  # from the test config
-nemitt_y = 0.25e-6  # from the test config
+bunch_intensity = int(5e11)
+sigma_z = 5e-2
+nemitt_x = 1.0e-6
+nemitt_y = 0.25e-6
 
 rf_voltage = 1.7e6  # 1.7MV from the test config
 harmonic_number = 4653
@@ -85,7 +85,7 @@ KIBS = KineticKickIBS(beamparams, opticsparams)
 SIBS = SimpleKickIBS(beamparams, opticsparams)
 NIBS = NagaitsevIBS(beamparams, opticsparams)
 
-n_part = int(2.5e3)  # 2500 particles should be enough for this example
+n_part = int(2e3)  # 2000 particles should be enough for this example
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
@@ -122,7 +122,7 @@ class Records:
             bunch_length=np.zeros(n_turns, dtype=float),
         )
 
-nturns = 1_000  # number of turns to loop for
+nturns = 1_500  # number of turns to loop for
 ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 
 # Initialize the dataclasses
