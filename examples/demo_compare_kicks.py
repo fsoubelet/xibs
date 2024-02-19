@@ -12,12 +12,9 @@ and `~xibs.kicks.SimpleKickIBS` when applying IBS kicks to tracked particles.
 We will do the comparison by using the case of the CERN SPS, with lead ions at top
 energy, and with some tweaked beam parameters to stimulate the IBS effects.
 
-We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
-for a positron beam.
+We will demonstrate using an `xtrack.Line` of the ``SPS`` ring, for ions at top energy (450 GeV).
 """
 # sphinx_gallery_thumbnail_number = 1
-import logging
-import sys
 import warnings
 
 from dataclasses import dataclass
@@ -88,12 +85,11 @@ def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
 # rates calculation while `n_part` is the number of generated particles for
 # tracking, which is much lower.
 
-line_file = "lines/chrom-corr_DR.newlattice_2GHz.json"
-bunch_intensity = int(4.5e9)
-n_part = int(1.5e4)  # 15k particles initially to have a look at the kick effect
-sigma_z = 1.58e-3
-nemitt_x = 5.66e-7
-nemitt_y = 3.7e-9
+bunch_intensity = int(5e11)
+n_part = int(2e3)
+sigma_z = 5e-2
+nemitt_x = 1.0e-6
+nemitt_y = 0.25e-6
 
 ###############################################################################
 # Setting up line and particles
@@ -102,18 +98,21 @@ nemitt_y = 3.7e-9
 # create a context for multithreading with OpenMP, since tracking particles
 # is going to take some time:
 
-line = xt.Line.from_json(line_file)
 context = xo.ContextCpu(omp_num_threads="auto")
-line.particle_ref = xp.Particles(mass0=xp.ELECTRON_MASS_EV, q0=1, p0c=2.86e9)
-
-# ----- Power accelerating cavities ----- #
-for cavity in [element for element in line.elements if isinstance(element, xt.Cavity)]:
-    cavity.lag = 180  # we are above transition
-
-line.build_tracker(context, extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
+line_file = "lines/sps_top_ions.json"
+line = xt.Line.from_json(line_file)
+line.build_tracker(context)
 line.optimize_for_tracking()
-twiss = line.twiss()
+twiss = line.twiss(method="4d")
 
+rf_voltage = 1.7e6  # 1.7MV
+harmonic_number = 4653
+cavity = "actcse.31632"
+line[cavity].lag = 180  # 0 if below transition, 180 if above
+line[cavity].voltage = rf_voltage
+line[cavity].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
+
+# We create a particle distrubution which we clone, one for each kick formalism
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
