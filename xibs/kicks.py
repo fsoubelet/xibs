@@ -547,7 +547,8 @@ class KineticKickIBS(KickBasedIBS):
         Kx: np.ndarray = 1.0 * gammar**2 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
         Dxz: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
         # ----------------------------------------------------------------------------------------------
-        # Computing integrands for the diffusion and friction terms from the above (also from Michalis)
+        # Computing integrands for the diffusion and friction terms from the above (also from Michalis,
+        # see slide 18 of his presentation for instance).
         # fmt: on
         Dx_integrand: np.ndarray = (
             self.optics.betx
