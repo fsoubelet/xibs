@@ -171,7 +171,7 @@ def test_kinetic_coefficients_sps_top_protons(xtrack_sps_top_protons):
 
 
 def test_kinetic_coefficients_ps_injection_protons(xtrack_ps_injection_protons):
-    """Kinetic coefficients in the PS, top protons, compared to old code."""
+    """Kinetic coefficients in the PS, injection protons, compared to old code."""
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(8.1e8)
@@ -224,7 +224,7 @@ def test_kinetic_coefficients_ps_injection_protons(xtrack_ps_injection_protons):
 
 
 def test_kinetic_coefficients_ps_injection_ions(xtrack_ps_injection_ions):
-    """Kinetic coefficients in the PS, top protons, compared to old code."""
+    """Kinetic coefficients in the PS, injection ions, compared to old code."""
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(8.1e8)
@@ -274,6 +274,3 @@ def test_kinetic_coefficients_ps_injection_ions(xtrack_ps_injection_ions):
     assert np.isclose(IBS.friction_coefficients.Fx, MIBS.Fx, atol=0, rtol=1e-3)
     assert np.isclose(IBS.friction_coefficients.Fy, MIBS.Fy, atol=0, rtol=1e-3)
     assert np.isclose(IBS.friction_coefficients.Fz, MIBS.Fz, atol=0, rtol=1e-3)
-
-
-# Maybe one for the LHC too and we're good?
