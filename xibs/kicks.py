@@ -541,11 +541,11 @@ class KineticKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Computing the Dxx, Dxz, etc terms from Nagaitsev terms above, according to the expressions derived
         # by Michalis (see backup slides in his presentation at https://indico.cern.ch/event/1140639)
-        D_sp: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        F_sp: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        D_sx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        F_sx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        D_sxp: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
+        D_sp: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))  # Dzz term from slides
+        F_sp: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))  # Kz term from slides
+        D_sx: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))  # Dxx term from slides
+        F_sx: np.ndarray = 1.0 * gammar**2 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))  # Kx term from slides
+        D_sxp: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term  # Dxz term from slides
         # ----------------------------------------------------------------------------------------------
         # Computing integrands for the diffusion and friction terms from the above (also from Michalis)
         # fmt: on
