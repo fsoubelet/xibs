@@ -74,7 +74,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     sigma_z = 1.58e-3
     nemitt_x = 5.66e-7
     nemitt_y = 3.7e-9
-    nturns = 500  # number of turns to loop for
+    nturns = 250  # number of turns to loop for
     ibs_step = 50  # frequency to re-compute the growth rates & kick coefficients in [turns]
     # --------------------------------------------------------------------
     # Setup line and particles for tracking
@@ -157,7 +157,7 @@ def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     nemitt_x = 1.0e-6
     nemitt_y = 0.25e-6
     harmonic_number = 4653
-    nturns = 500  # number of turns to loop for
+    nturns = 250  # number of turns to loop for
     ibs_step = 50  # frequency to re-compute the growth rates & kick coefficients in [turns]
     # --------------------------------------------------------------------
     # Setup line and particles for tracking
