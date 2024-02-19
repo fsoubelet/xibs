@@ -464,21 +464,25 @@ class KineticKickIBS(KickBasedIBS):
 
         Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this
         code base, from the friction and diffusion terms of the kinetic theory as expressed in
-        :cite:`NuclInstr:Zenkevich:Kinetic_IBS`. This will compute both diffusion and friction
-        coefficients from this formalism, which will be stored and updated internally into the
-        `diffusion_coefficients` and `friction_coefficients` attributes. It returns an
-        `IBSKickCoefficients` object with the computed coefficients (diffusion - friction).
+        :cite:`NuclInstr:Zenkevich:Kinetic_IBS`, and using terms from Nagaitsev's formalism
+        (:cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`) as determined by M. Zampetakis
+        (:cite:`CERN:Zampetakis:Implementation_IBS_Kicks`). This will compute both diffusion and
+        friction coefficients from this formalism, which will be stored and updated internally
+        into the `diffusion_coefficients` and `friction_coefficients` attributes. It returns
+        an `IBSKickCoefficients` object with the computed coefficients (diffusion - friction).
 
         .. note::
             This functionality is separate from the kick application because it internally triggers
             the computation of the analytical growth rates, and we don't necessarily want to
             recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.
 
-        TODO: do this section once the code is clearer. Based on nagaitsev terms for now.
         .. hint::
             The calculation is done according to the following steps:
 
-                - Computes
+                - Computes various terms from :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation` as well as elliptic integrals.
+                - Computes the :math:`D_{xx}, D_{xz}, D_{yy}, D_{zz}, K_x, K_y` and :math:`K_z` terms.
+                - Computes diffusion and friction coefficients from the above, following :cite:`CERN:Zampetakis:Implementation_IBS_Kicks`.
+                - Computes and returns kick coefficients (as the difference between diffusion and friction).
 
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
@@ -535,15 +539,15 @@ class KineticKickIBS(KickBasedIBS):
         )
         full_constant_term = rest_of_constant_term * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
-        # Computing the D and F terms from the paper, according to the expressions derived by Michalis
-        # Michail (see his presentation at https://indico.cern.ch/event/1140639)
+        # Computing the Dxx, Dxz, etc terms from Nagaitsev terms above, according to the expressions derived
+        # by Michalis (see backup slides in his presentation at https://indico.cern.ch/event/1140639)
         D_sp: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
         F_sp: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
         D_sx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
         F_sx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
         D_sxp: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
         # ----------------------------------------------------------------------------------------------
-        # Computing integrands from the terms above (TODO: clarify after more reading)
+        # Computing integrands for the diffusion and friction terms from the above (also from Michalis)
         # fmt: on
         Dx_integrand: np.ndarray = (
             self.optics.betx
@@ -586,7 +590,8 @@ class KineticKickIBS(KickBasedIBS):
         .. versionadded:: 0.7.0
 
         Computes the momentum kicks to apply based on the provided `xpart.Particles` object and
-        the previously computed kick coefficients. TODO: ref implementation of kicks.
+        the previously computed kick coefficients. The kick is applied as described in
+        :cite:`NuclInstr:Zenkevich:Kinetic_IBS` and :cite:`CERN:Zampetakis:Implementation_IBS_Kicks`.
 
         Args:
             particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
@@ -616,7 +621,7 @@ class KineticKickIBS(KickBasedIBS):
         bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
         factor = bunch_length * 2 * np.sqrt(np.pi)
         # ----------------------------------------------------------------------------------------------
-        # Determining kicks from the friction forces (using friction coefficients)
+        # Determining kicks from the friction forces (see referenced Michalis presentation)
         # fmt: on
         LOGGER.debug("Determining friction kicks")
         delta_px_friction: np.ndarray = (
@@ -654,7 +659,7 @@ class KineticKickIBS(KickBasedIBS):
         sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
         sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
         # ----------------------------------------------------------------------------------------------
-        # Determining kicks from the friction forces (using friction coefficients)
+        # Determining kicks from the friction forces (see referenced Michalis presentation)
         LOGGER.debug("Determining diffusion kicks")
         RNG = np.random.default_rng()
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
