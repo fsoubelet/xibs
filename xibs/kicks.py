@@ -541,23 +541,23 @@ class KineticKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Computing the Dxx, Dxz, etc terms from Nagaitsev terms above, according to the expressions derived
         # by Michalis (see backup slides in his presentation at https://indico.cern.ch/event/1140639)
-        D_sp: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))  # Dzz term from slides
-        F_sp: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))  # Kz term from slides
-        D_sx: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))  # Dxx term from slides
-        F_sx: np.ndarray = 1.0 * gammar**2 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))  # Kx term from slides
-        D_sxp: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term  # Dxz term from slides
+        Dzz: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        Kz: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        Dxx: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        Kx: np.ndarray = 1.0 * gammar**2 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        Dxz: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
         # ----------------------------------------------------------------------------------------------
         # Computing integrands for the diffusion and friction terms from the above (also from Michalis)
         # fmt: on
         Dx_integrand: np.ndarray = (
             self.optics.betx
             / (self.optics.circumference * sigma_x * sigma_y)
-            * (D_sx + D_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + D_sxp)
+            * (Dxx + Dzz * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + Dxz)
         )
         Fx_integrand: np.ndarray = (
             self.optics.betx
             / (self.optics.circumference * sigma_x * sigma_y)
-            * (F_sx + F_sp * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
+            * (Kx + Kz * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
         )
         Dy_integrand: np.ndarray = (
             self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (R2 + R3)
@@ -565,8 +565,8 @@ class KineticKickIBS(KickBasedIBS):
         Fy_integrand: np.ndarray = (
             self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (2 * R1)
         )
-        Dz_integrand: np.ndarray = D_sp / (self.optics.circumference * sigma_x * sigma_y)
-        Fz_integrand: np.ndarray = F_sp / (self.optics.circumference * sigma_x * sigma_y)
+        Dz_integrand: np.ndarray = Dzz / (self.optics.circumference * sigma_x * sigma_y)
+        Fz_integrand: np.ndarray = Kz / (self.optics.circumference * sigma_x * sigma_y)
         # ----------------------------------------------------------------------------------------------
         # Integrating them to obtain the diffusion and friction coefficients
         Dx: float = np.sum(Dx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
