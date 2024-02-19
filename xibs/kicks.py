@@ -543,8 +543,8 @@ class KineticKickIBS(KickBasedIBS):
         # by Michalis (see backup slides in his presentation at https://indico.cern.ch/event/1140639)
         Dzz: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
         Kz: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        Dxx: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        Kx: np.ndarray = 1.0 * gammar**2 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        Dxx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        Kx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
         Dxz: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
         # ----------------------------------------------------------------------------------------------
         # Computing integrands for the diffusion and friction terms from the above (also from Michalis,
