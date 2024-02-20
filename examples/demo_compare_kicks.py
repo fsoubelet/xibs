@@ -120,6 +120,7 @@ particles = xp.generate_matched_gaussian_bunch(
     nemitt_y=nemitt_y,
     sigma_z=sigma_z,
     line=line,
+    engine="single-rf-harmonic",
 )
 particles2 = particles.copy()
 
