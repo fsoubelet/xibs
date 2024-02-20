@@ -54,6 +54,40 @@ Click on any image thumbnail to see the corresponding example page with and acce
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows a comparison of the results obtained with ~xibs.kicks.KineticKickIBS and ~xi...">
+
+.. only:: html
+
+  .. image:: /gallery/images/thumb/sphx_glr_demo_compare_kicks_thumb.svg
+    :alt:
+
+  :ref:`sphx_glr_gallery_demo_compare_kicks.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Comparison of IBS Kicks Formalisms</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.kicks.KineticKickIBS class to apply IBS kicks to track...">
+
+.. only:: html
+
+  .. image:: /gallery/images/thumb/sphx_glr_demo_kinetic_kicks_thumb.svg
+    :alt:
+
+  :ref:`sphx_glr_gallery_demo_kinetic_kicks.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms</div>
+    </div>
+
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.analytical.NagaitsevIBS class to calculate IBS growth ...">
 
 .. only:: html
@@ -96,6 +130,8 @@ Click on any image thumbnail to see the corresponding example page with and acce
 
    /gallery/demo_analytical_bjorken_mtingwa_emittances
    /gallery/demo_compare_analyticals
+   /gallery/demo_compare_kicks
+   /gallery/demo_kinetic_kicks
    /gallery/demo_analytical_nagaitsev_emittances
    /gallery/demo_simple_kicks
 

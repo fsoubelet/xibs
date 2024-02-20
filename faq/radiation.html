@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Synchrotron Radiation Contribution — xibs 0.6.0 documentation</title>
+<title>Synchrotron Radiation Contribution — xibs 0.7.0 documentation</title>
 <link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
 <link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
@@ -21,7 +21,7 @@
   <![endif]-->
 <script src="../_static/jquery.js?v=5d32c60e"></script>
 <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+<script src="../_static/documentation_options.js?v=fe7df9b0"></script>
 <script src="../_static/doctools.js?v=888ff710"></script>
 <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -40,7 +40,7 @@
 <a href="../index.html">
 </a>
 <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
 <form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -72,6 +72,19 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_kicks.html">Comparison of IBS Kicks Formalisms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#generating-the-ibs-kick-classes">Generating the IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#comparing-beam-parameters-evolution-while-applying-ibs-kicks-in-tracking">Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html">Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
@@ -225,7 +238,7 @@ See below a function that does just so:</p>
 <h2>Getting SR Parameters from MAD-X<a class="headerlink" href="#getting-sr-parameters-from-mad-x" title="Link to this heading"></a></h2>
 <p>While a bit more cumbersome, it is possible to get these parameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> as well.
 Let’s assume your sequence and beam are defined, one might get the necessary parameters as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_sr_inputs_from_line</span><span class="p">(</span><span class="n">madx</span><span class="p">:</span> <span class="n">cpymad</span><span class="o">.</span><span class="n">madx</span><span class="o">.</span><span class="n">Madx</span><span class="p">,</span> <span class="n">normalized</span><span class="p">:</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#bool" title="bool"><span class="nb">bool</span></a> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="tuple"><span class="nb">tuple</span></a><span class="p">[</span><a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#float" title="float"><span class="nb">float</span></a><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_sr_inputs_from_madx</span><span class="p">(</span><span class="n">madx</span><span class="p">:</span> <span class="n">cpymad</span><span class="o">.</span><span class="n">madx</span><span class="o">.</span><span class="n">Madx</span><span class="p">,</span> <span class="n">normalized</span><span class="p">:</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#bool" title="bool"><span class="nb">bool</span></a> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="tuple"><span class="nb">tuple</span></a><span class="p">[</span><a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#float" title="float"><span class="nb">float</span></a><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Assumes beam, sequence etc are already defined."""</span>
     <span class="c1"># Make sure to include radiation effects for the active beam</span>
     <span class="n">madx</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="s2">"beam, radiate;"</span><span class="p">)</span>

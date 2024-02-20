@@ -93,7 +93,7 @@ Let's assume your sequence and beam are defined, one might get the necessary par
 
 .. code-block:: python
 
-    def get_sr_inputs_from_line(madx: cpymad.madx.Madx, normalized: bool = True) -> tuple[float, ...]:
+    def get_sr_inputs_from_madx(madx: cpymad.madx.Madx, normalized: bool = True) -> tuple[float, ...]:
         """Assumes beam, sequence etc are already defined."""
         # Make sure to include radiation effects for the active beam
         madx.input("beam, radiate;")

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Comparison of Analytical IBS Growth Rates and Emittances Evolution &mdash; xibs 0.6.0 documentation</title>
+  <title>Comparison of Analytical IBS Growth Rates and Emittances Evolution &mdash; xibs 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -32,7 +32,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution" href="demo_analytical_nagaitsev_emittances.html" />
+    <link rel="next" title="Comparison of IBS Kicks Formalisms" href="demo_compare_kicks.html" />
     <link rel="prev" title="Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution" href="demo_analytical_bjorken_mtingwa_emittances.html" /> 
 </head>
 
@@ -48,7 +48,7 @@
             
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -80,6 +80,19 @@
 </li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_compare_kicks.html">Comparison of IBS Kicks Formalisms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_compare_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_compare_kicks.html#generating-the-ibs-kick-classes">Generating the IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_compare_kicks.html#comparing-beam-parameters-evolution-while-applying-ibs-kicks-in-tracking">Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_kinetic_kicks.html">Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
@@ -460,7 +473,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">analytical</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">BjorkenMtingwaIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">NagaitsevIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">growth_rates</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 42.562 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 43.725 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-compare-analyticals-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/e7d7c058e6d7b1bd1854bc6bdc5a280b/demo_compare_analyticals.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_compare_analyticals.ipynb</span></code></a></p>
@@ -478,7 +491,7 @@ in this example:</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="demo_analytical_bjorken_mtingwa_emittances.html" class="btn btn-neutral float-left" title="Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="demo_analytical_nagaitsev_emittances.html" class="btn btn-neutral float-right" title="Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="demo_compare_kicks.html" class="btn btn-neutral float-right" title="Comparison of IBS Kicks Formalisms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

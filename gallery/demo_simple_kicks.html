@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates &mdash; xibs 0.6.0 documentation</title>
+  <title>Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates &mdash; xibs 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -48,7 +48,7 @@
             
           </a>
               <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -80,6 +80,19 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_compare_kicks.html">Comparison of IBS Kicks Formalisms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_compare_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_compare_kicks.html#generating-the-ibs-kick-classes">Generating the IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_compare_kicks.html#comparing-beam-parameters-evolution-while-applying-ibs-kicks-in-tracking">Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_kinetic_kicks.html">Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kinetic_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
@@ -272,111 +285,36 @@ is going to take some time:</p>
     <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_y</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_y</span></a><span class="p">,</span>
     <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sigma_z</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sigma_z</span></a><span class="p">,</span>
     <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span>
+    <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;single-rf-harmonic&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Init: interval 718, total 71796
-Loading line from dict:   0% (0/71796 iterations)
-Loading line from dict:   1% (718/71796 iterations)
-Loading line from dict:   2% (1436/71796 iterations)
-Loading line from dict:   3% (2154/71796 iterations)
-Loading line from dict:   4% (2872/71796 iterations)
-Loading line from dict:   5% (3590/71796 iterations)
-Loading line from dict:   6% (4308/71796 iterations)
-Loading line from dict:   7% (5026/71796 iterations)
-Loading line from dict:   8% (5744/71796 iterations)
-Loading line from dict:   9% (6462/71796 iterations)
-Loading line from dict:  10% (7180/71796 iterations)
-Loading line from dict:  11% (7898/71796 iterations)
-Loading line from dict:  12% (8616/71796 iterations)
-Loading line from dict:  13% (9334/71796 iterations)
-Loading line from dict:  14% (10052/71796 iterations)
-Loading line from dict:  15% (10770/71796 iterations)
-Loading line from dict:  16% (11488/71796 iterations)
-Loading line from dict:  17% (12206/71796 iterations)
-Loading line from dict:  18% (12924/71796 iterations)
-Loading line from dict:  19% (13642/71796 iterations)
-Loading line from dict:  20% (14360/71796 iterations)
-Loading line from dict:  21% (15078/71796 iterations)
-Loading line from dict:  22% (15796/71796 iterations)
-Loading line from dict:  23% (16514/71796 iterations)
-Loading line from dict:  24% (17232/71796 iterations)
-Loading line from dict:  25% (17950/71796 iterations)
-Loading line from dict:  26% (18668/71796 iterations)
-Loading line from dict:  27% (19386/71796 iterations)
-Loading line from dict:  28% (20104/71796 iterations)
-Loading line from dict:  29% (20822/71796 iterations)
-Loading line from dict:  30% (21540/71796 iterations)
-Loading line from dict:  31% (22258/71796 iterations)
-Loading line from dict:  32% (22976/71796 iterations)
-Loading line from dict:  33% (23694/71796 iterations)
-Loading line from dict:  34% (24412/71796 iterations)
-Loading line from dict:  35% (25130/71796 iterations)
-Loading line from dict:  36% (25848/71796 iterations)
-Loading line from dict:  37% (26566/71796 iterations)
-Loading line from dict:  38% (27284/71796 iterations)
-Loading line from dict:  39% (28002/71796 iterations)
-Loading line from dict:  40% (28720/71796 iterations)
-Loading line from dict:  41% (29438/71796 iterations)
-Loading line from dict:  42% (30156/71796 iterations)
-Loading line from dict:  43% (30874/71796 iterations)
-Loading line from dict:  44% (31592/71796 iterations)
-Loading line from dict:  45% (32310/71796 iterations)
-Loading line from dict:  46% (33028/71796 iterations)
-Loading line from dict:  47% (33746/71796 iterations)
-Loading line from dict:  48% (34464/71796 iterations)
-Loading line from dict:  49% (35182/71796 iterations)
-Loading line from dict:  50% (35900/71796 iterations)
-Loading line from dict:  51% (36618/71796 iterations)
-Loading line from dict:  52% (37336/71796 iterations)
-Loading line from dict:  53% (38054/71796 iterations)
-Loading line from dict:  54% (38772/71796 iterations)
-Loading line from dict:  55% (39490/71796 iterations)
-Loading line from dict:  56% (40208/71796 iterations)
-Loading line from dict:  57% (40926/71796 iterations)
-Loading line from dict:  58% (41644/71796 iterations)
-Loading line from dict:  59% (42362/71796 iterations)
-Loading line from dict:  60% (43080/71796 iterations)
-Loading line from dict:  61% (43798/71796 iterations)
-Loading line from dict:  62% (44516/71796 iterations)
-Loading line from dict:  63% (45234/71796 iterations)
-Loading line from dict:  64% (45952/71796 iterations)
-Loading line from dict:  65% (46670/71796 iterations)
-Loading line from dict:  66% (47388/71796 iterations)
-Loading line from dict:  67% (48106/71796 iterations)
-Loading line from dict:  68% (48824/71796 iterations)
-Loading line from dict:  69% (49542/71796 iterations)
-Loading line from dict:  70% (50260/71796 iterations)
-Loading line from dict:  71% (50978/71796 iterations)
-Loading line from dict:  72% (51696/71796 iterations)
-Loading line from dict:  73% (52414/71796 iterations)
-Loading line from dict:  74% (53132/71796 iterations)
-Loading line from dict:  75% (53850/71796 iterations)
-Loading line from dict:  76% (54568/71796 iterations)
-Loading line from dict:  77% (55286/71796 iterations)
-Loading line from dict:  78% (56004/71796 iterations)
-Loading line from dict:  79% (56722/71796 iterations)
-Loading line from dict:  80% (57440/71796 iterations)
-Loading line from dict:  81% (58158/71796 iterations)
-Loading line from dict:  82% (58876/71796 iterations)
-Loading line from dict:  83% (59594/71796 iterations)
-Loading line from dict:  84% (60312/71796 iterations)
-Loading line from dict:  85% (61030/71796 iterations)
-Loading line from dict:  86% (61748/71796 iterations)
-Loading line from dict:  87% (62466/71796 iterations)
-Loading line from dict:  88% (63184/71796 iterations)
-Loading line from dict:  89% (63902/71796 iterations)
-Loading line from dict:  90% (64620/71796 iterations)
-Loading line from dict:  91% (65338/71796 iterations)
-Loading line from dict:  92% (66056/71796 iterations)
-Loading line from dict:  93% (66774/71796 iterations)
-Loading line from dict:  94% (67492/71796 iterations)
-Loading line from dict:  95% (68210/71796 iterations)
-Loading line from dict:  96% (68928/71796 iterations)
-Loading line from dict:  97% (69646/71796 iterations)
-Loading line from dict:  98% (70364/71796 iterations)
-Loading line from dict:  99% (71082/71796 iterations)
-Loading line from dict: 100% (71796/71796 iterations)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Loading line from dict:   0%|          | 0/71796 [00:00&lt;?, ?it/s]
+Loading line from dict:   4%|▍         | 2978/71796 [00:00&lt;00:02, 29746.70it/s]
+Loading line from dict:   8%|▊         | 5978/71796 [00:00&lt;00:02, 29882.87it/s]
+Loading line from dict:  13%|█▎        | 8978/71796 [00:00&lt;00:02, 29917.82it/s]
+Loading line from dict:  17%|█▋        | 11970/71796 [00:00&lt;00:01, 29913.54it/s]
+Loading line from dict:  21%|██        | 14962/71796 [00:00&lt;00:01, 29635.68it/s]
+Loading line from dict:  25%|██▍       | 17927/71796 [00:00&lt;00:02, 22430.04it/s]
+Loading line from dict:  29%|██▉       | 20942/71796 [00:00&lt;00:02, 24492.43it/s]
+Loading line from dict:  33%|███▎      | 23970/71796 [00:00&lt;00:01, 26090.16it/s]
+Loading line from dict:  37%|███▋      | 26884/71796 [00:00&lt;00:01, 26946.83it/s]
+Loading line from dict:  41%|████▏     | 29699/71796 [00:01&lt;00:01, 26517.99it/s]
+Loading line from dict:  45%|████▌     | 32434/71796 [00:01&lt;00:01, 26215.12it/s]
+Loading line from dict:  49%|████▉     | 35113/71796 [00:01&lt;00:01, 25979.33it/s]
+Loading line from dict:  53%|█████▎    | 37964/71796 [00:01&lt;00:01, 26702.22it/s]
+Loading line from dict:  57%|█████▋    | 41008/71796 [00:01&lt;00:01, 27785.66it/s]
+Loading line from dict:  61%|██████▏   | 44036/71796 [00:01&lt;00:00, 28508.96it/s]
+Loading line from dict:  66%|██████▌   | 47049/71796 [00:01&lt;00:00, 28987.14it/s]
+Loading line from dict:  70%|██████▉   | 50028/71796 [00:01&lt;00:00, 29222.33it/s]
+Loading line from dict:  74%|███████▍  | 53048/71796 [00:01&lt;00:00, 29501.61it/s]
+Loading line from dict:  78%|███████▊  | 56096/71796 [00:02&lt;00:00, 29776.95it/s]
+Loading line from dict:  82%|████████▏ | 59080/71796 [00:02&lt;00:00, 21304.15it/s]
+Loading line from dict:  87%|████████▋ | 62111/71796 [00:02&lt;00:00, 23409.10it/s]
+Loading line from dict:  90%|█████████ | 64751/71796 [00:02&lt;00:00, 23810.51it/s]
+Loading line from dict:  94%|█████████▍| 67347/71796 [00:02&lt;00:00, 24329.25it/s]
+Loading line from dict:  97%|█████████▋| 69938/71796 [00:02&lt;00:00, 24701.22it/s]
+Loading line from dict: 100%|██████████| 71796/71796 [00:02&lt;00:00, 26255.01it/s]
 Done loading line from dict.
 Compiling ContextCpu kernels...
 Done compiling ContextCpu kernels.
@@ -392,6 +330,452 @@ Use simple quadrupoles
 Rebuild tracker data
 Compiling ContextCpu kernels...
 Done compiling ContextCpu kernels.
+SingleRFHarmonicMatcher: Gaussian parameter is equal to 0.002m to achieve target RMS bunch length (0.002m).
+SingleRFHarmonicMatcher: Transforming distribution: 18%
+SingleRFHarmonicMatcher: Transforming distribution: 19%
+SingleRFHarmonicMatcher: Transforming distribution: 19%
+SingleRFHarmonicMatcher: Transforming distribution: 20%
+SingleRFHarmonicMatcher: Transforming distribution: 21%
+SingleRFHarmonicMatcher: Transforming distribution: 21%
+SingleRFHarmonicMatcher: Transforming distribution: 22%
+SingleRFHarmonicMatcher: Transforming distribution: 23%
+SingleRFHarmonicMatcher: Transforming distribution: 23%
+SingleRFHarmonicMatcher: Transforming distribution: 24%
+SingleRFHarmonicMatcher: Transforming distribution: 25%
+SingleRFHarmonicMatcher: Transforming distribution: 25%
+SingleRFHarmonicMatcher: Transforming distribution: 26%
+SingleRFHarmonicMatcher: Transforming distribution: 27%
+SingleRFHarmonicMatcher: Transforming distribution: 27%
+SingleRFHarmonicMatcher: Transforming distribution: 28%
+SingleRFHarmonicMatcher: Transforming distribution: 29%
+SingleRFHarmonicMatcher: Transforming distribution: 29%
+SingleRFHarmonicMatcher: Transforming distribution: 30%
+SingleRFHarmonicMatcher: Transforming distribution: 31%
+SingleRFHarmonicMatcher: Transforming distribution: 31%
+SingleRFHarmonicMatcher: Transforming distribution: 32%
+SingleRFHarmonicMatcher: Transforming distribution: 33%
+SingleRFHarmonicMatcher: Transforming distribution: 33%
+SingleRFHarmonicMatcher: Transforming distribution: 34%
+SingleRFHarmonicMatcher: Transforming distribution: 35%
+SingleRFHarmonicMatcher: Transforming distribution: 35%
+SingleRFHarmonicMatcher: Transforming distribution: 36%
+SingleRFHarmonicMatcher: Transforming distribution: 37%
+SingleRFHarmonicMatcher: Transforming distribution: 37%
+SingleRFHarmonicMatcher: Transforming distribution: 38%
+SingleRFHarmonicMatcher: Transforming distribution: 39%
+SingleRFHarmonicMatcher: Transforming distribution: 39%
+SingleRFHarmonicMatcher: Transforming distribution: 40%
+SingleRFHarmonicMatcher: Transforming distribution: 41%
+SingleRFHarmonicMatcher: Transforming distribution: 41%
+SingleRFHarmonicMatcher: Transforming distribution: 42%
+SingleRFHarmonicMatcher: Transforming distribution: 43%
+SingleRFHarmonicMatcher: Transforming distribution: 43%
+SingleRFHarmonicMatcher: Transforming distribution: 44%
+SingleRFHarmonicMatcher: Transforming distribution: 45%
+SingleRFHarmonicMatcher: Transforming distribution: 45%
+SingleRFHarmonicMatcher: Transforming distribution: 46%
+SingleRFHarmonicMatcher: Transforming distribution: 47%
+SingleRFHarmonicMatcher: Transforming distribution: 47%
+SingleRFHarmonicMatcher: Transforming distribution: 48%
+SingleRFHarmonicMatcher: Transforming distribution: 49%
+SingleRFHarmonicMatcher: Transforming distribution: 49%
+SingleRFHarmonicMatcher: Transforming distribution: 50%
+SingleRFHarmonicMatcher: Transforming distribution: 51%
+SingleRFHarmonicMatcher: Transforming distribution: 51%
+SingleRFHarmonicMatcher: Transforming distribution: 52%
+SingleRFHarmonicMatcher: Transforming distribution: 53%
+SingleRFHarmonicMatcher: Transforming distribution: 53%
+SingleRFHarmonicMatcher: Transforming distribution: 54%
+SingleRFHarmonicMatcher: Transforming distribution: 55%
+SingleRFHarmonicMatcher: Transforming distribution: 55%
+SingleRFHarmonicMatcher: Transforming distribution: 56%
+SingleRFHarmonicMatcher: Transforming distribution: 57%
+SingleRFHarmonicMatcher: Transforming distribution: 57%
+SingleRFHarmonicMatcher: Transforming distribution: 58%
+SingleRFHarmonicMatcher: Transforming distribution: 59%
+SingleRFHarmonicMatcher: Transforming distribution: 59%
+SingleRFHarmonicMatcher: Transforming distribution: 60%
+SingleRFHarmonicMatcher: Transforming distribution: 61%
+SingleRFHarmonicMatcher: Transforming distribution: 61%
+SingleRFHarmonicMatcher: Transforming distribution: 62%
+SingleRFHarmonicMatcher: Transforming distribution: 63%
+SingleRFHarmonicMatcher: Transforming distribution: 63%
+SingleRFHarmonicMatcher: Transforming distribution: 64%
+SingleRFHarmonicMatcher: Transforming distribution: 65%
+SingleRFHarmonicMatcher: Transforming distribution: 65%
+SingleRFHarmonicMatcher: Transforming distribution: 66%
+SingleRFHarmonicMatcher: Transforming distribution: 67%
+SingleRFHarmonicMatcher: Transforming distribution: 67%
+SingleRFHarmonicMatcher: Transforming distribution: 68%
+SingleRFHarmonicMatcher: Transforming distribution: 69%
+SingleRFHarmonicMatcher: Transforming distribution: 69%
+SingleRFHarmonicMatcher: Transforming distribution: 70%
+SingleRFHarmonicMatcher: Transforming distribution: 71%
+SingleRFHarmonicMatcher: Transforming distribution: 71%
+SingleRFHarmonicMatcher: Transforming distribution: 72%
+SingleRFHarmonicMatcher: Transforming distribution: 73%
+SingleRFHarmonicMatcher: Transforming distribution: 73%
+SingleRFHarmonicMatcher: Transforming distribution: 74%
+SingleRFHarmonicMatcher: Transforming distribution: 75%
+SingleRFHarmonicMatcher: Transforming distribution: 75%
+SingleRFHarmonicMatcher: Transforming distribution: 76%
+SingleRFHarmonicMatcher: Transforming distribution: 77%
+SingleRFHarmonicMatcher: Transforming distribution: 77%
+SingleRFHarmonicMatcher: Transforming distribution: 78%
+SingleRFHarmonicMatcher: Transforming distribution: 79%
+SingleRFHarmonicMatcher: Transforming distribution: 79%
+SingleRFHarmonicMatcher: Transforming distribution: 80%
+SingleRFHarmonicMatcher: Transforming distribution: 81%
+SingleRFHarmonicMatcher: Transforming distribution: 81%
+SingleRFHarmonicMatcher: Transforming distribution: 82%
+SingleRFHarmonicMatcher: Transforming distribution: 83%
+SingleRFHarmonicMatcher: Transforming distribution: 83%
+SingleRFHarmonicMatcher: Transforming distribution: 84%
+SingleRFHarmonicMatcher: Transforming distribution: 85%
+SingleRFHarmonicMatcher: Transforming distribution: 85%
+SingleRFHarmonicMatcher: Transforming distribution: 86%
+SingleRFHarmonicMatcher: Transforming distribution: 87%
+SingleRFHarmonicMatcher: Transforming distribution: 87%
+SingleRFHarmonicMatcher: Transforming distribution: 88%
+SingleRFHarmonicMatcher: Transforming distribution: 89%
+SingleRFHarmonicMatcher: Transforming distribution: 89%
+SingleRFHarmonicMatcher: Transforming distribution: 90%
+SingleRFHarmonicMatcher: Transforming distribution: 91%
+SingleRFHarmonicMatcher: Transforming distribution: 91%
+SingleRFHarmonicMatcher: Transforming distribution: 92%
+SingleRFHarmonicMatcher: Transforming distribution: 93%
+SingleRFHarmonicMatcher: Transforming distribution: 93%
+SingleRFHarmonicMatcher: Transforming distribution: 94%
+SingleRFHarmonicMatcher: Transforming distribution: 95%
+SingleRFHarmonicMatcher: Transforming distribution: 95%
+SingleRFHarmonicMatcher: Transforming distribution: 96%
+SingleRFHarmonicMatcher: Transforming distribution: 97%
+SingleRFHarmonicMatcher: Transforming distribution: 97%
+SingleRFHarmonicMatcher: Transforming distribution: 98%
+SingleRFHarmonicMatcher: Transforming distribution: 99%
+SingleRFHarmonicMatcher: Transforming distribution: 99%
+SingleRFHarmonicMatcher: Done transforming distribution.
+SingleRFHarmonicMatcher: Sampling particles:  0%
+SingleRFHarmonicMatcher: Sampling particles:  1%
+SingleRFHarmonicMatcher: Sampling particles:  1%
+SingleRFHarmonicMatcher: Sampling particles:  1%
+SingleRFHarmonicMatcher: Sampling particles:  2%
+SingleRFHarmonicMatcher: Sampling particles:  2%
+SingleRFHarmonicMatcher: Sampling particles:  2%
+SingleRFHarmonicMatcher: Sampling particles:  2%
+SingleRFHarmonicMatcher: Sampling particles:  3%
+SingleRFHarmonicMatcher: Sampling particles:  3%
+SingleRFHarmonicMatcher: Sampling particles:  3%
+SingleRFHarmonicMatcher: Sampling particles:  4%
+SingleRFHarmonicMatcher: Sampling particles:  4%
+SingleRFHarmonicMatcher: Sampling particles:  4%
+SingleRFHarmonicMatcher: Sampling particles:  5%
+SingleRFHarmonicMatcher: Sampling particles:  5%
+SingleRFHarmonicMatcher: Sampling particles:  5%
+SingleRFHarmonicMatcher: Sampling particles:  6%
+SingleRFHarmonicMatcher: Sampling particles:  6%
+SingleRFHarmonicMatcher: Sampling particles:  6%
+SingleRFHarmonicMatcher: Sampling particles:  7%
+SingleRFHarmonicMatcher: Sampling particles:  7%
+SingleRFHarmonicMatcher: Sampling particles:  7%
+SingleRFHarmonicMatcher: Sampling particles:  8%
+SingleRFHarmonicMatcher: Sampling particles:  8%
+SingleRFHarmonicMatcher: Sampling particles:  8%
+SingleRFHarmonicMatcher: Sampling particles:  8%
+SingleRFHarmonicMatcher: Sampling particles:  9%
+SingleRFHarmonicMatcher: Sampling particles:  9%
+SingleRFHarmonicMatcher: Sampling particles:  9%
+SingleRFHarmonicMatcher: Sampling particles: 10%
+SingleRFHarmonicMatcher: Sampling particles: 10%
+SingleRFHarmonicMatcher: Sampling particles: 10%
+SingleRFHarmonicMatcher: Sampling particles: 11%
+SingleRFHarmonicMatcher: Sampling particles: 11%
+SingleRFHarmonicMatcher: Sampling particles: 11%
+SingleRFHarmonicMatcher: Sampling particles: 11%
+SingleRFHarmonicMatcher: Sampling particles: 12%
+SingleRFHarmonicMatcher: Sampling particles: 12%
+SingleRFHarmonicMatcher: Sampling particles: 12%
+SingleRFHarmonicMatcher: Sampling particles: 13%
+SingleRFHarmonicMatcher: Sampling particles: 13%
+SingleRFHarmonicMatcher: Sampling particles: 13%
+SingleRFHarmonicMatcher: Sampling particles: 14%
+SingleRFHarmonicMatcher: Sampling particles: 14%
+SingleRFHarmonicMatcher: Sampling particles: 14%
+SingleRFHarmonicMatcher: Sampling particles: 14%
+SingleRFHarmonicMatcher: Sampling particles: 15%
+SingleRFHarmonicMatcher: Sampling particles: 15%
+SingleRFHarmonicMatcher: Sampling particles: 15%
+SingleRFHarmonicMatcher: Sampling particles: 16%
+SingleRFHarmonicMatcher: Sampling particles: 16%
+SingleRFHarmonicMatcher: Sampling particles: 16%
+SingleRFHarmonicMatcher: Sampling particles: 17%
+SingleRFHarmonicMatcher: Sampling particles: 17%
+SingleRFHarmonicMatcher: Sampling particles: 17%
+SingleRFHarmonicMatcher: Sampling particles: 17%
+SingleRFHarmonicMatcher: Sampling particles: 18%
+SingleRFHarmonicMatcher: Sampling particles: 18%
+SingleRFHarmonicMatcher: Sampling particles: 18%
+SingleRFHarmonicMatcher: Sampling particles: 19%
+SingleRFHarmonicMatcher: Sampling particles: 19%
+SingleRFHarmonicMatcher: Sampling particles: 19%
+SingleRFHarmonicMatcher: Sampling particles: 20%
+SingleRFHarmonicMatcher: Sampling particles: 20%
+SingleRFHarmonicMatcher: Sampling particles: 20%
+SingleRFHarmonicMatcher: Sampling particles: 21%
+SingleRFHarmonicMatcher: Sampling particles: 21%
+SingleRFHarmonicMatcher: Sampling particles: 22%
+SingleRFHarmonicMatcher: Sampling particles: 22%
+SingleRFHarmonicMatcher: Sampling particles: 22%
+SingleRFHarmonicMatcher: Sampling particles: 23%
+SingleRFHarmonicMatcher: Sampling particles: 23%
+SingleRFHarmonicMatcher: Sampling particles: 23%
+SingleRFHarmonicMatcher: Sampling particles: 24%
+SingleRFHarmonicMatcher: Sampling particles: 24%
+SingleRFHarmonicMatcher: Sampling particles: 24%
+SingleRFHarmonicMatcher: Sampling particles: 24%
+SingleRFHarmonicMatcher: Sampling particles: 25%
+SingleRFHarmonicMatcher: Sampling particles: 25%
+SingleRFHarmonicMatcher: Sampling particles: 25%
+SingleRFHarmonicMatcher: Sampling particles: 26%
+SingleRFHarmonicMatcher: Sampling particles: 26%
+SingleRFHarmonicMatcher: Sampling particles: 26%
+SingleRFHarmonicMatcher: Sampling particles: 27%
+SingleRFHarmonicMatcher: Sampling particles: 27%
+SingleRFHarmonicMatcher: Sampling particles: 27%
+SingleRFHarmonicMatcher: Sampling particles: 27%
+SingleRFHarmonicMatcher: Sampling particles: 28%
+SingleRFHarmonicMatcher: Sampling particles: 28%
+SingleRFHarmonicMatcher: Sampling particles: 28%
+SingleRFHarmonicMatcher: Sampling particles: 29%
+SingleRFHarmonicMatcher: Sampling particles: 29%
+SingleRFHarmonicMatcher: Sampling particles: 30%
+SingleRFHarmonicMatcher: Sampling particles: 30%
+SingleRFHarmonicMatcher: Sampling particles: 30%
+SingleRFHarmonicMatcher: Sampling particles: 30%
+SingleRFHarmonicMatcher: Sampling particles: 31%
+SingleRFHarmonicMatcher: Sampling particles: 31%
+SingleRFHarmonicMatcher: Sampling particles: 31%
+SingleRFHarmonicMatcher: Sampling particles: 32%
+SingleRFHarmonicMatcher: Sampling particles: 32%
+SingleRFHarmonicMatcher: Sampling particles: 32%
+SingleRFHarmonicMatcher: Sampling particles: 32%
+SingleRFHarmonicMatcher: Sampling particles: 33%
+SingleRFHarmonicMatcher: Sampling particles: 33%
+SingleRFHarmonicMatcher: Sampling particles: 34%
+SingleRFHarmonicMatcher: Sampling particles: 34%
+SingleRFHarmonicMatcher: Sampling particles: 34%
+SingleRFHarmonicMatcher: Sampling particles: 35%
+SingleRFHarmonicMatcher: Sampling particles: 35%
+SingleRFHarmonicMatcher: Sampling particles: 35%
+SingleRFHarmonicMatcher: Sampling particles: 35%
+SingleRFHarmonicMatcher: Sampling particles: 36%
+SingleRFHarmonicMatcher: Sampling particles: 36%
+SingleRFHarmonicMatcher: Sampling particles: 37%
+SingleRFHarmonicMatcher: Sampling particles: 37%
+SingleRFHarmonicMatcher: Sampling particles: 37%
+SingleRFHarmonicMatcher: Sampling particles: 38%
+SingleRFHarmonicMatcher: Sampling particles: 38%
+SingleRFHarmonicMatcher: Sampling particles: 38%
+SingleRFHarmonicMatcher: Sampling particles: 38%
+SingleRFHarmonicMatcher: Sampling particles: 39%
+SingleRFHarmonicMatcher: Sampling particles: 39%
+SingleRFHarmonicMatcher: Sampling particles: 39%
+SingleRFHarmonicMatcher: Sampling particles: 40%
+SingleRFHarmonicMatcher: Sampling particles: 40%
+SingleRFHarmonicMatcher: Sampling particles: 40%
+SingleRFHarmonicMatcher: Sampling particles: 40%
+SingleRFHarmonicMatcher: Sampling particles: 41%
+SingleRFHarmonicMatcher: Sampling particles: 41%
+SingleRFHarmonicMatcher: Sampling particles: 41%
+SingleRFHarmonicMatcher: Sampling particles: 42%
+SingleRFHarmonicMatcher: Sampling particles: 42%
+SingleRFHarmonicMatcher: Sampling particles: 42%
+SingleRFHarmonicMatcher: Sampling particles: 42%
+SingleRFHarmonicMatcher: Sampling particles: 43%
+SingleRFHarmonicMatcher: Sampling particles: 43%
+SingleRFHarmonicMatcher: Sampling particles: 43%
+SingleRFHarmonicMatcher: Sampling particles: 44%
+SingleRFHarmonicMatcher: Sampling particles: 44%
+SingleRFHarmonicMatcher: Sampling particles: 44%
+SingleRFHarmonicMatcher: Sampling particles: 45%
+SingleRFHarmonicMatcher: Sampling particles: 45%
+SingleRFHarmonicMatcher: Sampling particles: 45%
+SingleRFHarmonicMatcher: Sampling particles: 46%
+SingleRFHarmonicMatcher: Sampling particles: 46%
+SingleRFHarmonicMatcher: Sampling particles: 46%
+SingleRFHarmonicMatcher: Sampling particles: 47%
+SingleRFHarmonicMatcher: Sampling particles: 47%
+SingleRFHarmonicMatcher: Sampling particles: 47%
+SingleRFHarmonicMatcher: Sampling particles: 48%
+SingleRFHarmonicMatcher: Sampling particles: 48%
+SingleRFHarmonicMatcher: Sampling particles: 48%
+SingleRFHarmonicMatcher: Sampling particles: 48%
+SingleRFHarmonicMatcher: Sampling particles: 49%
+SingleRFHarmonicMatcher: Sampling particles: 49%
+SingleRFHarmonicMatcher: Sampling particles: 49%
+SingleRFHarmonicMatcher: Sampling particles: 50%
+SingleRFHarmonicMatcher: Sampling particles: 50%
+SingleRFHarmonicMatcher: Sampling particles: 50%
+SingleRFHarmonicMatcher: Sampling particles: 51%
+SingleRFHarmonicMatcher: Sampling particles: 51%
+SingleRFHarmonicMatcher: Sampling particles: 51%
+SingleRFHarmonicMatcher: Sampling particles: 51%
+SingleRFHarmonicMatcher: Sampling particles: 52%
+SingleRFHarmonicMatcher: Sampling particles: 52%
+SingleRFHarmonicMatcher: Sampling particles: 52%
+SingleRFHarmonicMatcher: Sampling particles: 53%
+SingleRFHarmonicMatcher: Sampling particles: 53%
+SingleRFHarmonicMatcher: Sampling particles: 53%
+SingleRFHarmonicMatcher: Sampling particles: 54%
+SingleRFHarmonicMatcher: Sampling particles: 54%
+SingleRFHarmonicMatcher: Sampling particles: 54%
+SingleRFHarmonicMatcher: Sampling particles: 54%
+SingleRFHarmonicMatcher: Sampling particles: 55%
+SingleRFHarmonicMatcher: Sampling particles: 55%
+SingleRFHarmonicMatcher: Sampling particles: 55%
+SingleRFHarmonicMatcher: Sampling particles: 56%
+SingleRFHarmonicMatcher: Sampling particles: 56%
+SingleRFHarmonicMatcher: Sampling particles: 56%
+SingleRFHarmonicMatcher: Sampling particles: 57%
+SingleRFHarmonicMatcher: Sampling particles: 57%
+SingleRFHarmonicMatcher: Sampling particles: 57%
+SingleRFHarmonicMatcher: Sampling particles: 58%
+SingleRFHarmonicMatcher: Sampling particles: 58%
+SingleRFHarmonicMatcher: Sampling particles: 58%
+SingleRFHarmonicMatcher: Sampling particles: 59%
+SingleRFHarmonicMatcher: Sampling particles: 59%
+SingleRFHarmonicMatcher: Sampling particles: 59%
+SingleRFHarmonicMatcher: Sampling particles: 60%
+SingleRFHarmonicMatcher: Sampling particles: 60%
+SingleRFHarmonicMatcher: Sampling particles: 60%
+SingleRFHarmonicMatcher: Sampling particles: 61%
+SingleRFHarmonicMatcher: Sampling particles: 61%
+SingleRFHarmonicMatcher: Sampling particles: 61%
+SingleRFHarmonicMatcher: Sampling particles: 62%
+SingleRFHarmonicMatcher: Sampling particles: 62%
+SingleRFHarmonicMatcher: Sampling particles: 62%
+SingleRFHarmonicMatcher: Sampling particles: 62%
+SingleRFHarmonicMatcher: Sampling particles: 63%
+SingleRFHarmonicMatcher: Sampling particles: 63%
+SingleRFHarmonicMatcher: Sampling particles: 63%
+SingleRFHarmonicMatcher: Sampling particles: 64%
+SingleRFHarmonicMatcher: Sampling particles: 64%
+SingleRFHarmonicMatcher: Sampling particles: 64%
+SingleRFHarmonicMatcher: Sampling particles: 65%
+SingleRFHarmonicMatcher: Sampling particles: 65%
+SingleRFHarmonicMatcher: Sampling particles: 65%
+SingleRFHarmonicMatcher: Sampling particles: 66%
+SingleRFHarmonicMatcher: Sampling particles: 66%
+SingleRFHarmonicMatcher: Sampling particles: 66%
+SingleRFHarmonicMatcher: Sampling particles: 66%
+SingleRFHarmonicMatcher: Sampling particles: 67%
+SingleRFHarmonicMatcher: Sampling particles: 67%
+SingleRFHarmonicMatcher: Sampling particles: 67%
+SingleRFHarmonicMatcher: Sampling particles: 68%
+SingleRFHarmonicMatcher: Sampling particles: 68%
+SingleRFHarmonicMatcher: Sampling particles: 68%
+SingleRFHarmonicMatcher: Sampling particles: 69%
+SingleRFHarmonicMatcher: Sampling particles: 69%
+SingleRFHarmonicMatcher: Sampling particles: 69%
+SingleRFHarmonicMatcher: Sampling particles: 70%
+SingleRFHarmonicMatcher: Sampling particles: 70%
+SingleRFHarmonicMatcher: Sampling particles: 70%
+SingleRFHarmonicMatcher: Sampling particles: 70%
+SingleRFHarmonicMatcher: Sampling particles: 71%
+SingleRFHarmonicMatcher: Sampling particles: 71%
+SingleRFHarmonicMatcher: Sampling particles: 71%
+SingleRFHarmonicMatcher: Sampling particles: 72%
+SingleRFHarmonicMatcher: Sampling particles: 72%
+SingleRFHarmonicMatcher: Sampling particles: 72%
+SingleRFHarmonicMatcher: Sampling particles: 73%
+SingleRFHarmonicMatcher: Sampling particles: 73%
+SingleRFHarmonicMatcher: Sampling particles: 73%
+SingleRFHarmonicMatcher: Sampling particles: 74%
+SingleRFHarmonicMatcher: Sampling particles: 74%
+SingleRFHarmonicMatcher: Sampling particles: 74%
+SingleRFHarmonicMatcher: Sampling particles: 75%
+SingleRFHarmonicMatcher: Sampling particles: 75%
+SingleRFHarmonicMatcher: Sampling particles: 75%
+SingleRFHarmonicMatcher: Sampling particles: 75%
+SingleRFHarmonicMatcher: Sampling particles: 76%
+SingleRFHarmonicMatcher: Sampling particles: 76%
+SingleRFHarmonicMatcher: Sampling particles: 76%
+SingleRFHarmonicMatcher: Sampling particles: 77%
+SingleRFHarmonicMatcher: Sampling particles: 77%
+SingleRFHarmonicMatcher: Sampling particles: 77%
+SingleRFHarmonicMatcher: Sampling particles: 78%
+SingleRFHarmonicMatcher: Sampling particles: 78%
+SingleRFHarmonicMatcher: Sampling particles: 78%
+SingleRFHarmonicMatcher: Sampling particles: 79%
+SingleRFHarmonicMatcher: Sampling particles: 79%
+SingleRFHarmonicMatcher: Sampling particles: 79%
+SingleRFHarmonicMatcher: Sampling particles: 80%
+SingleRFHarmonicMatcher: Sampling particles: 80%
+SingleRFHarmonicMatcher: Sampling particles: 80%
+SingleRFHarmonicMatcher: Sampling particles: 81%
+SingleRFHarmonicMatcher: Sampling particles: 81%
+SingleRFHarmonicMatcher: Sampling particles: 81%
+SingleRFHarmonicMatcher: Sampling particles: 81%
+SingleRFHarmonicMatcher: Sampling particles: 82%
+SingleRFHarmonicMatcher: Sampling particles: 82%
+SingleRFHarmonicMatcher: Sampling particles: 83%
+SingleRFHarmonicMatcher: Sampling particles: 83%
+SingleRFHarmonicMatcher: Sampling particles: 83%
+SingleRFHarmonicMatcher: Sampling particles: 83%
+SingleRFHarmonicMatcher: Sampling particles: 84%
+SingleRFHarmonicMatcher: Sampling particles: 84%
+SingleRFHarmonicMatcher: Sampling particles: 84%
+SingleRFHarmonicMatcher: Sampling particles: 85%
+SingleRFHarmonicMatcher: Sampling particles: 85%
+SingleRFHarmonicMatcher: Sampling particles: 85%
+SingleRFHarmonicMatcher: Sampling particles: 86%
+SingleRFHarmonicMatcher: Sampling particles: 86%
+SingleRFHarmonicMatcher: Sampling particles: 86%
+SingleRFHarmonicMatcher: Sampling particles: 87%
+SingleRFHarmonicMatcher: Sampling particles: 87%
+SingleRFHarmonicMatcher: Sampling particles: 87%
+SingleRFHarmonicMatcher: Sampling particles: 88%
+SingleRFHarmonicMatcher: Sampling particles: 88%
+SingleRFHarmonicMatcher: Sampling particles: 88%
+SingleRFHarmonicMatcher: Sampling particles: 89%
+SingleRFHarmonicMatcher: Sampling particles: 89%
+SingleRFHarmonicMatcher: Sampling particles: 89%
+SingleRFHarmonicMatcher: Sampling particles: 89%
+SingleRFHarmonicMatcher: Sampling particles: 90%
+SingleRFHarmonicMatcher: Sampling particles: 90%
+SingleRFHarmonicMatcher: Sampling particles: 90%
+SingleRFHarmonicMatcher: Sampling particles: 91%
+SingleRFHarmonicMatcher: Sampling particles: 91%
+SingleRFHarmonicMatcher: Sampling particles: 91%
+SingleRFHarmonicMatcher: Sampling particles: 92%
+SingleRFHarmonicMatcher: Sampling particles: 92%
+SingleRFHarmonicMatcher: Sampling particles: 92%
+SingleRFHarmonicMatcher: Sampling particles: 93%
+SingleRFHarmonicMatcher: Sampling particles: 93%
+SingleRFHarmonicMatcher: Sampling particles: 93%
+SingleRFHarmonicMatcher: Sampling particles: 93%
+SingleRFHarmonicMatcher: Sampling particles: 94%
+SingleRFHarmonicMatcher: Sampling particles: 94%
+SingleRFHarmonicMatcher: Sampling particles: 94%
+SingleRFHarmonicMatcher: Sampling particles: 95%
+SingleRFHarmonicMatcher: Sampling particles: 95%
+SingleRFHarmonicMatcher: Sampling particles: 95%
+SingleRFHarmonicMatcher: Sampling particles: 95%
+SingleRFHarmonicMatcher: Sampling particles: 96%
+SingleRFHarmonicMatcher: Sampling particles: 96%
+SingleRFHarmonicMatcher: Sampling particles: 96%
+SingleRFHarmonicMatcher: Sampling particles: 97%
+SingleRFHarmonicMatcher: Sampling particles: 97%
+SingleRFHarmonicMatcher: Sampling particles: 97%
+SingleRFHarmonicMatcher: Sampling particles: 98%
+SingleRFHarmonicMatcher: Sampling particles: 98%
+SingleRFHarmonicMatcher: Sampling particles: 98%
+SingleRFHarmonicMatcher: Sampling particles: 99%
+SingleRFHarmonicMatcher: Sampling particles: 99%
+SingleRFHarmonicMatcher: Sampling particles: 99%
+SingleRFHarmonicMatcher: Sampling particles: 100%
+SingleRFHarmonicMatcher: Sampling particles: 100%
+SingleRFHarmonicMatcher: Sampled 15000 particles
 </pre></div>
 </div>
 </section>
@@ -444,8 +828,8 @@ internally in the <strong>IBS</strong> object and will be updated internally eac
 <span class="nb">print</span><span class="p">(</span><span class="n">IBS</span><span class="o">.</span><span class="n">kick_coefficients</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>IBSKickCoefficients(Kx=8.788231689709536e-09, Ky=4.4676281229145824e-10, Kz=2.1144506753086374e-06)
-IBSKickCoefficients(Kx=8.788231689709536e-09, Ky=4.4676281229145824e-10, Kz=2.1144506753086374e-06)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>IBSKickCoefficients(Kx=8.778583178510514e-09, Ky=4.4774349898302505e-10, Kz=2.102988762703314e-06)
+IBSKickCoefficients(Kx=8.778583178510514e-09, Ky=4.4774349898302505e-10, Kz=2.102988762703314e-06)
 </pre></div>
 </div>
 <p>We can also manually set arbitrary values of kick coefficients through the
@@ -1605,10 +1989,10 @@ After this loop is done running, we can plot the evolutions across turns:</p>
 <a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html#matplotlib.pyplot.subplot_mosaic" title="matplotlib.pyplot.subplot_mosaic" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span></a><span class="p">([[</span><span class="s2">&quot;epsx&quot;</span><span class="p">,</span> <span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">,</span> <span class="s2">&quot;bl&quot;</span><span class="p">]],</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
 <span class="c1"># Plot from tracked &amp; kicked particles</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">epsilon_x</span></a> <span class="o">*</span> <span class="mf">1e10</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Kicks&quot;</span><span class="p">)</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">epsilon_y</span></a> <span class="o">*</span> <span class="mf">1e13</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Kicks&quot;</span><span class="p">)</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">sigma_delta</span></a> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Kicks&quot;</span><span class="p">)</span>
-<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">bunch_length</span></a> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Kicks&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">epsilon_x</span></a> <span class="o">*</span> <span class="mf">1e10</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simple Kicks&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">epsilon_y</span></a> <span class="o">*</span> <span class="mf">1e13</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simple Kicks&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">sigma_delta</span></a> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simple Kicks&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kicked_tbt</span><span class="o">.</span><span class="n">bunch_length</span></a> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Simple Kicks&quot;</span><span class="p">)</span>
 
 <span class="c1"># Plot from analytical values</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">analytical_tbt</span><span class="o">.</span><span class="n">epsilon_x</span></a> <span class="o">*</span> <span class="mf">1e10</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Analytical&quot;</span><span class="p">)</span>
@@ -1650,7 +2034,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kicks</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">SimpleKickIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_ibs_kick</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (3 minutes 55.466 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 12.585 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-simple-kicks-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/8266b696ee1a21b11713d48f664d0fbf/demo_simple_kicks.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_simple_kicks.ipynb</span></code></a></p>

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>API Reference — xibs 0.6.0 documentation</title>
+<title>API Reference — xibs 0.7.0 documentation</title>
 <link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
 <link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
@@ -21,7 +21,7 @@
   <![endif]-->
 <script src="../_static/jquery.js?v=5d32c60e"></script>
 <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+<script src="../_static/documentation_options.js?v=fe7df9b0"></script>
 <script src="../_static/doctools.js?v=888ff710"></script>
 <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -41,7 +41,7 @@
 <a href="../index.html">
 </a>
 <div class="version">
-                0.6.0
+                0.7.0
               </div>
 <div role="search">
 <form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -73,6 +73,19 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_kicks.html">Comparison of IBS Kicks Formalisms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#generating-the-ibs-kick-classes">Generating the IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#comparing-beam-parameters-evolution-while-applying-ibs-kicks-in-tracking">Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html">Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
@@ -1007,8 +1020,7 @@ the above reference details.</p>
 <p>A single class to compute the IBS diffusion and friction coefficients according
 to the kinetic IBS formalism of <span id="id16">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>.
 The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
-<p>See the <span class="xref std std-ref">kinetic kicks example</span> for detailed usage.</p>
-<p>TODO: reference, details etc.</p>
+<p>See the <a class="reference internal" href="../gallery/demo_kinetic_kicks.html#demo-kinetic-kicks"><span class="std std-ref">kinetic kicks example</span></a> for detailed usage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1033,7 +1045,9 @@ method. It can also be set manually.</p></li>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.7.0.</span></p>
 </div>
-<p>TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.</p>
+<p>Computes the momentum kicks to apply based on the provided <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object and
+the previously computed kick coefficients. The kick is applied as described in
+<span id="id17">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span> and <span id="id18">[<a class="reference internal" href="../bibliography.html#id11" title="M. Zampetakis. Implementation of IBS Kicks for the LHC Ion Injectors. 2012. URL: https://indico.cern.ch/event/1140639/contributions/4786442/attachments/2414483/4131353/Implementation_of_IBS_kicks_for_the_LHC_Ion_Injectors_ABP_24_3_22.pdf.">Zam12</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1053,18 +1067,38 @@ Defaults to 40.</p></li>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.7.0.</span></p>
 </div>
-<p>TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.</p>
+<p>Computes the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kick coefficients, named <span class="math notranslate nohighlight">\(K_x, K_y\)</span> and <span class="math notranslate nohighlight">\(K_z\)</span> in this
+code base, from the friction and diffusion terms of the kinetic theory as expressed in
+<span id="id19">[<a class="reference internal" href="../bibliography.html#id5" title="Zenkevich P, Boine-Frankenheim O, and Bolshakov A. A new Algorithm for the Kinetic Analysis of Intra-Beam Scattering in Storage Rings. Nuclear Instruments and Methods in Physics Research Section A: Accelerators, Spectrometers, Detectors and Associated Equipment, 561(2):284–288, 2006. URL: https://doi.org/10.1016/j.nima.2006.01.013, doi:10.1016/j.nima.2006.01.013.">POA06</a>]</span>, and using terms from Nagaitsev’s formalism
+(<span id="id20">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>) as determined by M. Zampetakis
+(<span id="id21">[<a class="reference internal" href="../bibliography.html#id11" title="M. Zampetakis. Implementation of IBS Kicks for the LHC Ion Injectors. 2012. URL: https://indico.cern.ch/event/1140639/contributions/4786442/attachments/2414483/4131353/Implementation_of_IBS_kicks_for_the_LHC_Ion_Injectors_ABP_24_3_22.pdf.">Zam12</a>]</span>). This will compute both diffusion and
+friction coefficients from this formalism, which will be stored and updated internally
+into the <code class="xref py py-obj docutils literal notranslate"><span class="pre">diffusion_coefficients</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">friction_coefficients</span></code> attributes. It returns
+an <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code> object with the computed coefficients (diffusion - friction).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This functionality is separate from the kick application because it internally triggers
 the computation of the analytical growth rates, and we don’t necessarily want to
 recompute these at every turn. Meanwhile, the kicks <strong>should</strong> be applied at every turn.</p>
 </div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The calculation is done according to the following steps:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Computes various terms from <span id="id22">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span> as well as elliptic integrals.</p></li>
+<li><p>Computes the <span class="math notranslate nohighlight">\(D_{xx}, D_{xz}, D_{yy}, D_{zz}, K_x, K_y\)</span> and <span class="math notranslate nohighlight">\(K_z\)</span> terms.</p></li>
+<li><p>Computes diffusion and friction coefficients from the above, following <span id="id23">[<a class="reference internal" href="../bibliography.html#id11" title="M. Zampetakis. Implementation of IBS Kicks for the LHC Ion Injectors. 2012. URL: https://indico.cern.ch/event/1140639/contributions/4786442/attachments/2414483/4131353/Implementation_of_IBS_kicks_for_the_LHC_Ion_Injectors_ABP_24_3_22.pdf.">Zam12</a>]</span>.</p></li>
+<li><p>Computes and returns kick coefficients (as the difference between diffusion and friction).</p></li>
+</ul>
+</div></blockquote>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>particles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">xpart.Particles</span></code>) -- the particles to apply the IBS kicks to.</p></li>
-<li><p><strong>**kwargs</strong> -- any keyword arguments will be passed to ???.</p></li>
+<li><p><strong>**kwargs</strong> -- if <code class="xref py py-obj docutils literal notranslate"><span class="pre">bunched</span></code> is found in keyword arguments it will be passed to the
+coulomb logarithm calculation. A default value of <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> is used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1080,7 +1114,7 @@ recompute these at every turn. Meanwhile, the kicks <strong>should</strong> be a
 <p><span class="versionmodified added">New in version 0.5.0.</span></p>
 </div>
 <p>A single class to compute the simple IBS kicks based on the analytical growth rates.
-The kicks are implemented according to <span id="id17">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>, and
+The kicks are implemented according to <span id="id24">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>, and
 provide a random distribution of momenta changes based on the growth rates, weighted
 by the line density of the bunch. The class initiates from a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> and an
 <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpticsParameters</span></code> objects.</p>
@@ -1136,7 +1170,7 @@ It can also be set manually.</p></li>
 </div>
 <p>Compute the momentum kick to apply based on the provided <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object and the
 analytical growth rates for the lattice. The kicks are implemented according to Eq (8) of
-<span id="id18">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.</p>
+<span id="id25">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1158,7 +1192,7 @@ Defaults to 40.</p></li>
 </div>
 <p>Computes the <code class="docutils literal notranslate"><span class="pre">IBS</span></code> kick coefficients, named <span class="math notranslate nohighlight">\(K_x, K_y\)</span> and <span class="math notranslate nohighlight">\(K_z\)</span> in this
 code base, from analytical growth rates. The coefficients correspond to the right-hand
-side of Eq (8) in <span id="id19">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span> without the line density <span class="math notranslate nohighlight">\(\rho_t(t)\)</span>
+side of Eq (8) in <span id="id26">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span> without the line density <span class="math notranslate nohighlight">\(\rho_t(t)\)</span>
 and random component <span class="math notranslate nohighlight">\(r\)</span>.</p>
 <p>The kick coefficient corresponds to the scaling of the generated random distribution <span class="math notranslate nohighlight">\(r\)</span> and
 is expressed as <span class="math notranslate nohighlight">\(K_u = \sigma_{p_u} \sqrt{2 T^{-1}_{IBS_u} T_{rev} \sigma_t \sqrt{\pi}}\)</span>.</p>
@@ -1172,7 +1206,7 @@ the rates before every kick application.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>The calculation is done according to the following steps, which are related to
-different terms in Eq (8) of <span id="id20">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>:</p>
+different terms in Eq (8) of <span id="id27">[<a class="reference internal" href="../bibliography.html#id6" title="Bruce R, Jowett J. M, Blaskiewicz M, and Fischer W. Time Evolution of the Luminosity of Colliding Heavy-Ion Beams in BNL Relativistic Heavy Ion Collider and CERN Large Hadron Collider. Physical Review Special Topics - Accelerators and Beams, 2010. URL: https://doi.org/10.1103/physrevstab.13.091001, doi:10.1103/physrevstab.13.091001.">RJMMW10</a>]</span>:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Computes various properties from the non-lost particles in the bunch (<span class="math notranslate nohighlight">\(\sigma_{x,y,\delta,t}\)</span>).</p></li>
@@ -1208,7 +1242,7 @@ and <code class="xref py py-obj docutils literal notranslate"><span class="pre">
 <dd><div class="versionadded">
 <p><span class="versionmodified added">New in version 0.2.0.</span></p>
 </div>
-<p>Phi parameter of Eq (15) in <span id="id21">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
+<p>Phi parameter of Eq (15) in <span id="id28">[<a class="reference internal" href="../bibliography.html#id3" title="Sergei Nagaitsev. Intrabeam Scattering Formulas for Fast Numerical Evaluation. Phys. Rev. ST Accel. Beams, 8:064403, 5 2005. URL: https://link.aps.org/doi/10.1103/PhysRevSTAB.8.064403, doi:10.1103/PhysRevSTAB.8.064403.">Nag05</a>]</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

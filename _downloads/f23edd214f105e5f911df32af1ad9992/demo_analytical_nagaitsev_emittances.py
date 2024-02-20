@@ -85,6 +85,7 @@ particles = xp.generate_matched_gaussian_bunch(
     sigma_z=sigma_z,
     particle_ref=p0,
     line=line,
+    engine="single-rf-harmonic",
 )
 
 ###############################################################################
