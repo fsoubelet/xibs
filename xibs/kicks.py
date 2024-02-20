@@ -18,8 +18,11 @@ from logging import getLogger
 import numpy as np
 
 from numpy.typing import ArrayLike
+from scipy.constants import c
+from scipy.special import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
+from xibs.formulary import phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -432,8 +435,6 @@ class KineticKickIBS(KickBasedIBS):
 
     See the :ref:`kinetic kicks example <demo-kinetic-kicks>` for detailed usage.
 
-    TODO: reference, details etc.
-
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
         optics (OpticsParameters): the optics parameters to use for the IBS computations.
@@ -461,32 +462,137 @@ class KineticKickIBS(KickBasedIBS):
         r"""
         .. versionadded:: 0.7.0
 
-        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
+        Computes the ``IBS`` kick coefficients, named :math:`K_x, K_y` and :math:`K_z` in this
+        code base, from the friction and diffusion terms of the kinetic theory as expressed in
+        :cite:`NuclInstr:Zenkevich:Kinetic_IBS`, and using terms from Nagaitsev's formalism
+        (:cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation`) as determined by M. Zampetakis
+        (:cite:`CERN:Zampetakis:Implementation_IBS_Kicks`). This will compute both diffusion and
+        friction coefficients from this formalism, which will be stored and updated internally
+        into the `diffusion_coefficients` and `friction_coefficients` attributes. It returns
+        an `IBSKickCoefficients` object with the computed coefficients (diffusion - friction).
 
         .. note::
             This functionality is separate from the kick application because it internally triggers
             the computation of the analytical growth rates, and we don't necessarily want to
             recompute these at every turn. Meanwhile, the kicks **should** be applied at every turn.
 
+        .. hint::
+            The calculation is done according to the following steps:
+
+                - Computes various terms from :cite:`PRAB:Nagaitsev:IBS_formulas_fast_numerical_evaluation` as well as elliptic integrals.
+                - Computes the :math:`D_{xx}, D_{xz}, D_{yy}, D_{zz}, K_x, K_y` and :math:`K_z` terms.
+                - Computes diffusion and friction coefficients from the above, following :cite:`CERN:Zampetakis:Implementation_IBS_Kicks`.
+                - Computes and returns kick coefficients (as the difference between diffusion and friction).
+
         Args:
             particles (xpart.Particles): the particles to apply the IBS kicks to.
-            **kwargs: any keyword arguments will be passed to ???.
+            **kwargs: if `bunched` is found in keyword arguments it will be passed to the
+                coulomb logarithm calculation. A default value of `True` is used.
 
         Returns:
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
-        result = 1
+        # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
+        LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
+        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
+        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
+        sigma_x: float = float(np.std(particles.x[particles.state > 0]))
+        sigma_y: float = float(np.std(particles.y[particles.state > 0]))
+        # Indexing: we want the value where the bunch is and assume at start / end of machine which
+        # is where / when we will apply the kick (do a line.track and then kick). To be modified when
+        # when we include these things into xtrack, if we want an element that creates the kick.
+        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
+        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
         # ----------------------------------------------------------------------------------------------
-        # Self-update the instance's attributes and then return the results
-        self.coefficients = result
+        # Computing necessary intermediate terms for the following lines
+        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, self.optics.dx, self.optics.dpx)
+        # Computing the constants from Eq (18-21) in Nagaitsev paper
+        # fmt: off
+        gammar = self.beam_parameters.gamma_rel
+        ax: np.ndarray = self.optics.betx / geom_epsx
+        ay: np.ndarray = self.optics.bety / geom_epsy
+        a_s: np.ndarray = ax * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + 1 / sigma_delta**2
+        a1: np.ndarray = (ax + gammar**2 * a_s) / 2.0
+        a2: np.ndarray = (ax - gammar**2 * a_s) / 2.0
+        sqrt_term = np.sqrt(a2**2 + gammar**2 * ax**2 * phix**2)
+        # ----------------------------------------------------------------------------------------------
+        # These are from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
+        lambda_1: np.ndarray = ay
+        lambda_2: np.ndarray = a1 + sqrt_term
+        lambda_3: np.ndarray = a1 - sqrt_term
+        # ----------------------------------------------------------------------------------------------
+        # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper (at each element of the lattice)
+        LOGGER.debug("Computing elliptic integrals R1, R2 and R3")
+        R1: np.ndarray = elliprd(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
+        R2: np.ndarray = elliprd(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
+        R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
+        # ----------------------------------------------------------------------------------------------
+        # Compute the coulomb logarithm from an analytical class then the rest of the constant term in
+        # Eq (30-32) of Nagaitsev's paper
+        analytical = NagaitsevIBS(self.beam_parameters, self.optics)  # the formalism does not matter
+        bunched = kwargs.get("bunched", True)
+        coulomb_logarithm: float = analytical.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
+        rest_of_constant_term = (
+            self.beam_parameters.n_part * self.beam_parameters.particle_classical_radius_m**2 * c 
+            / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
+        )
+        full_constant_term = rest_of_constant_term * coulomb_logarithm
+        # ----------------------------------------------------------------------------------------------
+        # Computing the Dxx, Dxz, etc terms from Nagaitsev terms above, according to the expressions derived
+        # by Michalis (see backup slides in his presentation at https://indico.cern.ch/event/1140639)
+        Dzz: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        Kz: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        Dxx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
+        Kx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
+        Dxz: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
+        # ----------------------------------------------------------------------------------------------
+        # Computing integrands for the diffusion and friction terms from the above (also from Michalis,
+        # see slide 18 of his presentation for instance).
+        # fmt: on
+        Dx_integrand: np.ndarray = (
+            self.optics.betx
+            / (self.optics.circumference * sigma_x * sigma_y)
+            * (Dxx + Dzz * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + Dxz)
+        )
+        Fx_integrand: np.ndarray = (
+            self.optics.betx
+            / (self.optics.circumference * sigma_x * sigma_y)
+            * (Kx + Kz * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
+        )
+        Dy_integrand: np.ndarray = (
+            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (R2 + R3)
+        )
+        Fy_integrand: np.ndarray = (
+            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (2 * R1)
+        )
+        Dz_integrand: np.ndarray = Dzz / (self.optics.circumference * sigma_x * sigma_y)
+        Fz_integrand: np.ndarray = Kz / (self.optics.circumference * sigma_x * sigma_y)
+        # ----------------------------------------------------------------------------------------------
+        # Integrating them to obtain the diffusion and friction coefficients
+        Dx: float = np.sum(Dx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
+        Dy: float = np.sum(Dy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
+        Dz: float = np.sum(Dz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
+        Fx: float = np.sum(Fx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
+        Fy: float = np.sum(Fy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
+        Fz: float = np.sum(Fz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
+        # ----------------------------------------------------------------------------------------------
+        # Generate and store the coefficients in a DiffusionCoefficients and FrictionCoefficients object
+        self.diffusion_coefficients = DiffusionCoefficients(Dx, Dy, Dz)
+        self.friction_coefficients = FrictionCoefficients(Fx, Fy, Fz)
+        # ----------------------------------------------------------------------------------------------
+        # Self-update the instance's attributes and then return the results: kick coefficients
+        result = IBSKickCoefficients(Dx - Fx, Dy - Fy, Dz - Fz)
+        self.kick_coefficients = result
         return result
 
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.7.0
 
-        TODO: NEEDS A REFERENCE FOR THE IMPLEMENTATION AND A CITATION.
+        Computes the momentum kicks to apply based on the provided `xpart.Particles` object and
+        the previously computed kick coefficients. The kick is applied as described in
+        :cite:`NuclInstr:Zenkevich:Kinetic_IBS` and :cite:`CERN:Zampetakis:Implementation_IBS_Kicks`.
 
         Args:
             particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
@@ -498,12 +604,86 @@ class KineticKickIBS(KickBasedIBS):
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
-        if self.coefficients is None:
+        if any(
+            coeffs is None
+            for coeffs in [self.kick_coefficients, self.diffusion_coefficients, self.friction_coefficients]
+        ):
             LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
             raise AttributeError(
                 "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
                 "Please call the `compute_kick_coefficients` method first."
             )
         # ----------------------------------------------------------------------------------------------
-        # TODO: implement
-        pass
+        # Compute the line density - this is the rho_t(t) term in Eq (8) of
+        dt: float = 1 / self.optics.revolution_frequency
+        rho_t: np.ndarray = self.line_density(particles, n_slices)
+        # ----------------------------------------------------------------------------------------------
+        # Compute the bunch_length * 2 * sqrt(pi) factor for the kicks
+        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
+        factor = bunch_length * 2 * np.sqrt(np.pi)
+        # ----------------------------------------------------------------------------------------------
+        # Determining kicks from the friction forces (see referenced Michalis presentation)
+        # fmt: on
+        LOGGER.debug("Determining friction kicks")
+        delta_px_friction: np.ndarray = (
+            self.friction_coefficients.Fx
+            * (particles.px[particles.state > 0] - np.mean(particles.px[particles.state > 0]))
+            * dt
+            * rho_t
+            * factor
+        )
+        delta_py_friction: np.ndarray = (
+            self.friction_coefficients.Fy
+            * (particles.py[particles.state > 0] - np.mean(particles.py[particles.state > 0]))
+            * dt
+            * rho_t
+            * factor
+        )
+        delta_delta_friction: np.ndarray = (
+            self.friction_coefficients.Fz
+            * (particles.delta[particles.state > 0] - np.mean(particles.delta[particles.state > 0]))
+            * dt
+            * rho_t
+            * factor
+        )
+        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
+        particles.px[particles.state > 0] -= delta_px_friction
+        particles.py[particles.state > 0] -= delta_py_friction
+        particles.delta[particles.state > 0] -= delta_delta_friction
+        # ----------------------------------------------------------------------------------------------
+        # Compute the momentum spread and standard deviation of (normalized) momenta from particles object
+        # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
+        # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
+        # fmt: off
+        LOGGER.debug("Computing momentum spread and momenta's standard deviations")
+        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
+        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
+        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
+        # ----------------------------------------------------------------------------------------------
+        # Determining kicks from the friction forces (see referenced Michalis presentation)
+        LOGGER.debug("Determining diffusion kicks")
+        RNG = np.random.default_rng()
+        # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
+        _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
+        delta_px_diffusion: np.ndarray = (
+            sigma_px_normalized
+            * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
+            * RNG.normal(0, 1, _size)
+            * np.sqrt(rho_t * factor)
+        )
+        delta_py_diffusion: np.ndarray = (
+            sigma_py_normalized
+            * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
+            * RNG.normal(0, 1, _size)
+            * np.sqrt(rho_t * factor)
+        )
+        delta_delta_diffusion: np.ndarray = (
+            sigma_delta
+            * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
+            * RNG.normal(0, 1, _size)
+            * np.sqrt(rho_t * factor)
+        )
+        LOGGER.debug("Applying diffusion kicks to the particles (on px, py and delta properties)")
+        particles.px[particles.state > 0] += delta_px_diffusion
+        particles.py[particles.state > 0] += delta_py_diffusion
+        particles.delta[particles.state > 0] += delta_delta_diffusion

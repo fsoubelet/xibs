@@ -15,7 +15,7 @@ import xtrack as xt
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import SimpleKickIBS
+from xibs.kicks import KineticKickIBS
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -51,6 +51,7 @@ def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
 # ------------------- #
 
 context = xo.ContextCpu(omp_num_threads="auto")
+# context = xo.ContextCpu()
 filepath = Path(__file__).parent.parent.parent / "tests" / "inputs" / "lines" / "sps_top_ions.json"
 line = xt.Line.from_json(filepath.absolute())
 line.build_tracker(context)
@@ -59,9 +60,9 @@ twiss = line.twiss(method="4d")
 
 # Using fake values for beam parameters to be in a regime that 'stimulates' IBS
 bunch_intensity = int(3.5e11)  # from the test config
-sigma_z = 8e-2
-nemitt_x = 1.0e-6
-nemitt_y = 0.2e-6
+sigma_z = 5e-2  # from the test config
+nemitt_x = 1.0e-6  # from the test config
+nemitt_y = 0.25e-6  # from the test config
 
 # Let's get our parameters
 beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
@@ -129,7 +130,7 @@ analytical_tbt.update_at_turn(0, particles, twiss)
 # Re-initialize the IBS classes to be sure
 beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
 opticsparams = OpticsParameters.from_line(line)
-IBS = SimpleKickIBS(beamparams, opticsparams)
+IBS = KineticKickIBS(beamparams, opticsparams)
 NIBS = NagaitsevIBS(beamparams, opticsparams)
 MIBS = MichalisIBS()
 MIBS.set_beam_parameters(line.particle_ref)
@@ -148,7 +149,7 @@ for turn in range(1, nturns):
         )
         # We compute from values at the previous turn
         IBS.compute_kick_coefficients(particles)
-        MIBS.calculate_simple_kick(particles2)
+        MIBS.calculate_kinetic_coefficients(particles2)
         NIBS.growth_rates(  # recomputes integrals by default
             analytical_tbt.epsilon_x[turn - 1],
             analytical_tbt.epsilon_y[turn - 1],
@@ -160,7 +161,7 @@ for turn in range(1, nturns):
 
     # ----- Apply IBS Kick and Track Turn ----- #
     IBS.apply_ibs_kick(particles)
-    MIBS.apply_simple_kick(particles2)
+    MIBS.apply_kinetic_kick(particles2)
     line.track(particles, num_turns=1)
     line.track(particles2, num_turns=1)
 
@@ -188,22 +189,22 @@ for turn in range(1, nturns):
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(15, 8))
 
 # Plot from my kicks and tracking
-axs["epsx"].plot(turns, my_tbt.epsilon_x * 1e8, lw=1.5, label="Me")
-axs["epsy"].plot(turns, my_tbt.epsilon_y * 1e8, lw=1.5, label="Me")
-axs["sigd"].plot(turns, my_tbt.sigma_delta * 1e3, lw=1.5, label="Me")
-axs["bl"].plot(turns, my_tbt.bunch_length * 1e2, lw=1.5, label="Me")
+axs["epsx"].plot(turns, my_tbt.epsilon_x * 1e8, lw=1.5, label="Xibs")
+axs["epsy"].plot(turns, my_tbt.epsilon_y * 1e8, lw=1.5, label="Xibs")
+axs["sigd"].plot(turns, my_tbt.sigma_delta * 1e3, lw=1.5, label="Xibs")
+axs["bl"].plot(turns, my_tbt.bunch_length * 1e2, lw=1.5, label="Xibs")
 
 # Plot from Michalis kicks and tracking
-axs["epsx"].plot(turns, michalis_tbt.epsilon_x * 1e8, "-", lw=0.65, label="Michalis")
-axs["epsy"].plot(turns, michalis_tbt.epsilon_y * 1e8, "-", lw=0.65, label="Michalis")
-axs["sigd"].plot(turns, michalis_tbt.sigma_delta * 1e3, "-", lw=0.65, label="Michalis")
-axs["bl"].plot(turns, michalis_tbt.bunch_length * 1e2, "-", lw=0.65, label="Michalis")
+axs["epsx"].plot(turns, michalis_tbt.epsilon_x * 1e8, "-", lw=0.75, label="Michalis")
+axs["epsy"].plot(turns, michalis_tbt.epsilon_y * 1e8, "-", lw=0.75, label="Michalis")
+axs["sigd"].plot(turns, michalis_tbt.sigma_delta * 1e3, "-", lw=0.75, label="Michalis")
+axs["bl"].plot(turns, michalis_tbt.bunch_length * 1e2, "-", lw=0.75, label="Michalis")
 
 # Plot from analytical values
-axs["epsx"].plot(turns, analytical_tbt.epsilon_x * 1e8, lw=1, label="Analytical")
-axs["epsy"].plot(turns, analytical_tbt.epsilon_y * 1e8, lw=1, label="Analytical")
-axs["sigd"].plot(turns, analytical_tbt.sigma_delta * 1e3, lw=1, label="Analytical")
-axs["bl"].plot(turns, analytical_tbt.bunch_length * 1e2, lw=1, label="Analytical")
+axs["epsx"].plot(turns, analytical_tbt.epsilon_x * 1e8, lw=1.5, label="Nagaitsev")
+axs["epsy"].plot(turns, analytical_tbt.epsilon_y * 1e8, lw=1.5, label="Nagaitsev")
+axs["sigd"].plot(turns, analytical_tbt.sigma_delta * 1e3, lw=1.5, label="Nagaitsev")
+axs["bl"].plot(turns, analytical_tbt.bunch_length * 1e2, lw=1.5, label="Nagaitsev")
 
 # Axes parameters
 axs["epsx"].set_ylabel(r"$\varepsilon_x$ [$10^{-8}$m]")
@@ -224,6 +225,7 @@ for axis in axs.values():
 
 fig.align_ylabels((axs["epsx"], axs["sigd"]))
 fig.align_ylabels((axs["epsy"], axs["bl"]))
+fig.suptitle("SPS Top Ions: Kinetic Kicks")
 
 plt.tight_layout()
 plt.show()

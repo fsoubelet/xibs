@@ -19,54 +19,11 @@ from scipy.stats import pearsonr
 
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import IBSKickCoefficients, SimpleKickIBS
-
-
-def test_simple_kicks_lead_to_increased_momenta(xtrack_sps_top_ions):
-    """
-    Do an IBS kick on Pb ions in the SPS and make sure the momenta have increased.
-    always be the case in this formalism. Using fake high values for the beam parameters
-    in order to be in a regime that 'stimulates' IBS.
-    """
-    # --------------------------------------------------------------------
-    # Some simple parameters
-    bunch_intensity = int(3.5e11)
-    n_part = int(1e3)  # we don't want too many particles for CI
-    sigma_z = 8e-2
-    nemitt_x = 1.0e-6
-    nemitt_y = 0.25e-6
-    harmonic_number = 4653
-    # --------------------------------------------------------------------
-    # Setup line and particles for tracking
-    line: xt.Line = xtrack_sps_top_ions  # already has particle_ref
-    line["actcse.31632"].lag = 180  # above transition
-    line["actcse.31632"].voltage = 1.7e6  # from config
-    line["actcse.31632"].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
-    particles = xp.generate_matched_gaussian_bunch(
-        num_particles=n_part,
-        total_intensity_particles=bunch_intensity,
-        nemitt_x=nemitt_x,
-        nemitt_y=nemitt_y,
-        sigma_z=sigma_z,
-        line=line,
-    )
-    particles2 = particles.copy()
-    # --------------------------------------------------------------------
-    # Create IBS object, put high kick coefficients and apply IBS kicks
-    beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
-    opticsparams = OpticsParameters.from_line(line)
-    IBS = SimpleKickIBS(beamparams, opticsparams)  # no dy, chooses Nagaitsev
-    IBS.kick_coefficients = IBSKickCoefficients(1e-4, 1e-4, 1e-4)
-    IBS.apply_ibs_kick(particles)
-    # --------------------------------------------------------------------
-    # Compare to initial distribution, make sure momenta have increased
-    assert np.std(particles.px) > np.std(particles2.px)
-    assert np.std(particles.py) > np.std(particles2.py)
-    assert np.std(particles.delta) > np.std(particles2.delta)
+from xibs.kicks import DiffusionCoefficients, FrictionCoefficients, KineticKickIBS
 
 
 def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
-    """Track positrons in the CLIC DR and compare to analytical."""
+    """Track positrons in the CLIC DR and correlate to analytical."""
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(4.5e9)
@@ -74,7 +31,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     sigma_z = 1.58e-3
     nemitt_x = 5.66e-7
     nemitt_y = 3.7e-9
-    nturns = 250  # number of turns to loop for
+    nturns = 500  # number of turns to loop for
     ibs_step = 50  # frequency to re-compute the growth rates & kick coefficients in [turns]
     # --------------------------------------------------------------------
     # Setup line and particles for tracking
@@ -96,7 +53,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     # Create the IBS objects
     beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
     opticsparams = OpticsParameters.from_line(line)
-    IBS = SimpleKickIBS(beamparams, opticsparams)  # no dy, chooses Nagaitsev
+    IBS = KineticKickIBS(beamparams, opticsparams)
     NIBS = NagaitsevIBS(beamparams, opticsparams)
     # --------------------------------------------------------------------
     # Prepare records for data storage & store the initial values
@@ -134,7 +91,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
         analytical_tbt.bunch_length[turn] = ana_bunch_length
     # --------------------------------------------------------------------
     # Eventually plotting code to upload artifacts and check visually should we want
-    plot_kicks_vs_analytical(kicked_tbt, analytical_tbt, "simple_kicks_clic_dr")
+    plot_kicks_vs_analytical(kicked_tbt, analytical_tbt, "kinetic_kicks_clic_dr")
     # --------------------------------------------------------------------
     # Do some checks - we want some level of positive correlation between kicks and analytical
     assert pearsonr(kicked_tbt.epsilon_x, analytical_tbt.epsilon_x).statistic > 0
@@ -145,9 +102,10 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
 
 def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     """
-    Track Pb ions in the SPS and compare to analytical. For this test we will use fake values
+    Track Pb ions in the SPS and correlate to analytical. For this test we will use fake values
     for the beam parameters in order to be in a regime that 'stimulates' IBS. This way we have
-    sigmificant emittance growth and not oscillations around a stable point.
+    sigmificant emittance growth and not "oscillations" around a stable point, which messes up
+    checking the correlation to analytical values.
     """
     # --------------------------------------------------------------------
     # Some simple parameters
@@ -157,7 +115,7 @@ def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     nemitt_x = 1.0e-6
     nemitt_y = 0.25e-6
     harmonic_number = 4653
-    nturns = 250  # number of turns to loop for
+    nturns = 1000  # number of turns to loop for
     ibs_step = 50  # frequency to re-compute the growth rates & kick coefficients in [turns]
     # --------------------------------------------------------------------
     # Setup line and particles for tracking
@@ -180,7 +138,7 @@ def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     # Create the IBS objects
     beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
     opticsparams = OpticsParameters.from_line(line)
-    IBS = SimpleKickIBS(beamparams, opticsparams)  # no dy, chooses Nagaitsev
+    IBS = KineticKickIBS(beamparams, opticsparams)  # no dy, chooses Nagaitsev
     NIBS = NagaitsevIBS(beamparams, opticsparams)  # same analytical to compare
     # --------------------------------------------------------------------
     # Prepare records for data storage & store the initial values
@@ -218,7 +176,7 @@ def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
         analytical_tbt.bunch_length[turn] = ana_bunch_length
     # --------------------------------------------------------------------
     # Eventually plotting code to upload artifacts and check visually should we want
-    plot_kicks_vs_analytical(kicked_tbt, analytical_tbt, "simple_kicks_sps_top_ions")
+    plot_kicks_vs_analytical(kicked_tbt, analytical_tbt, "kinetic_kicks_sps_top_ions")
     # --------------------------------------------------------------------
     # Do some checks - we want some level of positive correlation between kicks and analytical
     assert pearsonr(kicked_tbt.epsilon_x, analytical_tbt.epsilon_x).statistic > 0

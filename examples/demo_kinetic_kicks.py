@@ -1,24 +1,24 @@
 """
 
-.. _demo-simple-kicks:
+.. _demo-kinetic-kicks:
 
-===================================================================
-Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates
-===================================================================
+=========================================================================
+Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms
+=========================================================================
 
-This example shows how to use the `~.xibs.kicks.SimpleKickIBS` class
-to apply IBS kicks to tracked particles based on analytical growth rates.
-It implements IBS kicks based on the formalism described in :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
+This example shows how to use the `~.xibs.kicks.KineticKickIBS` class
+to apply IBS kicks to tracked particles based on the kinetic theory of gases.
+It implements IBS kicks based on the formalism described in :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
 
 .. warning::
-    Please note that this kick formalism is **not** valid for any machine operating below
-    transition energy. Details are provided in the :ref:`class's documentation <xibs-kicks>`.
-    The class will raise an error at instantiation if the machine is below transition.
+    Please note that this kick formalism is currently implemented with terms from Nagaitsev's
+    calculations, which do not take into consideration vertical dispersion. Details are provided
+    in the :ref:`class's documentation <xibs-kicks>`.
 
 We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
 for a positron beam.
 """
-# sphinx_gallery_thumbnail_number = 1
+# sphinx_gallery_thumbnail_number = 2
 import logging
 import sys
 import warnings
@@ -34,7 +34,7 @@ import xtrack as xt
 
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import IBSKickCoefficients, SimpleKickIBS
+from xibs.kicks import DiffusionCoefficients, KineticKickIBS
 
 warnings.simplefilter("ignore")  # for this tutorial's clarity
 plt.rcParams.update(
@@ -136,7 +136,7 @@ particles = xp.generate_matched_gaussian_bunch(
 
 # Let's make sure we get logging output to demonstrate
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     stream=sys.stdout,
     format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
     datefmt="%H:%M:%S",
@@ -144,42 +144,48 @@ logging.basicConfig(
 
 beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
 opticsparams = OpticsParameters.from_line(line)
-IBS = SimpleKickIBS(beamparams, opticsparams)
-
-###############################################################################
-# When creating a `SimpleKickIBS` instance, it will automatically assign itself
-# an analytical class (from `xibs.analytical`) to compute the growth rates when
-# needed, and log its choice to the user. In our case, it chose a `NagaitsevIBS`
-# class since it did not detect any vertical dispersion in the lattice. It is
-# always possible to manually assign a chosen formalism class instead by setting
-# the `.analytical_ibs` (see the :ref:`API reference <xibs-kicks>` for more details).
-
-print(IBS.analytical_ibs)
-assert isinstance(IBS.analytical_ibs, NagaitsevIBS)  # True
+IBS = KineticKickIBS(beamparams, opticsparams)
 
 ###############################################################################
 # Computing and Applying IBS Kicks
 # --------------------------------
-# Since calculating the IBS kicks requires computing the analytical growth rates,
-# which is computationally expensive and not necessary every turn, this functionality
+# Since calculating the IBS kicks requires computing the diffusion and friction rates,
+# which can be computationally expensive and not necessary every turn, this functionality
 # is distinct from the application of the kicks to the particles. The so-called "kick
 # coefficients" are computed directly from the particle distribution by calling the
-# dedicated method. They are returned as an `IBSKickCoefficients` object, but also stored
-# internally in the **IBS** object and will be updated internally each time they are computed.
+# dedicated method. They correspond to the diffusion minus friction terms, and are
+# returned as an `IBSKickCoefficients` object, which is stored internally in the **IBS**
+# object and will be updated internally each time they are computed.
 
 kick_coefficients = IBS.compute_kick_coefficients(particles)
 print(kick_coefficients)
 print(IBS.kick_coefficients)
 
 ###############################################################################
-# We can also manually set arbitrary values of kick coefficients through the
-# `kick_coefficients` attribute. We will do so here with unrealistically high
-# values in order to demonstrate the effect of the kick. The kick is applied to
-# the particles with the `apply_ibs_kick` method, which applies momentum effect
-# on each plane, weigthed by the line density of the bunch.
+# For the kinetic formalism, the diffusion and friction coefficients are also
+# stored internally (and updated each time the method above is called). They
+# can be accessed as the `diffusion_coefficients` and `friction_coefficients`
+# attributes of the `KineticKickIBS` object.
+# 
+# .. hint::
+#     Note that in this formalism the order of magnitude of diffusion and friction
+#     coefficients, as well as the resulting `IBSKickCoefficients`` is very different
+#     than the ones from the simple kicks formalism.
 
-# Small kick in horizontal, none in vertical, strong in longitudinal
-IBS.kick_coefficients = IBSKickCoefficients(5e-7, 0, 3e-4)
+print(IBS.diffusion_coefficients)
+print(IBS.friction_coefficients)
+
+###############################################################################
+# We can also manually set arbitrary values through these attributes. We will do
+# so here with unrealistically high diffusion values compared to the ones above,
+# in order to demonstrate the effect of the kick. The kick is applied to the particles
+# with the `apply_ibs_kick` method, which computes and applies momentum kicks on each
+# plane, for both diffusion and friction effects, weigthed by the line density of the
+# bunch. Friction terms lead to a reduction of the beam sizes, while diffusion terms
+# lead to an increase.
+
+# Let's do strong diffusion and small friction to showcase the effect
+IBS.diffusion_coefficients = DiffusionCoefficients(5e5, 1e6, 5e5)
 particles2 = particles.copy()  # let's apply on a copy of the particles
 IBS.apply_ibs_kick(particles2)
 
@@ -221,7 +227,7 @@ plt.show()
 # We will also track the analytical evolution of relevant quantities - as done
 # in the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` - for comparison.
 
-IBS = SimpleKickIBS(beamparams, opticsparams)
+IBS = KineticKickIBS(beamparams, opticsparams)
 NIBS = NagaitsevIBS(beamparams, opticsparams)
 
 # Re-create particles with less elements as tracking takes a while
@@ -237,7 +243,7 @@ particles = xp.generate_matched_gaussian_bunch(
 
 # Define some parameters for the tracking
 nturns = 1_000  # number of turns to loop for
-ibs_step = 50  # frequency at which to re-compute the growth rates & kick coefficients in [turns]
+ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 
 ###############################################################################
 # We will also set up a dataclass conveniently to store the results:
@@ -276,15 +282,6 @@ analytical_tbt = Records.init_zeroes(nturns)
 kicked_tbt.update_at_turn(0, particles, twiss)
 analytical_tbt.update_at_turn(0, particles, twiss)
 
-# Let's hide anything below WARNING level for readability
-logging.basicConfig(
-    level=logging.WARNING,
-    stream=sys.stdout,
-    format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
-    datefmt="%H:%M:%S",
-    force=True,
-)
-
 ###############################################################################
 # Now, since ``xibs`` is not fully integrated into Xsuite, we will have to manually
 # apply the IBS kick at each turn of tracking, and also manually trigger the turn
@@ -294,7 +291,7 @@ logging.basicConfig(
 for turn in range(1, nturns):
     # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
     if (turn % ibs_step == 0) or (turn == 1):
-        print(f"Turn {turn:d}: re-computing growth rates and kick coefficients")
+        print(f"Turn {turn:d}: re-computing diffusion and friction terms")
         # Compute kick coefficients from the particle distribution at this moment
         IBS.compute_kick_coefficients(particles)
         # Compute analytical values from those at the previous turn
@@ -335,10 +332,10 @@ turns = np.arange(nturns, dtype=int)  # array of turns
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(15, 7))
 
 # Plot from tracked & kicked particles
-axs["epsx"].plot(turns, kicked_tbt.epsilon_x * 1e10, lw=2, label="Simple Kicks")
-axs["epsy"].plot(turns, kicked_tbt.epsilon_y * 1e13, lw=2, label="Simple Kicks")
-axs["sigd"].plot(turns, kicked_tbt.sigma_delta * 1e3, lw=2, label="Simple Kicks")
-axs["bl"].plot(turns, kicked_tbt.bunch_length * 1e3, lw=2, label="Simple Kicks")
+axs["epsx"].plot(turns, kicked_tbt.epsilon_x * 1e10, lw=2, label="Kinetic Kicks")
+axs["epsy"].plot(turns, kicked_tbt.epsilon_y * 1e13, lw=2, label="Kinetic Kicks")
+axs["sigd"].plot(turns, kicked_tbt.sigma_delta * 1e3, lw=2, label="Kinetic Kicks")
+axs["bl"].plot(turns, kicked_tbt.bunch_length * 1e3, lw=2, label="Kinetic Kicks")
 
 # Plot from analytical values
 axs["epsx"].plot(turns, analytical_tbt.epsilon_x * 1e10, lw=2.5, label="Analytical")
@@ -378,6 +375,6 @@ plt.show()
 #
 #    - `~xibs.analytical`: `~.xibs.analytical.NagaitsevIBS`, `~.xibs.analytical.NagaitsevIBS.growth_rates`, `~.xibs.analytical.NagaitsevIBS.emittance_evolution`
 #    - `~xibs.inputs`: `~xibs.inputs.BeamParameters`, `~xibs.inputs.OpticsParameters`
-#    - `~xibs.kicks`: `~.xibs.kicks.IBSKickCoefficients`, `~.xibs.kicks.SimpleKickIBS`, `~.xibs.kicks.SimpleKickIBS.apply_ibs_kick`, `~.xibs.kicks.SimpleKickIBS.compute_kick_coefficients`
+#    - `~xibs.kicks`: `~.xibs.kicks.DiffusionCoefficients`, `~.xibs.kicks.FrictionCoefficients`, `~.xibs.kicks.IBSKickCoefficients`, `~.xibs.kicks.KineticKickIBS`, `~.xibs.kicks.KineticKickIBS.apply_ibs_kick`, `~.xibs.kicks.KineticKickIBS.compute_kick_coefficients`
 
 ###############################################################################
