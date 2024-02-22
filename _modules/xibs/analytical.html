@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.analytical &mdash; xibs 0.7.0 documentation</title>
+  <title>xibs.analytical &mdash; xibs 0.7.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
+        <script src="../../_static/documentation_options.js?v=5a057da9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.7.0
+                0.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -389,9 +389,9 @@
         <span class="c1"># fmt: on</span>
         <span class="n">TempeV</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">Etrans</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
-        <span class="c1"># Compute sigmas in each dimension</span>
-        <span class="n">sigma_x_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">_bx_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dx_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">sigma_y_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epsy</span> <span class="o">*</span> <span class="n">_by_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dy_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Compute sigmas in each dimension (start from sigma_delta to get sige needed in the formula)</span>
+        <span class="n">sigma_x_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">_bx_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dx_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma_y_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epsy</span> <span class="o">*</span> <span class="n">_by_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dy_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">sigma_t_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">bunch_length</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Calculate beam volume to get density (in cm^{-3}) then Debye length</span>
@@ -400,14 +400,14 @@
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># coasting beam</span>
             <span class="n">volume</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma_x_cm</span> <span class="o">*</span> <span class="n">sigma_y_cm</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span>
         <span class="n">density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">n_part</span> <span class="o">/</span> <span class="n">volume</span>
-        <span class="n">debyul</span> <span class="o">=</span> <span class="mf">743.4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">TempeV</span> <span class="o">/</span> <span class="n">density</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_charge</span>
+        <span class="n">debyul</span> <span class="o">=</span> <span class="mf">743.4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">TempeV</span> <span class="o">/</span> <span class="n">density</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_charge</span><span class="p">)</span>  <span class="c1"># abs for negative charges!</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Calculate &#39;rmin&#39; as larger of classical distance of closest approach or quantum mechanical</span>
         <span class="c1"># diffraction limit from nuclear radius</span>
         <span class="n">rmincl</span> <span class="o">=</span> <span class="mf">1.44e-7</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_charge</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">TempeV</span>
         <span class="n">rminqm</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">hbar</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="mf">1e5</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2e-3</span> <span class="o">*</span> <span class="n">Etrans</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_mass_eV</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
-        <span class="p">)</span>  <span class="c1"># energy in GeV</span>
+        <span class="p">)</span>  <span class="c1"># particle mass needed in GeV</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Now compute the impact parameters and finally Coulomb logarithm</span>
         <span class="n">bmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rmincl</span><span class="p">,</span> <span class="n">rminqm</span><span class="p">)</span>
