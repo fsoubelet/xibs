@@ -215,9 +215,9 @@ class AnalyticalIBS(ABC):
         # fmt: on
         TempeV = 2.0 * Etrans
         # ----------------------------------------------------------------------------------------------
-        # Compute sigmas in each dimension
-        sigma_x_cm = 100 * np.sqrt(geom_epsx * _bx_bar + (_dx_bar * sigma_delta) ** 2)
-        sigma_y_cm = 100 * np.sqrt(geom_epsy * _by_bar + (_dy_bar * sigma_delta) ** 2)
+        # Compute sigmas in each dimension (start from sigma_delta to get sige needed in the formula)
+        sigma_x_cm = 100 * np.sqrt(geom_epsx * _bx_bar + (_dx_bar * sigma_delta * self.beam_parameters.beta_rel**2) ** 2)
+        sigma_y_cm = 100 * np.sqrt(geom_epsy * _by_bar + (_dy_bar * sigma_delta * self.beam_parameters.beta_rel**2) ** 2)
         sigma_t_cm = 100 * bunch_length
         # ----------------------------------------------------------------------------------------------
         # Calculate beam volume to get density (in cm^{-3}) then Debye length
@@ -226,14 +226,14 @@ class AnalyticalIBS(ABC):
         else:  # coasting beam
             volume = 4.0 * np.pi * sigma_x_cm * sigma_y_cm * 100 * self.optics.circumference
         density = self.beam_parameters.n_part / volume
-        debyul = 743.4 * np.sqrt(TempeV / density) / self.beam_parameters.particle_charge
+        debyul = 743.4 * np.sqrt(TempeV / density) / abs(self.beam_parameters.particle_charge)  # abs for negative charges!
         # ----------------------------------------------------------------------------------------------
         # Calculate 'rmin' as larger of classical distance of closest approach or quantum mechanical
         # diffraction limit from nuclear radius
         rmincl = 1.44e-7 * self.beam_parameters.particle_charge**2 / TempeV
         rminqm = (
             hbar * c * 1e5 / (2.0 * np.sqrt(2e-3 * Etrans * self.beam_parameters.particle_mass_eV * 1e-9))
-        )  # energy in GeV
+        )  # particle mass needed in GeV
         # ----------------------------------------------------------------------------------------------
         # Now compute the impact parameters and finally Coulomb logarithm
         bmin = max(rmincl, rminqm)
