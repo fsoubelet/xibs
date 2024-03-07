@@ -416,11 +416,13 @@ class SimpleKickIBS(KickBasedIBS):
         delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
-        # Apply the kicks to the particles
+        # We will let the context our particles are on do the work for us to apply momenta kicks
+        # Using context.nparray_to_context_array we are sure to be on the right device
+        context = particles._context
         LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] += delta_px
-        particles.py[particles.state > 0] += delta_py
-        particles.delta[particles.state > 0] += delta_delta
+        particles.px[particles.state > 0] += context.nparray_to_context_array(delta_px)
+        particles.py[particles.state > 0] += context.nparray_to_context_array(delta_py)
+        particles.delta[particles.state > 0] += context.nparray_to_context_array(delta_delta)
 
 
 # It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev
@@ -622,6 +624,15 @@ class KineticKickIBS(KickBasedIBS):
         bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
         factor = bunch_length * 2 * np.sqrt(np.pi)
         # ----------------------------------------------------------------------------------------------
+        # Compute the momentum spread and standard deviation of (normalized) momenta from particles object
+        # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
+        # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
+        # fmt: off
+        LOGGER.debug("Computing momentum spread and momenta's standard deviations")
+        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
+        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
+        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
+        # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (see referenced Michalis presentation)
         # fmt: on
         LOGGER.debug("Determining friction kicks")
@@ -646,19 +657,6 @@ class KineticKickIBS(KickBasedIBS):
             * rho_t
             * factor
         )
-        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] -= delta_px_friction
-        particles.py[particles.state > 0] -= delta_py_friction
-        particles.delta[particles.state > 0] -= delta_delta_friction
-        # ----------------------------------------------------------------------------------------------
-        # Compute the momentum spread and standard deviation of (normalized) momenta from particles object
-        # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
-        # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
-        # fmt: off
-        LOGGER.debug("Computing momentum spread and momenta's standard deviations")
-        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
-        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
-        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (see referenced Michalis presentation)
         LOGGER.debug("Determining diffusion kicks")
@@ -683,7 +681,15 @@ class KineticKickIBS(KickBasedIBS):
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
         )
+        # ----------------------------------------------------------------------------------------------
+        # We will let the context our particles are on do the work for us to apply momenta kicks
+        # Using context.nparray_to_context_array we are sure to be on the right device
+        context = particles._context
+        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
+        particles.px[particles.state > 0] -= context.nparray_to_context_array(delta_px_friction)
+        particles.py[particles.state > 0] -= context.nparray_to_context_array(delta_py_friction)
+        particles.delta[particles.state > 0] -= context.nparray_to_context_array(delta_delta_friction)
         LOGGER.debug("Applying diffusion kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] += delta_px_diffusion
-        particles.py[particles.state > 0] += delta_py_diffusion
-        particles.delta[particles.state > 0] += delta_delta_diffusion
+        particles.px[particles.state > 0] += context.nparray_to_context_array(delta_px_diffusion)
+        particles.py[particles.state > 0] += context.nparray_to_context_array(delta_py_diffusion)
+        particles.delta[particles.state > 0] += context.nparray_to_context_array(delta_delta_diffusion)
