@@ -174,7 +174,7 @@ class OpticsParameters:
         dx (ArrayLike): horizontal dispersion functions in [m].
         dy (ArrayLike): vertical dispersion functions in [m].
         dpx (ArrayLike): horizontal dispersion of px (d px / d delta).
-        dpy (ArrayLike): horizontal dispersion of py (d px / d delta).
+        dpy (ArrayLike): vertical dispersion of py (d px / d delta).
     """
 
     # ----- To be provided at initialization ----- #
