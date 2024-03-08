@@ -495,6 +495,11 @@ class KineticKickIBS(KickBasedIBS):
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
+        # Export functions from the particle context's nplike library to compute directly on context device
+        context = particles._context
+        std = context.nplike_lib.std
+
+        # ----------------------------------------------------------------------------------------------
         # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
         LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
         bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
@@ -659,24 +664,25 @@ class KineticKickIBS(KickBasedIBS):
         )
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (see referenced Michalis presentation)
+        context = particles._context
         LOGGER.debug("Determining diffusion kicks")
         RNG = np.random.default_rng()
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
         delta_px_diffusion: np.ndarray = (
-            sigma_px_normalized
+            context.nparray_to_context_array(sigma_px_normalized)
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
         )
         delta_py_diffusion: np.ndarray = (
-            sigma_py_normalized
+            context.nparray_to_context_array(sigma_py_normalized)
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
         )
         delta_delta_diffusion: np.ndarray = (
-            sigma_delta
+            context.nparray_to_context_array(sigma_delta)
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
@@ -684,7 +690,6 @@ class KineticKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # We will let the context our particles are on do the work for us to apply momenta kicks
         # Using context.nparray_to_context_array we are sure to be on the right device
-        context = particles._context
         LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
         particles.px[particles.state > 0] -= context.nparray_to_context_array(delta_px_friction)
         particles.py[particles.state > 0] -= context.nparray_to_context_array(delta_py_friction)
