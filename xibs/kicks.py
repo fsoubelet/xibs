@@ -673,19 +673,19 @@ class KineticKickIBS(KickBasedIBS):
         sigma_py_normalized_device = context.nparray_to_context_array(sigma_py_normalized)
         sigma_delta_device = context.nparray_to_context_array(sigma_delta)
         delta_px_diffusion: np.ndarray = (
-            sigma_px_normalized_device
+            1
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
         )
         delta_py_diffusion: np.ndarray = (
-            sigma_py_normalized_device
+            2
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
         )
         delta_delta_diffusion: np.ndarray = (
-            sigma_delta_device
+            3
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
