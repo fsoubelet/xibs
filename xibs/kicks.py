@@ -669,26 +669,23 @@ class KineticKickIBS(KickBasedIBS):
         RNG = np.random.default_rng()
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
-        sigma_px_normalized_device = context.nparray_to_context_array(sigma_px_normalized)
-        sigma_py_normalized_device = context.nparray_to_context_array(sigma_py_normalized)
-        sigma_delta_device = context.nparray_to_context_array(sigma_delta)
         delta_px_diffusion: np.ndarray = (
-            1
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
+            context.nparray_to_context_array(sigma_px_normalized)
+            * context.nparray_to_context_array(np.sqrt(2 * dt * self.diffusion_coefficients.Dx))
+            * context.nparray_to_context_array(RNG.normal(0, 1, _size))
+            * context.nparray_to_context_array(np.sqrt(rho_t * factor))
         )
         delta_py_diffusion: np.ndarray = (
-            2
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
+            context.nparray_to_context_array(sigma_py_normalized)
+            * context.nparray_to_context_array(np.sqrt(2 * dt * self.diffusion_coefficients.Dy))
+            * context.nparray_to_context_array(RNG.normal(0, 1, _size))
+            * context.nparray_to_context_array(np.sqrt(rho_t * factor))
         )
         delta_delta_diffusion: np.ndarray = (
-            3
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
+            context.nparray_to_context_array(sigma_delta)
+            * context.nparray_to_context_array(np.sqrt(2 * dt * self.diffusion_coefficients.Dz))
+            * context.nparray_to_context_array(RNG.normal(0, 1, _size))
+            * context.nparray_to_context_array(np.sqrt(rho_t * factor))
         )
         # ----------------------------------------------------------------------------------------------
         # We will let the context our particles are on do the work for us to apply momenta kicks
