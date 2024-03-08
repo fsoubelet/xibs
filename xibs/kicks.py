@@ -669,23 +669,23 @@ class KineticKickIBS(KickBasedIBS):
         RNG = np.random.default_rng()
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
-        sigma_px_normalized = context.nparray_to_context_array(sigma_px_normalized)
-        sigma_py_normalized = context.nparray_to_context_array(sigma_py_normalized)
-        sigma_delta = context.nparray_to_context_array(sigma_delta)
+        sigma_px_normalized_device = context.nparray_to_context_array(sigma_px_normalized)
+        sigma_py_normalized_device = context.nparray_to_context_array(sigma_py_normalized)
+        sigma_delta_device = context.nparray_to_context_array(sigma_delta)
         delta_px_diffusion: np.ndarray = (
-            sigma_px_normalized
+            sigma_px_normalized_device
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
         )
         delta_py_diffusion: np.ndarray = (
-            sigma_py_normalized
+            sigma_py_normalized_device
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
         )
         delta_delta_diffusion: np.ndarray = (
-            sigma_delta
+            sigma_delta_device
             * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
             * RNG.normal(0, 1, _size)
             * np.sqrt(rho_t * factor)
