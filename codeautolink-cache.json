@@ -206,15 +206,15 @@
       "doc_lineno": 37
     },
     {
-      "source": "def get_sr_inputs_from_madx(madx: cpymad.madx.Madx, sequence: str, normalized: bool = True) -> tuple[float, ...]:\n    \"\"\"Assumes beam, sequence etc are already defined. RF system should be ON.\"\"\"\n    # Make sure to include radiation effects for the sequence's beam\n    madx.sequence[sequence].beam.radiate = True\n\n    # Let's then call the 'emit' command with DELTAP=0, which will\n    # update the beam with equilibrium values directly\n    madx.command.emit(deltap=0)\n\n    # The transverse equilibrium emittances (in [m]) are provided as:\n    suffix = \"n\" if normalized is True else \"\"\n    sr_equilibrium_epsx = madx.sequence[sequence].beam[f\"ex{suffix}\"]\n    sr_equilibrium_epsy = madx.sequence[sequence].beam[f\"ey{suffix}\"]\n\n    # The equilibrium momentum spread is not directly provided but can be obtained\n    # from the relative energy spread using the relativistic beta as:\n    beta_rel = madx.sequence[sequence].beam.beta\n    sigma_e = madx.sequence[sequence].beam.sige\n    sr_equilibrium_sigma_delta = sigma_e / beta_rel / beta_rel\n\n    # We will need to get from the active beam: particle energy, energy loss per\n    # turn (in [GeV]) and the revolution frequency (in [MHz])\n    E0 = madx.sequence[sequence].beam.energy * 1e9  # it is in GeV in MAD-X\n    U0 = madx.sequence[sequence].beam.U0 * 1e9  # it is in GeV in MAD-X\n    frev = madx.sequence[sequence].beam.freq0 * 1e6  # it is in MHz in MAD-X\n\n    # We will need the synchrotron radiation integrals to determine the\n    # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)\n    madx.command.twiss(chrom=True)  # chrom to trigger their calculation\n    I2 = madx.table.summ.synch_2[0]\n    I4 = madx.table.summ.synch_4[0]\n    jx = 1 - I4 / I2  # horizontal damping partition number\n    jz = 2 + I4 / I2  # longitudinal damping partition number\n\n    # This is enough to compute the damping times\n    # (see https://arxiv.org/pdf/1507.02213.pdf)\n    sr_tau_x = 2 * E0 * frev / (jx * U0)\n    sr_tau_y = 2 * E0 * frev / U0\n    sr_tau_z = 2 * E0 * frev / (jz * U0)\n\n    # Return results\n    return (\n        sr_equilibrium_epsx,\n        sr_equilibrium_epsy,\n        sr_equilibrium_sigma_delta,\n        sr_tau_x,\n        sr_tau_y,\n        sr_tau_z,\n    )",
+      "source": "def get_sr_inputs_from_madx(\n    madx: cpymad.madx.Madx, sequence: str, normalized: bool = True\n) -> tuple[float, ...]:\n    \"\"\"Assumes beam, sequence etc are already defined. RF system should be ON.\"\"\"\n    # Make sure to include radiation effects for the sequence's beam\n    madx.sequence[sequence].beam.radiate = True\n\n    # Let's then call the 'emit' command with DELTAP=0, which will\n    # update the beam with equilibrium values directly\n    madx.command.emit(deltap=0)\n\n    # The transverse equilibrium emittances (in [m]) are provided as:\n    suffix = \"n\" if normalized is True else \"\"\n    sr_equilibrium_epsx = madx.sequence[sequence].beam[f\"ex{suffix}\"]\n    sr_equilibrium_epsy = madx.sequence[sequence].beam[f\"ey{suffix}\"]\n\n    # The equilibrium momentum spread is not directly provided but can be obtained\n    # from the relative energy spread using the relativistic beta as:\n    beta_rel = madx.sequence[sequence].beam.beta\n    sigma_e = madx.sequence[sequence].beam.sige\n    sr_equilibrium_sigma_delta = sigma_e / beta_rel / beta_rel\n\n    # We will need to get from the active beam: particle energy, energy loss per\n    # turn (in [GeV]) and the revolution frequency (in [MHz])\n    E0 = madx.sequence[sequence].beam.energy * 1e9  # it is in GeV in MAD-X\n    U0 = madx.sequence[sequence].beam.U0 * 1e9  # it is in GeV in MAD-X\n    frev = madx.sequence[sequence].beam.freq0 * 1e6  # it is in MHz in MAD-X\n\n    # We will need the synchrotron radiation integrals to determine the\n    # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)\n    madx.command.twiss(chrom=True)  # chrom to trigger their calculation\n    I2 = madx.table.summ.synch_2[0]\n    I4 = madx.table.summ.synch_4[0]\n    jx = 1 - I4 / I2  # horizontal damping partition number\n    jz = 2 + I4 / I2  # longitudinal damping partition number\n\n    # This is enough to compute the damping times\n    # (see https://arxiv.org/pdf/1507.02213.pdf)\n    sr_tau_x = 2 * E0 * frev / (jx * U0)\n    sr_tau_y = 2 * E0 * frev / U0\n    sr_tau_z = 2 * E0 * frev / (jz * U0)\n\n    # Return results\n    return (\n        sr_equilibrium_epsx,\n        sr_equilibrium_epsy,\n        sr_equilibrium_sigma_delta,\n        sr_tau_x,\n        sr_tau_y,\n        sr_tau_z,\n    )",
       "names": [
         {
           "import_components": [
             "tuple"
           ],
           "code_str": "tuple",
-          "lineno": 1,
-          "end_lineno": 1,
+          "lineno": 3,
+          "end_lineno": 3,
           "context": "none",
           "resolved_location": "tuple"
         },
@@ -223,8 +223,8 @@
             "float"
           ],
           "code_str": "float",
-          "lineno": 1,
-          "end_lineno": 1,
+          "lineno": 3,
+          "end_lineno": 3,
           "context": "none",
           "resolved_location": "float"
         },
@@ -233,8 +233,8 @@
             "str"
           ],
           "code_str": "str",
-          "lineno": 1,
-          "end_lineno": 1,
+          "lineno": 2,
+          "end_lineno": 2,
           "context": "none",
           "resolved_location": "str"
         },
@@ -243,8 +243,8 @@
             "bool"
           ],
           "code_str": "bool",
-          "lineno": 1,
-          "end_lineno": 1,
+          "lineno": 2,
+          "end_lineno": 2,
           "context": "none",
           "resolved_location": "bool"
         }

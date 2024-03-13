@@ -143,14 +143,14 @@ generating a matched Gaussian bunch:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  27%|██▋       | 2688/9866 [00:00<00:00, 26872.21it/s]    Loading line from dict:  54%|█████▍    | 5376/9866 [00:00<00:00, 26731.29it/s]    Loading line from dict:  82%|████████▏ | 8050/9866 [00:00<00:00, 26725.26it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 26728.55it/s]
+    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  27%|██▋       | 2624/9866 [00:00<00:00, 26232.39it/s]    Loading line from dict:  54%|█████▎    | 5279/9866 [00:00<00:00, 26397.78it/s]    Loading line from dict:  81%|████████  | 7989/9866 [00:00<00:00, 26707.21it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 26610.17it/s]
     Done loading line from dict.           
-    [15:06:11] [WARNING] - kernel_definitions.<module>:204 - Xcoll not installed, skipping collimator elements
+    [15:10:35] [WARNING] - kernel_definitions.<module>:204 - Xcoll not installed, skipping collimator elements
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
     SingleRFHarmonicMatcher: Gaussian parameter is equal to 0.226m to achieve target RMS bunch length (0.225m).
     SingleRFHarmonicMatcher: Transforming distribution:  0%      SingleRFHarmonicMatcher: Transforming distribution:  1%      SingleRFHarmonicMatcher: Transforming distribution:  1%      SingleRFHarmonicMatcher: Transforming distribution:  2%      SingleRFHarmonicMatcher: Transforming distribution:  3%      SingleRFHarmonicMatcher: Transforming distribution:  3%      SingleRFHarmonicMatcher: Transforming distribution:  4%      SingleRFHarmonicMatcher: Transforming distribution:  5%      SingleRFHarmonicMatcher: Transforming distribution:  5%      SingleRFHarmonicMatcher: Transforming distribution:  6%      SingleRFHarmonicMatcher: Transforming distribution:  7%      SingleRFHarmonicMatcher: Transforming distribution:  7%      SingleRFHarmonicMatcher: Transforming distribution:  8%      SingleRFHarmonicMatcher: Transforming distribution:  9%      SingleRFHarmonicMatcher: Transforming distribution:  9%      SingleRFHarmonicMatcher: Transforming distribution: 10%      SingleRFHarmonicMatcher: Transforming distribution: 11%      SingleRFHarmonicMatcher: Transforming distribution: 11%      SingleRFHarmonicMatcher: Transforming distribution: 12%      SingleRFHarmonicMatcher: Transforming distribution: 13%      SingleRFHarmonicMatcher: Transforming distribution: 13%      SingleRFHarmonicMatcher: Transforming distribution: 14%      SingleRFHarmonicMatcher: Transforming distribution: 15%      SingleRFHarmonicMatcher: Transforming distribution: 15%      SingleRFHarmonicMatcher: Transforming distribution: 16%      SingleRFHarmonicMatcher: Transforming distribution: 17%      SingleRFHarmonicMatcher: Transforming distribution: 17%      SingleRFHarmonicMatcher: Transforming distribution: 18%      SingleRFHarmonicMatcher: Transforming distribution: 19%      SingleRFHarmonicMatcher: Transforming distribution: 19%      SingleRFHarmonicMatcher: Transforming distribution: 20%      SingleRFHarmonicMatcher: Transforming distribution: 21%      SingleRFHarmonicMatcher: Transforming distribution: 21%      SingleRFHarmonicMatcher: Transforming distribution: 22%      SingleRFHarmonicMatcher: Transforming distribution: 23%      SingleRFHarmonicMatcher: Transforming distribution: 23%      SingleRFHarmonicMatcher: Transforming distribution: 24%      SingleRFHarmonicMatcher: Transforming distribution: 25%      SingleRFHarmonicMatcher: Transforming distribution: 25%      SingleRFHarmonicMatcher: Transforming distribution: 26%      SingleRFHarmonicMatcher: Transforming distribution: 27%      SingleRFHarmonicMatcher: Transforming distribution: 27%      SingleRFHarmonicMatcher: Transforming distribution: 28%      SingleRFHarmonicMatcher: Transforming distribution: 29%      SingleRFHarmonicMatcher: Transforming distribution: 29%      SingleRFHarmonicMatcher: Transforming distribution: 30%      SingleRFHarmonicMatcher: Transforming distribution: 31%      SingleRFHarmonicMatcher: Transforming distribution: 31%      SingleRFHarmonicMatcher: Transforming distribution: 32%      SingleRFHarmonicMatcher: Transforming distribution: 33%      SingleRFHarmonicMatcher: Transforming distribution: 33%      SingleRFHarmonicMatcher: Transforming distribution: 34%      SingleRFHarmonicMatcher: Transforming distribution: 35%      SingleRFHarmonicMatcher: Transforming distribution: 35%      SingleRFHarmonicMatcher: Transforming distribution: 36%      SingleRFHarmonicMatcher: Transforming distribution: 37%      SingleRFHarmonicMatcher: Transforming distribution: 37%      SingleRFHarmonicMatcher: Transforming distribution: 38%      SingleRFHarmonicMatcher: Transforming distribution: 39%      SingleRFHarmonicMatcher: Transforming distribution: 39%      SingleRFHarmonicMatcher: Transforming distribution: 40%      SingleRFHarmonicMatcher: Transforming distribution: 41%      SingleRFHarmonicMatcher: Transforming distribution: 41%      SingleRFHarmonicMatcher: Transforming distribution: 42%      SingleRFHarmonicMatcher: Transforming distribution: 43%      SingleRFHarmonicMatcher: Transforming distribution: 43%      SingleRFHarmonicMatcher: Transforming distribution: 44%      SingleRFHarmonicMatcher: Transforming distribution: 45%      SingleRFHarmonicMatcher: Transforming distribution: 45%      SingleRFHarmonicMatcher: Transforming distribution: 46%      SingleRFHarmonicMatcher: Transforming distribution: 47%      SingleRFHarmonicMatcher: Transforming distribution: 47%      SingleRFHarmonicMatcher: Transforming distribution: 48%      SingleRFHarmonicMatcher: Transforming distribution: 49%      SingleRFHarmonicMatcher: Transforming distribution: 49%      SingleRFHarmonicMatcher: Transforming distribution: 50%      SingleRFHarmonicMatcher: Transforming distribution: 51%      SingleRFHarmonicMatcher: Transforming distribution: 51%      SingleRFHarmonicMatcher: Transforming distribution: 52%      SingleRFHarmonicMatcher: Transforming distribution: 53%      SingleRFHarmonicMatcher: Transforming distribution: 53%      SingleRFHarmonicMatcher: Transforming distribution: 54%      SingleRFHarmonicMatcher: Transforming distribution: 55%      SingleRFHarmonicMatcher: Transforming distribution: 55%      SingleRFHarmonicMatcher: Transforming distribution: 56%      SingleRFHarmonicMatcher: Transforming distribution: 57%      SingleRFHarmonicMatcher: Transforming distribution: 57%      SingleRFHarmonicMatcher: Transforming distribution: 58%      SingleRFHarmonicMatcher: Transforming distribution: 59%      SingleRFHarmonicMatcher: Transforming distribution: 59%      SingleRFHarmonicMatcher: Transforming distribution: 60%      SingleRFHarmonicMatcher: Transforming distribution: 61%      SingleRFHarmonicMatcher: Transforming distribution: 61%      SingleRFHarmonicMatcher: Transforming distribution: 62%      SingleRFHarmonicMatcher: Transforming distribution: 63%      SingleRFHarmonicMatcher: Transforming distribution: 63%      SingleRFHarmonicMatcher: Transforming distribution: 64%      SingleRFHarmonicMatcher: Transforming distribution: 65%      SingleRFHarmonicMatcher: Transforming distribution: 65%      SingleRFHarmonicMatcher: Transforming distribution: 66%      SingleRFHarmonicMatcher: Transforming distribution: 67%      SingleRFHarmonicMatcher: Transforming distribution: 67%      SingleRFHarmonicMatcher: Transforming distribution: 68%      SingleRFHarmonicMatcher: Transforming distribution: 69%      SingleRFHarmonicMatcher: Transforming distribution: 69%      SingleRFHarmonicMatcher: Transforming distribution: 70%      SingleRFHarmonicMatcher: Transforming distribution: 71%      SingleRFHarmonicMatcher: Transforming distribution: 71%      SingleRFHarmonicMatcher: Transforming distribution: 72%      SingleRFHarmonicMatcher: Transforming distribution: 73%      SingleRFHarmonicMatcher: Transforming distribution: 73%      SingleRFHarmonicMatcher: Transforming distribution: 74%      SingleRFHarmonicMatcher: Transforming distribution: 75%      SingleRFHarmonicMatcher: Transforming distribution: 75%      SingleRFHarmonicMatcher: Transforming distribution: 76%      SingleRFHarmonicMatcher: Transforming distribution: 77%      SingleRFHarmonicMatcher: Transforming distribution: 77%      SingleRFHarmonicMatcher: Transforming distribution: 78%      SingleRFHarmonicMatcher: Transforming distribution: 79%      SingleRFHarmonicMatcher: Transforming distribution: 79%      SingleRFHarmonicMatcher: Transforming distribution: 80%      SingleRFHarmonicMatcher: Transforming distribution: 81%      SingleRFHarmonicMatcher: Transforming distribution: 81%      SingleRFHarmonicMatcher: Transforming distribution: 82%      SingleRFHarmonicMatcher: Transforming distribution: 83%      SingleRFHarmonicMatcher: Transforming distribution: 83%      SingleRFHarmonicMatcher: Transforming distribution: 84%      SingleRFHarmonicMatcher: Transforming distribution: 85%      SingleRFHarmonicMatcher: Transforming distribution: 85%      SingleRFHarmonicMatcher: Transforming distribution: 86%      SingleRFHarmonicMatcher: Transforming distribution: 87%      SingleRFHarmonicMatcher: Transforming distribution: 87%      SingleRFHarmonicMatcher: Transforming distribution: 88%      SingleRFHarmonicMatcher: Transforming distribution: 89%      SingleRFHarmonicMatcher: Transforming distribution: 89%      SingleRFHarmonicMatcher: Transforming distribution: 90%      SingleRFHarmonicMatcher: Transforming distribution: 91%      SingleRFHarmonicMatcher: Transforming distribution: 91%      SingleRFHarmonicMatcher: Transforming distribution: 92%      SingleRFHarmonicMatcher: Transforming distribution: 93%      SingleRFHarmonicMatcher: Transforming distribution: 93%      SingleRFHarmonicMatcher: Transforming distribution: 94%      SingleRFHarmonicMatcher: Transforming distribution: 95%      SingleRFHarmonicMatcher: Transforming distribution: 95%      SingleRFHarmonicMatcher: Transforming distribution: 96%      SingleRFHarmonicMatcher: Transforming distribution: 97%      SingleRFHarmonicMatcher: Transforming distribution: 97%      SingleRFHarmonicMatcher: Transforming distribution: 98%      SingleRFHarmonicMatcher: Transforming distribution: 99%      SingleRFHarmonicMatcher: Transforming distribution: 99%      SingleRFHarmonicMatcher: Done transforming distribution.
-    SingleRFHarmonicMatcher: Sampling particles: 151%      SingleRFHarmonicMatcher: Sampled 5000 particles
+    SingleRFHarmonicMatcher: Sampling particles: 167%      SingleRFHarmonicMatcher: Sampled 5000 particles
 
 
 
@@ -270,9 +270,9 @@ internally each time they are computed.
 
  .. code-block:: none
 
-    [15:06:41] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
-    IBSGrowthRates(Tx=6.180401330851384e-05, Ty=-4.8654695170553816e-08, Tz=2.7163493243428984e-05)
-    IBSGrowthRates(Tx=6.180401330851384e-05, Ty=-4.8654695170553816e-08, Tz=2.7163493243428984e-05)
+    [15:11:05] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    IBSGrowthRates(Tx=5.545195809828169e-05, Ty=-4.4856684355497664e-08, Tz=2.5806716745918527e-05)
+    IBSGrowthRates(Tx=5.545195809828169e-05, Ty=-4.4856684355497664e-08, Tz=2.5806716745918527e-05)
 
 
 
@@ -306,10 +306,10 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 3.9536979425630225e-09 m
-    Next time step geometrical epsilon_y = 5.161213477777899e-09 m
-    Next time step sigma_delta = 0.0003028185957921933
-    Next time step bunch length = 0.22215183456102042 m
+    Next time step geometrical epsilon_x = 4.198915589496671e-09 m
+    Next time step geometrical epsilon_y = 5.184875674379654e-09 m
+    Next time step sigma_delta = 0.0003024714653025496
+    Next time step bunch length = 0.22773931034148795 m
 
 
 
@@ -396,65 +396,65 @@ compute-intensive process.
  .. code-block:: none
 
     At 1s: re-computing growth rates
-    [15:06:42] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:06] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 600s: re-computing growth rates
-    [15:06:42] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:07] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 1200s: re-computing growth rates
-    [15:06:43] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:08] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 1800s: re-computing growth rates
-    [15:06:44] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:08] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 2400s: re-computing growth rates
-    [15:06:45] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:09] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 3000s: re-computing growth rates
-    [15:06:46] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:10] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 3600s: re-computing growth rates
-    [15:06:47] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:11] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 4200s: re-computing growth rates
-    [15:06:48] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:12] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 4800s: re-computing growth rates
-    [15:06:49] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:13] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 5400s: re-computing growth rates
-    [15:06:50] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:14] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 6000s: re-computing growth rates
-    [15:06:50] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:15] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 6600s: re-computing growth rates
-    [15:06:51] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:16] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 7200s: re-computing growth rates
-    [15:06:52] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:17] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 7800s: re-computing growth rates
-    [15:06:53] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:17] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 8400s: re-computing growth rates
-    [15:06:54] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:18] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 9000s: re-computing growth rates
-    [15:06:55] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:19] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 9600s: re-computing growth rates
-    [15:06:56] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:20] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 10200s: re-computing growth rates
-    [15:06:57] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:21] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 10800s: re-computing growth rates
-    [15:06:57] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:22] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 11400s: re-computing growth rates
-    [15:06:58] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:23] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 12000s: re-computing growth rates
-    [15:06:59] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:24] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 12600s: re-computing growth rates
-    [15:07:00] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:25] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 13200s: re-computing growth rates
-    [15:07:01] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:26] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 13800s: re-computing growth rates
-    [15:07:02] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:26] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 14400s: re-computing growth rates
-    [15:07:03] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:27] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 15000s: re-computing growth rates
-    [15:07:04] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:28] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 15600s: re-computing growth rates
-    [15:07:05] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:29] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 16200s: re-computing growth rates
-    [15:07:05] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:30] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 16800s: re-computing growth rates
-    [15:07:06] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:31] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
     At 17400s: re-computing growth rates
-    [15:07:07] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
+    [15:11:32] [WARNING] - analytical.growth_rates:1322 - Twiss was not calculated at center of elements
 
 
 
@@ -524,7 +524,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 58.171 seconds)
+   **Total running time of the script:** (0 minutes 59.117 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_bjorken_mtingwa_emittances.py:
