@@ -93,35 +93,31 @@ Let's assume your sequence and beam are defined, one might get the necessary par
 
 .. code-block:: python
 
-    def get_sr_inputs_from_madx(madx: cpymad.madx.Madx, normalized: bool = True) -> tuple[float, ...]:
-        """Assumes beam, sequence etc are already defined."""
-        # Make sure to include radiation effects for the active beam
-        madx.input("beam, radiate;")
+    def get_sr_inputs_from_madx(madx: cpymad.madx.Madx, sequence: str, normalized: bool = True) -> tuple[float, ...]:
+        """Assumes beam, sequence etc are already defined. RF system should be ON."""
+        # Make sure to include radiation effects for the sequence's beam
+        madx.sequence[sequence].beam.radiate = True
 
-        # Let's then call the 'emit' command with DELTAP=0, which will update
-        # the beam with equilibrium values directly
-        madx.input("emit, deltap=0;")
+        # Let's then call the 'emit' command with DELTAP=0, which will
+        # update the beam with equilibrium values directly
+        madx.command.emit(deltap=0)
 
         # The transverse equilibrium emittances (in [m]) are provided as:
         suffix = "n" if normalized is True else ""
-        madx.input(f"eq_ex = beam->ex{suffix};")
-        madx.input(f"eq_ey = beam->ey{suffix};")
-        sr_equilibrium_epsx = madx.globals["eq_ex"]
-        sr_equilibrium_epsy = madx.globals["eq_ey"]
+        sr_equilibrium_epsx = madx.sequence[sequence].beam[f"ex{suffix}"]
+        sr_equilibrium_epsy = madx.sequence[sequence].beam[f"ey{suffix}"]
 
         # The equilibrium momentum spread is not directly provided but can be obtained
         # from the relative energy spread using the relativistic beta as:
-        madx.input("eq_sigd = beam->sige / beam->beta / beam->beta;")
-        sr_equilibrium_sigma_delta = madx.globals["eq_sigd"]
+        beta_rel = madx.sequence[sequence].beam.beta
+        sigma_e = madx.sequence[sequence].beam.sige
+        sr_equilibrium_sigma_delta = sigma_e / beta_rel / beta_rel
 
         # We will need to get from the active beam: particle energy, energy loss per
         # turn (in [GeV]) and the revolution frequency (in [MHz])
-        madx.input("E0 = beam->energy;")
-        madx.input("U0 = beam->U0;")
-        madx.input("frev = beam->freq0;")
-        E0 = madx.globals["E0"] * 1e9
-        U0 = madx.globals["U0"] * 1e9
-        frev = madx.globals["frev"] * 1e6
+        E0 = madx.sequence[sequence].beam.energy * 1e9  # it is in GeV in MAD-X
+        U0 = madx.sequence[sequence].beam.U0 * 1e9  # it is in GeV in MAD-X
+        frev = madx.sequence[sequence].beam.freq0 * 1e6  # it is in MHz in MAD-X
 
         # We will need the synchrotron radiation integrals to determine the
         # damping partition numbers (see https://arxiv.org/pdf/1507.02213.pdf)
