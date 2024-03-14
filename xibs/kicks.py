@@ -339,12 +339,12 @@ class SimpleKickIBS(KickBasedIBS):
         # First, we check that we are above transition and raise and error if not (not applicable)
         if optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
             LOGGER.error(
-                "The provided optics parameters indication that the machine is below transition, "
+                "The provided optics parameters indicate that the machine is below transition, "
                 "which is incompatible with SimpleKickIBS (see documentation). "
                 "Use the kinetic formalism with KineticKickIBS instead."
             )
             raise NotImplementedError(
-                "SimpleKickIBS is not compatible with machine operating below transition. "
+                "SimpleKickIBS is not compatible with machines operating below transition. "
                 "Please see the documentation and use the kinetic formalism with KineticKickIBS instead."
             )
         # If we made it here, SimpleKickIBS is a valid implementation, let's instantiate from KickBasedIBS
@@ -429,29 +429,28 @@ class SimpleKickIBS(KickBasedIBS):
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
+        # Start with getting the nplike_lib from the particles' context, to compute on the context device
+        nplike = particles._context.nplike_lib
+        # ----------------------------------------------------------------------------------------------
         # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
+        # Indexing at 0 as this end / start of machine is when we kick (after a line.track)
         LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
-        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
-        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
-        sigma_x: float = float(np.std(particles.x[particles.state > 0]))
-        sigma_y: float = float(np.std(particles.y[particles.state > 0]))
-        # Indexing: we want the value where the bunch is and assume at start / end of machine which
-        # is where / when we will apply the kick (do a line.track and then kick). To be modified when
-        # when we include these things into xtrack, if we want an element that creates the kick.
-        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
-        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
+        bunch_length: float = _bunch_length(particles)
+        sigma_delta: float = _sigma_delta(particles)
+        geom_epsx: float = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+        geom_epsy: float = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
         # fmt: off
         # ----------------------------------------------------------------------------------------------
         # Computing standard deviation of (normalized) momenta, corresponding to sigma_{pu} in Eq (8) of reference
         # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
         # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
-        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0]**2)
-        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0]**2)
+        sigma_px_normalized: float = nplike.std(particles.px[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfx[0]**2)
+        sigma_py_normalized: float = nplike.std(particles.py[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfy[0]**2)
         # ----------------------------------------------------------------------------------------------
         # Determine the "scaling factor", corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
-        bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        scaling_factor: float = float(2 * np.sqrt(np.pi) * bunch_length_rms)
+        bunch_length_rms: float = nplike.std(zeta)  # rms bunch length in [m]
+        scaling_factor: float = float(2 * nplike.sqrt(np.pi) * bunch_length_rms)
         # ----------------------------------------------------------------------------------------------
         # Computing the analytical IBS growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
@@ -470,9 +469,9 @@ class SimpleKickIBS(KickBasedIBS):
         # For the longitudinal plane, since the values are computed from ΔP/P but applied to the ΔE/E
         # (the particles.delta in Xsuite), we need to multiply by beta_rel**2 to adapt
         LOGGER.debug("Computing and applying the kicks to the particles")
-        Kx: float = sigma_px_normalized * np.sqrt(2 * scaling_factor * Tx / self.optics.revolution_frequency)
-        Ky: float = sigma_py_normalized * np.sqrt(2 * scaling_factor * Ty / self.optics.revolution_frequency)
-        Kz: float = sigma_delta * np.sqrt(2 * scaling_factor * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2
+        Kx: float = sigma_px_normalized * nplike.sqrt(2 * scaling_factor * Tx / self.optics.revolution_frequency)
+        Ky: float = sigma_py_normalized * nplike.sqrt(2 * scaling_factor * Ty / self.optics.revolution_frequency)
+        Kz: float = sigma_delta * nplike.sqrt(2 * scaling_factor * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2
         result = IBSKickCoefficients(Kx, Ky, Kz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
