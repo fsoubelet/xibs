@@ -10,8 +10,6 @@ from __future__ import annotations  # important for sphinx to alias ArrayLike
 
 import logging
 
-import numpy as np
-
 from numpy.typing import ArrayLike
 
 LOGGER = logging.getLogger(__name__)
@@ -35,7 +33,7 @@ def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> Arr
     return dpx + alpha * dx / beta
 
 
-# ----- Some helpers ----- #
+# ----- Some helpers on xtrack.Particles objects ----- #
 
 
 def _bunch_length(particles: "xtrack.Particles") -> float:
@@ -70,3 +68,11 @@ def _geom_epsy(particles: "xtrack.Particles", bety: float, dy: float) -> float:
     sigma_y = nplike.std(particles.y[particles.state > 0])
     sig_delta = _sigma_delta(particles)
     return (sigma_y**2 - (dy * sig_delta) ** 2) / bety
+
+
+# ----- Some helpers on simple calculations ----- #
+
+
+def _percent_change(initial_value: float, final_value: float) -> float:
+    """Calculate the percentage change between two values."""
+    return 100 * (final_value - initial_value) / initial_value
