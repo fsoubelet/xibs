@@ -19,10 +19,10 @@ from scipy.stats import pearsonr
 
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import DiffusionCoefficients, FrictionCoefficients, KineticKickIBS
+from xibs.kicks import KineticKickIBS
 
 
-def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
+def test_kinetic_kicks_clic_dr(xtrack_clic_damping_ring):
     """Track positrons in the CLIC DR and correlate to analytical."""
     # --------------------------------------------------------------------
     # Some simple parameters
@@ -100,7 +100,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     assert pearsonr(kicked_tbt.bunch_length, analytical_tbt.bunch_length).statistic > 0
 
 
-def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
+def test_kinetic_kicks_sps_top_ions(xtrack_sps_top_ions):
     """
     Track Pb ions in the SPS and correlate to analytical. For this test we will use fake values
     for the beam parameters in order to be in a regime that 'stimulates' IBS. This way we have
