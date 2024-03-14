@@ -130,7 +130,7 @@ class KickBasedIBS(ABC):
     def __repr__(self) -> str:
         return self.__str__()
 
-    def line_density(self, particles: "xpart.Particles", n_slices: int) -> ArrayLike:  # noqa: F821
+    def line_density(self, particles: "xtrack.Particles", n_slices: int) -> ArrayLike:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 
@@ -150,7 +150,7 @@ class KickBasedIBS(ABC):
                 - Computes and returns the line density :math:`\rho_t(t)`.
 
         Args:
-            particles (xpart.Particles): the `xpart.Particles` object to compute the line density for.
+            particles (xtrack.Particles): the `xtrack.Particles` object to compute the line density for.
             n_slices (int): the number of slices to use for the computation of the bins.
 
         Returns:
@@ -180,7 +180,7 @@ class KickBasedIBS(ABC):
 
     @abstractmethod
     def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+        self, particles: "xtrack.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
@@ -189,20 +189,20 @@ class KickBasedIBS(ABC):
         to be applied. It returns an `IBSKickCoefficients` object with the computed coefficients.
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
         """
         pass
 
     @abstractmethod
-    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:  # noqa: F821
+    def apply_ibs_kick(self, particles: "xtrack.Particles", n_slices: int = 40) -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 
-        Abstract method to determine and apply IBS kicks to a `xpart.Particles` object. The
+        Abstract method to determine and apply IBS kicks to a `xtrack.Particles` object. The
         momenta kicks are determined from the `self.kick_coefficients` attribute.
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
 
         Raises:
             AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
@@ -210,6 +210,19 @@ class KickBasedIBS(ABC):
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
         self._check_coefficients_presence()
+        # ----------------------------------------------------------------------------------------------
+        # Check the auto-recompute flag and recompute coefficients if necessary
+        if self._need_to_recompute_coefficients is True:
+            LOGGER.info("Recomputing IBS kick coefficients before applying the next kick")
+            self.compute_kick_coefficients(particles)
+            self._need_to_recompute_coefficients = False
+        # ----------------------------------------------------------------------------------------------
+        # TODO: get and store ref emittances here before the kick (only if self.auto_recompute_coefficients_percent is set)
+        # ----------------------------------------------------------------------------------------------
+        # Apply the kicks to the particles - the function implementation here is formalism-specific
+        self._apply_formalism_ibs_kick(particles, n_slices)
+        # ----------------------------------------------------------------------------------------------
+        # TODO: get and check new emittances here after kick, and set recompute flag if necessary (only if self.auto_recompute_coefficients_percent is set)
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
@@ -328,7 +341,7 @@ class SimpleKickIBS(KickBasedIBS):
             )
 
     def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+        self, particles: "xtrack.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
@@ -358,7 +371,7 @@ class SimpleKickIBS(KickBasedIBS):
                 - Computes, stores and returns the kick coefficients.
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
             **kwargs: any keyword arguments will be passed to the growth rates calculation call
                 (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
                 and `bunch_length` are already provided as positional-only arguments.
@@ -418,16 +431,18 @@ class SimpleKickIBS(KickBasedIBS):
         self.kick_coefficients = result
         return result
 
-    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
+    def _apply_formalism_ibs_kick(
+        self, particles: "xtrack.Particles", n_slices: int = 40
+    ) -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 
-        Compute the momentum kick to apply based on the provided `xpart.Particles` object and the
+        Compute the momentum kick to apply based on the provided `xtrack.Particles` object and the
         analytical growth rates for the lattice. The kicks are implemented according to Eq (8) of
         :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
 
         Args:
-            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
+            particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
             n_slices (int): the number of slices to use for the computation of the line density.
                 Defaults to 40.
 
@@ -506,7 +521,7 @@ class KineticKickIBS(KickBasedIBS):
         self.friction_coefficients: FrictionCoefficients = None
 
     def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+        self, particles: "xtrack.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.7.0
@@ -534,7 +549,7 @@ class KineticKickIBS(KickBasedIBS):
                 - Computes and returns kick coefficients (as the difference between diffusion and friction).
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
             **kwargs: if `bunched` is found in keyword arguments it will be passed to the
                 coulomb logarithm calculation. A default value of `True` is used.
 
@@ -652,16 +667,18 @@ class KineticKickIBS(KickBasedIBS):
                 "Please call the `compute_kick_coefficients` method first."
             )
 
-    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
+    def _apply_formalism_ibs_kick(
+        self, particles: "xtrack.Particles", n_slices: int = 40
+    ) -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.7.0
 
-        Computes the momentum kicks to apply based on the provided `xpart.Particles` object and
+        Computes the momentum kicks to apply based on the provided `xtrack.Particles` object and
         the previously computed kick coefficients. The kick is applied as described in
         :cite:`NuclInstr:Zenkevich:Kinetic_IBS` and :cite:`CERN:Zampetakis:Implementation_IBS_Kicks`.
 
         Args:
-            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
+            particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
             n_slices (int): the number of slices to use for the computation of the line density.
                 Defaults to 40.
 
