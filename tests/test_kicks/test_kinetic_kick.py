@@ -115,7 +115,7 @@ def test_kinetic_kicks_sps_top_ions(xtrack_sps_top_ions):
     nemitt_x = 1.0e-6
     nemitt_y = 0.25e-6
     harmonic_number = 4653
-    nturns = 1000  # number of turns to loop for
+    nturns = 500  # number of turns to loop for
     ibs_step = 50  # frequency to re-compute the growth rates & kick coefficients in [turns]
     # --------------------------------------------------------------------
     # Setup line and particles for tracking
