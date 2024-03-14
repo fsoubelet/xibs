@@ -22,7 +22,7 @@ from scipy.constants import c
 from scipy.special import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
-from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _percent_change, _sigma_delta, phi
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _percent_change, _sigma_delta, _sigma_x, _sigma_y, phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -605,89 +605,99 @@ class KineticKickIBS(KickBasedIBS):
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
-        # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
-        LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
-        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
-        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
-        sigma_x: float = float(np.std(particles.x[particles.state > 0]))
-        sigma_y: float = float(np.std(particles.y[particles.state > 0]))
-        # Indexing: we want the value where the bunch is and assume at start / end of machine which
-        # is where / when we will apply the kick (do a line.track and then kick). To be modified when
-        # when we include these things into xtrack, if we want an element that creates the kick.
-        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
-        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
+        # Start with getting the nplike_lib from the particles' context, to compute on the context device
+        context = particles._context
+        nplike = context.nplike_lib
         # ----------------------------------------------------------------------------------------------
-        # Computing necessary intermediate terms for the following lines
-        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, self.optics.dx, self.optics.dpx)
-        # Computing the constants from Eq (18-21) in Nagaitsev paper
+        # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
+        # Indexing at 0 as this end / start of machine is when we kick (after a line.track)
+        LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
+        bunch_length: float = _bunch_length(particles)
+        sigma_delta: float = _sigma_delta(particles)
+        geom_epsx: float = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+        geom_epsy: float = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
+        sigma_x: float = _sigma_x(particles)
+        sigma_y: float = _sigma_y(particles)
+        # ----------------------------------------------------------------------------------------------
+        # Moving some necessary arrays to device for later computation
+        s: ArrayLike = context.nparray_to_context_array(self.optics.s)  # on device
+        alfx: ArrayLike = context.nparray_to_context_array(self.optics.alfx)  # on device
+        betx: ArrayLike = context.nparray_to_context_array(self.optics.betx)  # on device
+        bety: ArrayLike = context.nparray_to_context_array(self.optics.bety)  # on device
+        dx: ArrayLike = context.nparray_to_context_array(self.optics.dx)  # on device
+        dpx: ArrayLike = context.nparray_to_context_array(self.optics.dpx)  # on device
+        phix: ArrayLike = phi(betx, alfx, dx, dpx)  # on device as all dependent terms are
+        # ----------------------------------------------------------------------------------------------
+        # Allocating some values to simple variables for readability later
+        gammar: float = self.beam_parameters.gamma_rel
+        betar: float = self.beam_parameters.beta_rel
+        n_part: int = self.beam_parameters.n_part
+        classical_radius: float = self.beam_parameters.particle_classical_radius_m
+        pi: float = np.pi
+        circumference: float = self.optics.circumference
         # fmt: off
-        gammar = self.beam_parameters.gamma_rel
-        ax: np.ndarray = self.optics.betx / geom_epsx
-        ay: np.ndarray = self.optics.bety / geom_epsy
-        a_s: np.ndarray = ax * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + 1 / sigma_delta**2
-        a1: np.ndarray = (ax + gammar**2 * a_s) / 2.0
-        a2: np.ndarray = (ax - gammar**2 * a_s) / 2.0
-        sqrt_term = np.sqrt(a2**2 + gammar**2 * ax**2 * phix**2)
+        # ----------------------------------------------------------------------------------------------
+        # Computing the constants from Eq (18-21) in Nagaitsev paper - on device as all dependent terms are
+        ax: ArrayLike = betx / geom_epsx
+        ay: ArrayLike = bety / geom_epsy
+        a_s: ArrayLike = ax * (dx**2 / betx**2 + phix**2) + 1 / sigma_delta**2
+        a1: ArrayLike = (ax + gammar**2 * a_s) / 2.0
+        a2: ArrayLike = (ax - gammar**2 * a_s) / 2.0
+        sqrt_term = nplike.sqrt(a2**2 + gammar**2 * ax**2 * phix**2)
         # ----------------------------------------------------------------------------------------------
         # These are from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
-        lambda_1: np.ndarray = ay
-        lambda_2: np.ndarray = a1 + sqrt_term
-        lambda_3: np.ndarray = a1 - sqrt_term
+        # Also all on device as their dependent terms are on device
+        lambda_1: ArrayLike = ay
+        lambda_2: ArrayLike = a1 + sqrt_term
+        lambda_3: ArrayLike = a1 - sqrt_term
         # ----------------------------------------------------------------------------------------------
         # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper (at each element of the lattice)
+        # Since cupy does not have an elliprd equivalent, we go back to CPU and let scipy handle this
         LOGGER.debug("Computing elliptic integrals R1, R2 and R3")
-        R1: np.ndarray = elliprd(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
-        R2: np.ndarray = elliprd(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
-        R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
+        lbd1_: ArrayLike = context.nparray_from_context_array(lambda_1)  # on CPU
+        lbd2_: ArrayLike = context.nparray_from_context_array(lambda_2)  # on CPU
+        lbd3_: ArrayLike = context.nparray_from_context_array(lambda_3)  # on CPU
+        R1_: ArrayLike = elliprd(1 / lbd2_, 1 / lbd3_, 1 / lbd1_) / context.nparray_from_context_array(lambda_1)              # on CPU
+        R2_: ArrayLike = elliprd(1 / lbd3_, 1 / lbd1_, 1 / lbd2_) / context.nparray_from_context_array(lambda_2)              # on CPU
+        R3_: ArrayLike = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1_ / lambda_3 - lambda_2 * R2_ / lambda_3  # on CPU
+        # We transport these results back to device
+        R1: ArrayLike = context.nparray_to_context_array(R1_)  # on device
+        R2: ArrayLike = context.nparray_to_context_array(R2_)  # on device
+        R3: ArrayLike = context.nparray_to_context_array(R3_)  # on device
         # ----------------------------------------------------------------------------------------------
         # Compute the coulomb logarithm from an analytical class then the rest of the constant term in
-        # Eq (30-32) of Nagaitsev's paper
+        # Eq (30-32) of Nagaitsev's paper - all this below are CPU computations
         analytical = NagaitsevIBS(self.beam_parameters, self.optics)  # the formalism does not matter
         bunched = kwargs.get("bunched", True)
         coulomb_logarithm: float = analytical.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
-        rest_of_constant_term = (
-            self.beam_parameters.n_part * self.beam_parameters.particle_classical_radius_m**2 * c 
-            / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
-        )
-        full_constant_term = rest_of_constant_term * coulomb_logarithm
+        rest_of_constant_term: float = n_part * classical_radius**2 * c / (12 * pi * betar**3 * gammar**5 * bunch_length)
+        full_constant_term: float = rest_of_constant_term * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
         # Computing the Dxx, Dxz, etc terms from Nagaitsev terms above, according to the expressions derived
         # by Michalis (see backup slides in his presentation at https://indico.cern.ch/event/1140639)
-        Dzz: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        Kz: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        Dxx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        Kx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        Dxz: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
+        # All below are on device as all dependent terms are on device
+        Dzz: ArrayLike = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))  # on device
+        Kz: ArrayLike = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))            # on device
+        Dxx: ArrayLike = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))              # on device
+        Kx: ArrayLike = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))                        # on device
+        Dxz: ArrayLike = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term                              # on device
         # ----------------------------------------------------------------------------------------------
         # Computing integrands for the diffusion and friction terms from the above (also from Michalis,
-        # see slide 18 of his presentation for instance).
-        # fmt: on
-        Dx_integrand: np.ndarray = (
-            self.optics.betx
-            / (self.optics.circumference * sigma_x * sigma_y)
-            * (Dxx + Dzz * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + Dxz)
-        )
-        Fx_integrand: np.ndarray = (
-            self.optics.betx
-            / (self.optics.circumference * sigma_x * sigma_y)
-            * (Kx + Kz * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
-        )
-        Dy_integrand: np.ndarray = (
-            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (R2 + R3)
-        )
-        Fy_integrand: np.ndarray = (
-            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (2 * R1)
-        )
-        Dz_integrand: np.ndarray = Dzz / (self.optics.circumference * sigma_x * sigma_y)
-        Fz_integrand: np.ndarray = Kz / (self.optics.circumference * sigma_x * sigma_y)
+        # see slide 18 of his presentation for instance) - all of these are on device as all dependent terms are
+        Dx_integrand: ArrayLike = betx / (circumference * sigma_x * sigma_y) * (Dxx + Dzz * (dx**2 / betx**2 + phix**2) + Dxz)  # on device
+        Fx_integrand: ArrayLike = betx / (circumference * sigma_x * sigma_y) * (Kx + Kz * (dx**2 / betx**2 + phix**2))          # on device
+        Dy_integrand: ArrayLike = bety / (circumference * sigma_x * sigma_y) * (R2 + R3)                                        # on device
+        Fy_integrand: ArrayLike = bety / (circumference * sigma_x * sigma_y) * (2 * R1)                                         # on device
+        Dz_integrand: ArrayLike = Dzz / (circumference * sigma_x * sigma_y)                                                     # on device
+        Fz_integrand: ArrayLike = Kz / (circumference * sigma_x * sigma_y)                                                      # on device
         # ----------------------------------------------------------------------------------------------
         # Integrating them to obtain the diffusion and friction coefficients
-        Dx: float = np.sum(Dx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
-        Dy: float = np.sum(Dy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
-        Dz: float = np.sum(Dz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
-        Fx: float = np.sum(Fx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
-        Fy: float = np.sum(Fy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
-        Fz: float = np.sum(Fz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
+        Dx: float = nplike.sum(Dx_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsx
+        Dy: float = nplike.sum(Dy_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsy
+        Dz: float = nplike.sum(Dz_integrand[:-1] * nplike.diff(s)) * full_constant_term / sigma_delta**2
+        Fx: float = nplike.sum(Fx_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsx
+        Fy: float = nplike.sum(Fy_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsy
+        Fz: float = nplike.sum(Fz_integrand[:-1] * nplike.diff(s)) * full_constant_term / sigma_delta**2
         # ----------------------------------------------------------------------------------------------
         # Generate and store the coefficients in a DiffusionCoefficients and FrictionCoefficients object
         self.diffusion_coefficients = DiffusionCoefficients(Dx, Dy, Dz)
