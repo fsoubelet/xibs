@@ -494,10 +494,12 @@ class SimpleKickIBS(KickBasedIBS):
             n_slices (int): the number of slices to use for the computation of the line density.
                 Defaults to 40.
         """
-        # fmt: off
+        # ----------------------------------------------------------------------------------------------
+        # Start with getting the the particles' context, to be able to move data on the context device
+        context = particles._context
         # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of reference
-        rho_t: np.ndarray = self.line_density(particles, n_slices)  # does NOT include _factor
+        rho_t: ArrayLike = self.line_density(particles, n_slices)  # does NOT include _factor
         # ----------------------------------------------------------------------------------------------
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
@@ -506,6 +508,7 @@ class SimpleKickIBS(KickBasedIBS):
         # In theory, .normal(0, 1, _size) * factor and .normal(0, factor, _size) are the same (try it) but
         # in practice the resulting kick is not physically accurate. The same is observed in C++ code (see
         # for instance BLonD) so we use the coefficients as scale here, which is correct and benchmarked.
+        # fmt: off
         LOGGER.debug("Determining kicks to apply")
         RNG = np.random.default_rng()
         delta_px: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kx, size=_size) * np.sqrt(rho_t)
@@ -513,11 +516,11 @@ class SimpleKickIBS(KickBasedIBS):
         delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
-        # Apply the kicks to the particles
+        # Apply the kicks to the particles - just move the computed deltas to device and apply
         LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] += delta_px
-        particles.py[particles.state > 0] += delta_py
-        particles.delta[particles.state > 0] += delta_delta
+        particles.px[particles.state > 0] += context.nparray_to_context_array(delta_px)
+        particles.py[particles.state > 0] += context.nparray_to_context_array(delta_py)
+        particles.delta[particles.state > 0] += context.nparray_to_context_array(delta_delta)
 
 
 class KineticKickIBS(KickBasedIBS):
