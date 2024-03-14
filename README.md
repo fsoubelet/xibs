@@ -17,9 +17,9 @@
   </a>
 
   <!-- General DOI -->
-  <a href="https://zenodo.org/badge/latestdoi/10044627.">
-    <img alt="DOI" src="https://zenodo.org/records/10044627..svg">
-  </a>
+  <!-- <a href="https://zenodo.org/badge/latestdoi/10044627."> -->
+  <!-- <img alt="DOI" src="https://zenodo.org/records/10044627..svg"> -->
+  <!-- </a> -->
 </p>
 
 This repository contains the source for `xibs`, a prototype for Intra-Beam Scattering (IBS) modelling and computing to be later integrated into [Xsuite](https://github.com/xsuite).
