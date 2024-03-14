@@ -47,7 +47,7 @@ class MichalisIBS:
         E0p = physical_constants["proton mass energy equivalent in MeV"][0] * 1e-3
         particle_mass_GEV = particles.mass0 * 1e-9
         mi = (particle_mass_GEV * scipy.constants.m_p) / E0p
-        # classical radius, can get from xpart.Particles now
+        # classical radius, can get from xtrack.Particles now
         self.c_rad = (particles.q0 * scipy.constants.e) ** 2 / (
             4 * np.pi * scipy.constants.epsilon_0 * scipy.constants.c**2 * mi
         )

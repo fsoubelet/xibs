@@ -109,7 +109,7 @@ plt.show()
 
 ###############################################################################
 # We can compute initial (geometrical) emittances as well as the bunch length
-# from the `xpart.Particles` object:
+# from the `xtrack.Particles` object:
 
 sig_x = np.std(particles.x[particles.state > 0])  # horizontal stdev
 sig_y = np.std(particles.y[particles.state > 0])  # vertical stdev

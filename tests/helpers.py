@@ -126,7 +126,7 @@ class Records:
     bunch_length: np.ndarray
 
     def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
-        """Automatically update the records at given turn from the xpart.Particles."""
+        """Automatically update the records at given turn from the xtrack.Particles."""
         self.epsilon_x[turn] = _geom_epsx(parts, twiss)
         self.epsilon_y[turn] = _geom_epsy(parts, twiss)
         self.sigma_delta[turn] = _sigma_delta(parts)

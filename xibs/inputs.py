@@ -7,7 +7,7 @@ Input Data Structures
 Module with container dataclasses to encompass expected necessary inputs .
 Various parts of ``xibs`` perform calculations based on beam and optics parameters.
 
-The former is encompassed in a `BeamParameters` dataclass which is initiated from a generated `xpart.Particles` object.
+The former is encompassed in a `BeamParameters` dataclass which is initiated from a generated `xtrack.Particles` object.
 The latter is encompassed in an `OpticsParameters` dataclass which is initiated from the result of a ``TWISS`` call on
 the line (if in ``xsuite``) or the sequence (if in ``MAD-X``).
 """
@@ -33,10 +33,10 @@ class BeamParameters:
     .. versionadded:: 0.2.0
 
     Container dataclass for necessary beam parameters. It is initiated from
-    the `xpart.Particles` object to track in your line with ``xsuite``.
+    the `xtrack.Particles` object to track in your line with ``xsuite``.
 
     Args:
-        particles (xpart.Particles): the generated particles to be tracked or used
+        particles (xtrack.Particles): the generated particles to be tracked or used
             in the line. This is an init-only parameter used for instanciation and
             it will not be kept in the instance's attributes.
 
@@ -53,7 +53,7 @@ class BeamParameters:
 
     # ----- To be provided at initialization ----- #
     # Almost all is derived from these, but it is not kept!
-    particles: InitVar["xpart.Particles"]  # noqa: F821
+    particles: InitVar["xtrack.Particles"]  # noqa: F821
     # ----- Below are attributes derived from the Particles object ----- #
     # The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michalis's code
     n_part: int = field(init=False)
@@ -64,7 +64,7 @@ class BeamParameters:
     beta_rel: float = field(init=False)
     particle_classical_radius_m: float = field(init=False)
 
-    def __post_init__(self, particles: "xpart.Particles"):  # noqa: F821
+    def __post_init__(self, particles: "xtrack.Particles"):  # noqa: F821
         # Attributes derived from the Particles object
         LOGGER.debug("Initializing BeamParameters from Particles object")
         self.n_part = particles.weight[0] * particles.gamma0.shape[0]
@@ -87,7 +87,7 @@ class BeamParameters:
         .. warning::
             This method will query parameters from the `~cpymad.madx.Madx` object. It will
             get parameters from the current active sequence's beam, and use these to create
-            an `xpart.Particles` object from which to instanciate the `BeamParameters` object.
+            an `xtrack.Particles` object from which to instanciate the `BeamParameters` object.
             Note that the `xpart` package is required to use this method.
 
         Args:

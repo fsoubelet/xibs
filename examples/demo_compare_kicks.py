@@ -45,7 +45,7 @@ plt.rcParams.update(
 
 ###############################################################################
 # We will define here some helper functions we will regularly use later on to
-# compute the emittances, bunch lengths and momentum spread from and `xpart.Particles`
+# compute the emittances, bunch lengths and momentum spread from and `xtrack.Particles`
 # object representing our particle distribution. In each, let's make sure to filter
 # for only the active particles (``state > 0``).
 
@@ -155,7 +155,7 @@ class Records:
     bunch_length: np.ndarray
 
     def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
-        """Automatically update the records at given turn from the xpart.Particles."""
+        """Automatically update the records at given turn from the xtrack.Particles."""
         self.epsilon_x[turn] = _geom_epsx(parts, twiss)
         self.epsilon_y[turn] = _geom_epsy(parts, twiss)
         self.sigma_delta[turn] = _sigma_delta(parts)
