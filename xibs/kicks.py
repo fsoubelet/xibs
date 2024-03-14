@@ -22,7 +22,7 @@ from scipy.constants import c
 from scipy.special import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
-from xibs.formulary import phi
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _percent_change, _sigma_delta, phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -217,12 +217,39 @@ class KickBasedIBS(ABC):
             self.compute_kick_coefficients(particles)
             self._need_to_recompute_coefficients = False
         # ----------------------------------------------------------------------------------------------
-        # TODO: get and store ref emittances here before the kick (only if self.auto_recompute_coefficients_percent is set)
+        # Get and store pre-kick emittances if self.auto_recompute_coefficients_percent is set
+        if isinstance(self.auto_recompute_coefficients_percent, (int, float)):
+            _previous_bunch_length = _bunch_length(particles)
+            _previous_sigma_delta = _sigma_delta(particles)
+            # below we give index 0 as start / end of machine is kick location
+            _previous_geom_epsx = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+            _previous_geom_epsy = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles - the function implementation here is formalism-specific
         self._apply_formalism_ibs_kick(particles, n_slices)
         # ----------------------------------------------------------------------------------------------
-        # TODO: get and check new emittances here after kick, and set recompute flag if necessary (only if self.auto_recompute_coefficients_percent is set)
+        # Get post-kick emittances, check growth and set recompute flag if necessary (only if self.auto_recompute_coefficients_percent is set)
+        if isinstance(self.auto_recompute_coefficients_percent, (int, float)):
+            _new_bunch_length = _bunch_length(particles)
+            _new_sigma_delta = _sigma_delta(particles)
+            _new_geom_epsx = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+            _new_geom_epsy = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
+            # If there is an increase / decrease of more than self.auto_recompute_coefficients_percent % in any plane, set the flag
+            if (
+                abs(_percent_change(_previous_bunch_length, _new_bunch_length))
+                > self.auto_recompute_coefficients_percent
+                or abs(_percent_change(_previous_sigma_delta, _new_sigma_delta))
+                > self.auto_recompute_coefficients_percent
+                or abs(_percent_change(_previous_geom_epsx, _new_geom_epsx))
+                > self.auto_recompute_coefficients_percent
+                or abs(_percent_change(_previous_geom_epsy, _new_geom_epsy))
+                > self.auto_recompute_coefficients_percent
+            ):
+                LOGGER.debug(
+                    f"One plane's emittance changed bu more than {self.auto_recompute_coefficients_percent}%, "
+                    "setting flag to recompute coefficients before next kick."
+                )
+                self._need_to_recompute_coefficients = True
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
