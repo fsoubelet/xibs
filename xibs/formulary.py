@@ -48,15 +48,26 @@ def _sigma_delta(particles: "xtrack.Particles") -> float:  # noqa: F821
     return nplike.std(particles.delta[particles.state > 0])
 
 
+def _sigma_x(particles: "xtrack.Particles") -> float:  # noqa: F821
+    """Get the horizontal coordinate standard deviation from the particles."""
+    nplike = particles._context.nplike_lib
+    return nplike.std(particles.x[particles.state > 0])
+
+
 def _geom_epsx(particles: "xtrack.Particles", betx: float, dx: float) -> float:  # noqa: F821
     """
     Horizontal geometric emittance at a location in the machine, for the beta
     and dispersion functions at this location.
     """
-    nplike = particles._context.nplike_lib
-    sigma_x = nplike.std(particles.x[particles.state > 0])
+    sigma_x = _sigma_x(particles)
     sig_delta = _sigma_delta(particles)
     return (sigma_x**2 - (dx * sig_delta) ** 2) / betx
+
+
+def _sigma_y(particles: "xtrack.Particles") -> float:  # noqa: F821
+    """Get the vertical coordinate standard deviation from the particles."""
+    nplike = particles._context.nplike_lib
+    return nplike.std(particles.y[particles.state > 0])
 
 
 def _geom_epsy(particles: "xtrack.Particles", bety: float, dy: float) -> float:  # noqa: F821
@@ -64,8 +75,7 @@ def _geom_epsy(particles: "xtrack.Particles", bety: float, dy: float) -> float: 
     Vertical geometric emittance at a location in the machine, for the beta
     and dispersion functions at this location.
     """
-    nplike = particles._context.nplike_lib
-    sigma_y = nplike.std(particles.y[particles.state > 0])
+    sigma_y = _sigma_y(particles)
     sig_delta = _sigma_delta(particles)
     return (sigma_y**2 - (dy * sig_delta) ** 2) / bety
 
