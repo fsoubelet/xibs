@@ -480,8 +480,8 @@ class SimpleKickIBS(KickBasedIBS):
         return result
 
     def _apply_formalism_ibs_kick(
-        self, particles: "xtrack.Particles", n_slices: int = 40
-    ) -> None:  # noqa: F821
+        self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
+    ) -> None:
         r"""
         .. versionadded:: 0.5.0
 
@@ -713,8 +713,8 @@ class KineticKickIBS(KickBasedIBS):
             )
 
     def _apply_formalism_ibs_kick(
-        self, particles: "xtrack.Particles", n_slices: int = 40
-    ) -> None:  # noqa: F821
+        self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
+    ) -> None:
         r"""
         .. versionadded:: 0.7.0
 
