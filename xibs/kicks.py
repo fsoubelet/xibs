@@ -194,18 +194,39 @@ class KickBasedIBS(ABC):
         pass
 
     @abstractmethod
-    def apply_ibs_kick(self, particles: "xtrack.Particles", n_slices: int = 40) -> None:  # noqa: F821
+    def _apply_formalism_ibs_kick(
+        self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
+    ) -> None:
         r"""
         .. versionadded:: 0.5.0
 
         Abstract method to determine and apply IBS kicks to a `xtrack.Particles` object. The
-        momenta kicks are determined from the `self.kick_coefficients` attribute.
+        implementation details vary depending on the formalism implemented. This method is
+        called in the `apply_ibs_kick` method.
 
         Args:
             particles (xtrack.Particles): the particles to apply the IBS kicks to.
+        """
+        pass
+
+    def apply_ibs_kick(self, particles: "xtrack.Particles", n_slices: int = 40) -> None:  # noqa: F821
+        r"""
+        .. versionadded:: 0.5.0
+
+        Compute and apply momenta kicks based on the provided `xtrack.Particles` object and the
+        chosen ``IBS`` formalism. See the `_apply_formalism_ibs_kick` method for implementation details
+        of the currently selected formalism.
+
+        Args:
+            particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
+            n_slices (int): the number of slices to use for the computation of the line density.
+                Defaults to 40.
 
         Raises:
             AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
+
+        TODO: maybe instead of raising just compute the rates if they are not there. We could set
+        the flag in self._check_coefficients_presence to True and it will be computed later on.
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
@@ -213,7 +234,7 @@ class KickBasedIBS(ABC):
         # ----------------------------------------------------------------------------------------------
         # Check the auto-recompute flag and recompute coefficients if necessary
         if self._need_to_recompute_coefficients is True:
-            LOGGER.info("Recomputing IBS kick coefficients before applying the next kick")
+            LOGGER.info("Recomputing IBS kick coefficients before applying kicks")
             self.compute_kick_coefficients(particles)
             self._need_to_recompute_coefficients = False
         # ----------------------------------------------------------------------------------------------
@@ -472,9 +493,6 @@ class SimpleKickIBS(KickBasedIBS):
             particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
             n_slices (int): the number of slices to use for the computation of the line density.
                 Defaults to 40.
-
-        Raises:
-            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
         # fmt: off
         # ----------------------------------------------------------------------------------------------
@@ -708,9 +726,6 @@ class KineticKickIBS(KickBasedIBS):
             particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
             n_slices (int): the number of slices to use for the computation of the line density.
                 Defaults to 40.
-
-        Raises:
-            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
         # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of
