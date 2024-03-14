@@ -22,7 +22,16 @@ from scipy.constants import c
 from scipy.special import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
-from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _percent_change, _sigma_delta, _sigma_x, _sigma_y, phi
+from xibs.formulary import (
+    _bunch_length,
+    _geom_epsx,
+    _geom_epsy,
+    _percent_change,
+    _sigma_delta,
+    _sigma_x,
+    _sigma_y,
+    phi,
+)
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -511,16 +520,17 @@ class SimpleKickIBS(KickBasedIBS):
         # fmt: off
         LOGGER.debug("Determining kicks to apply")
         RNG = np.random.default_rng()
-        delta_px: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kx, size=_size) * np.sqrt(rho_t)
-        delta_py: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Ky, size=_size) *  np.sqrt(rho_t)
-        delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t)
-        # fmt: on
+        rho_t_ = context.nparray_from_context_array(rho_t)  # on CPU
+        delta_px: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kx, size=_size) * np.sqrt(rho_t_)
+        delta_py: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Ky, size=_size) *  np.sqrt(rho_t_)
+        delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t_)
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles - just move the computed deltas to device and apply
         LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
         particles.px[particles.state > 0] += context.nparray_to_context_array(delta_px)
         particles.py[particles.state > 0] += context.nparray_to_context_array(delta_py)
         particles.delta[particles.state > 0] += context.nparray_to_context_array(delta_delta)
+        # fmt: on
 
 
 class KineticKickIBS(KickBasedIBS):
@@ -741,76 +751,54 @@ class KineticKickIBS(KickBasedIBS):
                 Defaults to 40.
         """
         # ----------------------------------------------------------------------------------------------
+        # Start with getting the nplike_lib from the particles' context, to compute on the context device
+        context = particles._context
+        nplike = context.nplike_lib
+        # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of
         dt: float = 1 / self.optics.revolution_frequency
-        rho_t: np.ndarray = self.line_density(particles, n_slices)
+        rho_t: ArrayLike = self.line_density(particles, n_slices)  # computed on device
         # ----------------------------------------------------------------------------------------------
         # Compute the bunch_length * 2 * sqrt(pi) factor for the kicks
-        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
-        factor = bunch_length * 2 * np.sqrt(np.pi)
-        # ----------------------------------------------------------------------------------------------
-        # Determining kicks from the friction forces (see referenced Michalis presentation)
-        # fmt: on
-        LOGGER.debug("Determining friction kicks")
-        delta_px_friction: np.ndarray = (
-            self.friction_coefficients.Fx
-            * (particles.px[particles.state > 0] - np.mean(particles.px[particles.state > 0]))
-            * dt
-            * rho_t
-            * factor
-        )
-        delta_py_friction: np.ndarray = (
-            self.friction_coefficients.Fy
-            * (particles.py[particles.state > 0] - np.mean(particles.py[particles.state > 0]))
-            * dt
-            * rho_t
-            * factor
-        )
-        delta_delta_friction: np.ndarray = (
-            self.friction_coefficients.Fz
-            * (particles.delta[particles.state > 0] - np.mean(particles.delta[particles.state > 0]))
-            * dt
-            * rho_t
-            * factor
-        )
-        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] -= delta_px_friction
-        particles.py[particles.state > 0] -= delta_py_friction
-        particles.delta[particles.state > 0] -= delta_delta_friction
+        bunch_length: float = _bunch_length(particles)
+        factor: float = bunch_length * 2 * nplike.sqrt(np.pi)
         # ----------------------------------------------------------------------------------------------
         # Compute the momentum spread and standard deviation of (normalized) momenta from particles object
         # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
         # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
         # fmt: off
         LOGGER.debug("Computing momentum spread and momenta's standard deviations")
-        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
-        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
-        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
+        sigma_delta: float = _sigma_delta(particles)
+        sigma_px_normalized: float = nplike.std(particles.px[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfx[0]**2)
+        sigma_py_normalized: float = nplike.std(particles.py[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfy[0]**2)
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (see referenced Michalis presentation)
+        LOGGER.debug("Determining friction kicks")
+        dev_px: ArrayLike = particles.px[particles.state > 0] - nplike.mean(particles.px[particles.state > 0])           # on device
+        dev_py: ArrayLike = particles.py[particles.state > 0] - nplike.mean(particles.py[particles.state > 0])           # on device
+        dev_delta: ArrayLike = particles.delta[particles.state > 0] - nplike.mean(particles.delta[particles.state > 0])  # on device
+        Fx, Fy, Fz = astuple(self.friction_coefficients)
+        delta_px_friction: ArrayLike = Fx * dev_px * dt * rho_t * factor        # on device
+        delta_py_friction: ArrayLike = Fy * dev_py * dt * rho_t * factor        # on device
+        delta_delta_friction: ArrayLike = Fz * dev_delta * dt * rho_t * factor  # on device
+        # ----------------------------------------------------------------------------------------------
+        # Determining kicks from the friction forces (see referenced Michalis presentation)
+        # Since cupy does not provide a default_rng().normal method, we go back to CPU and let scipy handle this
         LOGGER.debug("Determining diffusion kicks")
         RNG = np.random.default_rng()
-        # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
-        delta_px_diffusion: np.ndarray = (
-            sigma_px_normalized
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
-        )
-        delta_py_diffusion: np.ndarray = (
-            sigma_py_normalized
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
-        )
-        delta_delta_diffusion: np.ndarray = (
-            sigma_delta
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
-        )
+        Dx, Dy, Dz = astuple(self.diffusion_coefficients)
+        delta_px_diffusion: ArrayLike = sigma_px_normalized * np.sqrt(2 * dt * Dx) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)  # on CPU
+        delta_py_diffusion: ArrayLike = sigma_py_normalized * np.sqrt(2 * dt * Dy) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)  # on CPU
+        delta_delta_diffusion: ArrayLike = sigma_delta * np.sqrt(2 * dt * Dz) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)       # on CPU
+        # ----------------------------------------------------------------------------------------------
+        # Now we can apply all momenta kicks (friction and diffusion) to the particles - on device directly
+        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
+        particles.px[particles.state > 0] -= delta_px_friction
+        particles.py[particles.state > 0] -= delta_py_friction
+        particles.delta[particles.state > 0] -= delta_delta_friction
         LOGGER.debug("Applying diffusion kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] += delta_px_diffusion
-        particles.py[particles.state > 0] += delta_py_diffusion
-        particles.delta[particles.state > 0] += delta_delta_diffusion
+        # Since the generated were done by numpy we make sure to convert to device first
+        particles.px[particles.state > 0] += context.nparray_to_context_array(delta_px_diffusion)
+        particles.py[particles.state > 0] += context.nparray_to_context_array(delta_py_diffusion)
+        particles.delta[particles.state > 0] += context.nparray_to_context_array(delta_delta_diffusion)
