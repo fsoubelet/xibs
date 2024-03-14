@@ -104,7 +104,12 @@ class KickBasedIBS(ABC):
             method. It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters, auto_recompute_coefficients_percent: float = None) -> None:
+    def __init__(
+        self,
+        beam_params: BeamParameters,
+        optics: OpticsParameters,
+        auto_recompute_coefficients_percent: float = None,
+    ) -> None:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
         self.auto_recompute_coefficients_percent: float = auto_recompute_coefficients_percent
@@ -115,9 +120,11 @@ class KickBasedIBS(ABC):
 
     def __str__(self) -> str:
         has_kick_coefficients = isinstance(self.kick_coefficients, IBSKickCoefficients)
+        auto_recomputes_coefficients = self.auto_recompute_coefficients_percent is not None
         return (
-            f"{self.__class__.__name__} object for kick-based IBS calculations."
-            f"IBS kick coefficients computed: {has_kick_coefficients}"
+            f"{self.__class__.__name__} object for kick-based IBS calculations. "
+            f"IBS kick coefficients computed: {has_kick_coefficients}. "
+            f"Auto-recompute coefficients: {auto_recomputes_coefficients}."
         )
 
     def __repr__(self) -> str:
@@ -200,7 +207,9 @@ class KickBasedIBS(ABC):
         Raises:
             AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
-        pass
+        # ----------------------------------------------------------------------------------------------
+        # Check that the kick coefficients have been computed beforehand
+        self._check_coefficients_presence()
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
@@ -258,7 +267,12 @@ class SimpleKickIBS(KickBasedIBS):
             It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters, auto_recompute_coefficients_percent: float = None) -> None:
+    def __init__(
+        self,
+        beam_params: BeamParameters,
+        optics: OpticsParameters,
+        auto_recompute_coefficients_percent: float = None,
+    ) -> None:
         # fmt: off
         # First, we check that we are above transition and raise and error if not (not applicable)
         if optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
@@ -298,6 +312,20 @@ class SimpleKickIBS(KickBasedIBS):
         self.beam_parameters = self.analytical_ibs.beam_parameters
         self.optics = self.analytical_ibs.optics
         # fmt: on
+
+    def _check_coefficients_presence(self) -> None:
+        """
+        Call this before trying to apply kicks to first check the necessarykick coefficients are present.
+
+        Raises:
+            AttributeError: if the necessary ``IBS`` kick coefficients have not yet been computed.
+        """
+        if self.kick_coefficients is None:
+            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
+            raise AttributeError(
+                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
+                "Please call the `compute_kick_coefficients` method first."
+            )
 
     def compute_kick_coefficients(
         self, particles: "xpart.Particles", **kwargs  # noqa: F821
@@ -406,14 +434,6 @@ class SimpleKickIBS(KickBasedIBS):
         Raises:
             AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
-        # ----------------------------------------------------------------------------------------------
-        # Check that the kick coefficients have been computed beforehand
-        if self.kick_coefficients is None:
-            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
-            raise AttributeError(
-                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
-                "Please call the `compute_kick_coefficients` method first."
-            )
         # fmt: off
         # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of reference
@@ -472,8 +492,15 @@ class KineticKickIBS(KickBasedIBS):
             method. It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters, auto_recompute_coefficients_percent: float = None) -> None:
-        super().__init__(beam_params, optics, auto_recompute_coefficients_percent)  # also sets self.kick_coefficients
+    def __init__(
+        self,
+        beam_params: BeamParameters,
+        optics: OpticsParameters,
+        auto_recompute_coefficients_percent: float = None,
+    ) -> None:
+        super().__init__(
+            beam_params, optics, auto_recompute_coefficients_percent
+        )  # also sets self.kick_coefficients
         # These self-update when computed, but can be overwritten by the user
         self.diffusion_coefficients: DiffusionCoefficients = None
         self.friction_coefficients: FrictionCoefficients = None
@@ -608,6 +635,23 @@ class KineticKickIBS(KickBasedIBS):
         self.kick_coefficients = result
         return result
 
+    def _check_coefficients_presence(self) -> None:
+        """
+        Call this before trying to apply kicks to first check the necessarykick coefficients are present.
+
+        Raises:
+            AttributeError: if the necessary ``IBS`` kick coefficients have not yet been computed.
+        """
+        if any(
+            coeffs is None
+            for coeffs in [self.kick_coefficients, self.diffusion_coefficients, self.friction_coefficients]
+        ):
+            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
+            raise AttributeError(
+                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
+                "Please call the `compute_kick_coefficients` method first."
+            )
+
     def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
         r"""
         .. versionadded:: 0.7.0
@@ -624,17 +668,6 @@ class KineticKickIBS(KickBasedIBS):
         Raises:
             AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
-        # ----------------------------------------------------------------------------------------------
-        # Check that the kick coefficients have been computed beforehand
-        if any(
-            coeffs is None
-            for coeffs in [self.kick_coefficients, self.diffusion_coefficients, self.friction_coefficients]
-        ):
-            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
-            raise AttributeError(
-                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
-                "Please call the `compute_kick_coefficients` method first."
-            )
         # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of
         dt: float = 1 / self.optics.revolution_frequency
