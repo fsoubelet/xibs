@@ -70,7 +70,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(4.5e9)
-    n_part = int(1e3)  # we don't want too many particles for CI
+    n_part = int(500)  # we don't want too many particles for CI
     sigma_z = 1.58e-3
     nemitt_x = 5.66e-7
     nemitt_y = 3.7e-9
@@ -152,7 +152,7 @@ def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(3.5e11)
-    n_part = int(1e3)  # we don't want too many particles for CI
+    n_part = int(500)  # we don't want too many particles for CI
     sigma_z = 8e-2
     nemitt_x = 1.0e-6
     nemitt_y = 0.25e-6
