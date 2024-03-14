@@ -92,16 +92,26 @@ class KickBasedIBS(ABC):
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
         optics (OpticsParameters): the optics parameters to use for the IBS computations.
+        auto_recompute_coefficients_percent (float): Optional. If given, a check is performed after
+            kicking the particles to determine if recomputing the kick coefficients is necessary, in
+            which case it will be done before the next kick. **Please provide a value as a percentage
+            of the emittance increase**. For instance, if one provides `12` after kicking a check is
+            done to see if the emittance grew by more than 12% in any plane, and if so the coefficients
+            will be automatically recomputed before the next kick. Defaults to `None` (no checks done,
+            no auto-recomputing).
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This
             attribute self-updates when they are computed with the `compute_kick_coefficients`
             method. It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters, auto_recompute_coefficients_percent: float = None) -> None:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
-        # These self-update when computed, but can be overwritten by the user
+        self.auto_recompute_coefficients_percent: float = auto_recompute_coefficients_percent
+        # These coefficients self-update when computed, but can be overwritten by the user
         self.kick_coefficients: IBSKickCoefficients = None
+        # Private flag to indicate if the coefficients need to be recomputed before the next kick
+        self._need_to_recompute_coefficients: bool = False
 
     def __str__(self) -> str:
         has_kick_coefficients = isinstance(self.kick_coefficients, IBSKickCoefficients)
@@ -236,12 +246,19 @@ class SimpleKickIBS(KickBasedIBS):
         analytical_ibs (AnalyticalIBS): an internal analytical class for growth rates
             calculation, which is determined automatically. Can be overridden by the user
             by setting this attribute manually.
+        auto_recompute_coefficients_percent (float): Optional. If given, a check is performed after
+            kicking the particles to determine if recomputing the kick coefficients is necessary, in
+            which case it will be done before the next kick. **Please provide a value as a percentage
+            of the emittance increase**. For instance, if one provides `12` after kicking a check is
+            done to see if the emittance grew by more than 12% in any plane, and if so the coefficients
+            will be automatically recomputed before the next kick. Defaults to `None` (no checks done,
+            no auto-recomputing).
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This
             self-updates when they are computed with the `compute_kick_coefficients` method.
             It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters, auto_recompute_coefficients_percent: float = None) -> None:
         # fmt: off
         # First, we check that we are above transition and raise and error if not (not applicable)
         if optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
@@ -255,7 +272,7 @@ class SimpleKickIBS(KickBasedIBS):
                 "Please see the documentation and use the kinetic formalism with KineticKickIBS instead."
             )
         # If we made it here, SimpleKickIBS is a valid implementation, let's instantiate from KickBasedIBS
-        super().__init__(beam_params, optics)  # also sets self.kick_coefficients (to None)
+        super().__init__(beam_params, optics, auto_recompute_coefficients_percent)  # also sets self.kick_coefficients (to None)
         # Analytical implementation for growth rates calculation, can be overridden by the user
         if np.count_nonzero(self.optics.dy) != 0:
             LOGGER.info("Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism")
@@ -423,8 +440,6 @@ class SimpleKickIBS(KickBasedIBS):
         particles.delta[particles.state > 0] += delta_delta
 
 
-# It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev
-# formalism for some reason? Will need to clarify with him.
 class KineticKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.7.0
@@ -444,14 +459,21 @@ class KineticKickIBS(KickBasedIBS):
         friction_coefficients (FrictionCoefficients): the computed friction coefficients
             from the kinetic theory. This attribute self-updates when coefficients are computed
             with the `compute_kick_coefficients` method. It can also be set manually.
+        auto_recompute_coefficients_percent (float): Optional. If given, a check is performed after
+            kicking the particles to determine if recomputing the kick coefficients is necessary, in
+            which case it will be done before the next kick. **Please provide a value as a percentage
+            of the emittance increase**. For instance, if one provides `12` after kicking a check is
+            done to see if the emittance grew by more than 12% in any plane, and if so the coefficients
+            will be automatically recomputed before the next kick. Defaults to `None` (no checks done,
+            no auto-recomputing).
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients from
             the kinetic theory, determined from the diffusion and friction coefficients. This
             attribute self-updates when coefficients are computed with the `compute_kick_coefficients`
             method. It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        super().__init__(beam_params, optics)  # also sets self.kick_coefficients
+    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters, auto_recompute_coefficients_percent: float = None) -> None:
+        super().__init__(beam_params, optics, auto_recompute_coefficients_percent)  # also sets self.kick_coefficients
         # These self-update when computed, but can be overwritten by the user
         self.diffusion_coefficients: DiffusionCoefficients = None
         self.friction_coefficients: FrictionCoefficients = None
