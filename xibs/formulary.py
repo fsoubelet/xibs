@@ -36,19 +36,19 @@ def phi(beta: ArrayLike, alpha: ArrayLike, dx: ArrayLike, dpx: ArrayLike) -> Arr
 # ----- Some helpers on xtrack.Particles objects ----- #
 
 
-def _bunch_length(particles: "xtrack.Particles") -> float:
+def _bunch_length(particles: "xtrack.Particles") -> float:  # noqa: F821
     """Get the bunch length from the particles."""
     nplike = particles._context.nplike_lib
     return nplike.std(particles.zeta[particles.state > 0])
 
 
-def _sigma_delta(particles: "xtrack.Particles") -> float:
+def _sigma_delta(particles: "xtrack.Particles") -> float:  # noqa: F821
     """Get the standard deviation of the momentum spread from the particles."""
     nplike = particles._context.nplike_lib
     return nplike.std(particles.delta[particles.state > 0])
 
 
-def _geom_epsx(particles: "xtrack.Particles", betx: float, dx: float) -> float:
+def _geom_epsx(particles: "xtrack.Particles", betx: float, dx: float) -> float:  # noqa: F821
     """
     Horizontal geometric emittance at a location in the machine, for the beta
     and dispersion functions at this location.
@@ -59,7 +59,7 @@ def _geom_epsx(particles: "xtrack.Particles", betx: float, dx: float) -> float:
     return (sigma_x**2 - (dx * sig_delta) ** 2) / betx
 
 
-def _geom_epsy(particles: "xtrack.Particles", bety: float, dy: float) -> float:
+def _geom_epsy(particles: "xtrack.Particles", bety: float, dy: float) -> float:  # noqa: F821
     """
     Vertical geometric emittance at a location in the machine, for the beta
     and dispersion functions at this location.
