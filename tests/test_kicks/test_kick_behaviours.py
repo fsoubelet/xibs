@@ -18,7 +18,7 @@ import xtrack as xt
 
 from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import SimpleKickIBS, KineticKickIBS
+from xibs.kicks import KineticKickIBS, SimpleKickIBS
 
 
 def test_simple_kick_chooses_bjorken_mtingwa_with_vertical_dispersion(
