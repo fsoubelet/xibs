@@ -267,7 +267,7 @@ class KickBasedIBS(ABC):
                 > self.auto_recompute_coefficients_percent
             ):
                 LOGGER.debug(
-                    f"One plane's emittance changed bu more than {self.auto_recompute_coefficients_percent}%, "
+                    f"One plane's emittance changed by more than {self.auto_recompute_coefficients_percent}%, "
                     "setting flag to recompute coefficients before next kick."
                 )
                 self._need_to_recompute_coefficients = True
