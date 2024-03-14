@@ -178,7 +178,7 @@ class KickBasedIBS(ABC):
         bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.0
         # ----------------------------------------------------------------------------------------------
         # Compute histogram on longitudinal distribution then compute and return line density
-        counts_normed, bin_edges = nplike.histogram(zeta, bin_edges, density=True)  # density=True to normalize
+        counts_normed, bin_edges = nplike.histogram(zeta, bin_edges, density=True)  # density to normalize
         return nplike.interp(zeta, bin_centers, counts_normed)
 
     @abstractmethod
@@ -253,6 +253,7 @@ class KickBasedIBS(ABC):
         self._apply_formalism_ibs_kick(particles, n_slices)
         # ----------------------------------------------------------------------------------------------
         # Get post-kick emittances, check growth and set recompute flag if necessary (only if self.auto_recompute_coefficients_percent is set)
+        # fmt: off
         if isinstance(self.auto_recompute_coefficients_percent, (int, float)):
             _new_bunch_length = _bunch_length(particles)
             _new_sigma_delta = _sigma_delta(particles)
@@ -260,20 +261,17 @@ class KickBasedIBS(ABC):
             _new_geom_epsy = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
             # If there is an increase / decrease of more than self.auto_recompute_coefficients_percent % in any plane, set the flag
             if (
-                abs(_percent_change(_previous_bunch_length, _new_bunch_length))
-                > self.auto_recompute_coefficients_percent
-                or abs(_percent_change(_previous_sigma_delta, _new_sigma_delta))
-                > self.auto_recompute_coefficients_percent
-                or abs(_percent_change(_previous_geom_epsx, _new_geom_epsx))
-                > self.auto_recompute_coefficients_percent
-                or abs(_percent_change(_previous_geom_epsy, _new_geom_epsy))
-                > self.auto_recompute_coefficients_percent
+                abs(_percent_change(_previous_bunch_length, _new_bunch_length)) > self.auto_recompute_coefficients_percent
+                or abs(_percent_change(_previous_sigma_delta, _new_sigma_delta)) > self.auto_recompute_coefficients_percent
+                or abs(_percent_change(_previous_geom_epsx, _new_geom_epsx)) > self.auto_recompute_coefficients_percent
+                or abs(_percent_change(_previous_geom_epsy, _new_geom_epsy)) > self.auto_recompute_coefficients_percent
             ):
                 LOGGER.debug(
                     f"One plane's emittance changed by more than {self.auto_recompute_coefficients_percent}%, "
                     "setting flag to recompute coefficients before next kick."
                 )
                 self._need_to_recompute_coefficients = True
+        # fmt: on
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
