@@ -173,7 +173,7 @@ def test_simple_kick_auto_recomputes_rates(xtrack_sps_top_ions):
     )
     # --------------------------------------------------------------------
     # Create the IBS parameters and class
-    PERCENT = 0.1  # trigger recompute if an emittance changes by more than PERCENT%
+    PERCENT = 0.05  # trigger recompute if an emittance changes by more than PERCENT%
     beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
     opticsparams = OpticsParameters.from_line(line)
     IBS = SimpleKickIBS(beamparams, opticsparams, auto_recompute_coefficients_percent=PERCENT)
@@ -228,7 +228,7 @@ def test_kinetic_kick_auto_recomputes_rates(xtrack_sps_top_ions):
     )
     # --------------------------------------------------------------------
     # Create the IBS parameters and class
-    PERCENT = 0.1  # trigger recompute if an emittance changes by more than PERCENT%
+    PERCENT = 0.05  # trigger recompute if an emittance changes by more than PERCENT%
     beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
     opticsparams = OpticsParameters.from_line(line)
     IBS = KineticKickIBS(beamparams, opticsparams, auto_recompute_coefficients_percent=PERCENT)
