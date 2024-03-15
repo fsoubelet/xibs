@@ -788,24 +788,12 @@ class KineticKickIBS(KickBasedIBS):
         RNG = np.random.default_rng()
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
         Dx, Dy, Dz = astuple(self.diffusion_coefficients)
-        print(self.diffusion_coefficients)
-        Dx, Dy, Dz = float(Dx), float(Dy), float(Dz)
-        # print(Dx, Dy, Dz)
-        # print(type(Dx))
-        # print(type(Dy))
-        # print(type(Dz))
+        Dx, Dy, Dz = float(Dx), float(Dy), float(Dz)                            # on CPU
         sig_px_norm_ = context.nparray_from_context_array(sigma_px_normalized)  # on CPU
         sig_py_norm_ = context.nparray_from_context_array(sigma_py_normalized)  # on CPU
         sig_delta_ = context.nparray_from_context_array(sigma_delta)            # on CPU
-        # print(sig_px_norm_, sig_py_norm_, sig_delta_)
-        # print(type(sig_px_norm_))
-        # print(type(sig_py_norm_))
-        # print(type(sig_delta_))
-        # print(rho_t)
-        # print(type(rho_t))
-        print(type(factor))
-        rho_t_ = context.nparray_from_context_array(rho_t)  # on CPU
-        factor_ = float(factor)
+        rho_t_ = context.nparray_from_context_array(rho_t)                      # on CPU
+        factor_ = float(factor)                                                 # on CPU
         delta_px_diffusion: ArrayLike = sig_px_norm_ * np.sqrt(2 * dt * Dx) * RNG.normal(0, 1, _size) * np.sqrt(rho_t_ * factor_)   # on CPU
         delta_py_diffusion: ArrayLike = sig_py_norm_ * np.sqrt(2 * dt * Dy) * RNG.normal(0, 1, _size) * np.sqrt(rho_t_ * factor_)   # on CPU
         delta_delta_diffusion: ArrayLike = sig_delta_ * np.sqrt(2 * dt * Dz) * RNG.normal(0, 1, _size) * np.sqrt(rho_t_ * factor_)  # on CPU
