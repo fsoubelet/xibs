@@ -6,7 +6,6 @@ from typing import Self
 
 import matplotlib.pyplot as plt
 import numpy as np
-import xobjects as xo
 import xpart as xp
 import xtrack as xt
 
