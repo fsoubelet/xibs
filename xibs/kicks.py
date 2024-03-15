@@ -521,9 +521,9 @@ class SimpleKickIBS(KickBasedIBS):
         LOGGER.debug("Determining kicks to apply")
         RNG = np.random.default_rng()
         rho_t_ = context.nparray_from_context_array(rho_t)  # on CPU
-        delta_px: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kx, size=_size) * np.sqrt(rho_t_)
-        delta_py: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Ky, size=_size) *  np.sqrt(rho_t_)
-        delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t_)
+        delta_px: np.ndarray = RNG.normal(loc=0, scale=float(self.kick_coefficients.Kx), size=_size) * np.sqrt(rho_t_)
+        delta_py: np.ndarray = RNG.normal(loc=0, scale=float(self.kick_coefficients.Ky), size=_size) *  np.sqrt(rho_t_)
+        delta_delta: np.ndarray = RNG.normal(loc=0, scale=float(self.kick_coefficients.Kz), size=_size) * np.sqrt(rho_t_)
         # ----------------------------------------------------------------------------------------------
         # Apply the kicks to the particles - just move the computed deltas to device and apply
         LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
