@@ -105,37 +105,36 @@ beta_rel: float = BM_IBS.beam_parameters.beta_rel
 class Records:
     """Dataclass to store (and update) important values through tracking."""
 
-    eps_x: np.ndarray  # geometric horizontal emittance in [m]
-    eps_y: np.ndarray  # geometric vertical emittance in [m]
-    sigd: np.ndarray  # momentum spread
-    bl: np.ndarray  # bunch length in [m]
+    epsilon_x: np.ndarray  # geometric horizontal emittance in [m]
+    epsilon_y: np.ndarray  # geometric vertical emittance in [m]
+    sig_delta: np.ndarray  # momentum spread
+    bunch_length: np.ndarray  # bunch length in [m]
+
+    @classmethod
+    def init_zeroes(cls, n_turns: int):
+        return cls(
+            epsilon_x=np.zeros(n_turns, dtype=float),
+            epsilon_y=np.zeros(n_turns, dtype=float),
+            sig_delta=np.zeros(n_turns, dtype=float),
+            bunch_length=np.zeros(n_turns, dtype=float),
+        )
+
+    def update_at_turn(self, turn: int, epsx: float, epsy: float, sigd: float, bl: float):
+        """Works for turns / seconds, just needs the correct index to store in."""
+        self.epsilon_x[turn] = epsx
+        self.epsilon_y[turn] = epsy
+        self.sig_delta[turn] = sigd
+        self.bunch_length[turn] = bl
 
 
-# Initialize dataclasses for each approach
-madx_tbt = Records(
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-)
-bm_tbt = Records(
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-)
-nag_tbt = Records(
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-    np.zeros(nsecs, dtype=float),
-)
+# Initialize dataclasses for each approach & store the initial values
+madx_tbt = Records.init_zeroes(nsecs)
+bm_tbt = Records.init_zeroes(nsecs)
+nag_tbt = Records.init_zeroes(nsecs)
 
-# Initialize data at second 0 (initial state) for all structures
-madx_tbt.eps_x[0] = bm_tbt.eps_x[0] = nag_tbt.eps_x[0] = params.geom_epsx
-madx_tbt.eps_y[0] = bm_tbt.eps_y[0] = nag_tbt.eps_y[0] = params.geom_epsy
-madx_tbt.sigd[0] = bm_tbt.sigd[0] = nag_tbt.sigd[0] = params.sig_delta
-madx_tbt.bl[0] = bm_tbt.bl[0] = nag_tbt.bl[0] = params.bunch_length
+madx_tbt.update_at_turn(0, params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
+bm_tbt.update_at_turn(0, params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
+nag_tbt.update_at_turn(0, params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
 
 #############################################################################
 # With the settings above and this loop, we compute the emittances
@@ -146,70 +145,54 @@ for sec in range(1, nsecs):
     if (sec % ibs_step == 0) or (sec == 1):
         print(f"At {sec}s: re-computing growth rates")
         # For MAD-X - call the 'twiss' then 'ibs' commands (computes from beam attributes)
-        MAD_IBS = _get_dummy_ibs_from_madx_rates(
-            madx
-        )  # calls twiss, ibs, gets rates and puts them in returned 'dummy IBS'
+        MAD_IBS = _get_dummy_ibs_from_madx_rates(madx)  # calls twiss, ibs, gets rates and puts them in returned 'dummy IBS'
         MAD_IBS.beam_parameters = BM_IBS.beam_parameters  # we will want to access these
         MAD_IBS.optics = BM_IBS.optics  # we will want to access these
         # For Bjorken-Mtingwa - compute from values at the previous sec
         BM_IBS.growth_rates(
-            bm_tbt.eps_x[sec - 1],
-            bm_tbt.eps_y[sec - 1],
-            bm_tbt.sigd[sec - 1],
-            bm_tbt.bl[sec - 1],
+            bm_tbt.epsilon_x[sec - 1],
+            bm_tbt.epsilon_y[sec - 1],
+            bm_tbt.sig_delta[sec - 1],
+            bm_tbt.bunch_length[sec - 1],
         )
         # For Nagaitsev - compute from values at the previous sec
         NAG_IBS.growth_rates(
-            nag_tbt.eps_x[sec - 1],
-            nag_tbt.eps_y[sec - 1],
-            nag_tbt.sigd[sec - 1],
-            nag_tbt.bl[sec - 1],
+            nag_tbt.epsilon_x[sec - 1],
+            nag_tbt.epsilon_y[sec - 1],
+            nag_tbt.sig_delta[sec - 1],
+            nag_tbt.bunch_length[sec - 1],
         )
 
     # ----- Compute the new parameters using current growth rates ----- #
     # For MAD-X - compute from values at previous second and specify dt=1s
     madx_epsx, madx_epsy, madx_sigd, madx_bl = MAD_IBS.emittance_evolution(
-        madx_tbt.eps_x[sec - 1],
-        madx_tbt.eps_y[sec - 1],
-        madx_tbt.sigd[sec - 1],
-        madx_tbt.bl[sec - 1],
+        madx_tbt.epsilon_x[sec - 1],
+        madx_tbt.epsilon_y[sec - 1],
+        madx_tbt.sig_delta[sec - 1],
+        madx_tbt.bunch_length[sec - 1],
         dt=1,
     )
     # For Bjorken-Mtingwa - compute from values at previous second and specify dt=1s
     bm_epsx, bm_epsy, bm_sigd, bm_bl = BM_IBS.emittance_evolution(
-        bm_tbt.eps_x[sec - 1],
-        bm_tbt.eps_y[sec - 1],
-        bm_tbt.sigd[sec - 1],
-        bm_tbt.bl[sec - 1],
+        bm_tbt.epsilon_x[sec - 1],
+        bm_tbt.epsilon_y[sec - 1],
+        bm_tbt.sig_delta[sec - 1],
+        bm_tbt.bunch_length[sec - 1],
         dt=1,
     )
     # For Nagaitsev - compute from values at previous second and specify dt=1s
     nag_epsx, nag_epsy, nag_sigd, nag_bl = NAG_IBS.emittance_evolution(
-        nag_tbt.eps_x[sec - 1],
-        nag_tbt.eps_y[sec - 1],
-        nag_tbt.sigd[sec - 1],
-        nag_tbt.bl[sec - 1],
+        nag_tbt.epsilon_x[sec - 1],
+        nag_tbt.epsilon_y[sec - 1],
+        nag_tbt.sig_delta[sec - 1],
+        nag_tbt.bunch_length[sec - 1],
         dt=1,
     )
 
     # ----- Update the records with the new values ----- #
-    # For MAD-X
-    madx_tbt.eps_x[sec] = madx_epsx
-    madx_tbt.eps_y[sec] = madx_epsy
-    madx_tbt.sigd[sec] = madx_sigd
-    madx_tbt.bl[sec] = madx_bl
-
-    # For Bjorken-Mtingwa
-    bm_tbt.eps_x[sec] = bm_epsx
-    bm_tbt.eps_y[sec] = bm_epsy
-    bm_tbt.sigd[sec] = bm_sigd
-    bm_tbt.bl[sec] = bm_bl
-
-    # For Nagaitsev
-    nag_tbt.eps_x[sec] = nag_epsx
-    nag_tbt.eps_y[sec] = nag_epsy
-    nag_tbt.sigd[sec] = nag_sigd
-    nag_tbt.bl[sec] = nag_bl
+    madx_tbt.update_at_turn(sec, madx_epsx, madx_epsy, madx_sigd, madx_bl)
+    bm_tbt.update_at_turn(sec, bm_epsx, bm_epsy, bm_sigd, bm_bl)
+    nag_tbt.update_at_turn(sec, nag_epsx, nag_epsy, nag_sigd, nag_bl)
 
     # ----- Update the beam attributes for MAD-X ----- #
     madx.sequence.lhcb1.beam.ex = madx_epsx
@@ -225,24 +208,24 @@ for sec in range(1, nsecs):
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 7))
 
 # Plotting horizontal emittances
-axs["epsx"].plot(seconds / 3600, 1e10 * madx_tbt.eps_x, lw=2.5, label="MAD-X")
-axs["epsx"].plot(seconds / 3600, 1e10 * bm_tbt.eps_x, lw=1.5, label="BjorkenMtingwaIBS")
-axs["epsx"].plot(seconds / 3600, 1e10 * nag_tbt.eps_x, lw=1, label="NagaitsevIBS")
+axs["epsx"].plot(seconds / 3600, 1e10 * madx_tbt.epsilon_x, lw=2.5, label="MAD-X")
+axs["epsx"].plot(seconds / 3600, 1e10 * bm_tbt.epsilon_x, lw=1.5, label="BjorkenMtingwaIBS")
+axs["epsx"].plot(seconds / 3600, 1e10 * nag_tbt.epsilon_x, lw=1, label="NagaitsevIBS")
 
 # Plotting vertical emittances
-axs["epsy"].plot(seconds / 3600, 1e10 * madx_tbt.eps_y, lw=2.5, label="MAD-X")
-axs["epsy"].plot(seconds / 3600, 1e10 * bm_tbt.eps_y, lw=1.5, label="BjorkenMtingwaIBS")
-axs["epsy"].plot(seconds / 3600, 1e10 * nag_tbt.eps_y, lw=1.5, label="NagaitsevIBS")
+axs["epsy"].plot(seconds / 3600, 1e10 * madx_tbt.epsilon_y, lw=2.5, label="MAD-X")
+axs["epsy"].plot(seconds / 3600, 1e10 * bm_tbt.epsilon_y, lw=1.5, label="BjorkenMtingwaIBS")
+axs["epsy"].plot(seconds / 3600, 1e10 * nag_tbt.epsilon_y, lw=1.5, label="NagaitsevIBS")
 
 # Plotting momentum spread
-axs["sigd"].plot(seconds / 3600, 1e4 * madx_tbt.sigd, lw=2.5, label="MAD-X")
-axs["sigd"].plot(seconds / 3600, 1e4 * bm_tbt.sigd, lw=1.5, label="BjorkenMtingwaIBS")
-axs["sigd"].plot(seconds / 3600, 1e4 * nag_tbt.sigd, lw=1, label="NagaitsevIBS")
+axs["sigd"].plot(seconds / 3600, 1e4 * madx_tbt.sig_delta, lw=2.5, label="MAD-X")
+axs["sigd"].plot(seconds / 3600, 1e4 * bm_tbt.sig_delta, lw=1.5, label="BjorkenMtingwaIBS")
+axs["sigd"].plot(seconds / 3600, 1e4 * nag_tbt.sig_delta, lw=1, label="NagaitsevIBS")
 
 # Plotting bunch length
-axs["bl"].plot(seconds / 3600, 1e2 * madx_tbt.bl, lw=2.5, label="MAD-X")
-axs["bl"].plot(seconds / 3600, 1e2 * bm_tbt.bl, lw=1.5, label="BjorkenMtingwaIBS")
-axs["bl"].plot(seconds / 3600, 1e2 * nag_tbt.bl, lw=1, label="NagaitsevIBS")
+axs["bl"].plot(seconds / 3600, 1e2 * madx_tbt.bunch_length, lw=2.5, label="MAD-X")
+axs["bl"].plot(seconds / 3600, 1e2 * bm_tbt.bunch_length, lw=1.5, label="BjorkenMtingwaIBS")
+axs["bl"].plot(seconds / 3600, 1e2 * nag_tbt.bunch_length, lw=1, label="NagaitsevIBS")
 
 # Axes parameters
 axs["epsx"].set_ylabel(r"$\varepsilon_x$ [$10^{-10}$m]")
