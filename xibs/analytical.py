@@ -283,6 +283,7 @@ class AnalyticalIBS(ABC):
         bunch_length: float,
         dt: float = None,
         normalized_emittances: bool = False,
+        auto_recompute_rates_percent: float = None,
         **kwargs,
     ) -> Tuple[float, float, float, float]:
         r"""
@@ -348,6 +349,13 @@ class AnalyticalIBS(ABC):
             bunch_length (float): the bunch length in [m].
             normalized_emittances (bool): whether the provided emittances are
                 normalized or not. Defaults to `False` (assume geometric emittances).
+            auto_recompute_rates_percent (float): Optional. If given, a check is performed to
+                determine if an update of the growth rates is necessary, in which case it will
+                be done computing the emittance evolutions. **Please provide a value as a percentage
+                of the emittance change**. For instance, if one provides `12`, a check is made to see
+                if any quantity would changed by more than 12%, and if so the growth rates are 
+                automatically recomputed to be as up-to-date as possible before returning the new values.
+                Defaults to `None` (no checks done, no auto-recomputing).
             **kwargs: If keyword arguments are provided, they are considered inputs for the
                 inclusion of synchrotron radiation in the calculation, and the following are
                 expected, case-insensitively:
@@ -386,7 +394,6 @@ class AnalyticalIBS(ABC):
             A tuple with the new horizontal & vertical geometric emittances, the new
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
-        # TODO: add the auto_recompute_rates_percent argument
         # ----------------------------------------------------------------------------------------------
         # Check the kwargs and potentially get the arguments to include synchrotron radiation
         include_synchrotron_radiation = False
@@ -450,6 +457,7 @@ class AnalyticalIBS(ABC):
         new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
         # ----------------------------------------------------------------------------------------------
         # TODO: add check for the new values after evolution and recompute growth rates if needed
+        # ----------------------------------------------------------------------------------------------
         return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
 
     def _normalized_emittance(self, geometric_emittance: float) -> float:
