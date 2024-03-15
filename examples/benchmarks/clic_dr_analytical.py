@@ -16,7 +16,7 @@ import xtrack as xt
 
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import NagaitsevIBS
-from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta, _sigma_x, _sigma_y
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")
@@ -36,13 +36,12 @@ cavities = [element for element in line.elements if isinstance(element, xt.Cavit
 for cavity in cavities:
     cavity.lag = 180
 
-
 # ----- Beam and Simulation Parameters ----- #
 
 bunch_intensity = 4.4e9
 sigma_z = 1.58e-3
-nemitt_x = 5.6644e-07
-nemitt_y = 3.7033e-09
+nemitt_x = 5.66e-7
+nemitt_y = 3.7e-9
 n_part = int(5e3)
 nturns = 10000  # number of turns to loop for
 ibs_step = 250  # frequency at which to re-compute the growth rates in [turns]
