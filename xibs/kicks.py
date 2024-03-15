@@ -463,9 +463,9 @@ class SimpleKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Computing the analytical IBS growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
-            geom_epsx, geom_epsy, sigma_delta, bunch_length, **kwargs
+            float(geom_epsx), float(geom_epsy), float(sigma_delta), float(bunch_length), **kwargs
         )
-        Tx, Ty, Tz = astuple(growth_rates)
+        Tx, Ty, Tz = astuple(growth_rates)  # on CPU
         # ----------------------------------------------------------------------------------------------
         # Making sure we do not have negative growth rates (see class docstring warning for detail)
         Tx = 0.0 if Tx < 0 else float(Tx)
