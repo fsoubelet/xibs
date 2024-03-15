@@ -24,6 +24,7 @@ import xpart as xp
 import xtrack as xt
 
 from xibs.analytical import BjorkenMtingwaIBS
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.simplefilter("ignore")  # for this tutorial's clarity
@@ -111,14 +112,10 @@ plt.show()
 # We can compute initial (geometrical) emittances as well as the bunch length
 # from the `xtrack.Particles` object:
 
-sig_x = np.std(particles.x[particles.state > 0])  # horizontal stdev
-sig_y = np.std(particles.y[particles.state > 0])  # vertical stdev
-sig_delta = np.std(particles.delta[particles.state > 0])  # momentum spread
-
-# Compute horizontal & vertical geometric emittances as well as the bunch length, all in [m]
-geom_epsx = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-geom_epsy = sig_y**2 / twiss["bety"][0]
-bunch_l = np.std(particles.zeta[particles.state > 0])
+geom_epsx = _geom_epsx(particles, twiss.betx[0], twiss.dx[0])
+geom_epsy = _geom_epsy(particles, twiss.bety[0], twiss.dy[0])
+bunch_l = _bunch_length(particles)
+sig_delta = _sigma_delta(particles)
 
 ###############################################################################
 # Computing IBS Growth Rates
@@ -149,7 +146,7 @@ print(IBS.ibs_growth_rates)
 # ------------------------------------------
 # From these one can compute the emittances at the next time step. For the emittances
 # at the next turn, once should use :math:`1 / f_{rev}` as the time step, which
-# is the default value used if it is not provided.
+# is the default value used if none is provided.
 
 new_geom_epsx, new_geom_epsy, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
     geom_epsx, geom_epsy, sig_delta, bunch_l
@@ -183,22 +180,29 @@ class Records:
     sig_delta: np.ndarray
     bunch_length: np.ndarray
 
+    @classmethod
+    def init_zeroes(cls, n_turns: int):
+        return cls(
+            epsilon_x=np.zeros(n_turns, dtype=float),
+            epsilon_y=np.zeros(n_turns, dtype=float),
+            sig_delta=np.zeros(n_turns, dtype=float),
+            bunch_length=np.zeros(n_turns, dtype=float),
+        )
 
-# Initialize the dataclass
-turn_by_turn = Records(
-    epsilon_x=np.zeros(nsecs, dtype=float),
-    epsilon_y=np.zeros(nsecs, dtype=float),
-    sig_delta=np.zeros(nsecs, dtype=float),
-    bunch_length=np.zeros(nsecs, dtype=float),
-)
+    def update_at_turn(self, turn: int, epsx: float, epsy: float, sigd: float, bl: float):
+        """Works for turns / seconds, just needs the correct index to store in."""
+        self.epsilon_x[turn] = epsx
+        self.epsilon_y[turn] = epsy
+        self.sig_delta[turn] = sigd
+        self.bunch_length[turn] = bl
 
-# Store the initial values
-turn_by_turn.bunch_length[0] = np.std(particles.zeta[particles.state > 0])
-turn_by_turn.sig_delta[0] = sig_delta
-turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
+# Initialize the dataclass & store the initial values
+turn_by_turn = Records.init_zeroes(nsecs)
+turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_l)
 
-# We loop here now
+
+# ----- We loop here now ----- # 
+
 for sec in range(1, nsecs):
     # ----- Potentially re-compute the IBS growth rates ----- #
     if (sec % ibs_step == 0) or (sec == 1):
@@ -221,10 +225,8 @@ for sec in range(1, nsecs):
     )
 
     # ----- Update the records with the new values ----- #
-    turn_by_turn.epsilon_x[sec] = new_emit_x
-    turn_by_turn.epsilon_y[sec] = new_emit_y
-    turn_by_turn.sig_delta[sec] = new_sig_delta
-    turn_by_turn.bunch_length[sec] = new_bunch_length
+    turn_by_turn.update_at_turn(sec, new_emit_x, new_emit_y, new_sig_delta, new_bunch_length)
+
 
 ###############################################################################
 # Feel free to run this simulation for longer, or with a different frequency
