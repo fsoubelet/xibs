@@ -103,7 +103,7 @@ IBS = KineticKickIBS(beamparams, opticsparams)
 for turn in range(1, nturns):
     # ----- Potentially re-compute the ellitest_parts integrals and IBS growth rates ----- #
     if (turn % ibs_step == 0) or (turn == 1):
-        print(f"Turn {turn:d}: re-computing growth rates and kick coefficients\n")
+        print(f"Turn {turn:d}: re-computing growth rates and kick coefficients")
         # We compute from values at the previous turn
         IBS.compute_kick_coefficients(particles)
     else:
@@ -112,10 +112,7 @@ for turn in range(1, nturns):
     # ----- Apply IBS Kick and Track Turn ----- #
     IBS.apply_ibs_kick(particles)
     line.track(particles, num_turns=1)
-
-    # ----- Compute Emittances from Particles State for my tracked particles & update records----- #
     my_tbt.update_at_turn(turn, particles, twiss)
-
 
 
 # ----- Plotting ----- #
