@@ -104,8 +104,8 @@ class KickBasedIBS(ABC):
         auto_recompute_coefficients_percent (float): Optional. If given, a check is performed after
             kicking the particles to determine if recomputing the kick coefficients is necessary, in
             which case it will be done before the next kick. **Please provide a value as a percentage
-            of the emittance increase**. For instance, if one provides `12` after kicking a check is
-            done to see if the emittance grew by more than 12% in any plane, and if so the coefficients
+            of the emittance change**. For instance, if one provides `12` after kicking a check is
+            done to see if the emittance changed by more than 12% in any plane, and if so the coefficients
             will be automatically recomputed before the next kick. Defaults to `None` (no checks done,
             no auto-recomputing).
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This
@@ -667,9 +667,9 @@ class KineticKickIBS(KickBasedIBS):
         lbd1_: ArrayLike = context.nparray_from_context_array(lambda_1)  # on CPU
         lbd2_: ArrayLike = context.nparray_from_context_array(lambda_2)  # on CPU
         lbd3_: ArrayLike = context.nparray_from_context_array(lambda_3)  # on CPU
-        R1_: ArrayLike = elliprd(1 / lbd2_, 1 / lbd3_, 1 / lbd1_) / context.nparray_from_context_array(lambda_1)              # on CPU
-        R2_: ArrayLike = elliprd(1 / lbd3_, 1 / lbd1_, 1 / lbd2_) / context.nparray_from_context_array(lambda_2)              # on CPU
-        R3_: ArrayLike = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1_ / lambda_3 - lambda_2 * R2_ / lambda_3  # on CPU
+        R1_: ArrayLike = elliprd(1 / lbd2_, 1 / lbd3_, 1 / lbd1_) / context.nparray_from_context_array(lambda_1)  # on CPU
+        R2_: ArrayLike = elliprd(1 / lbd3_, 1 / lbd1_, 1 / lbd2_) / context.nparray_from_context_array(lambda_2)  # on CPU
+        R3_: ArrayLike = 3 * np.sqrt(lbd1_ * lbd2_ / lbd3_) - lbd1_ * R1_ / lbd3_ - lbd2_ * R2_ / lbd3_           # on CPU
         # We transport these results back to device
         R1: ArrayLike = context.nparray_to_context_array(R1_)  # on device
         R2: ArrayLike = context.nparray_to_context_array(R2_)  # on device
