@@ -468,9 +468,8 @@ class AnalyticalIBS(ABC):
                     f"One value would change by more than {auto_recompute_rates_percent}%, "
                     "updating growth rates before re-computing evolutions."
                 )
-                self.growth_rates(
-                    epsx, epsy, sigma_delta, bunch_length, normalized_emittances=normalized_emittances
-                )
+                bunched = kwargs.get("bunched", True)  # get the bunched value if provided
+                self.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched, normalized_emittances)
                 # And now we need to recompute the evolutions since the growth rates have been updated
                 if include_synchrotron_radiation is False:  # the basic calculation
                     new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_without_sr(
