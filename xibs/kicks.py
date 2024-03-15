@@ -790,10 +790,16 @@ class KineticKickIBS(KickBasedIBS):
         Dx, Dy, Dz = astuple(self.diffusion_coefficients)
         print(self.diffusion_coefficients)
         print(Dx, Dy, Dz)
+        print(type(Dx))
+        print(type(Dy))
+        print(type(Dz))
         sig_px_norm_ = context.nparray_from_context_array(sigma_px_normalized)  # on CPU
         sig_py_norm_ = context.nparray_from_context_array(sigma_py_normalized)  # on CPU
         sig_delta_ = context.nparray_from_context_array(sigma_delta)            # on CPU
         print(sig_px_norm_, sig_py_norm_, sig_delta_)
+        print(type(sig_px_norm_))
+        print(type(sig_py_norm_))
+        print(type(sig_delta_))
         delta_px_diffusion: ArrayLike = sig_px_norm_ * np.sqrt(2 * dt * Dx) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)   # on CPU
         delta_py_diffusion: ArrayLike = sig_py_norm_ * np.sqrt(2 * dt * Dy) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)   # on CPU
         delta_delta_diffusion: ArrayLike = sig_delta_ * np.sqrt(2 * dt * Dz) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)  # on CPU
