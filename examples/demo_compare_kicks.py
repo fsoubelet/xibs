@@ -15,6 +15,8 @@ energy, and with some tweaked beam parameters to stimulate the IBS effects.
 We will demonstrate using an `xtrack.Line` of the ``SPS`` ring, for ions at top energy (450 GeV).
 """
 # sphinx_gallery_thumbnail_number = 1
+import logging
+import sys
 import warnings
 
 from dataclasses import dataclass
@@ -27,6 +29,7 @@ import xpart as xp
 import xtrack as xt
 
 from xibs.inputs import BeamParameters, OpticsParameters
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
 from xibs.kicks import KineticKickIBS, SimpleKickIBS
 
 warnings.simplefilter("ignore")  # for this tutorial's clarity
@@ -43,40 +46,6 @@ plt.rcParams.update(
     }
 )
 
-###############################################################################
-# We will define here some helper functions we will regularly use later on to
-# compute the emittances, bunch lengths and momentum spread from and `xtrack.Particles`
-# object representing our particle distribution. In each, let's make sure to filter
-# for only the active particles (``state > 0``).
-
-
-def _bunch_length(parts: xp.Particles) -> float:
-    return np.std(parts.zeta[parts.state > 0])
-
-
-def _sigma_delta(parts: xp.Particles) -> float:
-    return np.std(parts.delta[parts.state > 0])
-
-
-def _geom_epsx(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dx and betx at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_x = np.std(parts.x[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-
-
-def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dy and bety at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_y = np.std(parts.y[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
-
 
 ###############################################################################
 # Let's start by defining the line and particle information, as well as some
@@ -85,8 +54,9 @@ def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
 # rates calculation while `n_part` is the number of generated particles for
 # tracking, which is much lower.
 
+line_file = "lines/sps_top_ions.json"
 bunch_intensity = int(5e11)
-n_part = int(2e3)
+n_part = int(1e3)
 sigma_z = 5e-2
 nemitt_x = 1.0e-6
 nemitt_y = 0.25e-6
@@ -98,13 +68,10 @@ nemitt_y = 0.25e-6
 # create a context for multithreading with OpenMP, since tracking particles
 # is going to take some time:
 
+line = xt.Line.from_json(line_file)  # includes reference particle
 context = xo.ContextCpu(omp_num_threads="auto")
-line_file = "lines/sps_top_ions.json"
-line = xt.Line.from_json(line_file)
-line.build_tracker(context)
-line.optimize_for_tracking()
-twiss = line.twiss(method="4d")
 
+# ----- Power accelerating cavities ----- #
 rf_voltage = 1.7e6  # 1.7MV
 harmonic_number = 4653
 cavity = "actcse.31632"
@@ -112,7 +79,11 @@ line[cavity].lag = 180  # 0 if below transition, 180 if above
 line[cavity].voltage = rf_voltage
 line[cavity].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
 
-# We create a particle distrubution which we clone, one for each kick formalism
+line.build_tracker(context)
+line.optimize_for_tracking()
+twiss = line.twiss(method="4d")
+
+# We create a particle distribution which we clone, one for each kick formalism
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
@@ -138,10 +109,10 @@ SIBS = SimpleKickIBS(beamparams, opticsparams)
 # Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking
 # ------------------------------------------------------------------------
 # We will now apply kicks with both formalism during tracking simulations.
-# Let's do so for 1000 turns, and re-compute kick coefficients every 50 turns.
+# Let's do so for 750 turns, and re-compute kick coefficients every 50 turns.
 
 # Define some parameters for the tracking
-nturns = 1_000  # number of turns to loop for
+nturns = 750  # number of turns to loop for
 ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 
 ###############################################################################
@@ -156,8 +127,8 @@ class Records:
 
     def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
         """Automatically update the records at given turn from the xtrack.Particles."""
-        self.epsilon_x[turn] = _geom_epsx(parts, twiss)
-        self.epsilon_y[turn] = _geom_epsy(parts, twiss)
+        self.epsilon_x[turn] = _geom_epsx(parts, twiss.betx[0], twiss.dx[0])
+        self.epsilon_y[turn] = _geom_epsy(parts, twiss.bety[0], twiss.dy[0])
         self.sigma_delta[turn] = _sigma_delta(parts)
         self.bunch_length[turn] = _bunch_length(parts)
 
@@ -172,20 +143,29 @@ class Records:
         )
 
 
-# Initialize the dataclasses
+# Initialize the dataclasses & store the initial values
 kinetic_tbt = Records.init_zeroes(nturns)
 simple_tbt = Records.init_zeroes(nturns)
 
-# Store the initial values
 kinetic_tbt.update_at_turn(0, particles, twiss)
 simple_tbt.update_at_turn(0, particles2, twiss)
+
+# Let's hide anything below WARNING level for readability
+logging.basicConfig(
+    level=logging.WARNING,
+    stream=sys.stdout,
+    format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+    datefmt="%H:%M:%S",
+    force=True,
+)
 
 ###############################################################################
 # Now, since ``xibs`` is not fully integrated into Xsuite, we will have to manually
 # apply the IBS kick at each turn of tracking, and also manually trigger the turn
 # of tracking. Just like in the analytical examples, we do so in a loop over the turns:
 
-# We loop here now
+# ----- We loop here now ----- # 
+
 for turn in range(1, nturns):
     # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
     if (turn % ibs_step == 0) or (turn == 1):
