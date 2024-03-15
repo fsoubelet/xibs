@@ -34,6 +34,7 @@ import xtrack as xt
 
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
 from xibs.kicks import IBSKickCoefficients, SimpleKickIBS
 
 warnings.simplefilter("ignore")  # for this tutorial's clarity
@@ -49,40 +50,6 @@ plt.rcParams.update(
         "figure.titlesize": 20,
     }
 )
-
-###############################################################################
-# We will define here some helper functions we will regularly use later on to
-# compute the emittances, bunch lengths and momentum spread from and `xtrack.Particles`
-# object representing our particle distribution. In each, let's make sure to filter
-# for only the active particles (``state > 0``).
-
-
-def _bunch_length(parts: xp.Particles) -> float:
-    return np.std(parts.zeta[parts.state > 0])
-
-
-def _sigma_delta(parts: xp.Particles) -> float:
-    return np.std(parts.delta[parts.state > 0])
-
-
-def _geom_epsx(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dx and betx at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_x = np.std(parts.x[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-
-
-def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dy and bety at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_y = np.std(parts.y[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
 
 
 ###############################################################################
@@ -224,7 +191,7 @@ IBS = SimpleKickIBS(beamparams, opticsparams)
 NIBS = NagaitsevIBS(beamparams, opticsparams)
 
 # Re-create particles with less elements as tracking takes a while
-n_part = int(2.5e3)  # 2500 particles should be enough for this example
+n_part = int(1.5e3)  # 1500 particles should be enough for this example
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
@@ -235,12 +202,11 @@ particles = xp.generate_matched_gaussian_bunch(
 )
 
 # Define some parameters for the tracking
-nturns = 1_000  # number of turns to loop for
+nturns = 750  # number of turns to loop for
 ibs_step = 50  # frequency at which to re-compute the growth rates & kick coefficients in [turns]
 
 ###############################################################################
 # We will also set up a dataclass conveniently to store the results:
-
 
 @dataclass
 class Records:
@@ -250,15 +216,13 @@ class Records:
     bunch_length: np.ndarray
 
     def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
-        """Automatically update the records at given turn from the xtrack.Particles."""
-        self.epsilon_x[turn] = _geom_epsx(parts, twiss)
-        self.epsilon_y[turn] = _geom_epsy(parts, twiss)
+        self.epsilon_x[turn] = _geom_epsx(parts, twiss.betx[0], twiss.dx[0])
+        self.epsilon_y[turn] = _geom_epsy(parts, twiss.bety[0], twiss.dy[0])
         self.sigma_delta[turn] = _sigma_delta(parts)
         self.bunch_length[turn] = _bunch_length(parts)
 
     @classmethod
     def init_zeroes(cls, n_turns: int) -> Self:  # noqa: F821
-        """Initialize the dataclass with arrays of zeroes."""
         return cls(
             epsilon_x=np.zeros(n_turns, dtype=float),
             epsilon_y=np.zeros(n_turns, dtype=float),
@@ -267,11 +231,10 @@ class Records:
         )
 
 
-# Initialize the dataclasses
+# Initialize the dataclasses & store the initial values
 kicked_tbt = Records.init_zeroes(nturns)
 analytical_tbt = Records.init_zeroes(nturns)
 
-# Store the initial values
 kicked_tbt.update_at_turn(0, particles, twiss)
 analytical_tbt.update_at_turn(0, particles, twiss)
 
@@ -289,7 +252,8 @@ logging.basicConfig(
 # apply the IBS kick at each turn of tracking, and also manually trigger the turn
 # of tracking. Just like in the analytical examples, we do so in a loop over the turns:
 
-# We loop here now
+# ----- We loop here now ----- # 
+
 for turn in range(1, nturns):
     # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
     if (turn % ibs_step == 0) or (turn == 1):
