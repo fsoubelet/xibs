@@ -171,6 +171,7 @@ print(f"Old code took {end2 - start2:.3f} seconds")
 print(f"New code was ~{(end2 - start2)/(end1 - start1):.1f} faster")
 
 # ----- Plot the results ----- #
+
 figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(7, 8))
 
 epsx.plot(old_turn_by_turn.epsilon_x, "o", ms=2, label="Old")
