@@ -34,7 +34,7 @@ from scipy.integrate import quad, quad_vec
 from scipy.interpolate import interp1d
 from scipy.special import elliprd
 
-from xibs.formulary import phi
+from xibs.formulary import _percent_change, phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -353,7 +353,7 @@ class AnalyticalIBS(ABC):
                 determine if an update of the growth rates is necessary, in which case it will
                 be done computing the emittance evolutions. **Please provide a value as a percentage
                 of the emittance change**. For instance, if one provides `12`, a check is made to see
-                if any quantity would changed by more than 12%, and if so the growth rates are 
+                if any quantity would changed by more than 12%, and if so the growth rates are
                 automatically recomputed to be as up-to-date as possible before returning the new values.
                 Defaults to `None` (no checks done, no auto-recomputing).
             **kwargs: If keyword arguments are provided, they are considered inputs for the
@@ -456,7 +456,39 @@ class AnalyticalIBS(ABC):
         new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
         new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
         # ----------------------------------------------------------------------------------------------
-        # TODO: add check for the new values after evolution and recompute growth rates if needed
+        # If we check for autoupdate and there is an change of more than self.auto_recompute_rates_percent %
+        if isinstance(auto_recompute_rates_percent, (int, float)) and (
+            abs(_percent_change(epsx, new_epsx)) > auto_recompute_rates_percent
+            or abs(_percent_change(epsy, new_epsy)) > auto_recompute_rates_percent
+            or abs(_percent_change(sigma_delta, new_sigma_delta)) > auto_recompute_rates_percent
+            or abs(_percent_change(bunch_length, new_bunch_length)) > auto_recompute_rates_percent
+        ):
+            LOGGER.debug(
+                f"One value would change by more than {auto_recompute_rates_percent}%, "
+                "updating growth rates before re-computing evolutions."
+            )
+            self.growth_rates(
+                epsx, epsy, sigma_delta, bunch_length, normalized_emittances=normalized_emittances
+            )
+            # And now we need to recompute the evolutions since the growth rates have been updated
+            if include_synchrotron_radiation is False:  # the basic calculation
+                new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_without_sr(
+                    geom_epsx, geom_epsy, sigma_delta, bunch_length, dt
+                )
+            else:  # the modified calculation with Synchrotron Radiation contribution
+                new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_with_sr(
+                    geom_epsx,
+                    geom_epsy,
+                    sigma_delta,
+                    bunch_length,
+                    dt,
+                    sr_eq_geom_epsx,
+                    sr_eq_geom_epsy,
+                    sr_eq_sigma_delta,
+                    sr_inputs.tau_x,
+                    sr_inputs.tau_y,
+                    sr_inputs.tau_z,
+                )
         # ----------------------------------------------------------------------------------------------
         return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
 
