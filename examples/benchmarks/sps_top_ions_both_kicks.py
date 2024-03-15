@@ -1,5 +1,3 @@
-import logging
-import sys
 import warnings
 
 from dataclasses import dataclass
@@ -14,61 +12,22 @@ import xtrack as xt
 
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
 from xibs.kicks import KineticKickIBS, SimpleKickIBS
 
-logging.basicConfig(
-    level=logging.WARNING,
-    stream=sys.stdout,
-    format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
-    datefmt="%H:%M:%S",
-)
 warnings.simplefilter("ignore")  # for this tutorial's clarity
 
-# ----- Helpers ----- #
-
-
-def _bunch_length(parts: xp.Particles) -> float:
-    return np.std(parts.zeta[parts.state > 0])
-
-
-def _sigma_delta(parts: xp.Particles) -> float:
-    return np.std(parts.delta[parts.state > 0])
-
-
-def _geom_epsx(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dx and betx at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_x = np.std(parts.x[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-
-
-def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dy and bety at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_y = np.std(parts.y[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
-
-
-# ------------------- #
+# ----- Load line and build tracker ----- #
 
 context = xo.ContextCpu(omp_num_threads="auto")
-filepath = Path(__file__).parent.parent.parent / "tests" / "inputs" / "lines" / "sps_top_ions.json"
+xibs_repo = Path(__file__).absolute().parent.parent.parent
+filepath = xibs_repo / "tests" / "inputs" / "lines" / "sps_top_ions.json"
 line = xt.Line.from_json(filepath.absolute())
 line.build_tracker(context)
 line.optimize_for_tracking()
 twiss = line.twiss(method="4d")
 
-# Using fake values for beam parameters to be in a regime that 'stimulates' IBS
-bunch_intensity = int(5e11)
-sigma_z = 5e-2
-nemitt_x = 1.0e-6
-nemitt_y = 0.25e-6
+# ----- Activate RF Systems ----- #
 
 rf_voltage = 1.7e6  # 1.7MV from the test config
 harmonic_number = 4653
@@ -77,26 +36,38 @@ line[cavity].lag = 180  # 0 if below transition, 180 if above
 line[cavity].voltage = rf_voltage  # In Xsuite for ions, do not multiply by charge as in MADX
 line[cavity].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
 
-# ------------------- #
+# ----- Beam and Simulation Parameters ----- #
 
-beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
-opticsparams = OpticsParameters.from_line(line)
-KIBS = KineticKickIBS(beamparams, opticsparams)
-SIBS = SimpleKickIBS(beamparams, opticsparams)
-NIBS = NagaitsevIBS(beamparams, opticsparams)
+# Using fake values for beam parameters to be in a regime that 'stimulates' IBS
+bunch_intensity = int(3.5e11)
+sigma_z = 8e-2
+nemitt_x = 1.0e-6
+nemitt_y = 0.2e-6
+n_part = int(1e3)
+nturns = 1000  # number of turns to loop for
+ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 
-n_part = int(2e3)  # 2000 particles should be enough for this example
+# ----- Create particles ----- #
+
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
     nemitt_x=nemitt_x,
     nemitt_y=nemitt_y,
     sigma_z=sigma_z,
+    particle_ref=line.particle_ref,
     line=line,
 )
 particles2 = particles.copy()
 
-# ------------------- #
+# ----- Compute initial (geometrical) emittances & bunch length all in [m] ----- #
+
+sig_delta = _sigma_delta(particles)
+bunch_l = _bunch_length(particles)
+geom_epsx = _geom_epsx(particles, twiss.betx[0], twiss.dx[0])
+geom_epsy = _geom_epsy(particles, twiss.bety[0], twiss.dy[0])
+
+# ----- Dataclass to store results ----- #
 
 @dataclass
 class Records:
@@ -107,8 +78,8 @@ class Records:
 
     def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
         """Automatically update the records at given turn from the xtrack.Particles."""
-        self.epsilon_x[turn] = _geom_epsx(parts, twiss)
-        self.epsilon_y[turn] = _geom_epsy(parts, twiss)
+        self.epsilon_x[turn] = _geom_epsx(parts, twiss.betx[0], twiss.dx[0])
+        self.epsilon_y[turn] = _geom_epsy(parts, twiss.bety[0], twiss.dy[0])
         self.sigma_delta[turn] = _sigma_delta(parts)
         self.bunch_length[turn] = _bunch_length(parts)
 
@@ -122,30 +93,33 @@ class Records:
             bunch_length=np.zeros(n_turns, dtype=float),
         )
 
-nturns = 1_500  # number of turns to loop for
-ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
-
-# Initialize the dataclasses
+# Initialize the dataclasses & store initial values
 kinetic_tbt = Records.init_zeroes(nturns)
 simple_tbt = Records.init_zeroes(nturns)
 analytical_tbt = Records.init_zeroes(nturns)
 
-# Store the initial values
 kinetic_tbt.update_at_turn(0, particles, twiss)
 simple_tbt.update_at_turn(0, particles, twiss)
 analytical_tbt.update_at_turn(0, particles, twiss)
 
+# ----- Initialize our IBS models (old and new) ----- #
 
-# ----- Tracking ----- #
+beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
+opticsparams = OpticsParameters.from_line(line)
+
+KIBS = KineticKickIBS(beamparams, opticsparams)
+SIBS = SimpleKickIBS(beamparams, opticsparams)
+NIBS = NagaitsevIBS(beamparams, opticsparams)
+
+# ----- We loop here now ----- # 
 
 for turn in range(1, nturns):
     # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
     if (turn % ibs_step == 0) or (turn == 1):
-        print(f"Turn {turn:d}: re-computing diffusion and friction terms")
+        print(f"Turn {turn:d}: re-computing kick coefficients")
         # Compute kick coefficients from the particle distribution at this moment
         KIBS.compute_kick_coefficients(particles)
         SIBS.compute_kick_coefficients(particles2)
-        # Compute analytical values from those at the previous turn
         NIBS.growth_rates(
             analytical_tbt.epsilon_x[turn - 1],
             analytical_tbt.epsilon_y[turn - 1],
