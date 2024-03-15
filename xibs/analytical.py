@@ -386,6 +386,7 @@ class AnalyticalIBS(ABC):
             A tuple with the new horizontal & vertical geometric emittances, the new
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
+        # TODO: add the auto_recompute_rates_percent argument
         # ----------------------------------------------------------------------------------------------
         # Check the kwargs and potentially get the arguments to include synchrotron radiation
         include_synchrotron_radiation = False
@@ -425,42 +426,30 @@ class AnalyticalIBS(ABC):
             dt = 1 / self.optics.revolution_frequency
         # ----------------------------------------------------------------------------------------------
         # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        # fmt: off
         if include_synchrotron_radiation is False:  # the basic calculation
-            new_epsx: float = geom_epsx * np.exp(dt * self.ibs_growth_rates.Tx)
-            new_epsy: float = geom_epsy * np.exp(dt * self.ibs_growth_rates.Ty)
-            new_sigma_delta: float = sigma_delta * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
-            new_bunch_length: float = bunch_length * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+            new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_without_sr(
+                geom_epsx, geom_epsy, sigma_delta, bunch_length, dt
+            )
         else:  # the modified calculation with Synchrotron Radiation contribution
-            new_epsx: float = (
-                - sr_eq_geom_epsx
-                + (sr_eq_geom_epsx + geom_epsx * (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1.0))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tx / 2 - 1 / sr_inputs.tau_x))
-            ) / (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1)
-            new_epsy: float = (
-                - sr_eq_geom_epsy
-                + (sr_eq_geom_epsy + geom_epsy * (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Ty / 2 - 1 / sr_inputs.tau_y))
-            ) / (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1)
-            # For longitudinal properties, compute the square to avoid too messy code
-            new_sigma_delta_square: float = (
-                - (sr_eq_sigma_delta**2)
-                + (sr_eq_sigma_delta**2 + sigma_delta**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
-            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
-            new_bunch_length_square: float = (
-                - (sr_eq_sigma_delta**2)
-                + (sr_eq_sigma_delta**2 + bunch_length**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
-            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
-            # And then simply get the square root of that for the final results
-            new_sigma_delta: float = np.sqrt(new_sigma_delta_square)
-            new_bunch_length: float = np.sqrt(new_bunch_length_square)
-        # fmt: on
+            new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_with_sr(
+                geom_epsx,
+                geom_epsy,
+                sigma_delta,
+                bunch_length,
+                dt,
+                sr_eq_geom_epsx,
+                sr_eq_geom_epsy,
+                sr_eq_sigma_delta,
+                sr_inputs.tau_x,
+                sr_inputs.tau_y,
+                sr_inputs.tau_z,
+            )
         # ----------------------------------------------------------------------------------------------
         # Make sure we return the same type of emittances as the user provided
         new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
         new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
+        # ----------------------------------------------------------------------------------------------
+        # TODO: add check for the new values after evolution and recompute growth rates if needed
         return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
 
     def _normalized_emittance(self, geometric_emittance: float) -> float:
@@ -534,6 +523,59 @@ class AnalyticalIBS(ABC):
             tau_y=lowercase_kwargs["sr_tau_y"],
             tau_z=lowercase_kwargs["sr_tau_z"],
         )
+
+    def _evolution_without_sr(
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float
+    ) -> Tuple[float, float, float, float]:
+        """Just the calculation, called by main method when relevant."""
+        new_epsx: float = geom_epsx * np.exp(dt * self.ibs_growth_rates.Tx)
+        new_epsy: float = geom_epsy * np.exp(dt * self.ibs_growth_rates.Ty)
+        new_sigma_delta: float = sigma_delta * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+        new_bunch_length: float = bunch_length * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+        return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
+
+    def _evolution_with_sr(
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        dt: float,
+        sr_eq_geom_epsx: float,
+        sr_eq_geom_epsy: float,
+        sr_eq_sigma_delta: float,
+        sr_taux: float,
+        sr_tauy: float,
+        sr_tauz: float,
+    ) -> Tuple[float, float, float, float]:
+        """Just the calculation, called by main method when relevant."""
+        # fmt: off
+        new_epsx: float = (
+            - sr_eq_geom_epsx
+            + (sr_eq_geom_epsx + geom_epsx * (self.ibs_growth_rates.Tx / 2 * sr_taux - 1.0))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Tx / 2 - 1 / sr_taux))
+        ) / (self.ibs_growth_rates.Tx / 2 * sr_taux - 1)
+        new_epsy: float = (
+            - sr_eq_geom_epsy
+            + (sr_eq_geom_epsy + geom_epsy * (self.ibs_growth_rates.Ty / 2 * sr_tauy - 1))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Ty / 2 - 1 / sr_tauy))
+        ) / (self.ibs_growth_rates.Ty / 2 * sr_tauy - 1)
+        # For longitudinal properties, compute the square to avoid too messy code
+        new_sigma_delta_square: float = (
+            - (sr_eq_sigma_delta**2)
+            + (sr_eq_sigma_delta**2 + sigma_delta**2 * (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_tauz))
+        ) / (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1)
+        new_bunch_length_square: float = (
+            - (sr_eq_sigma_delta**2)
+            + (sr_eq_sigma_delta**2 + bunch_length**2 * (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_tauz))
+        ) / (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1)
+        # And then simply get the square root of that for the final results
+        new_sigma_delta: float = np.sqrt(new_sigma_delta_square)
+        new_bunch_length: float = np.sqrt(new_bunch_length_square)
+        # fmt: on
+        return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
 
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
