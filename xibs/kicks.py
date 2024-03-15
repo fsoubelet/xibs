@@ -789,6 +789,7 @@ class KineticKickIBS(KickBasedIBS):
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
         Dx, Dy, Dz = astuple(self.diffusion_coefficients)
         print(self.diffusion_coefficients)
+        Dx, Dy, Dz = float(Dx), float(Dy), float(Dz)
         print(Dx, Dy, Dz)
         print(type(Dx))
         print(type(Dy))
