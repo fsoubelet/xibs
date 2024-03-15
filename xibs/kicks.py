@@ -768,9 +768,9 @@ class KineticKickIBS(KickBasedIBS):
         # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
         # fmt: off
         LOGGER.debug("Computing momentum spread and momenta's standard deviations")
-        sigma_delta: float = _sigma_delta(particles)
-        sigma_px_normalized: float = nplike.std(particles.px[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfx[0]**2)
-        sigma_py_normalized: float = nplike.std(particles.py[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfy[0]**2)
+        sigma_delta: float = _sigma_delta(particles)  # on device
+        sigma_px_normalized: float = nplike.std(particles.px[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfx[0]**2)  # on device
+        sigma_py_normalized: float = nplike.std(particles.py[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfy[0]**2)  # on device
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (see referenced Michalis presentation)
         LOGGER.debug("Determining friction kicks")
@@ -788,9 +788,12 @@ class KineticKickIBS(KickBasedIBS):
         RNG = np.random.default_rng()
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
         Dx, Dy, Dz = astuple(self.diffusion_coefficients)
-        delta_px_diffusion: ArrayLike = sigma_px_normalized * np.sqrt(2 * dt * Dx) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)  # on CPU
-        delta_py_diffusion: ArrayLike = sigma_py_normalized * np.sqrt(2 * dt * Dy) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)  # on CPU
-        delta_delta_diffusion: ArrayLike = sigma_delta * np.sqrt(2 * dt * Dz) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)       # on CPU
+        sig_px_norm_ = context.nparray_from_context_array(sigma_px_normalized)  # on CPU
+        sig_py_norm_ = context.nparray_from_context_array(sigma_py_normalized)  # on CPU
+        sig_delta_ = context.nparray_from_context_array(sigma_delta)            # on CPU
+        delta_px_diffusion: ArrayLike = sig_px_norm_ * np.sqrt(2 * dt * Dx) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)   # on CPU
+        delta_py_diffusion: ArrayLike = sig_py_norm_ * np.sqrt(2 * dt * Dy) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)   # on CPU
+        delta_delta_diffusion: ArrayLike = sig_delta_ * np.sqrt(2 * dt * Dz) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)  # on CPU
         # ----------------------------------------------------------------------------------------------
         # Now we can apply all momenta kicks (friction and diffusion) to the particles - on device directly
         LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
