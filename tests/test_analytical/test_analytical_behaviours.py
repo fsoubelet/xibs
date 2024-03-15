@@ -319,3 +319,125 @@ def test_nagaitsev_warns_on_coasting_beams(xtrack_ps_injection_protons, caplog):
     # Check the growth rates were indeed computed
     assert IBS.ibs_growth_rates is not None
     assert isinstance(IBS.ibs_growth_rates, IBSGrowthRates)
+
+
+def test_nagaitsev_auto_recomputes_growth_rates(madx_ps_injection_protons, caplog):
+    """
+    Checking that NagaitsevIBS.emittance_evolution recomputes the growth rates by
+    itself if the given threshold was bypassed.
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = NagaitsevIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Manually set exaggerated growth rates values to make sure we will bypass the threshold
+    initial_rates = IBSGrowthRates(1e15, 1e15, 1e15)  # this is silly
+    IBS.ibs_growth_rates = initial_rates
+    caplog.set_level(logging.DEBUG)
+    # --------------------------------------------------------------------
+    # Do the emittance evolution and check the growth rates were recomputed
+    PERCENT = 0.1
+    IBS.emittance_evolution(
+        params.geom_epsx,
+        params.geom_epsy,
+        params.sig_delta,
+        params.bunch_length,
+        auto_recompute_rates_percent=PERCENT,
+    )
+    # --------------------------------------------------------------------
+    # Check the rates were recomputed
+    assert IBS.ibs_growth_rates != initial_rates
+    # --------------------------------------------------------------------
+    # Check the logged message
+    for record in caplog.records:
+        if "One value" in record.message:  # don't know how to better check it
+            assert record.levelname == "DEBUG"
+            assert "One value would change by more than" in record.message
+            assert "updating growth rates before re-computing evolutions" in record.message
+
+
+def test_bjorken_mtingwa_auto_recomputes_growth_rates(madx_ps_injection_protons, caplog):
+    """
+    Checking that BjorkenMtingwaIBS.emittance_evolution recomputes the growth rates by
+    itself if the given threshold was bypassed.
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = BjorkenMtingwaIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Manually set exaggerated growth rates values to make sure we will bypass the threshold
+    initial_rates = IBSGrowthRates(1e15, 1e15, 1e15)  # this is silly
+    IBS.ibs_growth_rates = initial_rates
+    caplog.set_level(logging.DEBUG)
+    # --------------------------------------------------------------------
+    # Do the emittance evolution and check the growth rates were recomputed
+    PERCENT = 0.1
+    IBS.emittance_evolution(
+        params.geom_epsx,
+        params.geom_epsy,
+        params.sig_delta,
+        params.bunch_length,
+        auto_recompute_rates_percent=PERCENT,
+    )
+    # --------------------------------------------------------------------
+    # Check the rates were recomputed
+    assert IBS.ibs_growth_rates != initial_rates
+    # --------------------------------------------------------------------
+    # Check the logged message
+    for record in caplog.records:
+        if "One value" in record.message:  # don't know how to better check it
+            assert record.levelname == "DEBUG"
+            assert "One value would change by more than" in record.message
+            assert "updating growth rates before re-computing evolutions" in record.message
+
+
+def test_bjorken_mtingwa_auto_recomputes_growth_rates_including_sr(madx_ps_injection_protons, caplog):
+    """
+    Checking that BjorkenMtingwaIBS.emittance_evolution recomputes the growth rates by
+    itself if the given threshold was bypassed, this time also including SR to make sure
+    we cover code paths,
+    """
+    # --------------------------------------------------------------------
+    # Get the inputs from MAD-X and initialize IBS class
+    madx, params = madx_ps_injection_protons  # fully set up from the config file
+    opticsparams = OpticsParameters.from_madx(madx)
+    beamparams = BeamParameters.from_madx(madx)
+    IBS = BjorkenMtingwaIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Manually set exaggerated growth rates values to make sure we will bypass the threshold
+    initial_rates = IBSGrowthRates(1e15, 1e15, 1e15)  # this is silly
+    IBS.ibs_growth_rates = initial_rates
+    caplog.set_level(logging.DEBUG)
+    # --------------------------------------------------------------------
+    # Do the emittance evolution and check the growth rates were recomputed
+    PERCENT = 0.1
+    IBS.emittance_evolution(
+        params.geom_epsx,
+        params.geom_epsy,
+        params.sig_delta,
+        params.bunch_length,
+        auto_recompute_rates_percent=PERCENT,
+        # The SR parameter values below don't matter, we just want to test the code path
+        sr_equilibrium_epsx=params.geom_epsx,
+        sr_equilibrium_epsy=params.geom_epsy,
+        sr_equilibrium_sigma_delta=params.sig_delta,
+        sr_tau_x=250,
+        sr_tau_y=250,
+        sr_tau_z=250,
+    )
+    # --------------------------------------------------------------------
+    # Check the rates were recomputed
+    assert IBS.ibs_growth_rates != initial_rates
+    # --------------------------------------------------------------------
+    # Check the logged message
+    for record in caplog.records:
+        if "One value" in record.message:  # don't know how to better check it
+            assert record.levelname == "DEBUG"
+            assert "One value would change by more than" in record.message
+            assert "updating growth rates before re-computing evolutions" in record.message
