@@ -352,11 +352,14 @@ def test_nagaitsev_auto_recomputes_growth_rates(madx_ps_injection_protons, caplo
     assert IBS.ibs_growth_rates != initial_rates
     # --------------------------------------------------------------------
     # Check the logged message
+    found_log = False
     for record in caplog.records:
         if "One value" in record.message:  # don't know how to better check it
+            found_log = True
             assert record.levelname == "DEBUG"
             assert "One value would change by more than" in record.message
             assert "updating growth rates before re-computing evolutions" in record.message
+    assert found_log is True
 
 
 def test_bjorken_mtingwa_auto_recomputes_growth_rates(madx_ps_injection_protons, caplog):
@@ -390,11 +393,14 @@ def test_bjorken_mtingwa_auto_recomputes_growth_rates(madx_ps_injection_protons,
     assert IBS.ibs_growth_rates != initial_rates
     # --------------------------------------------------------------------
     # Check the logged message
+    found_log = False
     for record in caplog.records:
         if "One value" in record.message:  # don't know how to better check it
+            found_log = True
             assert record.levelname == "DEBUG"
             assert "One value would change by more than" in record.message
             assert "updating growth rates before re-computing evolutions" in record.message
+    assert found_log is True
 
 
 def test_bjorken_mtingwa_auto_recomputes_growth_rates_including_sr(madx_ps_injection_protons, caplog):
@@ -436,8 +442,11 @@ def test_bjorken_mtingwa_auto_recomputes_growth_rates_including_sr(madx_ps_injec
     assert IBS.ibs_growth_rates != initial_rates
     # --------------------------------------------------------------------
     # Check the logged message
+    found_log = False
     for record in caplog.records:
         if "One value" in record.message:  # don't know how to better check it
+            found_log = True
             assert record.levelname == "DEBUG"
             assert "One value would change by more than" in record.message
             assert "updating growth rates before re-computing evolutions" in record.message
+    assert found_log is True
