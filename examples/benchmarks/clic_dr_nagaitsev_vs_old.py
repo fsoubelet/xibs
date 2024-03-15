@@ -23,7 +23,8 @@ warnings.filterwarnings("ignore")
 
 # ----- Load line and build tracker ----- #
 
-filepath = Path(__file__).parent.parent / "lines" / "chrom-corr_DR.newlattice_2GHz.json"
+xibs_repo = Path(__file__).parent.parent.parent
+filepath = xibs_repo / "lines" / "chrom-corr_DR.newlattice_2GHz.json"
 line = xt.Line.from_json(filepath)
 line.build_tracker(extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
 p0 = xt.Particles(mass0=xp.ELECTRON_MASS_EV, q0=1, p0c=2.86e9)
@@ -43,7 +44,7 @@ sigma_z = 1.58e-3
 nemitt_x = 5.66e-7
 nemitt_y = 3.7e-9
 n_part = int(5e3)
-nturns = 10000  # number of turns to loop for
+nturns = 1000  # number of turns to loop for
 ibs_step = 250  # frequency at which to re-compute the growth rates in [turns]
 
 # ----- Create particles ----- #
