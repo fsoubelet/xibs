@@ -788,6 +788,8 @@ class KineticKickIBS(KickBasedIBS):
         RNG = np.random.default_rng()
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
         Dx, Dy, Dz = astuple(self.diffusion_coefficients)
+        print(self.diffusion_coefficients)
+        print(Dx, Dy, Dz)
         sig_px_norm_ = context.nparray_from_context_array(sigma_px_normalized)  # on CPU
         sig_py_norm_ = context.nparray_from_context_array(sigma_py_normalized)  # on CPU
         sig_delta_ = context.nparray_from_context_array(sigma_delta)            # on CPU
@@ -796,6 +798,7 @@ class KineticKickIBS(KickBasedIBS):
         delta_delta_diffusion: ArrayLike = sig_delta_ * np.sqrt(2 * dt * Dz) * RNG.normal(0, 1, _size) * np.sqrt(rho_t * factor)  # on CPU
         # ----------------------------------------------------------------------------------------------
         # Now we can apply all momenta kicks (friction and diffusion) to the particles - on device directly
+        # fmt: on
         LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
         particles.px[particles.state > 0] -= delta_px_friction
         particles.py[particles.state > 0] -= delta_py_friction
