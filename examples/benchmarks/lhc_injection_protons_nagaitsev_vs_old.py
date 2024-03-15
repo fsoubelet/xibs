@@ -35,8 +35,6 @@ geom_epsy = 3.75e-9
 sig_delta = 0.00024748579759502934
 bunch_length_m = 0.08993754190079283
 bunch_intensity = 1.8e11
-nemitt_x = 1.8
-nemitt_y = 1.8
 n_turns = 1000  # number of turns to loop for
 ibs_step = 50  # frequency at which to re-compute the growth rates in [turns]
 
@@ -87,7 +85,6 @@ MIBS.set_optic_functions(twiss)
 
 # ----- Quick check for equality of growth rates from initial values above ----- #
 
-IBS.integrals(turn_by_turn.epsilon_x[0], turn_by_turn.epsilon_y[0], turn_by_turn.sig_delta[0])
 IBS.growth_rates(
     turn_by_turn.epsilon_x[0],
     turn_by_turn.epsilon_y[0],

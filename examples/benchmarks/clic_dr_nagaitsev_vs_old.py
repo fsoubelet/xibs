@@ -114,7 +114,6 @@ MIBS.set_optic_functions(twiss)
 
 # ----- Quick check for equality of growth rates from initial values above ----- #
 
-IBS.integrals(turn_by_turn.epsilon_x[0], turn_by_turn.epsilon_y[0], turn_by_turn.sig_delta[0])
 IBS.growth_rates(
     turn_by_turn.epsilon_x[0],
     turn_by_turn.epsilon_y[0],
