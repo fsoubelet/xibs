@@ -7,6 +7,7 @@ import warnings
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Self
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,92 +18,73 @@ from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")  # scipy integration routines might warn
-plt.rcParams.update(
-    {
-        "font.family": "serif",
-        "font.size": 18,
-        "axes.titlesize": 18,
-        "axes.labelsize": 18,
-        "xtick.labelsize": 18,
-        "ytick.labelsize": 18,
-        "legend.fontsize": 15,
-        "figure.titlesize": 18,
-    }
-)
 
-# ----- File and parameters (taken from lhc_top_ions.yml) ----- #
-filepath = Path(__file__).parent.parent.parent / "tests" / "inputs" / "lines" / "lhc_top_ions.json"
-harmonic_number = 34640
-geom_epsx = 5.731420724345339e-10
-geom_epsy = 5.731420724345339e-10
-sig_delta = 0.00011981734527026258
-bunch_length_m = 0.08993773197413962
-rf_voltage = 14  # in MV
-energy_loss = 0  # let's pretend
-bunch_intensity = 1.8e8
-nemitt_x = 1.65
-nemitt_y = 1.65
+# ----- Load line and build tracker ----- #
 
-# ----- Line and Twiss ----- #
+xibs_repo = Path(__file__).parent.parent.parent
+filepath = xibs_repo / "tests" / "inputs" / "lines" / "lhc_top_ions.json"
 line = xt.Line.from_json(filepath)
 p0 = line.particle_ref
 line.build_tracker()
 twiss = line.twiss(method="4d")
 
+# ----- Beam and Simulation Parameters ----- #
 
-# ----- Old and New APIs ----- #
-beam_params = BeamParameters(p0)
-beam_params.n_part = bunch_intensity
-optics = OpticsParameters(twiss)
+geom_epsx = 5.73e-10
+geom_epsy = 5.73e-10
+sig_delta = 0.00011981734527026258
+bunch_length_m = 0.08993773197413962
+bunch_intensity = 1.8e8
+n_turns = 1000  # number of turns to loop for
+ibs_step = 50  # frequency at which to re-compute the growth rates in [turns]
+
+# ----- Dataclasses to store results ----- #
+
+@dataclass
+class Records:
+    """Dataclass to store (and update) important values through tracking."""
+
+    epsilon_x: np.ndarray  # geometric horizontal emittance in [m]
+    epsilon_y: np.ndarray  # geometric vertical emittance in [m]
+    sig_delta: np.ndarray  # momentum spread
+    bunch_length: np.ndarray  # bunch length in [m]
+
+    @classmethod
+    def init_zeroes(cls, n_turns: int) -> Self:  # noqa: F821
+        return cls(
+            epsilon_x=np.zeros(n_turns, dtype=float),
+            epsilon_y=np.zeros(n_turns, dtype=float),
+            sig_delta=np.zeros(n_turns, dtype=float),
+            bunch_length=np.zeros(n_turns, dtype=float),
+        )
+
+    def update_at_turn(self, turn: int, epsx: float, epsy: float, sigd: float, bl: float):
+        """Works for turns / seconds, just needs the correct index to store in."""
+        self.epsilon_x[turn] = epsx
+        self.epsilon_y[turn] = epsy
+        self.sig_delta[turn] = sigd
+        self.bunch_length[turn] = bl
+
+# Initialize the dataclasses & store initial values
+turn_by_turn = Records.init_zeroes(n_turns)
+old_turn_by_turn = Records.init_zeroes(n_turns)
+
+turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_length_m)
+old_turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_length_m)
+
+# ----- Initialize our IBS models (old and new) ----- #
+
+beam_params = BeamParameters.from_line(line, n_part=bunch_intensity)
+optics = OpticsParameters.from_line(line)
+
 IBS = NagaitsevIBS(beam_params, optics)
-
 MIBS = MichalisIBS()
 MIBS.set_beam_parameters(p0)
 MIBS.Npart = beam_params.n_part  # need to update this too
 MIBS.set_optic_functions(twiss)
 
-
-# ----- Dataclasses to store results ----- #
-@dataclass
-class Records:
-    """Dataclass to store (and update) important values through tracking."""
-
-    epsilon_x: np.ndarray
-    epsilon_y: np.ndarray
-    sig_delta: np.ndarray
-    bunch_length: np.ndarray
-
-
-nturns = 1000  # number of turns to loop for
-ibs_step = 50  # frequency at which to re-compute the growth rates in [turns]
-dt = 1 / IBS.optics.revolution_frequency  # this is the default anyway
-
-# Structure to store results of the new codes
-turn_by_turn = Records(
-    epsilon_x=np.zeros(nturns, dtype=float),
-    epsilon_y=np.zeros(nturns, dtype=float),
-    sig_delta=np.zeros(nturns, dtype=float),
-    bunch_length=np.zeros(nturns, dtype=float),
-)
-
-# Structure to store results of the old codes
-old_turn_by_turn = Records(
-    epsilon_x=np.zeros(nturns, dtype=float),
-    epsilon_y=np.zeros(nturns, dtype=float),
-    sig_delta=np.zeros(nturns, dtype=float),
-    bunch_length=np.zeros(nturns, dtype=float),
-)
-
-# Store the initial values
-turn_by_turn.bunch_length[0] = old_turn_by_turn.bunch_length[0] = bunch_length_m
-turn_by_turn.sig_delta[0] = old_turn_by_turn.sig_delta[0] = sig_delta
-turn_by_turn.epsilon_x[0] = old_turn_by_turn.epsilon_x[0] = geom_epsx
-turn_by_turn.epsilon_y[0] = old_turn_by_turn.epsilon_y[0] = geom_epsy
-
-
 # ----- Quick check for equality of growth rates from initial values above ----- #
 
-IBS.integrals(turn_by_turn.epsilon_x[0], turn_by_turn.epsilon_y[0], turn_by_turn.sig_delta[0])
 IBS.growth_rates(
     turn_by_turn.epsilon_x[0],
     turn_by_turn.epsilon_y[0],
@@ -126,16 +108,11 @@ print("Initial comparison of growth rates: Success!")
 # ---------------------------------------- #
 
 start1 = time.time()
-for turn in range(1, nturns):
+for turn in range(1, n_turns):
     # Potentially re-compute the Nagaitsev integrals and growth rates
     if (turn % ibs_step == 0) or (turn == 1):
         print(f"New code - Turn {turn:>3}: re-computing the Nagaitsev integrals and growth rates")
         # We compute from values at the previous turn
-        IBS.integrals(
-            turn_by_turn.epsilon_x[turn - 1],
-            turn_by_turn.epsilon_y[turn - 1],
-            turn_by_turn.sig_delta[turn - 1],
-        )
         IBS.growth_rates(
             turn_by_turn.epsilon_x[turn - 1],
             turn_by_turn.epsilon_y[turn - 1],
@@ -153,10 +130,7 @@ for turn in range(1, nturns):
     )
 
     # Update the records with the new values
-    turn_by_turn.bunch_length[turn] = new_bunch_length
-    turn_by_turn.sig_delta[turn] = new_sig_delta
-    turn_by_turn.epsilon_x[turn] = new_emit_x
-    turn_by_turn.epsilon_y[turn] = new_emit_y
+    turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_length)
 end1 = time.time()
 
 # ---------------------------------------- #
@@ -164,7 +138,7 @@ end1 = time.time()
 # ---------------------------------------- #
 
 start2 = time.time()
-for turn in range(1, nturns):
+for turn in range(1, n_turns):
     # Potentially re-compute the Nagaitsev integrals and growth rates
     if (turn % ibs_step == 0) or (turn == 1):
         print(f"Old code - Turn {turn:>3}: re-computing the Nagaitsev integrals and growth rates")
@@ -176,6 +150,7 @@ for turn in range(1, nturns):
         )
 
     # Compute the new emittances
+    dt = 1.0 / IBS.optics.revolution_frequency
     new_emit_x, new_emit_y, new_sig_delta = MIBS.emit_evol(
         Emit_x=old_turn_by_turn.epsilon_x[turn - 1],
         Emit_y=old_turn_by_turn.epsilon_y[turn - 1],
@@ -185,13 +160,10 @@ for turn in range(1, nturns):
     )
 
     # Compute bunch length analytically as the Particles object hasn't changed
-    bunch_l = old_turn_by_turn.bunch_length[turn - 1] * np.exp(dt * float(0.5 * MIBS.Ipp))
+    new_bunch_l = old_turn_by_turn.bunch_length[turn - 1] * np.exp(dt * float(0.5 * MIBS.Ipp))
 
     # Update the records with the new values
-    old_turn_by_turn.bunch_length[turn] = bunch_l
-    old_turn_by_turn.sig_delta[turn] = new_sig_delta
-    old_turn_by_turn.epsilon_x[turn] = new_emit_x
-    old_turn_by_turn.epsilon_y[turn] = new_emit_y
+    old_turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_l)
 end2 = time.time()
 
 print(f"\nNew code took {end1 - start1:.3f} seconds")
@@ -199,6 +171,7 @@ print(f"Old code took {end2 - start2:.3f} seconds")
 print(f"New code was ~{(end2 - start2)/(end1 - start1):.1f} faster")
 
 # ----- Plot the results ----- #
+
 figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(7, 8))
 
 epsx.plot(old_turn_by_turn.epsilon_x, "o", ms=2, label="Old")
