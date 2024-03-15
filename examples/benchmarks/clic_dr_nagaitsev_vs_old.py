@@ -72,10 +72,10 @@ geom_epsy = _geom_epsy(particles, twiss.bety[0], twiss.dy[0])
 class Records:
     """Dataclass to store (and update) important values through tracking."""
 
-    epsilon_x: np.ndarray
-    epsilon_y: np.ndarray
-    sig_delta: np.ndarray
-    bunch_length: np.ndarray
+    epsilon_x: np.ndarray  # geometric horizontal emittance in [m]
+    epsilon_y: np.ndarray  # geometric vertical emittance in [m]
+    sig_delta: np.ndarray  # momentum spread
+    bunch_length: np.ndarray  # bunch length in [m]
 
     @classmethod
     def init_zeroes(cls, n_turns: int) -> Self:  # noqa: F821
@@ -86,15 +86,20 @@ class Records:
             bunch_length=np.zeros(n_turns, dtype=float),
         )
 
+    def update_at_turn(self, turn: int, epsx: float, epsy: float, sigd: float, bl: float):
+        """Works for turns / seconds, just needs the correct index to store in."""
+        self.epsilon_x[turn] = epsx
+        self.epsilon_y[turn] = epsy
+        self.sig_delta[turn] = sigd
+        self.bunch_length[turn] = bl
+
 
 # Initialize the dataclasses & store initial values
 turn_by_turn = Records.init_zeroes(nturns)
 old_turn_by_turn = Records.init_zeroes(nturns)
 
-turn_by_turn.bunch_length[0] = old_turn_by_turn.bunch_length[0] = bunch_l
-turn_by_turn.sig_delta[0] = old_turn_by_turn.sig_delta[0] = sig_delta
-turn_by_turn.epsilon_x[0] = old_turn_by_turn.epsilon_x[0] = geom_epsx
-turn_by_turn.epsilon_y[0] = old_turn_by_turn.epsilon_y[0] = geom_epsy
+turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_l)
+old_turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_l)
 
 # ----- Initialize our IBS models (old and new) ----- #
 
@@ -154,10 +159,7 @@ for turn in range(1, nturns):
     )
 
     # Update the records with the new values
-    turn_by_turn.bunch_length[turn] = new_bunch_length
-    turn_by_turn.sig_delta[turn] = new_sig_delta
-    turn_by_turn.epsilon_x[turn] = new_emit_x
-    turn_by_turn.epsilon_y[turn] = new_emit_y
+    turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_length)
 end1 = time.time()
 
 # ---------------------------------------- #
