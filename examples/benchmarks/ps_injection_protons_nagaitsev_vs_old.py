@@ -14,7 +14,7 @@ import numpy as np
 import xtrack as xt
 
 from xibs._old_michalis import MichalisIBS
-from xibs.analytical import NagaitsevIBS
+from xibs.analytical import NagaitsevIBS, BjorkenMtingwaIBS
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.filterwarnings("ignore")  # scipy integration routines might warn
@@ -67,10 +67,12 @@ class Records:
         self.bunch_length[turn] = bl
 
 # Initialize the dataclasses & store initial values
-turn_by_turn = Records.init_zeroes(n_turns)
+nag_turn_by_turn = Records.init_zeroes(n_turns)
+bm_turn_by_turn = Records.init_zeroes(n_turns)
 old_turn_by_turn = Records.init_zeroes(n_turns)
 
-turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_length_m)
+nag_turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_length_m)
+bm_turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_length_m)
 old_turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_length_m)
 
 # ----- Initialize our IBS models (old and new) ----- #
@@ -78,7 +80,8 @@ old_turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_length
 beam_params = BeamParameters.from_line(line, n_part=bunch_intensity)
 optics = OpticsParameters.from_line(line)
 
-IBS = NagaitsevIBS(beam_params, optics)
+NIBS = NagaitsevIBS(beam_params, optics)
+BMIBS = BjorkenMtingwaIBS(beam_params, optics)
 MIBS = MichalisIBS()
 MIBS.set_beam_parameters(p0)
 MIBS.Npart = beam_params.n_part  # need to update this too
@@ -86,11 +89,17 @@ MIBS.set_optic_functions(twiss)
 
 # ----- Quick check for equality of growth rates from initial values above ----- #
 
-IBS.growth_rates(
-    turn_by_turn.epsilon_x[0],
-    turn_by_turn.epsilon_y[0],
-    turn_by_turn.sig_delta[0],
-    turn_by_turn.bunch_length[0],
+NIBS.growth_rates(
+    nag_turn_by_turn.epsilon_x[0],
+    nag_turn_by_turn.epsilon_y[0],
+    nag_turn_by_turn.sig_delta[0],
+    nag_turn_by_turn.bunch_length[0],
+)
+BMIBS.growth_rates(
+    bm_turn_by_turn.epsilon_x[0],
+    bm_turn_by_turn.epsilon_y[0],
+    bm_turn_by_turn.sig_delta[0],
+    bm_turn_by_turn.bunch_length[0],
 )
 MIBS.calculate_integrals(
     Emit_x=old_turn_by_turn.epsilon_x[0],
@@ -99,14 +108,17 @@ MIBS.calculate_integrals(
     BunchL=old_turn_by_turn.bunch_length[0],
 )
 
-assert np.isclose(MIBS.Ixx, IBS.ibs_growth_rates.Tx, rtol=1e-2)
-assert np.isclose(MIBS.Iyy, IBS.ibs_growth_rates.Ty, rtol=1e-2)
-assert np.isclose(MIBS.Ipp, IBS.ibs_growth_rates.Tz, rtol=1e-2)
+assert np.isclose(MIBS.Ixx, NIBS.ibs_growth_rates.Tx, rtol=1e-2)
+assert np.isclose(MIBS.Iyy, NIBS.ibs_growth_rates.Ty, rtol=1e-2)
+assert np.isclose(MIBS.Ipp, NIBS.ibs_growth_rates.Tz, rtol=1e-2)
+assert np.isclose(MIBS.Ixx, BMIBS.ibs_growth_rates.Tx, rtol=5e-2)
+assert np.isclose(MIBS.Iyy, BMIBS.ibs_growth_rates.Ty, rtol=5e-2)
+assert np.isclose(MIBS.Ipp, BMIBS.ibs_growth_rates.Tz, rtol=5e-2)
 print("Initial comparison of growth rates: Success!")
 
-# ---------------------------------------- #
-# ----- LOOP OVER TURNS FOR NEW CODE ----- #
-# ---------------------------------------- #
+# ---------------------------------------------- #
+# ----- LOOP OVER TURNS FOR NAGAITSEV CODE ----- #
+# ---------------------------------------------- #
 
 start1 = time.time()
 for turn in range(1, n_turns):
@@ -114,31 +126,62 @@ for turn in range(1, n_turns):
     if (turn % ibs_step == 0) or (turn == 1):
         print(f"New code - Turn {turn:>3}: re-computing the Nagaitsev integrals and growth rates")
         # We compute from values at the previous turn
-        IBS.growth_rates(
-            turn_by_turn.epsilon_x[turn - 1],
-            turn_by_turn.epsilon_y[turn - 1],
-            turn_by_turn.sig_delta[turn - 1],
-            turn_by_turn.bunch_length[turn - 1],
+        NIBS.growth_rates(
+            nag_turn_by_turn.epsilon_x[turn - 1],
+            nag_turn_by_turn.epsilon_y[turn - 1],
+            nag_turn_by_turn.sig_delta[turn - 1],
+            nag_turn_by_turn.bunch_length[turn - 1],
         )
 
     # Compute the new emittances
-    new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
-        turn_by_turn.epsilon_x[turn - 1],
-        turn_by_turn.epsilon_y[turn - 1],
-        turn_by_turn.sig_delta[turn - 1],
-        turn_by_turn.bunch_length[turn - 1],
+    new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = NIBS.emittance_evolution(
+        nag_turn_by_turn.epsilon_x[turn - 1],
+        nag_turn_by_turn.epsilon_y[turn - 1],
+        nag_turn_by_turn.sig_delta[turn - 1],
+        nag_turn_by_turn.bunch_length[turn - 1],
         # dt = 1.0 / IBS.optics.revolution_frequency,  # default value
     )
 
     # Update the records with the new values
-    turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_length)
+    nag_turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_length)
 end1 = time.time()
+
+
+# ---------------------------------------------------- #
+# ----- LOOP OVER TURNS FOR BJORKEN-MTINGWA CODE ----- #
+# ---------------------------------------------------- #
+
+start2 = time.time()
+for turn in range(1, n_turns):
+    # Potentially re-compute the Nagaitsev integrals and growth rates
+    if (turn % ibs_step == 0) or (turn == 1):
+        print(f"New code - Turn {turn:>3}: re-computing the Nagaitsev integrals and growth rates")
+        # We compute from values at the previous turn
+        BMIBS.growth_rates(
+            bm_turn_by_turn.epsilon_x[turn - 1],
+            bm_turn_by_turn.epsilon_y[turn - 1],
+            bm_turn_by_turn.sig_delta[turn - 1],
+            bm_turn_by_turn.bunch_length[turn - 1],
+        )
+
+    # Compute the new emittances
+    new_emit_x, new_emit_y, new_sig_delta, new_bunch_length = BMIBS.emittance_evolution(
+        bm_turn_by_turn.epsilon_x[turn - 1],
+        bm_turn_by_turn.epsilon_y[turn - 1],
+        bm_turn_by_turn.sig_delta[turn - 1],
+        bm_turn_by_turn.bunch_length[turn - 1],
+        # dt = 1.0 / IBS.optics.revolution_frequency,  # default value
+    )
+
+    # Update the records with the new values
+    bm_turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_length)
+end2 = time.time()
 
 # ---------------------------------------- #
 # ----- LOOP OVER TURNS FOR OLD CODE ----- #
 # ---------------------------------------- #
 
-start2 = time.time()
+start3 = time.time()
 for turn in range(1, n_turns):
     # Potentially re-compute the Nagaitsev integrals and growth rates
     if (turn % ibs_step == 0) or (turn == 1):
@@ -151,7 +194,7 @@ for turn in range(1, n_turns):
         )
 
     # Compute the new emittances
-    dt = 1.0 / IBS.optics.revolution_frequency
+    dt = 1.0 / NIBS.optics.revolution_frequency
     new_emit_x, new_emit_y, new_sig_delta = MIBS.emit_evol(
         Emit_x=old_turn_by_turn.epsilon_x[turn - 1],
         Emit_y=old_turn_by_turn.epsilon_y[turn - 1],
@@ -165,11 +208,13 @@ for turn in range(1, n_turns):
 
     # Update the records with the new values
     old_turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_l)
-end2 = time.time()
+end3 = time.time()
 
-print(f"\nNew code took {end1 - start1:.3f} seconds")
-print(f"Old code took {end2 - start2:.3f} seconds")
-print(f"New code was ~{(end2 - start2)/(end1 - start1):.1f} faster")
+print(f"\nNew Nagaitsev code took {end1 - start1:.3f} seconds")
+print(f"\nNew Bjorken-Mtingwa code took {end2 - start2:.3f} seconds")
+print(f"Old code took {end3 - start3:.3f} seconds")
+print(f"New Nagaitsev code was ~{(end3 - start3)/(end1 - start1):.1f} faster")
+print(f"New Bjorken-Mtingwa code was ~{(end3 - start3)/(end2 - start2):.1f} faster")
 
 # ----- Plot the results ----- #
 
@@ -178,9 +223,12 @@ figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(7, 8))
 epsx.plot(old_turn_by_turn.epsilon_x, "o", ms=2, label="Old")
 epsy.plot(old_turn_by_turn.epsilon_y, "o", ms=2, label="Old")
 sigdelta.plot(old_turn_by_turn.sig_delta, "o", ms=2, label="Old")
-epsx.plot(turn_by_turn.epsilon_x, label="New")
-epsy.plot(turn_by_turn.epsilon_y, label="New")
-sigdelta.plot(turn_by_turn.sig_delta, label="New")
+epsx.plot(nag_turn_by_turn.epsilon_x, label="New Nagaitsev")
+epsy.plot(nag_turn_by_turn.epsilon_y, label="New Nagaitsev")
+sigdelta.plot(nag_turn_by_turn.sig_delta, label="New Nagaitsev")
+epsx.plot(bm_turn_by_turn.epsilon_x, ls=":", label="New Bjorken-Mtingwa")
+epsy.plot(bm_turn_by_turn.epsilon_y, ls=":", label="New Bjorken-Mtingwa")
+sigdelta.plot(bm_turn_by_turn.sig_delta, ls=":", label="New Bjorken-Mtingwa")
 epsx.legend()
 epsy.legend()
 sigdelta.legend()
