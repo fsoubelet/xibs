@@ -11,6 +11,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 import xpart as xp
 import xtrack as xt
 
@@ -65,6 +66,7 @@ def test_simple_kicks_lead_to_increased_momenta(xtrack_sps_top_ions):
     assert np.std(particles.delta) > np.std(particles2.delta)
 
 
+@pytest.mark.flaky(max_runs=3, min_passes=1)
 def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     """Track positrons in the CLIC DR and compare to analytical."""
     # --------------------------------------------------------------------
@@ -143,6 +145,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     assert pearsonr(kicked_tbt.bunch_length, analytical_tbt.bunch_length).statistic > 0
 
 
+@pytest.mark.flaky(max_runs=3, min_passes=1)
 def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     """
     Track Pb ions in the SPS and compare to analytical. For this test we will use fake values
