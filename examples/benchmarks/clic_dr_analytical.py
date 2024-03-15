@@ -7,6 +7,7 @@ import warnings
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Self
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,45 +16,38 @@ import xtrack as xt
 
 from xibs._old_michalis import MichalisIBS
 from xibs.analytical import NagaitsevIBS
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta, _sigma_x, _sigma_y
 from xibs.inputs import BeamParameters, OpticsParameters
 
-warnings.filterwarnings("ignore")  # scipy integration routines might warn
-plt.rcParams.update(
-    {
-        "font.family": "serif",
-        "font.size": 18,
-        "axes.titlesize": 18,
-        "axes.labelsize": 18,
-        "xtick.labelsize": 18,
-        "ytick.labelsize": 18,
-        "legend.fontsize": 15,
-        "figure.titlesize": 18,
-    }
-)
+warnings.filterwarnings("ignore")
 
-# ----- File and parameters ----- #
+# ----- Load line and build tracker ----- #
+
 filepath = Path(__file__).parent.parent / "lines" / "chrom-corr_DR.newlattice_2GHz.json"
-harmonic_number = 2852
-rf_voltage = 4.5  # in MV
-energy_loss = 0  # let's pretend
+line = xt.Line.from_json(filepath)
+line.build_tracker(extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
+p0 = xt.Particles(mass0=xp.ELECTRON_MASS_EV, q0=1, p0c=2.86e9)
+line.particle_ref = p0
+twiss = line.twiss()
+
+# ----- Activate RF Systems ----- #
+
+cavities = [element for element in line.elements if isinstance(element, xt.Cavity)]
+for cavity in cavities:
+    cavity.lag = 180
+
+
+# ----- Beam and Simulation Parameters ----- #
+
 bunch_intensity = 4.4e9
 sigma_z = 1.58e-3
 nemitt_x = 5.6644e-07
 nemitt_y = 3.7033e-09
 n_part = int(5e3)
+nturns = 10000  # number of turns to loop for
+ibs_step = 250  # frequency at which to re-compute the growth rates in [turns]
 
-# ----- Line and particles ----- #
-line = xt.Line.from_json(filepath)
-line.build_tracker(extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
-
-# power accelerating cavities
-cavities = [element for element in line.elements if isinstance(element, xt.Cavity)]
-for cavity in cavities:
-    cavity.lag = 180
-
-p0 = xp.Particles(mass0=xp.ELECTRON_MASS_EV, q0=1, p0c=2.86e9)
-line.particle_ref = p0
-twiss = line.twiss()
+# ----- Create particles ----- #
 
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
@@ -65,26 +59,16 @@ particles = xp.generate_matched_gaussian_bunch(
     line=line,
 )
 
-# ----- Compute initial (geometrical) emittances & bunch length all in [m]----- #
-sig_x = np.std(particles.x[particles.state > 0])  # horizontal stdev
-sig_y = np.std(particles.y[particles.state > 0])  # vertical stdev
-sig_delta = np.std(particles.delta[particles.state > 0])  # momentum spread
+# ----- Compute initial (geometrical) emittances & bunch length all in [m] ----- #
 
-geom_epsx = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-geom_epsy = sig_y**2 / twiss["bety"][0]
-bunch_l = np.std(particles.zeta[particles.state > 0])
+sig_delta = _sigma_delta(particles)
+bunch_l = _bunch_length(particles)
+geom_epsx = _geom_epsx(particles, twiss.betx[0], twiss.dx[0])
+geom_epsy = _geom_epsy(particles, twiss.bety[0], twiss.dy[0])
 
-# ----- Old and New APIs ----- #
-beam_params = BeamParameters(particles)
-optics = OpticsParameters(twiss)
-IBS = NagaitsevIBS(beam_params, optics)
-
-MIBS = MichalisIBS()
-MIBS.set_beam_parameters(particles)
-MIBS.set_optic_functions(twiss)
+# ----- Dataclass to store results ----- #
 
 
-# ----- Dataclasses to store results ----- #
 @dataclass
 class Records:
     """Dataclass to store (and update) important values through tracking."""
@@ -94,37 +78,34 @@ class Records:
     sig_delta: np.ndarray
     bunch_length: np.ndarray
 
+    @classmethod
+    def init_zeroes(cls, n_turns: int) -> Self:  # noqa: F821
+        return cls(
+            epsilon_x=np.zeros(n_turns, dtype=float),
+            epsilon_y=np.zeros(n_turns, dtype=float),
+            sig_delta=np.zeros(n_turns, dtype=float),
+            bunch_length=np.zeros(n_turns, dtype=float),
+        )
 
-nturns = 10000  # number of turns to loop for
-ibs_step = 250  # frequency at which to re-compute the growth rates in [turns]
-dt = 1 / IBS.optics.revolution_frequency
 
-# For results of the new codes
-turn_by_turn = Records(
-    epsilon_x=np.zeros(nturns, dtype=float),
-    epsilon_y=np.zeros(nturns, dtype=float),
-    sig_delta=np.zeros(nturns, dtype=float),
-    bunch_length=np.zeros(nturns, dtype=float),
-)
+# Initialize the dataclasses & store initial values
+turn_by_turn = Records.init_zeroes(nturns)
+old_turn_by_turn = Records.init_zeroes(nturns)
 
-# For results of the old codes
-old_turn_by_turn = Records(
-    epsilon_x=np.zeros(nturns, dtype=float),
-    epsilon_y=np.zeros(nturns, dtype=float),
-    sig_delta=np.zeros(nturns, dtype=float),
-    bunch_length=np.zeros(nturns, dtype=float),
-)
+turn_by_turn.bunch_length[0] = old_turn_by_turn.bunch_length[0] = bunch_l
+turn_by_turn.sig_delta[0] = old_turn_by_turn.sig_delta[0] = sig_delta
+turn_by_turn.epsilon_x[0] = old_turn_by_turn.epsilon_x[0] = geom_epsx
+turn_by_turn.epsilon_y[0] = old_turn_by_turn.epsilon_y[0] = geom_epsy
 
-# Store the initial values
-turn_by_turn.bunch_length[0] = np.std(particles.zeta[particles.state > 0])
-turn_by_turn.sig_delta[0] = sig_delta
-turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
+# ----- Initialize our IBS models (old and new) ----- #
 
-old_turn_by_turn.bunch_length[0] = np.std(particles.zeta[particles.state > 0])
-old_turn_by_turn.sig_delta[0] = sig_delta
-old_turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-old_turn_by_turn.epsilon_y[0] = sig_y**2 / twiss["bety"][0]
+beam_params = BeamParameters(particles)
+optics = OpticsParameters(twiss)
+IBS = NagaitsevIBS(beam_params, optics)
+
+MIBS = MichalisIBS()
+MIBS.set_beam_parameters(particles)
+MIBS.set_optic_functions(twiss)
 
 # ----- Quick check for equality of growth rates from initial values above ----- #
 
@@ -157,11 +138,6 @@ for turn in range(1, nturns):
     if (turn % ibs_step == 0) or (turn == 1):
         print(f"New code - Turn {turn:>3}: re-computing the Nagaitsev integrals and growth rates")
         # We compute from values at the previous turn
-        IBS.integrals(
-            turn_by_turn.epsilon_x[turn - 1],
-            turn_by_turn.epsilon_y[turn - 1],
-            turn_by_turn.sig_delta[turn - 1],
-        )
         IBS.growth_rates(
             turn_by_turn.epsilon_x[turn - 1],
             turn_by_turn.epsilon_y[turn - 1],
@@ -202,6 +178,7 @@ for turn in range(1, nturns):
         )
 
     # Compute the new emittances
+    dt = 1.0 / IBS.optics.revolution_frequency
     new_emit_x, new_emit_y, new_sig_delta = MIBS.emit_evol(
         Emit_x=old_turn_by_turn.epsilon_x[turn - 1],
         Emit_y=old_turn_by_turn.epsilon_y[turn - 1],
@@ -209,7 +186,6 @@ for turn in range(1, nturns):
         BunchL=old_turn_by_turn.bunch_length[turn - 1],
         dt=dt,
     )
-
     # Compute bunch length analytically as the Particles object hasn't changed
     bunch_l = old_turn_by_turn.bunch_length[turn - 1] * np.exp(dt * float(0.5 * MIBS.Ipp))
 
@@ -220,11 +196,14 @@ for turn in range(1, nturns):
     old_turn_by_turn.epsilon_y[turn] = new_emit_y
 end2 = time.time()
 
+# ----- Print timing information ----- #
+
 print(f"\nNew code took {end1 - start1:.3f} seconds")
 print(f"Old code took {end2 - start2:.3f} seconds")
 print(f"New code was ~{(end2 - start2)/(end1 - start1):.1f} faster")
 
 # ----- Plot the results ----- #
+
 figure, (epsx, epsy, sigdelta) = plt.subplots(3, 1, sharex=True, figsize=(7, 8))
 
 epsx.plot(1e10 * old_turn_by_turn.epsilon_x, "o", ms=2, label="Old")
