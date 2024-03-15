@@ -175,10 +175,10 @@ seconds = np.linspace(0, nsecs, nsecs).astype(int)
 class Records:
     """Dataclass to store (and update) important values through tracking."""
 
-    epsilon_x: np.ndarray
-    epsilon_y: np.ndarray
-    sig_delta: np.ndarray
-    bunch_length: np.ndarray
+    epsilon_x: np.ndarray  # geometric horizontal emittance in [m]
+    epsilon_y: np.ndarray  # geometric vertical emittance in [m]
+    sig_delta: np.ndarray  # momentum spread
+    bunch_length: np.ndarray  # bunch length in [m]
 
     @classmethod
     def init_zeroes(cls, n_turns: int):
