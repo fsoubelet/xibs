@@ -51,12 +51,10 @@ plt.rcParams.update(
 # parameters for later use:
 
 line_file = "lines/sps_top_protons.json"
-harmonic_number = 4653
 cavity_name = "actcse.31632"  # from xsuite documentation examples
 cavity_lag = 180  # from xsuite documentation examples
 rf_frequency = 200e6  # from xsuite documentation examples
 rf_voltage = 4  # in MV,  from xsuite documentation examples
-energy_loss = 0  # let's pretend ;)
 bunch_intensity = 1.2e11
 sigma_z = 22.5e-2  # from xsuite documentation examples
 nemitt_x = 2e-6  # from xsuite documentation examples
