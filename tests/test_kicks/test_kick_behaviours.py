@@ -139,7 +139,7 @@ def test_simple_kick_propagates_when_overwriting_analytical_ibs(madx_sps_injecti
     )
 
 
-def test_simple_kick_auto_recomputes_rates(xtrack_sps_top_ions):
+def test_simple_kick_auto_recomputes_coefficients(xtrack_sps_top_ions):
     """
     Test with Pb ions in the SPS that the auto-recomputing of IBS kick coefficients works as intended.
     For this test we will use fake values for the beam parameters to be in a regime that 'stimulates'
@@ -173,7 +173,7 @@ def test_simple_kick_auto_recomputes_rates(xtrack_sps_top_ions):
     )
     # --------------------------------------------------------------------
     # Create the IBS parameters and class
-    PERCENT = 0.01  # trigger recompute if an emittance changes by more than PERCENT%
+    PERCENT = 0.005  # trigger recompute if an emittance changes by more than PERCENT%
     beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
     opticsparams = OpticsParameters.from_line(line)
     IBS = SimpleKickIBS(beamparams, opticsparams, auto_recompute_coefficients_percent=PERCENT)
@@ -194,7 +194,7 @@ def test_simple_kick_auto_recomputes_rates(xtrack_sps_top_ions):
     assert IBS.kick_coefficients != initial_coefficients
 
 
-def test_kinetic_kick_auto_recomputes_rates(xtrack_sps_top_ions):
+def test_kinetic_kick_auto_recomputes_coefficients(xtrack_sps_top_ions):
     """
     Test with Pb ions in the SPS that the auto-recomputing of IBS kick coefficients works as intended.
     For this test we will use fake values for the beam parameters to be in a regime that 'stimulates'
@@ -228,7 +228,7 @@ def test_kinetic_kick_auto_recomputes_rates(xtrack_sps_top_ions):
     )
     # --------------------------------------------------------------------
     # Create the IBS parameters and class
-    PERCENT = 0.01  # trigger recompute if an emittance changes by more than PERCENT%
+    PERCENT = 0.005  # trigger recompute if an emittance changes by more than PERCENT%
     beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
     opticsparams = OpticsParameters.from_line(line)
     IBS = KineticKickIBS(beamparams, opticsparams, auto_recompute_coefficients_percent=PERCENT)
