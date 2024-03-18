@@ -124,6 +124,8 @@ class AnalyticalIBS(ABC):
         self.optics: OpticsParameters = optics
         # This one self-updates when computed, but can be overwritten by the user
         self.ibs_growth_rates: IBSGrowthRates = None
+        # Private attribute tracking the number of growth rates computations
+        self._number_of_growth_rates_computations: int = 0
 
     def __str__(self) -> str:
         has_growth_rates = isinstance(
@@ -419,7 +421,7 @@ class AnalyticalIBS(ABC):
             sr_eq_sigma_delta = sr_inputs.equilibrium_sigma_delta
         # ----------------------------------------------------------------------------------------------
         # Check that the IBS growth rates have been computed beforehand
-        if self.ibs_growth_rates is None:
+        if self.ibs_growth_rates is None and auto_recompute_rates_percent is None:
             LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
             raise AttributeError(
                 "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
@@ -464,7 +466,7 @@ class AnalyticalIBS(ABC):
                 or abs(_percent_change(sigma_delta, new_sigma_delta)) > auto_recompute_rates_percent
                 or abs(_percent_change(bunch_length, new_bunch_length)) > auto_recompute_rates_percent
             ):
-                LOGGER.debug(
+                LOGGER.info(
                     f"One value would change by more than {auto_recompute_rates_percent}%, "
                     "updating growth rates before re-computing evolutions."
                 )
@@ -861,6 +863,7 @@ class NagaitsevIBS(AnalyticalIBS):
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
         self.ibs_growth_rates = result
+        self._number_of_growth_rates_computations += 1
         return result
 
 
@@ -1502,4 +1505,5 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
         self.ibs_growth_rates = result
+        self._number_of_growth_rates_computations += 1
         return result
