@@ -12,7 +12,7 @@ import xpart as xp
 import xtrack as xt
 
 from xibs.analytical import NagaitsevIBS
-from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta, _percent_change
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.simplefilter("ignore")  # for this tutorial's clarity
@@ -85,9 +85,26 @@ IBS.growth_rates(geom_epsx, geom_epsy, sig_delta, bunch_l)
 AUTO_IBS.growth_rates(geom_epsx, geom_epsy, sig_delta, bunch_l)
 MIX_IBS.growth_rates(geom_epsx, geom_epsy, sig_delta, bunch_l)
 
+
+
+
+
+
+
+
 new_geom_epsx, new_geom_epsy, new_sig_delta, new_bunch_length = IBS.emittance_evolution(
     geom_epsx, geom_epsy, sig_delta, bunch_l
 )
+
+
+# TODO: Here I could check the percent change and have a little conclusion
+# on how to choose our threshold
+print(f"Geom. epsx: {new_geom_epsx:.2e} -> {geom_epsx:.2e} | ({_percent_change(new_geom_epsx, geom_epsx):.2e}% change)")
+print(f"Geom. epsy: {new_geom_epsy:.2e} -> {geom_epsy:.2e} | ({_percent_change(new_geom_epsy, geom_epsy):.2e}% change)")
+print(f"Sigma delta: {new_sig_delta:.2e} -> {sig_delta:.2e} | ({_percent_change(new_sig_delta, sig_delta):.2e}% change)")
+print(f"Bunch length: {new_bunch_length:.2e} -> {bunch_l:.2e} | ({_percent_change(new_bunch_length, bunch_l):.2e}% change)")
+
+
 
 nsecs = 5 * 3_600  # that's 5h
 ibs_step = 10 * 60  # re-compute rates every 20min
