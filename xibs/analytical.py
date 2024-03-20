@@ -458,7 +458,7 @@ class AnalyticalIBS(ABC):
         new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
         new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
         # ----------------------------------------------------------------------------------------------
-        # If we check for autoupdate and there is an change of more than self.auto_recompute_rates_percent %
+        # If we check gfor autoupdate and there is an change of more than self.auto_recompute_rates_percent %
         if isinstance(auto_recompute_rates_percent, (int, float)):
             if (
                 abs(_percent_change(epsx, new_epsx)) > auto_recompute_rates_percent
@@ -466,7 +466,7 @@ class AnalyticalIBS(ABC):
                 or abs(_percent_change(sigma_delta, new_sigma_delta)) > auto_recompute_rates_percent
                 or abs(_percent_change(bunch_length, new_bunch_length)) > auto_recompute_rates_percent
             ):
-                LOGGER.info(
+                LOGGER.debug(
                     f"One value would change by more than {auto_recompute_rates_percent}%, "
                     "updating growth rates before re-computing evolutions."
                 )
