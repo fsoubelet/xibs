@@ -16,6 +16,11 @@ from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta, 
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.simplefilter("ignore")  # for this tutorial's clarity
+plt.rcParams.update({"savefig.dpi": 300})
+
+
+
+
 
 line_file = "lines/sps_top_protons.json"
 line = xt.Line.from_json(line_file)
@@ -107,7 +112,7 @@ print(f"Bunch length: {bunch_l:.2e} -> {new_bunch_length:.2e} | ({_percent_chang
 
 
 nsecs = 5 * 3_600  # that's 5h
-ibs_step = 10 * 60  # re-compute rates every 20min
+ibs_step = 10 * 60  # re-compute rates every 10min
 seconds = np.linspace(0, nsecs, nsecs, dtype=int)
 
 
@@ -247,15 +252,15 @@ for axis in axs.values():
     for sec in where_fixed_recomputes:
         axis.axvline(sec / 3600, color="gray", linestyle="--", lw=1, alpha=0.2)
 
-axs["epsx"].plot(seconds / 3600, 1e9 * regular.epsilon_x, lw=2, label="Fixed")
-axs["epsy"].plot(seconds / 3600, 1e9 * regular.epsilon_y, lw=2, label="Fixed")
-axs["sigd"].plot(seconds / 3600, 1e4 * regular.sig_delta, lw=2, label="Fixed")
-axs["bl"].plot(seconds / 3600, 1e2 * regular.bunch_length, lw=2, label="Fixed")
+axs["epsx"].plot(seconds / 3600, 1e9 * regular.epsilon_x, lw=2, label=f"Fixed ({ibs_step / 60} mins)")
+axs["epsy"].plot(seconds / 3600, 1e9 * regular.epsilon_y, lw=2, label=f"Fixed ({ibs_step / 60} mins)")
+axs["sigd"].plot(seconds / 3600, 1e4 * regular.sig_delta, lw=2, label=f"Fixed ({ibs_step / 60} mins)")
+axs["bl"].plot(seconds / 3600, 1e2 * regular.bunch_length, lw=2, label=f"Fixed ({ibs_step / 60} mins)")
 
-axs["epsx"].plot(seconds / 3600, 1e9 * auto.epsilon_x, lw=1.9, label="Auto")
-axs["epsy"].plot(seconds / 3600, 1e9 * auto.epsilon_y, lw=1.9, label="Auto")
-axs["sigd"].plot(seconds / 3600, 1e4 * auto.sig_delta, lw=1.9, label="Auto")
-axs["bl"].plot(seconds / 3600, 1e2 * auto.bunch_length, lw=1.9, label="Auto")
+axs["epsx"].plot(seconds / 3600, 1e9 * auto.epsilon_x, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
+axs["epsy"].plot(seconds / 3600, 1e9 * auto.epsilon_y, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
+axs["sigd"].plot(seconds / 3600, 1e4 * auto.sig_delta, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
+axs["bl"].plot(seconds / 3600, 1e2 * auto.bunch_length, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
 
 axs["epsx"].plot(seconds / 3600, 1e9 * mix.epsilon_x, lw=1.7, label="Mix")
 axs["epsy"].plot(seconds / 3600, 1e9 * mix.epsilon_y, lw=1.7, label="Mix")
@@ -280,7 +285,7 @@ for axis in axs.values():
 
 fig.align_ylabels((axs["epsx"], axs["sigd"]))
 fig.align_ylabels((axs["epsy"], axs["bl"]))
-fig.suptitle("Analytical Evolution of Emittances from IBS - SPS Top Ions")
+fig.suptitle("Analytical Evolution of Emittances from IBS\nSPS Top Ions")
 
 plt.legend(title="Recompute Rates")
 plt.tight_layout()
@@ -300,15 +305,15 @@ for axis in axs.values():
     for sec in where_fixed_recomputes:
         axis.axvline(sec / 3600, color="gray", linestyle="--", lw=1, alpha=0.2)
 
-axs["epsx"].plot(seconds / 3600, 1e2 * pd.Series(regular.epsilon_x).pct_change(), lw=2, label="Fixed")
-axs["epsy"].plot(seconds / 3600, 1e2 * pd.Series(regular.epsilon_y).pct_change(), lw=2, label="Fixed")
-axs["sigd"].plot(seconds / 3600, 1e2 * pd.Series(regular.sig_delta).pct_change(), lw=2, label="Fixed")
-axs["bl"].plot(seconds / 3600, 1e2 * pd.Series(regular.bunch_length).pct_change(), lw=2, label="Fixed")
+axs["epsx"].plot(seconds / 3600, 1e2 * pd.Series(regular.epsilon_x).pct_change(), lw=2, label=f"Fixed ({ibs_step / 60} mins)")
+axs["epsy"].plot(seconds / 3600, 1e2 * pd.Series(regular.epsilon_y).pct_change(), lw=2, label=f"Fixed ({ibs_step / 60} mins)")
+axs["sigd"].plot(seconds / 3600, 1e2 * pd.Series(regular.sig_delta).pct_change(), lw=2, label=f"Fixed ({ibs_step / 60} mins)")
+axs["bl"].plot(seconds / 3600, 1e2 * pd.Series(regular.bunch_length).pct_change(), lw=2, label=f"Fixed ({ibs_step / 60} mins)")
 
-axs["epsx"].plot(seconds / 3600, 1e2 * pd.Series(auto.epsilon_x).pct_change(), lw=2, label="Auto")
-axs["epsy"].plot(seconds / 3600, 1e2 * pd.Series(auto.epsilon_y).pct_change(), lw=2, label="Auto")
-axs["sigd"].plot(seconds / 3600, 1e2 * pd.Series(auto.sig_delta).pct_change(), lw=2, label="Auto")
-axs["bl"].plot(seconds / 3600, 1e2 * pd.Series(auto.bunch_length).pct_change(), lw=2, label="Auto")
+axs["epsx"].plot(seconds / 3600, 1e2 * pd.Series(auto.epsilon_x).pct_change(), lw=2, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
+axs["epsy"].plot(seconds / 3600, 1e2 * pd.Series(auto.epsilon_y).pct_change(), lw=2, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
+axs["sigd"].plot(seconds / 3600, 1e2 * pd.Series(auto.sig_delta).pct_change(), lw=2, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
+axs["bl"].plot(seconds / 3600, 1e2 * pd.Series(auto.bunch_length).pct_change(), lw=2, label=f"Auto ({AUTO_PERCENT:.0e}% change)")
 
 axs["epsx"].plot(seconds / 3600, 1e2 * pd.Series(mix.epsilon_x).pct_change(), lw=2, label="Mix")
 axs["epsy"].plot(seconds / 3600, 1e2 * pd.Series(mix.epsilon_y).pct_change(), lw=2, label="Mix")
@@ -335,7 +340,7 @@ for axis in axs.values():
 
 fig.align_ylabels((axs["epsx"], axs["sigd"]))
 fig.align_ylabels((axs["epsy"], axs["bl"]))
-fig.suptitle("Percent change from previous second")
+fig.suptitle("Percent change from previous second\nSPS Top Ions")
 
 plt.legend(title="Recompute Rates")
 plt.tight_layout()
