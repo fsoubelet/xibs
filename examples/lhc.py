@@ -99,7 +99,7 @@ fixed_recomputes = np.zeros(nsecs, dtype=float)
 
 # ----- We loop here now ----- #
 
-AUTO_PERCENT = 5e-3
+AUTO_PERCENT = 1e-2
 for sec in range(1, nsecs):
     n_recomputes_for_auto = AUTO_IBS._number_of_growth_rates_computations
     n_recomputes_for_mix = MIX_IBS._number_of_growth_rates_computations
