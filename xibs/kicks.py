@@ -126,6 +126,8 @@ class KickBasedIBS(ABC):
         self.kick_coefficients: IBSKickCoefficients = None
         # Private flag to indicate if the coefficients need to be recomputed before the next kick
         self._need_to_recompute_coefficients: bool = False
+        # Private attribute tracking the number of coefficients computations
+        self._number_of_coefficients_computations: int = 0
 
     def __str__(self) -> str:
         has_kick_coefficients = isinstance(self.kick_coefficients, IBSKickCoefficients)
@@ -486,6 +488,7 @@ class SimpleKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
         self.kick_coefficients = result
+        self._number_of_coefficients_computations += 1
         return result
 
     def _apply_formalism_ibs_kick(
@@ -716,6 +719,7 @@ class KineticKickIBS(KickBasedIBS):
         # Self-update the instance's attributes and then return the results: kick coefficients
         result = IBSKickCoefficients(Dx - Fx, Dy - Fy, Dz - Fz)
         self.kick_coefficients = result
+        self._number_of_coefficients_computations += 1
         return result
 
     def _check_coefficients_presence(self) -> None:
