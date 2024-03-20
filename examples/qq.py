@@ -99,16 +99,16 @@ new_geom_epsx, new_geom_epsy, new_sig_delta, new_bunch_length = IBS.emittance_ev
 
 # TODO: Here I could check the percent change and have a little conclusion
 # on how to choose our threshold
-print(f"Geom. epsx: {new_geom_epsx:.2e} -> {geom_epsx:.2e} | ({_percent_change(new_geom_epsx, geom_epsx):.2e}% change)")
-print(f"Geom. epsy: {new_geom_epsy:.2e} -> {geom_epsy:.2e} | ({_percent_change(new_geom_epsy, geom_epsy):.2e}% change)")
-print(f"Sigma delta: {new_sig_delta:.2e} -> {sig_delta:.2e} | ({_percent_change(new_sig_delta, sig_delta):.2e}% change)")
-print(f"Bunch length: {new_bunch_length:.2e} -> {bunch_l:.2e} | ({_percent_change(new_bunch_length, bunch_l):.2e}% change)")
+print(f"Geom. epsx: {geom_epsx:.2e} -> {new_geom_epsx:.2e} | ({_percent_change(geom_epsx, new_geom_epsx):.2e}% change)")
+print(f"Geom. epsy: {geom_epsy:.2e} -> {new_geom_epsy:.2e} | ({_percent_change(geom_epsy, new_geom_epsy):.2e}% change)")
+print(f"Sigma delta: {sig_delta:.2e} -> {new_sig_delta:.2e} | ({_percent_change(sig_delta, new_sig_delta):.2e}% change)")
+print(f"Bunch length: {bunch_l:.2e} -> {new_bunch_length:.2e} | ({_percent_change(bunch_l, new_bunch_length):.2e}% change)")
 
 
 
 nsecs = 5 * 3_600  # that's 5h
 ibs_step = 10 * 60  # re-compute rates every 20min
-seconds = np.linspace(0, nsecs, nsecs).astype(int)
+seconds = np.linspace(0, nsecs, nsecs, dtype=int)
 
 
 # Set up a dataclass to store the results
