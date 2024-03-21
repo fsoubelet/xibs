@@ -67,7 +67,7 @@ clean:
 
 docs:
 	@echo "Building static pages with $(D)Sphinx$(E)."
-	@python -m sphinx -v -b html docs doc_build -d doc_build
+	@python -m sphinx -v -b html -d doc_build --jobs auto docs doc_build
 	@rm -rf docs/sg_execution_times.rst
 
 docrepos:
