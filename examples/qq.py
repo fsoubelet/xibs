@@ -2,9 +2,9 @@
 
 .. _demo-analytical-auto-growth-rates:
 
-=============================================
-Automatic Analytical Growth Rates Computation
-=============================================
+=====================================
+Automatic Growth Rates Re-Computation
+=====================================
 
 This example shows how to use the the auto recomputing functionality for growth rates
 in the analytical classes. To follow this example please first have a look at the 
@@ -17,7 +17,6 @@ be done using the SPS top protons line.
 """
 # sphinx_gallery_thumbnail_number = 1
 import logging
-import warnings
 
 from dataclasses import dataclass
 
@@ -31,7 +30,6 @@ from xibs.analytical import NagaitsevIBS
 from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta, _percent_change
 from xibs.inputs import BeamParameters, OpticsParameters
 
-# warnings.simplefilter("ignore")  # for this tutorial's clarity
 logging.basicConfig(
     level=logging.WARNING,
     format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
@@ -57,10 +55,9 @@ plt.rcParams.update(
 # parameters for later use:
 
 line_file = "lines/sps_top_protons.json"
-
 # The beam parameters are very exaggerated to enhance IBS effects
-bunch_intensity = 6e11  # very pushed
-sigma_z = 12e-2  # very pushed
+bunch_intensity = 5e11  # very pushed
+sigma_z = 10e-2  # very pushed
 nemitt_x = 1e-6  # very pushed
 nemitt_y = 1e-6  # very pushed
 n_part = int(5e3)
@@ -87,7 +84,6 @@ line[cavity_name].voltage = rf_voltage * 1e6  # to be given in [V] here
 line[cavity_name].lag = cavity_lag
 line[cavity_name].frequency = rf_frequency
 
-
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
@@ -97,23 +93,6 @@ particles = xp.generate_matched_gaussian_bunch(
     particle_ref=line.particle_ref,
     line=line,
 )
-
-
-# fig, (axx, axy, axz) = plt.subplots(3, 1, figsize=(9, 11))
-
-# axx.plot(1e6 * particles.x, 1e5 * particles.px, ".", ms=3)
-# axy.plot(1e6 * particles.y, 1e6 * particles.py, ".", ms=3)
-# axz.plot(1e3 * particles.zeta, 1e3 * particles.delta, ".", ms=3)
-
-# axx.set_xlabel(r"$x$ [$\mu$m]")
-# axx.set_ylabel(r"$p_x$ [$10^{-5}$]")
-# axy.set_xlabel(r"$y$ [$\mu$m]")
-# axy.set_ylabel(r"$p_y$ [$10^{-3}$]")
-# axz.set_xlabel(r"$z$ [$10^{-3}$]")
-# axz.set_ylabel(r"$\delta$ [$10^{-3}$]")
-# fig.align_ylabels([axx, axy, axz])
-# plt.tight_layout()
-# plt.show()
 
 ###############################################################################
 # We can compute initial (geometrical) emittances as well as the bunch length
@@ -129,7 +108,6 @@ sig_delta = _sigma_delta(particles)
 # -------------------------------------------------
 # Let us instantiate three instances of the `~.xibs.analytical.NagaitsevIBS` class,
 # where each will be used for a different updating behaviour of the growth rates.
-
 
 beam_params = BeamParameters(particles)
 optics = OpticsParameters(twiss)
@@ -158,10 +136,11 @@ print(f"Sigma delta: {sig_delta:.2e} -> {new_sig_delta:.2e} | ({_percent_change(
 print(f"Bunch length: {bunch_l:.2e} -> {new_bunch_length:.2e} | ({_percent_change(bunch_l, new_bunch_length):.2e}% change)")
 
 ###############################################################################
-# Analytical Evolution for Many Turns
-# -----------------------------------
+# Preparing for Simulation of Evolution
+# -------------------------------------
 # We will loop over time steps (seconds in this case) for 3 hours equivalent time,
-# and specify the auto-recomputing in these steps where relevant.
+# and specify the auto-recomputing in these steps where relevant. Let's set up the
+# utilities we will need for this:
 
 nsecs = 3 * 3_600  # that's 3h
 ibs_step = 10 * 60  # fixed interval for rates recomputing
@@ -172,7 +151,6 @@ seconds = np.linspace(0, nsecs, nsecs, dtype=int)
 # the rates are re-computed to be the most up-to-date, and the new
 # evolution of emittances is computed.
 AUTO_PERCENT = 2e-2  # 0.02% change threshold
-
 
 # Set up a dataclass to store the results
 @dataclass
@@ -215,8 +193,10 @@ auto_recomputes = np.zeros(nsecs, dtype=float)
 mix_recomputes = np.zeros(nsecs, dtype=float)
 fixed_recomputes = np.zeros(nsecs, dtype=float)
 
-
-# ----- We loop here now ----- #
+###############################################################################
+# Analytical Evolution Over Time
+# ------------------------------
+# Let's now loop and specify the auto-recomputing where relevant.
 
 for sec in range(1, nsecs):
     # This is not necessary, just for showcasing in this tutorial
@@ -295,12 +275,11 @@ where_auto_recomputes = np.flatnonzero(auto_recomputes)
 where_mix_recomputes = np.flatnonzero(mix_recomputes)
 where_fixed_recomputes = np.flatnonzero(fixed_recomputes)
 
-
 print(f"Fixed re-computes: {IBS._number_of_growth_rates_computations}")
 print(f"Auto re-computes: {AUTO_IBS._number_of_growth_rates_computations}")
 print(f"Mix re-computes: {MIX_IBS._number_of_growth_rates_computations}")
 diff = MIX_IBS._number_of_growth_rates_computations - IBS._number_of_growth_rates_computations
-print(f"\tOn its own: {diff})")
+print(f"\t(On its own: {diff})")
 
 ###############################################################################
 # Feel free to run this simulation with different parameters, but beware that the
@@ -314,9 +293,9 @@ fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, f
 # rates happened (do this first so they show up in the background)
 for axis in axs.values():
     for sec in where_auto_recomputes:
-        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.002)
+        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.005)
     for sec in where_mix_recomputes:
-        axis.axvline(sec / 3600, color="C2", linestyle="-", alpha=0.002)
+        axis.axvline(sec / 3600, color="C2", linestyle="-", alpha=0.005)
     # And very visible ones for the fixed recomputes
     for sec in where_fixed_recomputes:
         axis.axvline(sec / 3600, color="gray", linestyle="--", lw=1, alpha=0.2)
@@ -350,7 +329,13 @@ for axis in (axs["sigd"], axs["bl"]):
     axis.set_xlabel("Duration [h]")
 
 for axis in axs.values():
-    axis.yaxis.set_major_locator(plt.MaxNLocator(3))
+    for sec in where_auto_recomputes:
+        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.005)
+    for sec in where_mix_recomputes:
+        axis.axvline(sec / 3600, color="C2", linestyle="-", alpha=0.005)
+    # And very visible ones for the fixed recomputes
+    for sec in where_fixed_recomputes:
+        axis.axvline(sec / 3600, color="gray", linestyle="--", lw=1, alpha=0.2)
 
 fig.align_ylabels((axs["epsx"], axs["sigd"]))
 fig.align_ylabels((axs["epsy"], axs["bl"]))
@@ -361,27 +346,23 @@ plt.tight_layout()
 plt.show()
 
 
-# TODO: write from here
 ###############################################################################
-# Feel free to run this simulation with different parameters, but beware that the
-# lower the auto-recompute threshold, the more likely it is that growth rates will
-# be re-computed at every turn, which can be very lengthy. Let's first have a look
-# at the evolution of emittances over time:
-
-
-
-
-
-
+# Does this make sense?
+# Yes, it does once we keep in mind that the formula for the evolution of these
+# properties from IBS is an exponential that depends on the value at the previous
+# step, and the growth rate for the given plane. As long as the growth rate is
+# not re-computed, then the relative change from one time step to the next will
+# be the same. We can confirm this by plotting the relative change:
 
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 8.5))
 
-# Add vertical lines at recompute times (first so they show up in the background)
+# We will add vertical lines at the times where recomputing of the growth 
+# rates happened (do this first so they show up in the background)
 for axis in axs.values():
     for sec in where_auto_recomputes:
-        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.002)
+        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.005)
     for sec in where_mix_recomputes:  # if auto recomputed this did too
-        axis.axvline(sec / 3600, color="C2", linestyle="-", alpha=0.002)
+        axis.axvline(sec / 3600, color="C2", linestyle="-", alpha=0.005)
     for sec in where_fixed_recomputes:
         axis.axvline(sec / 3600, color="gray", linestyle="--", lw=1, alpha=0.2)
 
@@ -420,8 +401,53 @@ for axis in axs.values():
 
 fig.align_ylabels((axs["epsx"], axs["sigd"]))
 fig.align_ylabels((axs["epsy"], axs["bl"]))
-fig.suptitle("Percent change from previous second\nSPS Top Ions")
+fig.suptitle("Percent change from previous second\nSPS Top Protons")
 
 plt.legend(title="Recompute Rates")
 plt.tight_layout()
 plt.show()
+
+
+###############################################################################
+# We can see from this plot that the relative change for the "fixed" interval
+# scenario is constant between re-computes of the growth rates. Because we pushed
+# the beam parameters to the extreme, the emittances growth "too fast" from the
+# start to the first recompute of the rates 10 minutes in.
+#
+# The "auto-only" recomputing scenario initially recomputes growth rates at each
+# time step as the relative change of emittances is above the given threshold, mostly
+# since we started with very exaggerated beam parameters. At some point, around 40 mins
+# in, our bunch has expanded significantly the effect of IBS decreased, and the relative
+# change of the emittances is low enough that the rates are not updated anymore. This
+# means these growth rates are used until the end and the changes are too high for the
+# rest of the simulation.
+#
+# The "mix" scenario brings the best of both worlds. It initially also recomputes the
+# growth rates at every step, which makes sure emittances have the proper evolution
+# during the most sensitive interval right at the start. However as a an update is
+# forced at fixed intervals, the growth rates stay relatively up-to-date until the
+# end of the simulation.
+#
+# Takeaways
+# ---------
+# One can see the difference made by the auto-recomputing, especially in the horizontal
+# plane, where a clear gap to the "fixed interval" scenario is observed for the final 
+# values reached (green to blue curves), despite an asymptotic behaviour.
+# The "auto-only" scenario shows the potential of the auto-recomputing, but also the
+# importance of choosing an appropriate threshold value. A value too high will lead
+# to the rates stopping their updates too early and unrealistic evolutions, while a
+# value too low will lead to the rates re-computing at every step for too long, which
+# is computationally expensive and unnecessary as a regular interval does suffice.
+
+
+#############################################################################
+#
+# .. admonition:: References
+#
+#    The use of the following functions, methods, classes and modules is shown
+#    in this example:
+#
+#    - `~xibs.analytical`: `~.xibs.analytical.NagaitsevIBS`, `~.xibs.analytical.NagaitsevIBS.growth_rates`, `~.xibs.analytical.NagaitsevIBS.integrals`, `~.xibs.analytical.NagaitsevIBS.emittance_evolution`
+#    - `~xibs.inputs`: `~xibs.inputs.BeamParameters`, `~xibs.inputs.OpticsParameters`
+
+###############################################################################
