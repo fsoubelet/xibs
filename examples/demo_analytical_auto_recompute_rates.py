@@ -55,7 +55,7 @@ plt.rcParams.update(
 
 line_file = "lines/sps_top_protons.json"
 # The beam parameters are very exaggerated to enhance IBS effects
-bunch_intensity = 2e11
+bunch_intensity = 5e11
 sigma_z = 10e-2  # very pushed
 nemitt_x = 1e-6  # very pushed
 nemitt_y = 1e-6  # very pushed
@@ -290,19 +290,19 @@ fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, f
 # rates happened (do this first so they show up in the background)
 for axis in axs.values():
     for sec in where_fixed_recomputes:
-        axis.axvline(sec / 3600, color="C0", linestyle="--", lw=1, alpha=0.05)
+        axis.axvline(sec / 3600, color="C0", linestyle="--", lw=1, alpha=0.5)
     for sec in where_auto_recomputes:
-        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.05)
+        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.035)
 
 axs["epsx"].plot(seconds / 3600, 1e9 * regular.epsilon_x, lw=2, label=f"Fixed ({int(ibs_step / 60)} mins)")
 axs["epsy"].plot(seconds / 3600, 1e9 * regular.epsilon_y, lw=2, label=f"Fixed ({int(ibs_step / 60)} mins)")
 axs["sigd"].plot(seconds / 3600, 1e4 * regular.sig_delta, lw=2, label=f"Fixed ({int(ibs_step / 60)} mins)")
 axs["bl"].plot(seconds / 3600, 1e2 * regular.bunch_length, lw=2, label=f"Fixed ({int(ibs_step / 60)} mins)")
 
-axs["epsx"].plot(seconds / 3600, 1e9 * auto.epsilon_x, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
-axs["epsy"].plot(seconds / 3600, 1e9 * auto.epsilon_y, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
-axs["sigd"].plot(seconds / 3600, 1e4 * auto.sig_delta, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
-axs["bl"].plot(seconds / 3600, 1e2 * auto.bunch_length, lw=1.9, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
+axs["epsx"].plot(seconds / 3600, 1e9 * auto.epsilon_x, lw=2, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
+axs["epsy"].plot(seconds / 3600, 1e9 * auto.epsilon_y, lw=2, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
+axs["sigd"].plot(seconds / 3600, 1e4 * auto.sig_delta, lw=2, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
+axs["bl"].plot(seconds / 3600, 1e2 * auto.bunch_length, lw=2, label=f"Auto ({AUTO_PERCENT:.0f}% change)")
 
 # Axes parameters
 axs["epsx"].set_ylabel(r"$\varepsilon_x$ [$10^{-9}$m]")
@@ -340,9 +340,9 @@ fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, f
 # rates happened (do this first so they show up in the background)
 for axis in axs.values():
     for sec in where_fixed_recomputes:
-        axis.axvline(sec / 3600, color="C0", linestyle="--", lw=1, alpha=0.05)
+        axis.axvline(sec / 3600, color="C0", linestyle="--", lw=1, alpha=0.5)
     for sec in where_auto_recomputes:
-        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.05)
+        axis.axvline(sec / 3600, color="C1", linestyle="-", alpha=0.035)
 
 axs["epsx"].plot(seconds / 3600, 1e2 * regular.epsx_rel_to_last_ref, lw=2, label=f"Fixed ({int(ibs_step / 60)} mins)")
 axs["epsy"].plot(seconds / 3600, 1e2 * regular.epsy_rel_to_last_ref, lw=2, label=f"Fixed ({int(ibs_step / 60)} mins)")
