@@ -333,6 +333,9 @@ def test_nagaitsev_auto_recomputes_growth_rates(madx_ps_injection_protons, caplo
     beamparams = BeamParameters.from_madx(madx)
     IBS = NagaitsevIBS(beamparams, opticsparams)
     # --------------------------------------------------------------------
+    # Compute growth rates once so there is a _refs attribute to compare to
+    IBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
+    # --------------------------------------------------------------------
     # Manually set exaggerated growth rates values to make sure we will bypass the threshold
     initial_rates = IBSGrowthRates(1e15, 1e15, 1e15)  # this is silly
     IBS.ibs_growth_rates = initial_rates
@@ -373,6 +376,9 @@ def test_bjorken_mtingwa_auto_recomputes_growth_rates(madx_ps_injection_protons,
     opticsparams = OpticsParameters.from_madx(madx)
     beamparams = BeamParameters.from_madx(madx)
     IBS = BjorkenMtingwaIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Compute growth rates once so there is a _refs attribute to compare to
+    IBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
     # --------------------------------------------------------------------
     # Manually set exaggerated growth rates values to make sure we will bypass the threshold
     initial_rates = IBSGrowthRates(1e15, 1e15, 1e15)  # this is silly
@@ -415,6 +421,9 @@ def test_bjorken_mtingwa_auto_recomputes_growth_rates_including_sr(madx_ps_injec
     opticsparams = OpticsParameters.from_madx(madx)
     beamparams = BeamParameters.from_madx(madx)
     IBS = BjorkenMtingwaIBS(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Compute growth rates once so there is a _refs attribute to compare to
+    IBS.growth_rates(params.geom_epsx, params.geom_epsy, params.sig_delta, params.bunch_length)
     # --------------------------------------------------------------------
     # Manually set exaggerated growth rates values to make sure we will bypass the threshold
     initial_rates = IBSGrowthRates(1e15, 1e15, 1e15)  # this is silly
