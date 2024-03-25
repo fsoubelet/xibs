@@ -644,11 +644,11 @@ class AnalyticalIBS(ABC):
         Checks if the new values exceed a 'threshold'% relative change to the
         reference ones stored last time growth rates were computed.
         """
-        if (
-            abs(_percent_change(self._refs.epsx, new_epsx)) > threshold
-            or abs(_percent_change(self._refs.epsy, new_epsy)) > threshold
-            or abs(_percent_change(self._refs.sigma_delta, new_sigma_delta)) > threshold
-            or abs(_percent_change(self._refs.bunch_length, new_bunch_length)) > threshold
+        if (  # REMEMBER: threshold is a percentage so we need to divide it by 100
+            abs(_percent_change(self._refs.epsx, new_epsx)) > threshold / 100
+            or abs(_percent_change(self._refs.epsy, new_epsy)) > threshold / 100
+            or abs(_percent_change(self._refs.sigma_delta, new_sigma_delta)) > threshold / 100
+            or abs(_percent_change(self._refs.bunch_length, new_bunch_length)) > threshold / 100
         ):
             return True
         return False
