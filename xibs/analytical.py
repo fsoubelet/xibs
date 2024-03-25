@@ -42,7 +42,7 @@ LOGGER = getLogger(__name__)
 # ----- Dataclasses to store results ----- #
 
 
-@dataclass(slots=True)
+@dataclass()
 class NagaitsevIntegrals:
     """
     .. versionadded:: 0.2.0
@@ -60,7 +60,7 @@ class NagaitsevIntegrals:
     Iz: float
 
 
-@dataclass(slots=True)
+@dataclass()
 class IBSGrowthRates:
     """
     .. versionadded:: 0.2.0
@@ -78,7 +78,7 @@ class IBSGrowthRates:
     Tz: float
 
 
-@dataclass(slots=True)
+@dataclass()
 class _SynchrotronRadiationInputs:
     """
     .. versionadded:: 0.6.0
@@ -102,7 +102,7 @@ class _SynchrotronRadiationInputs:
     tau_z: float
 
 
-@dataclass(slots=True)
+@dataclass()
 class _ReferenceValues:
     """
     .. versionadded:: 0.8.0

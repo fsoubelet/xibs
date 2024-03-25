@@ -40,7 +40,7 @@ LOGGER = getLogger(__name__)
 # ----- Dataclasses to store results ----- #
 
 
-@dataclass(slots=True)
+@dataclass()
 class DiffusionCoefficients:
     """Container dataclass for kinetic IBS diffusion coefficients.
 
@@ -55,7 +55,7 @@ class DiffusionCoefficients:
     Dz: float
 
 
-@dataclass(slots=True)
+@dataclass()
 class FrictionCoefficients:
     """Container dataclass for kinetic IBS friction coefficients.
 
@@ -70,7 +70,7 @@ class FrictionCoefficients:
     Fz: float
 
 
-@dataclass(slots=True)
+@dataclass()
 class IBSKickCoefficients:
     """
     Container dataclass for all IBS kick coefficients. These can be the coeffients from simple kicks,
