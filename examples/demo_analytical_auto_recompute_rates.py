@@ -135,7 +135,7 @@ print(f"Bunch length: {bunch_l:.2e} -> {new_bunch_length:.2e} | ({_percent_chang
 ###############################################################################
 # Preparing for Simulation of Evolution
 # -------------------------------------
-# We will loop over time steps (seconds in this case) for 3 hours equivalent time,
+# We will loop over time steps (seconds in this case) for 5 hours equivalent time,
 # and specify the auto-recomputing in these steps where relevant. Let's set up the
 # utilities we will need for this:
 
@@ -275,14 +275,16 @@ for sec in seconds:
 where_auto_recomputes = np.flatnonzero(auto_recomputes)
 where_fixed_recomputes = np.flatnonzero(fixed_recomputes)
 
+###############################################################################
+# Let's see how many recomputes happened in total for each scenario:
+
 print(f"Fixed re-computes: {IBS._number_of_growth_rates_computations}")
 print(f"Auto re-computes: {AUTO_IBS._number_of_growth_rates_computations}")
 
 ###############################################################################
-# Feel free to run this simulation with different parameters, but beware that the
-# lower the auto-recompute threshold, the more likely it is that growth rates will
-# be re-computed at every turn, which can be very lengthy. Let's first have a look
-# at the evolution of emittances over time:
+# That's almost 1600 additional updates of the growth rates that were deemed
+# necessary by the auto-recomputing mechanism. Let's see the effect it has had
+# on our results by having a look at the evolution of emittances over time:
 
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 8.5))
 
@@ -327,12 +329,11 @@ plt.show()
 
 
 ###############################################################################
-# Does this make sense?
-# Yes, it does once we keep in mind that the formula for the evolution of these
-# properties from IBS is an exponential that depends on the value at the previous
-# step, and the growth rate for the given plane. As long as the growth rate is
-# not re-computed, then the relative change from one time step to the next will
-# be the same. We can confirm this by plotting the relative change:
+# Let's keep in mind that the formula for the evolution of these properties from
+# IBS is an exponential that depends on the value at the previous step, and the
+# growth rate for the given plane. As long as the growth rate is not re-computed,
+# then the relative change from one time step to the next will be the same. We can
+# have a look at the relative change from the last time growth rates were updated:
 
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(13, 8.5))
 
@@ -383,34 +384,27 @@ plt.show()
 
 ###############################################################################
 # We can see from this plot that the relative change for the "fixed" interval
-# scenario is constant between re-computes of the growth rates. Because we pushed
-# the beam parameters to the extreme, the emittances growth "too fast" from the
-# start to the first recompute of the rates 10 minutes in.
+# scenario keeps increasing between re-computes of the growth rates. Because we
+# pushed the beam parameters to the extreme, the emittances grow "too fast" from
+# the start to the first recompute of the rates 10 minutes in.
 #
-# The "auto-only" recomputing scenario initially recomputes growth rates at each
-# time step as the relative change of emittances is above the given threshold, mostly
-# since we started with very exaggerated beam parameters. At some point, around 40 mins
-# in, our bunch has expanded significantly the effect of IBS decreased, and the relative
-# change of the emittances is low enough that the rates are not updated anymore. This
-# means these growth rates are used until the end and the changes are too high for the
-# rest of the simulation.
-#
-# The "mix" scenario brings the best of both worlds. It initially also recomputes the
-# growth rates at every step, which makes sure emittances have the proper evolution
-# during the most sensitive interval right at the start. However as a an update is
-# forced at fixed intervals, the growth rates stay relatively up-to-date until the
-# end of the simulation.
+# The "auto-only" recomputing scenario initially updates its growth rates very
+# frequently in the beginning of the simulation: almost every time step for the
+# first 10 minutes of simulated beam time. As the horizontal emittance and the
+# :math:`\delta_p` and bunch length grow, the effect of IBS decreases and the
+# rates are not updated as frequently. 
 #
 # Takeaways
 # ---------
 # One can see the difference made by the auto-recomputing, especially in the horizontal
-# plane, where a clear gap to the "fixed interval" scenario is observed for the final 
-# values reached (green to blue curves), despite an asymptotic behaviour.
-# The "auto-only" scenario shows the potential of the auto-recomputing, but also the
-# importance of choosing an appropriate threshold value. A value too high will lead
-# to the rates stopping their updates too early and unrealistic evolutions, while a
-# value too low will lead to the rates re-computing at every step for too long, which
-# is computationally expensive and unnecessary as a regular interval does suffice.
+# plane where a large gap to the "fixed interval" scenario is observed for the final 
+# values reached, despite an asymptotic behaviour. In the beginning of the simulation,
+# auto-recomputing is very frequent and avoid an unrealistic growth of the emittances.
+#
+# It is important for the user to choose an appropriate threshold value. A value too
+# high will lead to the rates not updating frequently enough and potentially unrealistic
+# evolutions, while a value too low will lead to the rates re-computing at every step for
+# a long time, which is computationally expensive and unnecessary.
 
 
 #############################################################################
