@@ -55,8 +55,8 @@ plt.rcParams.update(
 ###############################################################################
 # Let's start by defining the line and particle information, as well as some
 # parameters for later use. Note that `bunch_intensity` is the actual number
-# of particles in the bunch, and its value influences the analytical IBS growth
-# rates calculation while `n_part` is the number of generated particles for
+# of particles in the bunch, and its value influences the IBS kick coefficients
+# calculation while `n_part` is the number of generated particles for
 # tracking, which is much lower.
 
 line_file = "lines/chrom-corr_DR.newlattice_2GHz.json"
