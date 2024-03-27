@@ -41,6 +41,8 @@ This allows not having to manually ask for the coefficients to be recomputed, an
         IBS.apply_ibs_kick(particles)  # auto-recompute kick coefficients if needed
         line.track(particles, num_turns=1)
 
+One can find an example of this feature in the :ref:`dedicated example gallery <demo-kicks-auto-coefficients>`.
+
 
 .. _xibs-faq-auto-recompute-growth-rates:
 
