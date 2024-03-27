@@ -157,7 +157,7 @@ particles2 = particles.copy()
 # and auto-recomputing scenarios. Let's set up the utilities needed for this:
 
 nturns = 1000  # number of turns to loop for
-ibs_step = 25  # frequency at which to re-compute coefficients in [turns]
+ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 turns = np.linspace(0, nturns, nturns, dtype=int)  # array of tracked turns
 
 
@@ -244,7 +244,7 @@ print(f"Fixed re-computes: {IBS._number_of_coefficients_computations}")
 print(f"Auto re-computes: {AUTO_IBS._number_of_coefficients_computations}")
 
 ###############################################################################
-# That's almost TODO additional updates of the coeffifients that were deemed
+# That's almost four times as many updates of the coeffifients that were deemed
 # necessary by the auto-recomputing mechanism. Let's see the effect it has had
 # on our results by having a look at the evolution of emittances over time:
 
@@ -305,7 +305,7 @@ for axis in axs.values():
     for turn in where_fixed_recomputes:
         axis.axvline(turn, color="gray", linestyle="--", lw=1, alpha=0.7)
     for turn in where_auto_recomputes:
-        axis.axvline(turn, color="C1", linestyle="-", alpha=0.3)
+        axis.axvline(turn, color="C1", linestyle="-", alpha=0.2)
 
 axs["epsx"].plot(turns, 1e2 * pd.Series(regular.epsilon_x).pct_change(), lw=1, label=f"Fixed ({ibs_step}) turns")
 axs["epsy"].plot(turns, 1e2 * pd.Series(regular.epsilon_y).pct_change(), lw=1, label=f"Fixed ({ibs_step}) turns")
@@ -345,10 +345,11 @@ plt.show()
 
 
 ###############################################################################
-# We can see that the auto-recompute feature - while leading to additional compute
-# from a higher number of kick coefficients computation - helped not overestimate
-# the IBS effects in the horizontal plane, and not underestimate them in the 
-# vertical plane, in addition to making the tracking loop simpler to write.
+# We can see that the auto-recompute feature leads to correct results of the IBS
+# effects in addition to making the tracking loop simpler to write. It also avoids
+# for the user to have to determine a proper interval for re-computing the kicks -
+# which could be correct for part of the simulation but not all of it - by adapting
+# itself to the actual changes in the particle distribution.
 
 
 #############################################################################
