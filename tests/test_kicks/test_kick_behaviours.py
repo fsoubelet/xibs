@@ -12,13 +12,13 @@ We also check that providing (equivalent) geometric or normalized emittances doe
 not change the results of the calculations.
 """
 import logging
-
+import pytest
 import xpart as xp
 import xtrack as xt
 
 from xibs.analytical import BjorkenMtingwaIBS, NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
-from xibs.kicks import KineticKickIBS, SimpleKickIBS
+from xibs.kicks import KickBasedIBS, KineticKickIBS, SimpleKickIBS, IBSKickCoefficients
 
 
 def test_simple_kick_chooses_bjorken_mtingwa_with_vertical_dispersion(
@@ -247,3 +247,47 @@ def test_kinetic_kick_auto_recomputes_coefficients(xtrack_sps_top_ions):
     line.track(particles, num_turns=1)
     IBS.apply_ibs_kick(particles)
     assert IBS.kick_coefficients != initial_coefficients
+
+
+@pytest.mark.parametrize("IBSClass", [SimpleKickIBS, KineticKickIBS])
+def test_apply_ibs_kick_computes_coefficients_if_absent(xtrack_sps_top_ions, IBSClass):
+    """
+    Checking that KickBasedIBS.apply_ibs_kick computes the coefficients
+    if they are not present (haven't been computed beforehand).
+    """
+    # --------------------------------------------------------------------
+    # Some exaggerated parameters
+    bunch_intensity = int(5e11)
+    n_part = int(200)
+    sigma_z = 5e-2
+    nemitt_x = 1.0e-6
+    nemitt_y = 0.25e-6
+    rf_voltage = 1.7e6  # 1.7MV
+    harmonic_number = 4653
+    # --------------------------------------------------------------------
+    # Setup line and particles
+    line: xt.Line = xtrack_sps_top_ions  # already has particle_ref
+    line["actcse.31632"].lag = 180  # above transition
+    line["actcse.31632"].voltage = rf_voltage  # from config
+    line["actcse.31632"].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
+    line.build_tracker()
+    line.optimize_for_tracking()
+    line.twiss(method="4d")
+    particles = xp.generate_matched_gaussian_bunch(
+        num_particles=n_part,
+        total_intensity_particles=bunch_intensity,
+        nemitt_x=nemitt_x,
+        nemitt_y=nemitt_y,
+        sigma_z=sigma_z,
+        line=line,
+    )
+    # --------------------------------------------------------------------
+    # Create the IBS parameters and class
+    opticsparams = OpticsParameters.from_line(line)
+    beamparams = BeamParameters.from_line(line, n_part=8.1e8)  # n_part doesn't matter
+    IBS: KickBasedIBS = IBSClass(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Check the kick application works and coefficients have been computeds
+    IBS.apply_ibs_kick(particles)
+    assert IBS.kick_coefficients is not None
+    assert isinstance(IBS.kick_coefficients, IBSKickCoefficients)
