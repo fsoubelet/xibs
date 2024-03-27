@@ -215,7 +215,7 @@ axs["epsx"].plot(seconds / 3600, 1e10 * nag_tbt.epsilon_x, lw=1, label="Nagaitse
 # Plotting vertical emittances
 axs["epsy"].plot(seconds / 3600, 1e10 * madx_tbt.epsilon_y, lw=2.5, label="MAD-X")
 axs["epsy"].plot(seconds / 3600, 1e10 * bm_tbt.epsilon_y, lw=1.5, label="BjorkenMtingwaIBS")
-axs["epsy"].plot(seconds / 3600, 1e10 * nag_tbt.epsilon_y, lw=1.5, label="NagaitsevIBS")
+axs["epsy"].plot(seconds / 3600, 1e10 * nag_tbt.epsilon_y, lw=2, label="NagaitsevIBS")
 
 # Plotting momentum spread
 axs["sigd"].plot(seconds / 3600, 1e4 * madx_tbt.sig_delta, lw=2.5, label="MAD-X")
