@@ -115,7 +115,7 @@ IBS = NagaitsevIBS(beam_params, optics)  # will recompute rates at a given frequ
 AUTO_IBS = NagaitsevIBS(beam_params, optics)  # will auto-recompute rates only
 
 ###############################################################################
-# Let's get them growth rates and see the evolution of the transverse emittances,
+# Let's get the growth rates and see the evolution of the transverse emittances,
 # :math:`\sigma_{\delta}` and bunch length. We can then have a look at the relative
 # change from one second to the next.
 
@@ -127,10 +127,10 @@ new_geom_epsx, new_geom_epsy, new_sig_delta, new_bunch_length = IBS.emittance_ev
 )
 
 # Let's see the relative change
-print(f"Geom. epsx: {geom_epsx:.2e} -> {new_geom_epsx:.2e} | ({_percent_change(geom_epsx, new_geom_epsx):.2e}% change)")
-print(f"Geom. epsy: {geom_epsy:.2e} -> {new_geom_epsy:.2e} | ({_percent_change(geom_epsy, new_geom_epsy):.2e}% change)")
-print(f"Sigma delta: {sig_delta:.2e} -> {new_sig_delta:.2e} | ({_percent_change(sig_delta, new_sig_delta):.2e}% change)")
-print(f"Bunch length: {bunch_l:.2e} -> {new_bunch_length:.2e} | ({_percent_change(bunch_l, new_bunch_length):.2e}% change)")
+print(f"Geom. epsx: {geom_epsx:.2e} -> {new_geom_epsx:.2e} | ({100 * _percent_change(geom_epsx, new_geom_epsx):.2e}% change)")
+print(f"Geom. epsy: {geom_epsy:.2e} -> {new_geom_epsy:.2e} | ({100 * _percent_change(geom_epsy, new_geom_epsy):.2e}% change)")
+print(f"Sigma delta: {sig_delta:.2e} -> {new_sig_delta:.2e} | ({100 * _percent_change(sig_delta, new_sig_delta):.2e}% change)")
+print(f"Bunch length: {bunch_l:.2e} -> {new_bunch_length:.2e} | ({100 * _percent_change(bunch_l, new_bunch_length):.2e}% change)")
 
 ###############################################################################
 # Preparing for Simulation of Evolution
@@ -209,7 +209,7 @@ for sec in range(1, nsecs):
     # ----- Potentially re-compute the IBS growth rates ----- #
     if (sec % ibs_step == 0) or (sec == 1):
         print(f"At {sec}s: Fixed interval recomputing of the growth rates")
-        # Both below always re-compute the rates every 'ibs_step' seconds
+        # Below always re-computes the rates every 'ibs_step' seconds
         IBS.growth_rates(
             regular.epsilon_x[sec - 1],
             regular.epsilon_y[sec - 1],
