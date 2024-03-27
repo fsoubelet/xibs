@@ -31,6 +31,9 @@ This allows not having to manually ask for the coefficients to be recomputed, an
     IBS = xibs.kicks.KineticKickIBS(beam_params, optics, auto_recompute_coefficients_percent=10)
     # IBS = xibs.kicks.SimpleKickIBS(beam_params, optics, auto_recompute_coefficients_percent=10)
 
+    # One should always have the initial coefficients computed
+    IBS.compute_kick_coefficients(particles)
+ 
     # Let's assume your line and particles have been instantiated
     for turn in range(1, n_turns):
         # The following (commented out) line is not necessary anymore
