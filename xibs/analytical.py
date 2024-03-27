@@ -34,7 +34,7 @@ from scipy.integrate import quad, quad_vec
 from scipy.interpolate import interp1d
 from scipy.special import elliprd
 
-from xibs.formulary import phi
+from xibs.formulary import _percent_change, phi
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -42,7 +42,7 @@ LOGGER = getLogger(__name__)
 # ----- Dataclasses to store results ----- #
 
 
-@dataclass
+@dataclass()
 class NagaitsevIntegrals:
     """
     .. versionadded:: 0.2.0
@@ -60,7 +60,7 @@ class NagaitsevIntegrals:
     Iz: float
 
 
-@dataclass
+@dataclass()
 class IBSGrowthRates:
     """
     .. versionadded:: 0.2.0
@@ -78,7 +78,7 @@ class IBSGrowthRates:
     Tz: float
 
 
-@dataclass
+@dataclass()
 class _SynchrotronRadiationInputs:
     """
     .. versionadded:: 0.6.0
@@ -100,6 +100,26 @@ class _SynchrotronRadiationInputs:
     tau_x: float
     tau_y: float
     tau_z: float
+
+
+@dataclass()
+class _ReferenceValues:
+    """
+    .. versionadded:: 0.8.0
+
+    Private container to store reference values for the checks in auto-recompute behaviour.
+
+    Args:
+        epsx (float): horizontal emittance in [m].
+        epsy (float): vertical emittance in [m].
+        sigma_delta (float): momentum spread.
+        bunch_length (float): bunch length in [m].
+    """
+
+    epsx: float
+    epsy: float
+    sigma_delta: float
+    bunch_length: float
 
 
 # ----- Abstract Base Class to Inherit from ----- #
@@ -124,6 +144,9 @@ class AnalyticalIBS(ABC):
         self.optics: OpticsParameters = optics
         # This one self-updates when computed, but can be overwritten by the user
         self.ibs_growth_rates: IBSGrowthRates = None
+        # Private attributes relating to the auto growth rates computations
+        self._refs: _ReferenceValues = None  # updates when growth rates are computed
+        self._number_of_growth_rates_computations: int = 0  # increments when growth rates are computed
 
     def __str__(self) -> str:
         has_growth_rates = isinstance(
@@ -216,8 +239,12 @@ class AnalyticalIBS(ABC):
         TempeV = 2.0 * Etrans
         # ----------------------------------------------------------------------------------------------
         # Compute sigmas in each dimension (start from sigma_delta to get sige needed in the formula)
-        sigma_x_cm = 100 * np.sqrt(geom_epsx * _bx_bar + (_dx_bar * sigma_delta * self.beam_parameters.beta_rel**2) ** 2)
-        sigma_y_cm = 100 * np.sqrt(geom_epsy * _by_bar + (_dy_bar * sigma_delta * self.beam_parameters.beta_rel**2) ** 2)
+        sigma_x_cm = 100 * np.sqrt(
+            geom_epsx * _bx_bar + (_dx_bar * sigma_delta * self.beam_parameters.beta_rel**2) ** 2
+        )
+        sigma_y_cm = 100 * np.sqrt(
+            geom_epsy * _by_bar + (_dy_bar * sigma_delta * self.beam_parameters.beta_rel**2) ** 2
+        )
         sigma_t_cm = 100 * bunch_length
         # ----------------------------------------------------------------------------------------------
         # Calculate beam volume to get density (in cm^{-3}) then Debye length
@@ -226,7 +253,9 @@ class AnalyticalIBS(ABC):
         else:  # coasting beam
             volume = 4.0 * np.pi * sigma_x_cm * sigma_y_cm * 100 * self.optics.circumference
         density = self.beam_parameters.n_part / volume
-        debyul = 743.4 * np.sqrt(TempeV / density) / abs(self.beam_parameters.particle_charge)  # abs for negative charges!
+        debyul = (
+            743.4 * np.sqrt(TempeV / density) / abs(self.beam_parameters.particle_charge)
+        )  # abs for negative charges!
         # ----------------------------------------------------------------------------------------------
         # Calculate 'rmin' as larger of classical distance of closest approach or quantum mechanical
         # diffraction limit from nuclear radius
@@ -277,6 +306,7 @@ class AnalyticalIBS(ABC):
         bunch_length: float,
         dt: float = None,
         normalized_emittances: bool = False,
+        auto_recompute_rates_percent: float = None,
         **kwargs,
     ) -> Tuple[float, float, float, float]:
         r"""
@@ -342,6 +372,15 @@ class AnalyticalIBS(ABC):
             bunch_length (float): the bunch length in [m].
             normalized_emittances (bool): whether the provided emittances are
                 normalized or not. Defaults to `False` (assume geometric emittances).
+            auto_recompute_rates_percent (float): Optional. If given, a check is performed to
+                determine if an update of the growth rates is necessary, in which case it will
+                be done before computing the emittance evolutions. **Please provide a value as a
+                percentage of the emittance change since the last update of the growth rates**.
+                For instance, if one provides `12`, a check is made to see if any quantity would
+                have changed by more than 12% compared to reference values stored at the last
+                growth rates update, and if so the growth rates are automatically recomputed to
+                be as up-to-date as possible before returning the new values. Defaults to `None`
+                (no checks done, no auto-recomputing).
             **kwargs: If keyword arguments are provided, they are considered inputs for the
                 inclusion of synchrotron radiation in the calculation, and the following are
                 expected, case-insensitively:
@@ -372,14 +411,17 @@ class AnalyticalIBS(ABC):
                         the longitudinal damping time from synchrotron radiation, in [s]
                         (should be the same unit as `dt`).
 
-
-        Raises:
-            AttributeError: if the ``IBS`` growth rates have not yet been computed.
-
         Returns:
             A tuple with the new horizontal & vertical geometric emittances, the new
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
+        # ----------------------------------------------------------------------------------------------
+        # Check that the IBS growth rates have been computed beforehand - compute if not
+        if self.ibs_growth_rates is None:
+            LOGGER.debug("Attempted to compute emittance evolution without growth rates, computing them.")
+            bunched = kwargs.get("bunched", True)  # get the bunched value if provided
+            self.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched, normalized_emittances)
+        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
         # ----------------------------------------------------------------------------------------------
         # Check the kwargs and potentially get the arguments to include synchrotron radiation
         include_synchrotron_radiation = False
@@ -404,57 +446,65 @@ class AnalyticalIBS(ABC):
             )
             sr_eq_sigma_delta = sr_inputs.equilibrium_sigma_delta
         # ----------------------------------------------------------------------------------------------
-        # Check that the IBS growth rates have been computed beforehand
-        if self.ibs_growth_rates is None:
-            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise AttributeError(
-                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
-                "Please call the `growth_rates` method first."
-            )
-        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
-        # ----------------------------------------------------------------------------------------------
         # Set the time step to 1 / frev if not provided
         if dt is None:
             LOGGER.debug("No time step provided, defaulting to 1 / frev")
             dt = 1 / self.optics.revolution_frequency
         # ----------------------------------------------------------------------------------------------
         # Compute new emittances and return them. Here we multiply because T = 1 / tau
-        # fmt: off
         if include_synchrotron_radiation is False:  # the basic calculation
-            new_epsx: float = geom_epsx * np.exp(dt * self.ibs_growth_rates.Tx)
-            new_epsy: float = geom_epsy * np.exp(dt * self.ibs_growth_rates.Ty)
-            new_sigma_delta: float = sigma_delta * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
-            new_bunch_length: float = bunch_length * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+            new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_without_sr(
+                geom_epsx, geom_epsy, sigma_delta, bunch_length, dt
+            )
         else:  # the modified calculation with Synchrotron Radiation contribution
-            new_epsx: float = (
-                - sr_eq_geom_epsx
-                + (sr_eq_geom_epsx + geom_epsx * (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1.0))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tx / 2 - 1 / sr_inputs.tau_x))
-            ) / (self.ibs_growth_rates.Tx / 2 * sr_inputs.tau_x - 1)
-            new_epsy: float = (
-                - sr_eq_geom_epsy
-                + (sr_eq_geom_epsy + geom_epsy * (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Ty / 2 - 1 / sr_inputs.tau_y))
-            ) / (self.ibs_growth_rates.Ty / 2 * sr_inputs.tau_y - 1)
-            # For longitudinal properties, compute the square to avoid too messy code
-            new_sigma_delta_square: float = (
-                - (sr_eq_sigma_delta**2)
-                + (sr_eq_sigma_delta**2 + sigma_delta**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
-            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
-            new_bunch_length_square: float = (
-                - (sr_eq_sigma_delta**2)
-                + (sr_eq_sigma_delta**2 + bunch_length**2 * (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1))
-                  * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_inputs.tau_z))
-            ) / (self.ibs_growth_rates.Tz / 2 * sr_inputs.tau_z - 1)
-            # And then simply get the square root of that for the final results
-            new_sigma_delta: float = np.sqrt(new_sigma_delta_square)
-            new_bunch_length: float = np.sqrt(new_bunch_length_square)
-        # fmt: on
+            new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_with_sr(
+                geom_epsx,
+                geom_epsy,
+                sigma_delta,
+                bunch_length,
+                dt,
+                sr_eq_geom_epsx,
+                sr_eq_geom_epsy,
+                sr_eq_sigma_delta,
+                sr_inputs.tau_x,
+                sr_inputs.tau_y,
+                sr_inputs.tau_z,
+            )
+        # ----------------------------------------------------------------------------------------------
+        # If auto-recompute is on and the given threshold is exceeded, recompute the growth rates
+        if isinstance(auto_recompute_rates_percent, (int, float)) and self._bypassed_threshold(
+            new_epsx, new_epsy, new_sigma_delta, new_bunch_length, auto_recompute_rates_percent
+        ):
+            LOGGER.debug(
+                f"One value would change by more than {auto_recompute_rates_percent}% compared to last "
+                "update of the growth rates, updating growth rates before re-computing evolutions."
+            )
+            bunched = kwargs.get("bunched", True)  # get the bunched value if provided
+            self.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched, normalized_emittances)
+            # And now we need to recompute the evolutions since the growth rates have been updated
+            if include_synchrotron_radiation is False:  # the basic calculation
+                new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_without_sr(
+                    geom_epsx, geom_epsy, sigma_delta, bunch_length, dt
+                )
+            else:  # the modified calculation with Synchrotron Radiation contribution
+                new_epsx, new_epsy, new_sigma_delta, new_bunch_length = self._evolution_with_sr(
+                    geom_epsx,
+                    geom_epsy,
+                    sigma_delta,
+                    bunch_length,
+                    dt,
+                    sr_eq_geom_epsx,
+                    sr_eq_geom_epsy,
+                    sr_eq_sigma_delta,
+                    sr_inputs.tau_x,
+                    sr_inputs.tau_y,
+                    sr_inputs.tau_z,
+                )
         # ----------------------------------------------------------------------------------------------
         # Make sure we return the same type of emittances as the user provided
         new_epsx = new_epsx if normalized_emittances is False else self._normalized_emittance(new_epsx)
         new_epsy = new_epsy if normalized_emittances is False else self._normalized_emittance(new_epsy)
+        # ----------------------------------------------------------------------------------------------
         return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
 
     def _normalized_emittance(self, geometric_emittance: float) -> float:
@@ -466,8 +516,6 @@ class AnalyticalIBS(ABC):
 
         Args:
             geometric_emittance (float): geometric emittance in [m].
-            beta_ref (float): relativistic beta.
-            gamma_rel (float): relativistic gamma.
 
         Returns:
             The normalized emittance in [m].
@@ -483,8 +531,6 @@ class AnalyticalIBS(ABC):
 
         Args:
             normalized_emittance (float): normalized emittance in [m].
-            beta_ref (float): relativistic beta.
-            gamma_rel (float): relativistic gamma.
 
         Returns:
             The geometric emittance in [m].
@@ -528,6 +574,80 @@ class AnalyticalIBS(ABC):
             tau_y=lowercase_kwargs["sr_tau_y"],
             tau_z=lowercase_kwargs["sr_tau_z"],
         )
+
+    def _evolution_without_sr(
+        self, geom_epsx: float, geom_epsy: float, sigma_delta: float, bunch_length: float, dt: float
+    ) -> Tuple[float, float, float, float]:
+        """Just the calculation, called by main method when relevant."""
+        new_epsx: float = geom_epsx * np.exp(dt * self.ibs_growth_rates.Tx)
+        new_epsy: float = geom_epsy * np.exp(dt * self.ibs_growth_rates.Ty)
+        new_sigma_delta: float = sigma_delta * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+        new_bunch_length: float = bunch_length * np.exp(dt * 0.5 * self.ibs_growth_rates.Tz)
+        return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
+
+    def _evolution_with_sr(
+        self,
+        geom_epsx: float,
+        geom_epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        dt: float,
+        sr_eq_geom_epsx: float,
+        sr_eq_geom_epsy: float,
+        sr_eq_sigma_delta: float,
+        sr_taux: float,
+        sr_tauy: float,
+        sr_tauz: float,
+    ) -> Tuple[float, float, float, float]:
+        """Just the calculation, called by main method when relevant."""
+        # fmt: off
+        new_epsx: float = (
+            - sr_eq_geom_epsx
+            + (sr_eq_geom_epsx + geom_epsx * (self.ibs_growth_rates.Tx / 2 * sr_taux - 1.0))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Tx / 2 - 1 / sr_taux))
+        ) / (self.ibs_growth_rates.Tx / 2 * sr_taux - 1)
+        new_epsy: float = (
+            - sr_eq_geom_epsy
+            + (sr_eq_geom_epsy + geom_epsy * (self.ibs_growth_rates.Ty / 2 * sr_tauy - 1))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Ty / 2 - 1 / sr_tauy))
+        ) / (self.ibs_growth_rates.Ty / 2 * sr_tauy - 1)
+        # For longitudinal properties, compute the square to avoid too messy code
+        new_sigma_delta_square: float = (
+            - (sr_eq_sigma_delta**2)
+            + (sr_eq_sigma_delta**2 + sigma_delta**2 * (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_tauz))
+        ) / (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1)
+        new_bunch_length_square: float = (
+            - (sr_eq_sigma_delta**2)
+            + (sr_eq_sigma_delta**2 + bunch_length**2 * (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1))
+                * np.exp(2 * dt * (self.ibs_growth_rates.Tz / 2 - 1 / sr_tauz))
+        ) / (self.ibs_growth_rates.Tz / 2 * sr_tauz - 1)
+        # And then simply get the square root of that for the final results
+        new_sigma_delta: float = np.sqrt(new_sigma_delta_square)
+        new_bunch_length: float = np.sqrt(new_bunch_length_square)
+        # fmt: on
+        return float(new_epsx), float(new_epsy), float(new_sigma_delta), float(new_bunch_length)
+
+    def _bypassed_threshold(
+        self,
+        new_epsx: float,
+        new_epsy: float,
+        new_sigma_delta: float,
+        new_bunch_length: float,
+        threshold: float,
+    ) -> bool:
+        """
+        Checks if the new values exceed a 'threshold'% relative change to the
+        reference ones stored last time growth rates were computed.
+        """
+        if (  # REMEMBER: threshold is a percentage so we need to divide it by 100
+            abs(_percent_change(self._refs.epsx, new_epsx)) > threshold / 100
+            or abs(_percent_change(self._refs.epsy, new_epsy)) > threshold / 100
+            or abs(_percent_change(self._refs.sigma_delta, new_sigma_delta)) > threshold / 100
+            or abs(_percent_change(self._refs.bunch_length, new_bunch_length)) > threshold / 100
+        ):
+            return True
+        return False
 
 
 # ----- Classes to Compute Analytical IBS Growth Rates ----- #
@@ -771,8 +891,10 @@ class NagaitsevIBS(AnalyticalIBS):
         Tz = float(Iz * full_constant_term / sigma_delta**2) / factor
         result = IBSGrowthRates(Tx, Ty, Tz)
         # ----------------------------------------------------------------------------------------------
-        # Self-update the instance's attributes and then return the results
+        # Self-update the instance's attributes, some private flags and then return the results
         self.ibs_growth_rates = result
+        self._refs = _ReferenceValues(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        self._number_of_growth_rates_computations += 1
         return result
 
 
@@ -1368,6 +1490,7 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             """Defines limits of intervals, then goes over all intervals and performs the integration
             of the provided function on each one. At each step, we add the intermediate values to the
             final result, which is returned."""
+            # TODO: parallelize this?
             nb_elements: int = ax.size
             result: np.ndarray = np.zeros(nb_elements)
 
@@ -1412,6 +1535,8 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
             Tz: float = float(quad(_tz, self.optics.s[0], self.optics.s[-1])[0] / self.optics.circumference)
         result = IBSGrowthRates(Tx, Ty, Tz)
         # ----------------------------------------------------------------------------------------------
-        # Self-update the instance's attributes and then return the results
+        # Self-update the instance's attributes, some private flags and then return the results
         self.ibs_growth_rates = result
+        self._refs = _ReferenceValues(geom_epsx, geom_epsy, sigma_delta, bunch_length)
+        self._number_of_growth_rates_computations += 1
         return result

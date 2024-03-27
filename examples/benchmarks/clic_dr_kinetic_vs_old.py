@@ -1,26 +1,3 @@
-"""
-
-.. _demo-kinetic-kicks:
-
-=========================================================================
-Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms
-=========================================================================
-
-This example shows how to use the `~.xibs.kicks.KineticKickIBS` class
-to apply IBS kicks to tracked particles based on the kinetic theory of gases.
-It implements IBS kicks based on the formalism described in :cite:`NuclInstr:Zenkevich:Kinetic_IBS`.
-
-.. warning::
-    Please note that this kick formalism is currently implemented with terms from Nagaitsev's
-    calculations, which do not take into consideration vertical dispersion. Details are provided
-    in the :ref:`class's documentation <xibs-kicks>`.
-
-We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
-for a positron beam.
-"""
-# sphinx_gallery_thumbnail_number = 2
-import logging
-import sys
 import warnings
 
 from dataclasses import dataclass
@@ -35,129 +12,60 @@ import xtrack as xt
 
 from xibs.analytical import NagaitsevIBS
 from xibs.inputs import BeamParameters, OpticsParameters
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
 from xibs.kicks import KineticKickIBS
 from xibs._old_michalis import MichalisIBS
 
-warnings.simplefilter("ignore")  # for this tutorial's clarity
-plt.rcParams.update(
-    {
-        "font.family": "serif",
-        "font.size": 20,
-        "axes.titlesize": 20,
-        "axes.labelsize": 20,
-        "xtick.labelsize": 20,
-        "ytick.labelsize": 20,
-        "legend.fontsize": 15,
-        "figure.titlesize": 20,
-    }
-)
+warnings.filterwarnings("ignore")
 
-###############################################################################
-# We will define here some helper functions we will regularly use later on to
-# compute the emittances, bunch lengths and momentum spread from and `xpart.Particles`
-# object representing our particle distribution. In each, let's make sure to filter
-# for only the active particles (``state > 0``).
+# ----- Load line and build tracker ----- #
 
+context = xo.ContextCpu(omp_num_threads="auto")
+xibs_repo = Path(__file__).absolute().parent.parent.parent
+filepath = xibs_repo / "examples" / "lines" / "chrom-corr_DR.newlattice_2GHz.json"
+line = xt.Line.from_json(filepath)
+line.build_tracker(context, extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
+p0 = xt.Particles(mass0=xp.ELECTRON_MASS_EV, q0=1, p0c=2.86e9)
+line.particle_ref = p0
+twiss = line.twiss()
 
-def _bunch_length(parts: xp.Particles) -> float:
-    return np.std(parts.zeta[parts.state > 0])
+# ----- Activate RF Systems ----- #
 
+cavities = [element for element in line.elements if isinstance(element, xt.Cavity)]
+for cavity in cavities:
+    cavity.lag = 180
 
-def _sigma_delta(parts: xp.Particles) -> float:
-    return np.std(parts.delta[parts.state > 0])
-
-
-def _geom_epsx(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dx and betx at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_x = np.std(parts.x[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-
-
-def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-    """
-    We index dy and bety at 0 which corresponds to the beginning / end of
-    the line, since this is where / when we will be applying the kicks.
-    """
-    sigma_y = np.std(parts.y[parts.state > 0])
-    sig_delta = _sigma_delta(parts)
-    return (sigma_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
-
-
-###############################################################################
-# Let's start by defining the line and particle information, as well as some
-# parameters for later use. Note that `bunch_intensity` is the actual number
-# of particles in the bunch, and its value influences the analytical IBS growth
-# rates calculation while `n_part` is the number of generated particles for
-# tracking, which is much lower.
-
-line_file = Path(__file__).parent / "lines/chrom-corr_DR.newlattice_2GHz.json"
+# ----- Beam and Simulation Parameters ----- #
+    
 bunch_intensity = int(4.5e9)
-n_part = int(1.5e4)  # 15k particles initially to have a look at the kick effect
 sigma_z = 1.58e-3
 nemitt_x = 5.66e-7
 nemitt_y = 3.7e-9
+n_part = int(1e3)
+nturns = 1000  # number of turns to loop for
+ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 
-###############################################################################
-# Setting up line and particles
-# -----------------------------
-# Let's now load the line from file, activate the accelerating cavities and
-# create a context for multithreading with OpenMP, since tracking particles
-# is going to take some time:
+# ----- Create particles ----- #
 
-line = xt.Line.from_json(line_file)
-context = xo.ContextCpu(omp_num_threads="auto")
-line.particle_ref = xp.Particles(mass0=xp.ELECTRON_MASS_EV, q0=1, p0c=2.86e9)
-
-# ----- Power accelerating cavities ----- #
-for cavity in [element for element in line.elements if isinstance(element, xt.Cavity)]:
-    cavity.lag = 180  # we are above transition
-
-line.build_tracker(context, extra_headers=["#define XTRACK_MULTIPOLE_NO_SYNRAD"])
-line.optimize_for_tracking()
-twiss = line.twiss()
-
-# Let's make sure we get logging output to demonstrate
-logging.basicConfig(
-    level=logging.WARNING,
-    stream=sys.stdout,
-    format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
-    datefmt="%H:%M:%S",
-)
-
-beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
-opticsparams = OpticsParameters.from_line(line)
-
-
-IBS = KineticKickIBS(beamparams, opticsparams)
-NIBS = NagaitsevIBS(beamparams, opticsparams)
-
-# Re-create particles with less elements as tracking takes a while
-n_part = int(2.5e3)  # 2500 particles should be enough for this example
 particles = xp.generate_matched_gaussian_bunch(
     num_particles=n_part,
     total_intensity_particles=bunch_intensity,
     nemitt_x=nemitt_x,
     nemitt_y=nemitt_y,
     sigma_z=sigma_z,
+    particle_ref=p0,
     line=line,
-    engine="single-rf-harmonic",
 )
 particles2 = particles.copy()
 
-MIBS = MichalisIBS()
-MIBS.set_beam_parameters(particles)
-MIBS.set_optic_functions(twiss)
+# ----- Compute initial (geometrical) emittances & bunch length all in [m] ----- #
 
-# Define some parameters for the tracking
-nturns = 1500  # number of turns to loop for
-ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
+sig_delta = _sigma_delta(particles)
+bunch_l = _bunch_length(particles)
+geom_epsx = _geom_epsx(particles, twiss.betx[0], twiss.dx[0])
+geom_epsy = _geom_epsy(particles, twiss.bety[0], twiss.dy[0])
 
-###############################################################################
-# We will also set up a dataclass conveniently to store the results:
+# ----- Dataclass to store results ----- #
 
 @dataclass
 class Records:
@@ -167,9 +75,9 @@ class Records:
     bunch_length: np.ndarray
 
     def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
-        """Automatically update the records at given turn from the xpart.Particles."""
-        self.epsilon_x[turn] = _geom_epsx(parts, twiss)
-        self.epsilon_y[turn] = _geom_epsy(parts, twiss)
+        """Automatically update the records at given turn from the xtrack.Particles."""
+        self.epsilon_x[turn] = _geom_epsx(parts, twiss.betx[0], twiss.dx[0])
+        self.epsilon_y[turn] = _geom_epsy(parts, twiss.bety[0], twiss.dy[0])
         self.sigma_delta[turn] = _sigma_delta(parts)
         self.bunch_length[turn] = _bunch_length(parts)
 
@@ -183,18 +91,28 @@ class Records:
             bunch_length=np.zeros(n_turns, dtype=float),
         )
 
-
-# Initialize the dataclasses
+# Initialize the dataclasses & store initial values
 kicked_tbt = Records.init_zeroes(nturns)
 old_tbt = Records.init_zeroes(nturns)
 analytical_tbt = Records.init_zeroes(nturns)
 
-# Store the initial values
 kicked_tbt.update_at_turn(0, particles, twiss)
 old_tbt.update_at_turn(0, particles, twiss)
 analytical_tbt.update_at_turn(0, particles, twiss)
 
-# We loop here now
+# ----- Initialize our IBS models (old and new) ----- #
+
+beamparams = BeamParameters.from_line(line, n_part=bunch_intensity)
+opticsparams = OpticsParameters.from_line(line)
+
+IBS = KineticKickIBS(beamparams, opticsparams)
+NIBS = NagaitsevIBS(beamparams, opticsparams)
+MIBS = MichalisIBS()
+MIBS.set_beam_parameters(particles)
+MIBS.set_optic_functions(twiss)
+
+# ----- We loop here now ----- # 
+
 for turn in range(1, nturns):
     # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
     if (turn % ibs_step == 0) or (turn == 1):
@@ -234,6 +152,7 @@ for turn in range(1, nturns):
     analytical_tbt.sigma_delta[turn] = ana_sig_delta
     analytical_tbt.bunch_length[turn] = ana_bunch_length
 
+# ----- Plot the results ----- #
 
 turns = np.arange(nturns, dtype=int)  # array of turns
 fig, axs = plt.subplot_mosaic([["epsx", "epsy"], ["sigd", "bl"]], sharex=True, figsize=(15, 7.5))

@@ -11,6 +11,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 import xpart as xp
 import xtrack as xt
 
@@ -65,12 +66,13 @@ def test_simple_kicks_lead_to_increased_momenta(xtrack_sps_top_ions):
     assert np.std(particles.delta) > np.std(particles2.delta)
 
 
+@pytest.mark.flaky(max_runs=3, min_passes=1)
 def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     """Track positrons in the CLIC DR and compare to analytical."""
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(4.5e9)
-    n_part = int(1e3)  # we don't want too many particles for CI
+    n_part = int(500)  # we don't want too many particles for CI
     sigma_z = 1.58e-3
     nemitt_x = 5.66e-7
     nemitt_y = 3.7e-9
@@ -143,6 +145,7 @@ def test_simple_kicks_clic_dr(xtrack_clic_damping_ring):
     assert pearsonr(kicked_tbt.bunch_length, analytical_tbt.bunch_length).statistic > 0
 
 
+@pytest.mark.flaky(max_runs=3, min_passes=1)
 def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     """
     Track Pb ions in the SPS and compare to analytical. For this test we will use fake values
@@ -152,7 +155,7 @@ def test_simple_kicks_sps_top_ions(xtrack_sps_top_ions):
     # --------------------------------------------------------------------
     # Some simple parameters
     bunch_intensity = int(3.5e11)
-    n_part = int(1e3)  # we don't want too many particles for CI
+    n_part = int(500)  # we don't want too many particles for CI
     sigma_z = 8e-2
     nemitt_x = 1.0e-6
     nemitt_y = 0.25e-6

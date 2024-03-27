@@ -22,7 +22,16 @@ from scipy.constants import c
 from scipy.special import elliprd
 
 from xibs.analytical import AnalyticalIBS, BjorkenMtingwaIBS, IBSGrowthRates, NagaitsevIBS
-from xibs.formulary import phi
+from xibs.formulary import (
+    _bunch_length,
+    _geom_epsx,
+    _geom_epsy,
+    _percent_change,
+    _sigma_delta,
+    _sigma_x,
+    _sigma_y,
+    phi,
+)
 from xibs.inputs import BeamParameters, OpticsParameters
 
 LOGGER = getLogger(__name__)
@@ -31,7 +40,7 @@ LOGGER = getLogger(__name__)
 # ----- Dataclasses to store results ----- #
 
 
-@dataclass
+@dataclass()
 class DiffusionCoefficients:
     """Container dataclass for kinetic IBS diffusion coefficients.
 
@@ -46,7 +55,7 @@ class DiffusionCoefficients:
     Dz: float
 
 
-@dataclass
+@dataclass()
 class FrictionCoefficients:
     """Container dataclass for kinetic IBS friction coefficients.
 
@@ -61,7 +70,7 @@ class FrictionCoefficients:
     Fz: float
 
 
-@dataclass
+@dataclass()
 class IBSKickCoefficients:
     """
     Container dataclass for all IBS kick coefficients. These can be the coeffients from simple kicks,
@@ -92,28 +101,47 @@ class KickBasedIBS(ABC):
     Attributes:
         beam_parameters (BeamParameters): the beam parameters to use for IBS computations.
         optics (OpticsParameters): the optics parameters to use for the IBS computations.
+        auto_recompute_coefficients_percent (float): Optional. If given, a check is performed after
+            kicking the particles to determine if recomputing the kick coefficients is necessary, in
+            which case it will be done before the next kick. **Please provide a value as a percentage
+            of the emittance change**. For instance, if one provides `12` after kicking a check is
+            done to see if the emittance changed by more than 12% in any plane, and if so the coefficients
+            will be automatically recomputed before the next kick. Defaults to `None` (no checks done,
+            no auto-recomputing).
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This
             attribute self-updates when they are computed with the `compute_kick_coefficients`
             method. It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+    def __init__(
+        self,
+        beam_params: BeamParameters,
+        optics: OpticsParameters,
+        auto_recompute_coefficients_percent: float = None,
+    ) -> None:
         self.beam_parameters: BeamParameters = beam_params
         self.optics: OpticsParameters = optics
-        # These self-update when computed, but can be overwritten by the user
+        self.auto_recompute_coefficients_percent: float = auto_recompute_coefficients_percent
+        # These coefficients self-update when computed, but can be overwritten by the user
         self.kick_coefficients: IBSKickCoefficients = None
+        # Private flag to indicate if the coefficients need to be recomputed before the next kick
+        self._need_to_recompute_coefficients: bool = False
+        # Private attribute tracking the number of coefficients computations
+        self._number_of_coefficients_computations: int = 0
 
     def __str__(self) -> str:
         has_kick_coefficients = isinstance(self.kick_coefficients, IBSKickCoefficients)
+        auto_recomputes_coefficients = self.auto_recompute_coefficients_percent is not None
         return (
-            f"{self.__class__.__name__} object for kick-based IBS calculations."
-            f"IBS kick coefficients computed: {has_kick_coefficients}"
+            f"{self.__class__.__name__} object for kick-based IBS calculations. "
+            f"IBS kick coefficients computed: {has_kick_coefficients}. "
+            f"Auto-recompute coefficients: {auto_recomputes_coefficients}."
         )
 
     def __repr__(self) -> str:
         return self.__str__()
 
-    def line_density(self, particles: "xpart.Particles", n_slices: int) -> ArrayLike:  # noqa: F821
+    def line_density(self, particles: "xtrack.Particles", n_slices: int) -> ArrayLike:  # noqa: F821
         r"""
         .. versionadded:: 0.5.0
 
@@ -133,23 +161,26 @@ class KickBasedIBS(ABC):
                 - Computes and returns the line density :math:`\rho_t(t)`.
 
         Args:
-            particles (xpart.Particles): the `xpart.Particles` object to compute the line density for.
+            particles (xtrack.Particles): the `xtrack.Particles` object to compute the line density for.
             n_slices (int): the number of slices to use for the computation of the bins.
 
         Returns:
             An array with the density values for each slice / bin of the `Particles` object.
         """
         # ----------------------------------------------------------------------------------------------
+        # Start with getting the nplike_lib from the particles' context, to compute on the context device
+        nplike = particles._context.nplike_lib
+        # ----------------------------------------------------------------------------------------------
         # Determine properties from longitudinal particles distribution: cuts, slice width, bunch length
         LOGGER.debug("Determining longitudinal particles distribution properties")
-        zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
-        z_cut_head: float = np.max(zeta)  # z cut at front of bunch
-        z_cut_tail: float = np.min(zeta)  # z cut at back of bunch
+        zeta: ArrayLike = particles.zeta[particles.state > 0]  # careful to only consider active particles
+        z_cut_head: float = nplike.max(zeta)  # z cut at front of bunch
+        z_cut_tail: float = nplike.min(zeta)  # z cut at back of bunch
         slice_width: float = (z_cut_head - z_cut_tail) / n_slices  # slice width
         # ----------------------------------------------------------------------------------------------
         # Determine bin edges and bin centers for the distribution
         LOGGER.debug("Determining bin edges and bin centers for the distribution")
-        bin_edges = np.linspace(
+        bin_edges = nplike.linspace(
             z_cut_tail - 1e-7 * slice_width,
             z_cut_head + 1e-7 * slice_width,
             num=n_slices + 1,
@@ -158,12 +189,12 @@ class KickBasedIBS(ABC):
         bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2.0
         # ----------------------------------------------------------------------------------------------
         # Compute histogram on longitudinal distribution then compute and return line density
-        counts_normed, bin_edges = np.histogram(zeta, bin_edges, density=True)  # density=True to normalize
-        return np.interp(zeta, bin_centers, counts_normed)
+        counts_normed, bin_edges = nplike.histogram(zeta, bin_edges, density=True)  # density to normalize
+        return nplike.interp(zeta, bin_centers, counts_normed)
 
     @abstractmethod
     def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+        self, particles: "xtrack.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
@@ -172,25 +203,112 @@ class KickBasedIBS(ABC):
         to be applied. It returns an `IBSKickCoefficients` object with the computed coefficients.
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
         """
         pass
 
     @abstractmethod
-    def apply_ibs_kick(self, particles: "xpart.Particles") -> None:  # noqa: F821
+    def _check_coefficients_presence(self) -> None:
         r"""
         .. versionadded:: 0.5.0
 
-        Abstract method to determine and apply IBS kicks to a `xpart.Particles` object. The
-        momenta kicks are determined from the `self.kick_coefficients` attribute.
-
-        Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
-
-        Raises:
-            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
+        Abstract method to check the relevant attribute and determine if the
+        kick coefficients have been computed. This is called before applying kicks.
         """
         pass
+
+    @abstractmethod
+    def _apply_formalism_ibs_kick(
+        self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
+    ) -> None:
+        r"""
+        .. versionadded:: 0.5.0
+
+        Abstract method to determine and apply IBS kicks to a `xtrack.Particles` object. The
+        implementation details vary depending on the formalism implemented. This method is
+        called in the `apply_ibs_kick` method.
+
+        Args:
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
+        """
+        pass
+
+    def apply_ibs_kick(self, particles: "xtrack.Particles", n_slices: int = 40) -> None:  # noqa: F821
+        r"""
+        .. versionadded:: 0.5.0
+
+        Compute and apply momenta kicks based on the provided `xtrack.Particles` object and the
+        chosen ``IBS`` formalism. See the `_apply_formalism_ibs_kick` method for implementation details
+        of the currently selected formalism.
+
+        Args:
+            particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
+            n_slices (int): the number of slices to use for the computation of the line density.
+                Defaults to 40.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Check that the kick coefficients have been computed beforehand
+        self._check_coefficients_presence()
+        # ----------------------------------------------------------------------------------------------
+        # Check the auto-recompute flag and recompute coefficients if necessary
+        if self._need_to_recompute_coefficients is True:
+            LOGGER.info("Recomputing IBS kick coefficients before applying kicks")
+            self.compute_kick_coefficients(particles)
+            self._need_to_recompute_coefficients = False
+        # ----------------------------------------------------------------------------------------------
+        # Get and store pre-kick emittances if self.auto_recompute_coefficients_percent is set
+        if isinstance(self.auto_recompute_coefficients_percent, (int, float)):
+            _previous_bunch_length = _bunch_length(particles)
+            _previous_sigma_delta = _sigma_delta(particles)
+            # below we give index 0 as start / end of machine is kick location
+            _previous_geom_epsx = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+            _previous_geom_epsy = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
+        # ----------------------------------------------------------------------------------------------
+        # Apply the kicks to the particles - the function implementation here is formalism-specific
+        self._apply_formalism_ibs_kick(particles, n_slices)
+        # ----------------------------------------------------------------------------------------------
+        # Get post-kick emittances, check growth and set recompute flag if necessary (only if self.auto_recompute_coefficients_percent is set)
+        # fmt: off
+        if isinstance(self.auto_recompute_coefficients_percent, (int, float)):
+            _new_bunch_length = _bunch_length(particles)
+            _new_sigma_delta = _sigma_delta(particles)
+            _new_geom_epsx = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+            _new_geom_epsy = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
+            # If there is an increase / decrease of more than self.auto_recompute_coefficients_percent % in any plane, set the flag
+            self._check_threshold_bypass(
+                _previous_geom_epsx, _previous_geom_epsy, _previous_sigma_delta, _previous_bunch_length,
+                _new_geom_epsx, _new_geom_epsy, _new_sigma_delta, _new_bunch_length,
+                self.auto_recompute_coefficients_percent
+            )
+        # fmt: on
+
+    def _check_threshold_bypass(
+        self,
+        epsx: float,
+        epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        new_epsx: float,
+        new_epsy: float,
+        new_sigma_delta: float,
+        new_bunch_length: float,
+        threshold: float,
+    ) -> None:
+        """
+        Checks if any of the quantities exceed a 'threshold'% relative change to the initial
+        ones and if so, set the `self._need_to_recompute_coefficients` flag to `True`.
+        """
+        if (  # REMEMBER: threshold is a percentage so we need to divide it by 100
+            abs(_percent_change(epsx, new_epsx)) > threshold / 100
+            or abs(_percent_change(epsy, new_epsy)) > threshold / 100
+            or abs(_percent_change(sigma_delta, new_sigma_delta)) > threshold / 100
+            or abs(_percent_change(bunch_length, new_bunch_length)) > threshold / 100
+        ):
+            LOGGER.debug(
+                f"One plane's emittance changed by more than {threshold}%, "
+                "setting flag to recompute coefficients before next kick."
+            )
+            self._need_to_recompute_coefficients = True
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
@@ -236,26 +354,38 @@ class SimpleKickIBS(KickBasedIBS):
         analytical_ibs (AnalyticalIBS): an internal analytical class for growth rates
             calculation, which is determined automatically. Can be overridden by the user
             by setting this attribute manually.
+        auto_recompute_coefficients_percent (float): Optional. If given, a check is performed after
+            kicking the particles to determine if recomputing the kick coefficients is necessary, in
+            which case it will be done before the next kick. **Please provide a value as a percentage
+            of the emittance increase**. For instance, if one provides `12` after kicking a check is
+            done to see if the emittance grew by more than 12% in any plane, and if so the coefficients
+            will be automatically recomputed before the next kick. Defaults to `None` (no checks done,
+            no auto-recomputing).
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients. This
             self-updates when they are computed with the `compute_kick_coefficients` method.
             It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
+    def __init__(
+        self,
+        beam_params: BeamParameters,
+        optics: OpticsParameters,
+        auto_recompute_coefficients_percent: float = None,
+    ) -> None:
         # fmt: off
         # First, we check that we are above transition and raise and error if not (not applicable)
         if optics.slip_factor <= 0:  # we are below transition (xsuite convention: slip factor > 0 above)
             LOGGER.error(
-                "The provided optics parameters indication that the machine is below transition, "
+                "The provided optics parameters indicate that the machine is below transition, "
                 "which is incompatible with SimpleKickIBS (see documentation). "
                 "Use the kinetic formalism with KineticKickIBS instead."
             )
             raise NotImplementedError(
-                "SimpleKickIBS is not compatible with machine operating below transition. "
+                "SimpleKickIBS is not compatible with machines operating below transition. "
                 "Please see the documentation and use the kinetic formalism with KineticKickIBS instead."
             )
         # If we made it here, SimpleKickIBS is a valid implementation, let's instantiate from KickBasedIBS
-        super().__init__(beam_params, optics)  # also sets self.kick_coefficients (to None)
+        super().__init__(beam_params, optics, auto_recompute_coefficients_percent)  # also sets self.kick_coefficients (to None)
         # Analytical implementation for growth rates calculation, can be overridden by the user
         if np.count_nonzero(self.optics.dy) != 0:
             LOGGER.info("Non-zero vertical dispersion detected in the lattice, using Bjorken & Mtingwa formalism")
@@ -282,8 +412,17 @@ class SimpleKickIBS(KickBasedIBS):
         self.optics = self.analytical_ibs.optics
         # fmt: on
 
+    def _check_coefficients_presence(self) -> None:
+        """
+        Call this before trying to apply kicks to first check the necessarykick coefficients are present.
+        If not, sets a flag to compute them, which will be done a bit later after exiting this function.
+        """
+        if self.kick_coefficients is None:
+            LOGGER.debug("Attempted to apply IBS kick without kick coefficients, will compute them first.")
+            self._need_to_recompute_coefficients = True
+
     def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+        self, particles: "xtrack.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.5.0
@@ -313,7 +452,7 @@ class SimpleKickIBS(KickBasedIBS):
                 - Computes, stores and returns the kick coefficients.
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
             **kwargs: any keyword arguments will be passed to the growth rates calculation call
                 (`self.analytical_ibs.growth_rates`). Note that `epsx`, `epsy`, `sigma_delta`,
                 and `bunch_length` are already provided as positional-only arguments.
@@ -322,35 +461,34 @@ class SimpleKickIBS(KickBasedIBS):
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
+        # Start with getting the nplike_lib from the particles' context, to compute on the context device
+        nplike = particles._context.nplike_lib
+        # ----------------------------------------------------------------------------------------------
         # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
+        # Indexing at 0 as this end / start of machine is when we kick (after a line.track)
         LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
-        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
-        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
-        sigma_x: float = float(np.std(particles.x[particles.state > 0]))
-        sigma_y: float = float(np.std(particles.y[particles.state > 0]))
-        # Indexing: we want the value where the bunch is and assume at start / end of machine which
-        # is where / when we will apply the kick (do a line.track and then kick). To be modified when
-        # when we include these things into xtrack, if we want an element that creates the kick.
-        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
-        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
+        bunch_length: float = _bunch_length(particles)
+        sigma_delta: float = _sigma_delta(particles)
+        geom_epsx: float = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+        geom_epsy: float = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
         # fmt: off
         # ----------------------------------------------------------------------------------------------
         # Computing standard deviation of (normalized) momenta, corresponding to sigma_{pu} in Eq (8) of reference
         # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
         # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
-        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0]**2)
-        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0]**2)
+        sigma_px_normalized: float = nplike.std(particles.px[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfx[0]**2)
+        sigma_py_normalized: float = nplike.std(particles.py[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfy[0]**2)
         # ----------------------------------------------------------------------------------------------
         # Determine the "scaling factor", corresponding to 2 * sigma_t * sqrt(pi) in Eq (8) of reference
         zeta: np.ndarray = particles.zeta[particles.state > 0]  # careful to only consider active particles
-        bunch_length_rms: float = np.std(zeta)  # rms bunch length in [m]
-        scaling_factor: float = float(2 * np.sqrt(np.pi) * bunch_length_rms)
+        bunch_length_rms: float = nplike.std(zeta)  # rms bunch length in [m]
+        scaling_factor: float = float(2 * nplike.sqrt(np.pi) * bunch_length_rms)
         # ----------------------------------------------------------------------------------------------
         # Computing the analytical IBS growth rates
         growth_rates: IBSGrowthRates = self.analytical_ibs.growth_rates(
-            geom_epsx, geom_epsy, sigma_delta, bunch_length, **kwargs
+            float(geom_epsx), float(geom_epsy), float(sigma_delta), float(bunch_length), **kwargs
         )
-        Tx, Ty, Tz = astuple(growth_rates)
+        Tx, Ty, Tz = astuple(growth_rates)  # on CPU
         # ----------------------------------------------------------------------------------------------
         # Making sure we do not have negative growth rates (see class docstring warning for detail)
         Tx = 0.0 if Tx < 0 else float(Tx)
@@ -363,44 +501,38 @@ class SimpleKickIBS(KickBasedIBS):
         # For the longitudinal plane, since the values are computed from ΔP/P but applied to the ΔE/E
         # (the particles.delta in Xsuite), we need to multiply by beta_rel**2 to adapt
         LOGGER.debug("Computing and applying the kicks to the particles")
-        Kx: float = sigma_px_normalized * np.sqrt(2 * scaling_factor * Tx / self.optics.revolution_frequency)
-        Ky: float = sigma_py_normalized * np.sqrt(2 * scaling_factor * Ty / self.optics.revolution_frequency)
-        Kz: float = sigma_delta * np.sqrt(2 * scaling_factor * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2
+        Kx: float = sigma_px_normalized * nplike.sqrt(2 * scaling_factor * Tx / self.optics.revolution_frequency)
+        Ky: float = sigma_py_normalized * nplike.sqrt(2 * scaling_factor * Ty / self.optics.revolution_frequency)
+        Kz: float = sigma_delta * nplike.sqrt(2 * scaling_factor * Tz / self.optics.revolution_frequency) * self.beam_parameters.beta_rel**2
         result = IBSKickCoefficients(Kx, Ky, Kz)
         # fmt: on
         # ----------------------------------------------------------------------------------------------
         # Self-update the instance's attributes and then return the results
         self.kick_coefficients = result
+        self._number_of_coefficients_computations += 1
         return result
 
-    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
+    def _apply_formalism_ibs_kick(
+        self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
+    ) -> None:
         r"""
         .. versionadded:: 0.5.0
 
-        Compute the momentum kick to apply based on the provided `xpart.Particles` object and the
+        Compute the momentum kick to apply based on the provided `xtrack.Particles` object and the
         analytical growth rates for the lattice. The kicks are implemented according to Eq (8) of
         :cite:`PRAB:Bruce:Simple_IBS_Kicks`.
 
         Args:
-            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
+            particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
             n_slices (int): the number of slices to use for the computation of the line density.
                 Defaults to 40.
-
-        Raises:
-            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
         """
         # ----------------------------------------------------------------------------------------------
-        # Check that the kick coefficients have been computed beforehand
-        if self.kick_coefficients is None:
-            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
-            raise AttributeError(
-                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
-                "Please call the `compute_kick_coefficients` method first."
-            )
-        # fmt: off
+        # Start with getting the the particles' context, to be able to move data on the context device
+        context = particles._context
         # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of reference
-        rho_t: np.ndarray = self.line_density(particles, n_slices)  # does NOT include _factor
+        rho_t: ArrayLike = self.line_density(particles, n_slices)  # does NOT include _factor
         # ----------------------------------------------------------------------------------------------
         # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
@@ -409,22 +541,22 @@ class SimpleKickIBS(KickBasedIBS):
         # In theory, .normal(0, 1, _size) * factor and .normal(0, factor, _size) are the same (try it) but
         # in practice the resulting kick is not physically accurate. The same is observed in C++ code (see
         # for instance BLonD) so we use the coefficients as scale here, which is correct and benchmarked.
+        # fmt: off
         LOGGER.debug("Determining kicks to apply")
         RNG = np.random.default_rng()
-        delta_px: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kx, size=_size) * np.sqrt(rho_t)
-        delta_py: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Ky, size=_size) *  np.sqrt(rho_t)
-        delta_delta: np.ndarray = RNG.normal(loc=0, scale=self.kick_coefficients.Kz, size=_size) * np.sqrt(rho_t)
-        # fmt: on
+        rho_t_ = context.nparray_from_context_array(rho_t)  # on CPU
+        delta_px: np.ndarray = RNG.normal(loc=0, scale=float(self.kick_coefficients.Kx), size=_size) * np.sqrt(rho_t_)
+        delta_py: np.ndarray = RNG.normal(loc=0, scale=float(self.kick_coefficients.Ky), size=_size) *  np.sqrt(rho_t_)
+        delta_delta: np.ndarray = RNG.normal(loc=0, scale=float(self.kick_coefficients.Kz), size=_size) * np.sqrt(rho_t_)
         # ----------------------------------------------------------------------------------------------
-        # Apply the kicks to the particles
+        # Apply the kicks to the particles - just move the computed deltas to device and apply
         LOGGER.debug("Applying momenta kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] += delta_px
-        particles.py[particles.state > 0] += delta_py
-        particles.delta[particles.state > 0] += delta_delta
+        particles.px[particles.state > 0] += context.nparray_to_context_array(delta_px)
+        particles.py[particles.state > 0] += context.nparray_to_context_array(delta_py)
+        particles.delta[particles.state > 0] += context.nparray_to_context_array(delta_delta)
+        # fmt: on
 
 
-# It does seem that Michalis for kinetic uses some of the R1, R2 etc terms from the Nagaitsev
-# formalism for some reason? Will need to clarify with him.
 class KineticKickIBS(KickBasedIBS):
     r"""
     .. versionadded:: 0.7.0
@@ -444,20 +576,34 @@ class KineticKickIBS(KickBasedIBS):
         friction_coefficients (FrictionCoefficients): the computed friction coefficients
             from the kinetic theory. This attribute self-updates when coefficients are computed
             with the `compute_kick_coefficients` method. It can also be set manually.
+        auto_recompute_coefficients_percent (float): Optional. If given, a check is performed after
+            kicking the particles to determine if recomputing the kick coefficients is necessary, in
+            which case it will be done before the next kick. **Please provide a value as a percentage
+            of the emittance increase**. For instance, if one provides `12` after kicking a check is
+            done to see if the emittance grew by more than 12% in any plane, and if so the coefficients
+            will be automatically recomputed before the next kick. Defaults to `None` (no checks done,
+            no auto-recomputing).
         kick_coefficients (IBSKickCoefficients): the computed IBS kick coefficients from
             the kinetic theory, determined from the diffusion and friction coefficients. This
             attribute self-updates when coefficients are computed with the `compute_kick_coefficients`
             method. It can also be set manually.
     """
 
-    def __init__(self, beam_params: BeamParameters, optics: OpticsParameters) -> None:
-        super().__init__(beam_params, optics)  # also sets self.kick_coefficients
+    def __init__(
+        self,
+        beam_params: BeamParameters,
+        optics: OpticsParameters,
+        auto_recompute_coefficients_percent: float = None,
+    ) -> None:
+        super().__init__(
+            beam_params, optics, auto_recompute_coefficients_percent
+        )  # also sets self.kick_coefficients
         # These self-update when computed, but can be overwritten by the user
         self.diffusion_coefficients: DiffusionCoefficients = None
         self.friction_coefficients: FrictionCoefficients = None
 
     def compute_kick_coefficients(
-        self, particles: "xpart.Particles", **kwargs  # noqa: F821
+        self, particles: "xtrack.Particles", **kwargs  # noqa: F821
     ) -> IBSKickCoefficients:
         r"""
         .. versionadded:: 0.7.0
@@ -485,7 +631,7 @@ class KineticKickIBS(KickBasedIBS):
                 - Computes and returns kick coefficients (as the difference between diffusion and friction).
 
         Args:
-            particles (xpart.Particles): the particles to apply the IBS kicks to.
+            particles (xtrack.Particles): the particles to apply the IBS kicks to.
             **kwargs: if `bunched` is found in keyword arguments it will be passed to the
                 coulomb logarithm calculation. A default value of `True` is used.
 
@@ -493,89 +639,99 @@ class KineticKickIBS(KickBasedIBS):
             An `IBSKickCoefficients` object with the computed coefficients used for the kick application.
         """
         # ----------------------------------------------------------------------------------------------
-        # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
-        LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
-        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
-        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
-        sigma_x: float = float(np.std(particles.x[particles.state > 0]))
-        sigma_y: float = float(np.std(particles.y[particles.state > 0]))
-        # Indexing: we want the value where the bunch is and assume at start / end of machine which
-        # is where / when we will apply the kick (do a line.track and then kick). To be modified when
-        # when we include these things into xtrack, if we want an element that creates the kick.
-        geom_epsx: float = (sigma_x**2 - (self.optics.dx[0] * sigma_delta) ** 2) / self.optics.betx[0]
-        geom_epsy: float = (sigma_y**2 - (self.optics.dy[0] * sigma_delta) ** 2) / self.optics.bety[0]
+        # Start with getting the nplike_lib from the particles' context, to compute on the context device
+        context = particles._context
+        nplike = context.nplike_lib
         # ----------------------------------------------------------------------------------------------
-        # Computing necessary intermediate terms for the following lines
-        phix: np.ndarray = phi(self.optics.betx, self.optics.alfx, self.optics.dx, self.optics.dpx)
-        # Computing the constants from Eq (18-21) in Nagaitsev paper
+        # Compute the momentum spread, bunch length and (geometric) emittances from the Particles object
+        # Indexing at 0 as this end / start of machine is when we kick (after a line.track)
+        LOGGER.debug("Computing emittances, momentum spread and bunch length from particles")
+        bunch_length: float = _bunch_length(particles)
+        sigma_delta: float = _sigma_delta(particles)
+        geom_epsx: float = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
+        geom_epsy: float = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
+        sigma_x: float = _sigma_x(particles)
+        sigma_y: float = _sigma_y(particles)
+        # ----------------------------------------------------------------------------------------------
+        # Moving some necessary arrays to device for later computation
+        s: ArrayLike = context.nparray_to_context_array(self.optics.s)  # on device
+        alfx: ArrayLike = context.nparray_to_context_array(self.optics.alfx)  # on device
+        betx: ArrayLike = context.nparray_to_context_array(self.optics.betx)  # on device
+        bety: ArrayLike = context.nparray_to_context_array(self.optics.bety)  # on device
+        dx: ArrayLike = context.nparray_to_context_array(self.optics.dx)  # on device
+        dpx: ArrayLike = context.nparray_to_context_array(self.optics.dpx)  # on device
+        phix: ArrayLike = phi(betx, alfx, dx, dpx)  # on device as all dependent terms are
+        # ----------------------------------------------------------------------------------------------
+        # Allocating some values to simple variables for readability later
+        gammar: float = self.beam_parameters.gamma_rel
+        betar: float = self.beam_parameters.beta_rel
+        n_part: int = self.beam_parameters.n_part
+        classical_radius: float = self.beam_parameters.particle_classical_radius_m
+        pi: float = np.pi
+        circumference: float = self.optics.circumference
         # fmt: off
-        gammar = self.beam_parameters.gamma_rel
-        ax: np.ndarray = self.optics.betx / geom_epsx
-        ay: np.ndarray = self.optics.bety / geom_epsy
-        a_s: np.ndarray = ax * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + 1 / sigma_delta**2
-        a1: np.ndarray = (ax + gammar**2 * a_s) / 2.0
-        a2: np.ndarray = (ax - gammar**2 * a_s) / 2.0
-        sqrt_term = np.sqrt(a2**2 + gammar**2 * ax**2 * phix**2)
+        # ----------------------------------------------------------------------------------------------
+        # Computing the constants from Eq (18-21) in Nagaitsev paper - on device as all dependent terms are
+        ax: ArrayLike = betx / geom_epsx
+        ay: ArrayLike = bety / geom_epsy
+        a_s: ArrayLike = ax * (dx**2 / betx**2 + phix**2) + 1 / sigma_delta**2
+        a1: ArrayLike = (ax + gammar**2 * a_s) / 2.0
+        a2: ArrayLike = (ax - gammar**2 * a_s) / 2.0
+        sqrt_term = nplike.sqrt(a2**2 + gammar**2 * ax**2 * phix**2)
         # ----------------------------------------------------------------------------------------------
         # These are from Eq (22-24) in Nagaitsev paper, eigen values of A matrix (L matrix in B&M)
-        lambda_1: np.ndarray = ay
-        lambda_2: np.ndarray = a1 + sqrt_term
-        lambda_3: np.ndarray = a1 - sqrt_term
+        # Also all on device as their dependent terms are on device
+        lambda_1: ArrayLike = ay
+        lambda_2: ArrayLike = a1 + sqrt_term
+        lambda_3: ArrayLike = a1 - sqrt_term
         # ----------------------------------------------------------------------------------------------
         # These are the R_D terms to compute, from Eq (25-27) in Nagaitsev paper (at each element of the lattice)
+        # Since cupy does not have an elliprd equivalent, we go back to CPU and let scipy handle this
         LOGGER.debug("Computing elliptic integrals R1, R2 and R3")
-        R1: np.ndarray = elliprd(1 / lambda_2, 1 / lambda_3, 1 / lambda_1) / lambda_1
-        R2: np.ndarray = elliprd(1 / lambda_3, 1 / lambda_1, 1 / lambda_2) / lambda_2
-        R3: np.ndarray = 3 * np.sqrt(lambda_1 * lambda_2 / lambda_3) - lambda_1 * R1 / lambda_3 - lambda_2 * R2 / lambda_3
+        lbd1_: ArrayLike = context.nparray_from_context_array(lambda_1)  # on CPU
+        lbd2_: ArrayLike = context.nparray_from_context_array(lambda_2)  # on CPU
+        lbd3_: ArrayLike = context.nparray_from_context_array(lambda_3)  # on CPU
+        R1_: ArrayLike = elliprd(1 / lbd2_, 1 / lbd3_, 1 / lbd1_) / context.nparray_from_context_array(lambda_1)  # on CPU
+        R2_: ArrayLike = elliprd(1 / lbd3_, 1 / lbd1_, 1 / lbd2_) / context.nparray_from_context_array(lambda_2)  # on CPU
+        R3_: ArrayLike = 3 * np.sqrt(lbd1_ * lbd2_ / lbd3_) - lbd1_ * R1_ / lbd3_ - lbd2_ * R2_ / lbd3_           # on CPU
+        # We transport these results back to device
+        R1: ArrayLike = context.nparray_to_context_array(R1_)  # on device
+        R2: ArrayLike = context.nparray_to_context_array(R2_)  # on device
+        R3: ArrayLike = context.nparray_to_context_array(R3_)  # on device
         # ----------------------------------------------------------------------------------------------
         # Compute the coulomb logarithm from an analytical class then the rest of the constant term in
-        # Eq (30-32) of Nagaitsev's paper
+        # Eq (30-32) of Nagaitsev's paper - all this below are CPU computations
         analytical = NagaitsevIBS(self.beam_parameters, self.optics)  # the formalism does not matter
         bunched = kwargs.get("bunched", True)
         coulomb_logarithm: float = analytical.coulomb_log(geom_epsx, geom_epsy, sigma_delta, bunch_length, bunched)
-        rest_of_constant_term = (
-            self.beam_parameters.n_part * self.beam_parameters.particle_classical_radius_m**2 * c 
-            / (12 * np.pi * self.beam_parameters.beta_rel**3 * self.beam_parameters.gamma_rel**5 * bunch_length)
-        )
-        full_constant_term = rest_of_constant_term * coulomb_logarithm
+        rest_of_constant_term: float = n_part * classical_radius**2 * c / (12 * pi * betar**3 * gammar**5 * bunch_length)
+        full_constant_term: float = rest_of_constant_term * coulomb_logarithm
         # ----------------------------------------------------------------------------------------------
         # Computing the Dxx, Dxz, etc terms from Nagaitsev terms above, according to the expressions derived
         # by Michalis (see backup slides in his presentation at https://indico.cern.ch/event/1140639)
-        Dzz: np.ndarray = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        Kz: np.ndarray = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        Dxx: np.ndarray = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))
-        Kx: np.ndarray = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))
-        Dxz: np.ndarray = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term
+        # All below are on device as all dependent terms are on device
+        Dzz: ArrayLike = 0.5 * gammar**2 * (2 * R1 + R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))  # on device
+        Kz: ArrayLike = 1.0 * gammar**2 * (R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))            # on device
+        Dxx: ArrayLike = 0.5 * (2 * R1 + R2 * (1 - a2 / sqrt_term) + R3 * (1 + a2 / sqrt_term))              # on device
+        Kx: ArrayLike = 1.0 * (R2 * (1 + a2 / sqrt_term) + R3 * (1 - a2 / sqrt_term))                        # on device
+        Dxz: ArrayLike = 3.0 * gammar**2 * phix**2 * ax * (R3 - R2) / sqrt_term                              # on device
         # ----------------------------------------------------------------------------------------------
         # Computing integrands for the diffusion and friction terms from the above (also from Michalis,
-        # see slide 18 of his presentation for instance).
-        # fmt: on
-        Dx_integrand: np.ndarray = (
-            self.optics.betx
-            / (self.optics.circumference * sigma_x * sigma_y)
-            * (Dxx + Dzz * (self.optics.dx**2 / self.optics.betx**2 + phix**2) + Dxz)
-        )
-        Fx_integrand: np.ndarray = (
-            self.optics.betx
-            / (self.optics.circumference * sigma_x * sigma_y)
-            * (Kx + Kz * (self.optics.dx**2 / self.optics.betx**2 + phix**2))
-        )
-        Dy_integrand: np.ndarray = (
-            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (R2 + R3)
-        )
-        Fy_integrand: np.ndarray = (
-            self.optics.bety / (self.optics.circumference * sigma_x * sigma_y) * (2 * R1)
-        )
-        Dz_integrand: np.ndarray = Dzz / (self.optics.circumference * sigma_x * sigma_y)
-        Fz_integrand: np.ndarray = Kz / (self.optics.circumference * sigma_x * sigma_y)
+        # see slide 18 of his presentation for instance) - all of these are on device as all dependent terms are
+        Dx_integrand: ArrayLike = betx / (circumference * sigma_x * sigma_y) * (Dxx + Dzz * (dx**2 / betx**2 + phix**2) + Dxz)  # on device
+        Fx_integrand: ArrayLike = betx / (circumference * sigma_x * sigma_y) * (Kx + Kz * (dx**2 / betx**2 + phix**2))          # on device
+        Dy_integrand: ArrayLike = bety / (circumference * sigma_x * sigma_y) * (R2 + R3)                                        # on device
+        Fy_integrand: ArrayLike = bety / (circumference * sigma_x * sigma_y) * (2 * R1)                                         # on device
+        Dz_integrand: ArrayLike = Dzz / (circumference * sigma_x * sigma_y)                                                     # on device
+        Fz_integrand: ArrayLike = Kz / (circumference * sigma_x * sigma_y)                                                      # on device
         # ----------------------------------------------------------------------------------------------
         # Integrating them to obtain the diffusion and friction coefficients
-        Dx: float = np.sum(Dx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
-        Dy: float = np.sum(Dy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
-        Dz: float = np.sum(Dz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
-        Fx: float = np.sum(Fx_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsx
-        Fy: float = np.sum(Fy_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / geom_epsy
-        Fz: float = np.sum(Fz_integrand[:-1] * np.diff(self.optics.s)) * full_constant_term / sigma_delta**2
+        Dx: float = nplike.sum(Dx_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsx
+        Dy: float = nplike.sum(Dy_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsy
+        Dz: float = nplike.sum(Dz_integrand[:-1] * nplike.diff(s)) * full_constant_term / sigma_delta**2
+        Fx: float = nplike.sum(Fx_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsx
+        Fy: float = nplike.sum(Fy_integrand[:-1] * nplike.diff(s)) * full_constant_term / geom_epsy
+        Fz: float = nplike.sum(Fz_integrand[:-1] * nplike.diff(s)) * full_constant_term / sigma_delta**2
         # ----------------------------------------------------------------------------------------------
         # Generate and store the coefficients in a DiffusionCoefficients and FrictionCoefficients object
         self.diffusion_coefficients = DiffusionCoefficients(Dx, Dy, Dz)
@@ -584,106 +740,92 @@ class KineticKickIBS(KickBasedIBS):
         # Self-update the instance's attributes and then return the results: kick coefficients
         result = IBSKickCoefficients(Dx - Fx, Dy - Fy, Dz - Fz)
         self.kick_coefficients = result
+        self._number_of_coefficients_computations += 1
         return result
 
-    def apply_ibs_kick(self, particles: "xpart.Particles", n_slices: int = 40) -> None:  # noqa: F821
-        r"""
-        .. versionadded:: 0.7.0
-
-        Computes the momentum kicks to apply based on the provided `xpart.Particles` object and
-        the previously computed kick coefficients. The kick is applied as described in
-        :cite:`NuclInstr:Zenkevich:Kinetic_IBS` and :cite:`CERN:Zampetakis:Implementation_IBS_Kicks`.
-
-        Args:
-            particles (xpart.Particles): the `xpart.Particles` object to apply ``IBS`` kicks to.
-            n_slices (int): the number of slices to use for the computation of the line density.
-                Defaults to 40.
-
-        Raises:
-            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
+    def _check_coefficients_presence(self) -> None:
         """
-        # ----------------------------------------------------------------------------------------------
-        # Check that the kick coefficients have been computed beforehand
+        Call this before trying to apply kicks to first check the necessarykick coefficients are present.
+        If not, sets a flag to compute them, which will be done a bit later after exiting this function.
+        """
         if any(
             coeffs is None
             for coeffs in [self.kick_coefficients, self.diffusion_coefficients, self.friction_coefficients]
         ):
-            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
-            raise AttributeError(
-                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
-                "Please call the `compute_kick_coefficients` method first."
-            )
+            LOGGER.debug("Attempted to apply IBS kick without kick coefficients, will compute them first.")
+            self._need_to_recompute_coefficients = True
+
+    def _apply_formalism_ibs_kick(
+        self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
+    ) -> None:
+        r"""
+        .. versionadded:: 0.7.0
+
+        Computes the momentum kicks to apply based on the provided `xtrack.Particles` object and
+        the previously computed kick coefficients. The kick is applied as described in
+        :cite:`NuclInstr:Zenkevich:Kinetic_IBS` and :cite:`CERN:Zampetakis:Implementation_IBS_Kicks`.
+
+        Args:
+            particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
+            n_slices (int): the number of slices to use for the computation of the line density.
+                Defaults to 40.
+        """
+        # ----------------------------------------------------------------------------------------------
+        # Start with getting the nplike_lib from the particles' context, to compute on the context device
+        context = particles._context
+        nplike = context.nplike_lib
         # ----------------------------------------------------------------------------------------------
         # Compute the line density - this is the rho_t(t) term in Eq (8) of
         dt: float = 1 / self.optics.revolution_frequency
-        rho_t: np.ndarray = self.line_density(particles, n_slices)
+        rho_t: ArrayLike = self.line_density(particles, n_slices)  # computed on device
         # ----------------------------------------------------------------------------------------------
         # Compute the bunch_length * 2 * sqrt(pi) factor for the kicks
-        bunch_length: float = float(np.std(particles.zeta[particles.state > 0]))
-        factor = bunch_length * 2 * np.sqrt(np.pi)
-        # ----------------------------------------------------------------------------------------------
-        # Determining kicks from the friction forces (see referenced Michalis presentation)
-        # fmt: on
-        LOGGER.debug("Determining friction kicks")
-        delta_px_friction: np.ndarray = (
-            self.friction_coefficients.Fx
-            * (particles.px[particles.state > 0] - np.mean(particles.px[particles.state > 0]))
-            * dt
-            * rho_t
-            * factor
-        )
-        delta_py_friction: np.ndarray = (
-            self.friction_coefficients.Fy
-            * (particles.py[particles.state > 0] - np.mean(particles.py[particles.state > 0]))
-            * dt
-            * rho_t
-            * factor
-        )
-        delta_delta_friction: np.ndarray = (
-            self.friction_coefficients.Fz
-            * (particles.delta[particles.state > 0] - np.mean(particles.delta[particles.state > 0]))
-            * dt
-            * rho_t
-            * factor
-        )
-        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] -= delta_px_friction
-        particles.py[particles.state > 0] -= delta_py_friction
-        particles.delta[particles.state > 0] -= delta_delta_friction
+        bunch_length: float = _bunch_length(particles)
+        factor: float = bunch_length * 2 * nplike.sqrt(np.pi)
         # ----------------------------------------------------------------------------------------------
         # Compute the momentum spread and standard deviation of (normalized) momenta from particles object
         # Normalized: for momentum we have to multiply with gamma = beta / (1 + alpha^2), beta is included in the
         # std of p[xy]. If bunch is rotated, the std takes from the "other plane" so we normalize to compensate.
         # fmt: off
         LOGGER.debug("Computing momentum spread and momenta's standard deviations")
-        sigma_delta: float = float(np.std(particles.delta[particles.state > 0]))
-        sigma_px_normalized: float = np.std(particles.px[particles.state > 0]) / np.sqrt(1 + self.optics.alfx[0] ** 2)
-        sigma_py_normalized: float = np.std(particles.py[particles.state > 0]) / np.sqrt(1 + self.optics.alfy[0] ** 2)
+        sigma_delta: float = _sigma_delta(particles)  # on device
+        sigma_px_normalized: float = nplike.std(particles.px[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfx[0]**2)  # on device
+        sigma_py_normalized: float = nplike.std(particles.py[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfy[0]**2)  # on device
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (see referenced Michalis presentation)
+        LOGGER.debug("Determining friction kicks")
+        dev_px: ArrayLike = particles.px[particles.state > 0] - nplike.mean(particles.px[particles.state > 0])           # on device
+        dev_py: ArrayLike = particles.py[particles.state > 0] - nplike.mean(particles.py[particles.state > 0])           # on device
+        dev_delta: ArrayLike = particles.delta[particles.state > 0] - nplike.mean(particles.delta[particles.state > 0])  # on device
+        Fx, Fy, Fz = astuple(self.friction_coefficients)
+        delta_px_friction: ArrayLike = Fx * dev_px * dt * rho_t * factor        # on device
+        delta_py_friction: ArrayLike = Fy * dev_py * dt * rho_t * factor        # on device
+        delta_delta_friction: ArrayLike = Fz * dev_delta * dt * rho_t * factor  # on device
+        # ----------------------------------------------------------------------------------------------
+        # Determining kicks from the friction forces (see referenced Michalis presentation)
+        # Since cupy does not provide a default_rng().normal method, we go back to CPU and let scipy handle this
         LOGGER.debug("Determining diffusion kicks")
         RNG = np.random.default_rng()
-        # Determining size of arrays for kicks to apply: only the non-lost particles in the bunch
         _size: int = particles.px[particles.state > 0].shape[0]  # same for py and delta
-        delta_px_diffusion: np.ndarray = (
-            sigma_px_normalized
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dx)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
-        )
-        delta_py_diffusion: np.ndarray = (
-            sigma_py_normalized
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dy)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
-        )
-        delta_delta_diffusion: np.ndarray = (
-            sigma_delta
-            * np.sqrt(2 * dt * self.diffusion_coefficients.Dz)
-            * RNG.normal(0, 1, _size)
-            * np.sqrt(rho_t * factor)
-        )
+        Dx, Dy, Dz = astuple(self.diffusion_coefficients)
+        Dx, Dy, Dz = float(Dx), float(Dy), float(Dz)                            # on CPU
+        sig_px_norm_ = context.nparray_from_context_array(sigma_px_normalized)  # on CPU
+        sig_py_norm_ = context.nparray_from_context_array(sigma_py_normalized)  # on CPU
+        sig_delta_ = context.nparray_from_context_array(sigma_delta)            # on CPU
+        rho_t_ = context.nparray_from_context_array(rho_t)                      # on CPU
+        factor_ = float(factor)                                                 # on CPU
+        delta_px_diffusion: ArrayLike = sig_px_norm_ * np.sqrt(2 * dt * Dx) * RNG.normal(0, 1, _size) * np.sqrt(rho_t_ * factor_)   # on CPU
+        delta_py_diffusion: ArrayLike = sig_py_norm_ * np.sqrt(2 * dt * Dy) * RNG.normal(0, 1, _size) * np.sqrt(rho_t_ * factor_)   # on CPU
+        delta_delta_diffusion: ArrayLike = sig_delta_ * np.sqrt(2 * dt * Dz) * RNG.normal(0, 1, _size) * np.sqrt(rho_t_ * factor_)  # on CPU
+        # ----------------------------------------------------------------------------------------------
+        # Now we can apply all momenta kicks (friction and diffusion) to the particles - on device directly
+        # fmt: on
+        LOGGER.debug("Applying friction kicks to the particles (on px, py and delta properties)")
+        particles.px[particles.state > 0] -= delta_px_friction
+        particles.py[particles.state > 0] -= delta_py_friction
+        particles.delta[particles.state > 0] -= delta_delta_friction
         LOGGER.debug("Applying diffusion kicks to the particles (on px, py and delta properties)")
-        particles.px[particles.state > 0] += delta_px_diffusion
-        particles.py[particles.state > 0] += delta_py_diffusion
-        particles.delta[particles.state > 0] += delta_delta_diffusion
+        # Since the generated were done by numpy we make sure to convert to device first
+        particles.px[particles.state > 0] += context.nparray_to_context_array(delta_px_diffusion)
+        particles.py[particles.state > 0] += context.nparray_to_context_array(delta_py_diffusion)
+        particles.delta[particles.state > 0] += context.nparray_to_context_array(delta_delta_diffusion)
