@@ -34,7 +34,6 @@ logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
     datefmt="%H:%M:%S",
 )
-# plt.rcParams.update({"savefig.dpi": 300})
 plt.rcParams.update(
     {
         "font.family": "serif",
