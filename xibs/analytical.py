@@ -374,11 +374,13 @@ class AnalyticalIBS(ABC):
                 normalized or not. Defaults to `False` (assume geometric emittances).
             auto_recompute_rates_percent (float): Optional. If given, a check is performed to
                 determine if an update of the growth rates is necessary, in which case it will
-                be done computing the emittance evolutions. **Please provide a value as a percentage
-                of the emittance change**. For instance, if one provides `12`, a check is made to see
-                if any quantity would changed by more than 12%, and if so the growth rates are
-                automatically recomputed to be as up-to-date as possible before returning the new values.
-                Defaults to `None` (no checks done, no auto-recomputing).
+                be done before computing the emittance evolutions. **Please provide a value as a
+                percentage of the emittance change since the last update of the growth rates**.
+                For instance, if one provides `12`, a check is made to see if any quantity would
+                have changed by more than 12% compared to reference values stored at the last
+                growth rates update, and if so the growth rates are automatically recomputed to
+                be as up-to-date as possible before returning the new values. Defaults to `None`
+                (no checks done, no auto-recomputing).
             **kwargs: If keyword arguments are provided, they are considered inputs for the
                 inclusion of synchrotron radiation in the calculation, and the following are
                 expected, case-insensitively:
