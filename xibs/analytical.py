@@ -411,14 +411,17 @@ class AnalyticalIBS(ABC):
                         the longitudinal damping time from synchrotron radiation, in [s]
                         (should be the same unit as `dt`).
 
-
-        Raises:
-            AttributeError: if the ``IBS`` growth rates have not yet been computed.
-
         Returns:
             A tuple with the new horizontal & vertical geometric emittances, the new
             momentum spread and the new bunch length, after the time step has ellapsed.
         """
+        # ----------------------------------------------------------------------------------------------
+        # Check that the IBS growth rates have been computed beforehand - compute if not
+        if self.ibs_growth_rates is None:
+            LOGGER.debug("Attempted to compute emittance evolution without growth rates, computing them.")
+            bunched = kwargs.get("bunched", True)  # get the bunched value if provided
+            self.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched, normalized_emittances)
+        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
         # ----------------------------------------------------------------------------------------------
         # Check the kwargs and potentially get the arguments to include synchrotron radiation
         include_synchrotron_radiation = False
@@ -442,15 +445,6 @@ class AnalyticalIBS(ABC):
                 else self._geometric_emittance(sr_inputs.equilibrium_epsy)
             )
             sr_eq_sigma_delta = sr_inputs.equilibrium_sigma_delta
-        # ----------------------------------------------------------------------------------------------
-        # Check that the IBS growth rates have been computed beforehand
-        if self.ibs_growth_rates is None and auto_recompute_rates_percent is None:
-            LOGGER.error("Attempted to compute emittance evolution without having computed growth rates.")
-            raise AttributeError(
-                "IBS growth rates have not been computed yet, cannot compute new emittances.\n"
-                "Please call the `growth_rates` method first."
-            )
-        LOGGER.info("Computing new emittances from IBS growth rates for defined beam and optics parameters")
         # ----------------------------------------------------------------------------------------------
         # Set the time step to 1 / frev if not provided
         if dt is None:

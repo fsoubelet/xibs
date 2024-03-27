@@ -245,12 +245,6 @@ class KickBasedIBS(ABC):
             particles (xtrack.Particles): the `xtrack.Particles` object to apply ``IBS`` kicks to.
             n_slices (int): the number of slices to use for the computation of the line density.
                 Defaults to 40.
-
-        Raises:
-            AttributeError: if the ``IBS`` kick coefficients have not yet been computed.
-
-        TODO: maybe instead of raising just compute the rates if they are not there. We could set
-        the flag in self._check_coefficients_presence to True and it will be computed later on.
         """
         # ----------------------------------------------------------------------------------------------
         # Check that the kick coefficients have been computed beforehand
@@ -421,16 +415,11 @@ class SimpleKickIBS(KickBasedIBS):
     def _check_coefficients_presence(self) -> None:
         """
         Call this before trying to apply kicks to first check the necessarykick coefficients are present.
-
-        Raises:
-            AttributeError: if the necessary ``IBS`` kick coefficients have not yet been computed.
+        If not, sets a flag to compute them, which will be done a bit later after exiting this function.
         """
         if self.kick_coefficients is None:
-            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
-            raise AttributeError(
-                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
-                "Please call the `compute_kick_coefficients` method first."
-            )
+            LOGGER.debug("Attempted to apply IBS kick without kick coefficients, will compute them first.")
+            self._need_to_recompute_coefficients = True
 
     def compute_kick_coefficients(
         self, particles: "xtrack.Particles", **kwargs  # noqa: F821
@@ -757,19 +746,14 @@ class KineticKickIBS(KickBasedIBS):
     def _check_coefficients_presence(self) -> None:
         """
         Call this before trying to apply kicks to first check the necessarykick coefficients are present.
-
-        Raises:
-            AttributeError: if the necessary ``IBS`` kick coefficients have not yet been computed.
+        If not, sets a flag to compute them, which will be done a bit later after exiting this function.
         """
         if any(
             coeffs is None
             for coeffs in [self.kick_coefficients, self.diffusion_coefficients, self.friction_coefficients]
         ):
-            LOGGER.error("Attempted to apply IBS kick without having computed kick coefficients first.")
-            raise AttributeError(
-                "IBS kick coefficients have not been computed yet, cannot apply kick to particles.\n"
-                "Please call the `compute_kick_coefficients` method first."
-            )
+            LOGGER.debug("Attempted to apply IBS kick without kick coefficients, will compute them first.")
+            self._need_to_recompute_coefficients = True
 
     def _apply_formalism_ibs_kick(
         self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
