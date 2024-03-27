@@ -46,14 +46,16 @@ Auto-Recomputing for IBS Analytical Classes
 
 .. admonition:: This section in short
 
-    To let the class automatically determine when to recompute the IBS growth rates, set the `auto_recompute_rates_percent` argument to a value between 0 and 100 when calling the `.emittance_evolution` method.
+    To let the class automatically determine when to recompute the IBS growth rates, set the `auto_recompute_rates_percent` argument to a value higher than 0 when calling the `.emittance_evolution` method.
 
 
-It is possible to leave up to the analytical class the decision to recompute or not the IBS growth rates, instead of doing so manually, by setting the `auto_recompute_rates_percent` argument to a value between 0 and 100 when calling the `.emittance_evolution` method.
-In this case, the horizontal and vertical emittances, bunch length and relative momentum spread at the next time step are computed, and if the relative change of at least one exceeds the given percentage, the growth rates are re-computed and the evolution to the next time step is calculated again.
+It is possible to leave up to the analytical class the decision to recompute or not the IBS growth rates, instead of doing so manually, by setting the `auto_recompute_rates_percent` argument to a value higher than 0 when calling the `.emittance_evolution` method.
+In this case, the horizontal and vertical emittances, bunch length and relative momentum spread at the next time step are computed.
+A check is performed to see if the relative change of at least one of these values exceeds the given percentage compared to reference values stored at the last growth rates update.
+If so, then growth rates are re-computed and the evolution to the next time step is calculated again.
 No more check is performed, as the growth rates are then the most up-to-date they can possibly be.
 
-For instance, if one provides `auto_recompute_rates_percent=5` and any of the above quantities changes by more than 5% after during the time step, the growth rates are instantly recomputed and the evolution to the next time step is calculated again.
+For instance, if one provides `auto_recompute_rates_percent=5` and after the time step any of the above quantities changes by more than 5% from the reference values, the growth rates are recomputed and the evolution to the next time step is calculated once again.
 This allows not having to manually ask for the growth rates to be recomputed, and simplifies the loop seen in the example galleries, as one can observe below.
 
 .. code-block:: python
@@ -61,6 +63,9 @@ This allows not having to manually ask for the growth rates to be recomputed, an
     # Let's assume your beam and optics parameters have been instantiated
     IBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)
     # IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)
+
+    # One should always have the initial growth rates computed
+    IBS.growth_rates(eps_x, eps_y, sigma_delta, bunch_length)
 
     # Let's assume the current step's properties are already known 
     for sec in range(1, n_seconds):
@@ -74,3 +79,5 @@ This allows not having to manually ask for the growth rates to be recomputed, an
             dt=1,
             auto_recompute_rates_percent=5, # auto-recompute growth rates if needed
         )
+
+One can find an example of this feature in the :ref:`dedicated example gallery <demo-analytical-auto-growth-rates>`.
