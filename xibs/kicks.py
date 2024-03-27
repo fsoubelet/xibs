@@ -208,6 +208,16 @@ class KickBasedIBS(ABC):
         pass
 
     @abstractmethod
+    def _check_coefficients_presence(self) -> None:
+        r"""
+        .. versionadded:: 0.5.0
+
+        Abstract method to check the relevant attribute and determine if the
+        kick coefficients have been computed. This is called before applying kicks.
+        """
+        pass
+
+    @abstractmethod
     def _apply_formalism_ibs_kick(
         self, particles: "xtrack.Particles", n_slices: int = 40  # noqa: F821
     ) -> None:
@@ -271,18 +281,40 @@ class KickBasedIBS(ABC):
             _new_geom_epsx = _geom_epsx(particles, self.optics.betx[0], self.optics.dx[0])
             _new_geom_epsy = _geom_epsy(particles, self.optics.bety[0], self.optics.dy[0])
             # If there is an increase / decrease of more than self.auto_recompute_coefficients_percent % in any plane, set the flag
-            if (
-                abs(_percent_change(_previous_bunch_length, _new_bunch_length)) > self.auto_recompute_coefficients_percent
-                or abs(_percent_change(_previous_sigma_delta, _new_sigma_delta)) > self.auto_recompute_coefficients_percent
-                or abs(_percent_change(_previous_geom_epsx, _new_geom_epsx)) > self.auto_recompute_coefficients_percent
-                or abs(_percent_change(_previous_geom_epsy, _new_geom_epsy)) > self.auto_recompute_coefficients_percent
-            ):
-                LOGGER.debug(
-                    f"One plane's emittance changed by more than {self.auto_recompute_coefficients_percent}%, "
-                    "setting flag to recompute coefficients before next kick."
-                )
-                self._need_to_recompute_coefficients = True
+            self._check_threshold_bypass(
+                _previous_geom_epsx, _previous_geom_epsy, _previous_sigma_delta, _previous_bunch_length,
+                _new_geom_epsx, _new_geom_epsy, _new_sigma_delta, _new_bunch_length,
+                self.auto_recompute_coefficients_percent
+            )
         # fmt: on
+
+    def _check_threshold_bypass(
+        self,
+        epsx: float,
+        epsy: float,
+        sigma_delta: float,
+        bunch_length: float,
+        new_epsx: float,
+        new_epsy: float,
+        new_sigma_delta: float,
+        new_bunch_length: float,
+        threshold: float,
+    ) -> None:
+        """
+        Checks if any of the quantities exceed a 'threshold'% relative change to the initial
+        ones and if so, set the `self._need_to_recompute_coefficients` flag to `True`.
+        """
+        if (  # REMEMBER: threshold is a percentage so we need to divide it by 100
+            abs(_percent_change(epsx, new_epsx)) > threshold / 100
+            or abs(_percent_change(epsy, new_epsy)) > threshold / 100
+            or abs(_percent_change(sigma_delta, new_sigma_delta)) > threshold / 100
+            or abs(_percent_change(bunch_length, new_bunch_length)) > threshold / 100
+        ):
+            LOGGER.debug(
+                f"One plane's emittance changed by more than {threshold}%, "
+                "setting flag to recompute coefficients before next kick."
+            )
+            self._need_to_recompute_coefficients = True
 
 
 # ----- Classes to Compute and Apply IBS Kicks ----- #
