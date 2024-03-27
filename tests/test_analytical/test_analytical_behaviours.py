@@ -85,6 +85,29 @@ def test_nagaitsev_growth_rates_computes_integrals_by_default(xtrack_ps_injectio
     assert isinstance(IBS.ibs_growth_rates, IBSGrowthRates)
 
 
+@pytest.mark.parametrize("IBSClass", [BjorkenMtingwaIBS, NagaitsevIBS])
+def test_analytical_ibs_emittance_evolution_raises_if_no_growth_rates(
+    xtrack_ps_injection_protons, IBSClass, caplog
+):
+    """
+    Checking that AnalyticalIBS.emittance_evolution computes growth
+    rates if they are absent (had not been computed beforehand).
+    """
+    # --------------------------------------------------------------------
+    # Load xsuite line (PS here because it's smaller/faster) and init IBS
+    line = xtrack_ps_injection_protons
+    twiss = line.twiss(method="4d")
+    opticsparams = OpticsParameters(twiss)
+    beamparams = BeamParameters(line.particle_ref)
+    beamparams.n_part = int(8.1e8)  # value doesn't matter much
+    IBS = IBSClass(beamparams, opticsparams)
+    # --------------------------------------------------------------------
+    # Check the non-existent rates are then computed by .emittance_evolution
+    IBS.emittance_evolution(2e-6, 2e-6, 1e-5, 1e-5)  # random values as they don't matter
+    assert IBS.ibs_growth_rates is not None
+    assert isinstance(IBS.ibs_growth_rates, IBSGrowthRates)
+
+
 def test_bjorken_mtingwa_growth_rates_warns_if_twiss_not_centered(
     madx_ps_injection_protons, xtrack_ps_injection_protons, caplog
 ):
