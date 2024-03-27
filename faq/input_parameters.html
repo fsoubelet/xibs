@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Instantiating Input Parameters — xibs 0.7.1 documentation</title>
+<title>Instantiating Input Parameters — xibs 0.8.0 documentation</title>
 <link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
 <link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
@@ -21,7 +21,7 @@
   <![endif]-->
 <script src="../_static/jquery.js?v=5d32c60e"></script>
 <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-<script src="../_static/documentation_options.js?v=5a057da9"></script>
+<script src="../_static/documentation_options.js?v=486e5634"></script>
 <script src="../_static/doctools.js?v=888ff710"></script>
 <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -40,7 +40,7 @@
 <a href="../index.html">
 </a>
 <div class="version">
-                0.7.1
+                0.8.0
               </div>
 <div role="search">
 <form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
@@ -63,6 +63,22 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html">Automatic Growth Rates Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#instantiate-analytical-ibs-objects">Instantiate Analytical IBS Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#preparing-for-simulation-of-evolution">Preparing for Simulation of Evolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#analytical-evolution-over-time">Analytical Evolution Over Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#takeaways">Takeaways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html">Automatic Kick Coefficients Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#preparing-for-the-tracking-simulation">Preparing for the Tracking Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#tracking-evolution-over-turns">Tracking Evolution Over Turns</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
@@ -127,6 +143,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="coasting_beams.html">Bunched and Coasting Beams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto_recomputing.html">Automatic Recomputation of IBS Kick Coefficients and Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auto_recomputing.html#auto-recomputing-for-ibs-kick-classes">Auto-Recomputing for IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_recomputing.html#auto-recomputing-for-ibs-analytical-classes">Auto-Recomputing for IBS Analytical Classes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
@@ -211,7 +232,7 @@ It is documented in the <a class="reference internal" href="../modules/index.htm
 </section>
 <section id="do-i-need-a-full-matched-particle-distribution-for-beamparameters">
 <span id="xibs-faq-beam-params-from-particle-ref"></span><h2>Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?<a class="headerlink" href="#do-i-need-a-full-matched-particle-distribution-for-beamparameters" title="Link to this heading"></a></h2>
-<p>One might have noticed, for example in the <a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#demo-analytical-bjorken-mtingwa"><span class="std std-ref">Bjorken-Mtingwa</span></a> or <a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#demo-analytical-nagaitsev"><span class="std std-ref">Nagaitsev</span></a> analytical examples, that the latter is instantiated from a fully matched <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> distribution.
+<p>One might have noticed, for example in the <a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#demo-analytical-bjorken-mtingwa"><span class="std std-ref">Bjorken-Mtingwa</span></a> or <a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#demo-analytical-nagaitsev"><span class="std std-ref">Nagaitsev</span></a> analytical examples, that the latter is instantiated from a fully matched <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Particles</span></code> distribution.
 Creating a matched distribution is an intensive step and requires parameters one might not want to be annoyed providing.</p>
 <p>It is possible to bypass this step and use for instance the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>’s <code class="xref py py-obj docutils literal notranslate"><span class="pre">particle_ref</span></code> instead.
 However, in several computations the Coulomb logarithm is necessary, which is heavily dependent on the number of particles in the distribution, a value not reflected by the reference particle object.</p>
@@ -231,7 +252,7 @@ This would go as:</p>
 </section>
 <section id="beamparameters-from-an-xtrack-line">
 <span id="xibs-faq-beam-params-from-line"></span><h2>BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code><a class="headerlink" href="#beamparameters-from-an-xtrack-line" title="Link to this heading"></a></h2>
-<p>The default mode to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> is from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code> object.
+<p>The default mode to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code> is from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Particles</span></code> object.
 As seen just above, it is possible to use an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code>’s reference particle to do so.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -258,7 +279,7 @@ It goes according to:</p>
 <span class="n">mass0</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="mf">1e9</span>  <span class="c1"># rest mass in [eV] | but in [GeV] in MAD-X</span>
 <span class="n">npart</span> <span class="o">=</span> <span class="n">madx</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">seq_name</span><span class="p">]</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">npart</span>  <span class="c1"># number of particles</span>
 
-<span class="c1"># Create an xpart.Particles object with this information</span>
+<span class="c1"># Create an xtrack.Particles object with this information</span>
 <span class="n">particle</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">(</span><span class="n">p0c</span><span class="o">=</span><span class="n">p0c_eV</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">,</span> <span class="n">mass0</span><span class="o">=</span><span class="n">mass0</span><span class="p">)</span>
 <span class="n">beam_params</span> <span class="o">=</span> <span class="n">BeamParameters</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
 <span class="n">beam_params</span><span class="o">.</span><span class="n">n_part</span> <span class="o">=</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/functions.html#int" title="int"><span class="nb">int</span></a><span class="p">(</span><span class="n">npart</span><span class="p">)</span>  <span class="c1"># very important to adjust this!</span>

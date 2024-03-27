@@ -74,7 +74,7 @@ These quantities can be computed from ``MAD-X`` after a `twiss`, as shown below:
 Do I need a full matched particle distribution for `BeamParameters`?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-One might have noticed, for example in the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` or :ref:`Nagaitsev <demo-analytical-nagaitsev>` analytical examples, that the latter is instantiated from a fully matched `xpart.Particles` distribution.
+One might have noticed, for example in the :ref:`Bjorken-Mtingwa <demo-analytical-bjorken-mtingwa>` or :ref:`Nagaitsev <demo-analytical-nagaitsev>` analytical examples, that the latter is instantiated from a fully matched `xtrack.Particles` distribution.
 Creating a matched distribution is an intensive step and requires parameters one might not want to be annoyed providing.
 
 It is possible to bypass this step and use for instance the `xtrack.Line`'s `.particle_ref` instead.
@@ -101,7 +101,7 @@ This would go as:
 BeamParameters from an `xtrack.Line`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The default mode to instantiate a `BeamParameters` is from an `xpart.Particles` object.
+The default mode to instantiate a `BeamParameters` is from an `xtrack.Particles` object.
 As seen just above, it is possible to use an `xtrack.Line`'s reference particle to do so.
 
 .. note::
@@ -136,7 +136,7 @@ It is also possible to query the `beam` in use for the currently active sequence
     mass0 = madx.sequence[seq_name].beam.mass * 1e9  # rest mass in [eV] | but in [GeV] in MAD-X
     npart = madx.sequence[seq_name].beam.npart  # number of particles
 
-    # Create an xpart.Particles object with this information
+    # Create an xtrack.Particles object with this information
     particle = xp.Particles(p0c=p0c_eV, q0=q0, mass0=mass0)
     beam_params = BeamParameters(particle)
     beam_params.n_part = int(npart)  # very important to adjust this!

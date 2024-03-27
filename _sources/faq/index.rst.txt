@@ -19,3 +19,4 @@ This part of the documentation provides sections with answers to common question
    emittance_types
    radiation
    coasting_beams
+   auto_recomputing

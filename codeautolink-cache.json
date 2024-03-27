@@ -1,5 +1,58 @@
 {
   "bibliography": [],
+  "faq/auto_recomputing": [
+    {
+      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.kicks.KineticKickIBS(beam_params, optics, auto_recompute_coefficients_percent=10)\n# IBS = xibs.kicks.SimpleKickIBS(beam_params, optics, auto_recompute_coefficients_percent=10)\n\n# One should always have the initial coefficients computed\nIBS.compute_kick_coefficients(particles)\n\n# Let's assume your line and particles have been instantiated\nfor turn in range(1, n_turns):\n    # The following (commented out) line is not necessary anymore\n    # IBS.compute_kick_coefficients(particles)\n    IBS.apply_ibs_kick(particles)  # auto-recompute kick coefficients if needed\n    line.track(particles, num_turns=1)",
+      "names": [
+        {
+          "import_components": [
+            "range"
+          ],
+          "code_str": "range",
+          "lineno": 9,
+          "end_lineno": 9,
+          "context": "none",
+          "resolved_location": "range"
+        }
+      ],
+      "example": {
+        "document": "faq/auto_recomputing",
+        "ref_id": "auto-recomputing-for-ibs-kick-classes",
+        "headings": [
+          "Automatic Recomputation of IBS Kick Coefficients and Growth Rates",
+          "Auto-Recomputing for IBS Kick Classes",
+          "This section in short"
+        ]
+      },
+      "doc_lineno": 28
+    },
+    {
+      "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)\n# IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)\n\n# One should always have the initial growth rates computed\nIBS.growth_rates(eps_x, eps_y, sigma_delta, bunch_length)\n\n# Let's assume the current step's properties are already known\nfor sec in range(1, n_seconds):\n    # The following (commented out) line is not necessary anymore\n    # IBS.growth_rates(eps_x, eps_y, sigma_delta, bunch_length)\n    new_epsx, new_epsy, new_sigma_delta, new_bunch_length = IBS.emittance_evolution(\n        eps_x,\n        eps_y,\n        sigma_delta,\n        bunch_length,\n        dt=1,\n        auto_recompute_rates_percent=5, # auto-recompute growth rates if needed\n    )",
+      "names": [
+        {
+          "import_components": [
+            "range"
+          ],
+          "code_str": "range",
+          "lineno": 9,
+          "end_lineno": 9,
+          "context": "none",
+          "resolved_location": "range"
+        }
+      ],
+      "example": {
+        "document": "faq/auto_recomputing",
+        "ref_id": "auto-recomputing-for-ibs-analytical-classes",
+        "headings": [
+          "Automatic Recomputation of IBS Kick Coefficients and Growth Rates",
+          "Auto-Recomputing for IBS Kick Classes",
+          "Auto-Recomputing for IBS Analytical Classes",
+          "This section in short"
+        ]
+      },
+      "doc_lineno": 66
+    }
+  ],
   "faq/coasting_beams": [
     {
       "source": "# Let's assume your beam and optics parameters have been instantiated\nIBS = xibs.analytical.BjorkenMtingwaIBS(beam_params, optics)\n# IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)  # alternatively\n\n# Getting growth rates for a bunched beam (default)\nrates_bunched = IBS.growth_rates(psx, epsy, sigma_delta, bunch_length)\n\n# Getting growth rates for a coasting beam\nrates_coasting = IBS.growth_rates(epsx, epsy, sigma_delta, bunch_length, bunched=False)\n\n# The two of course yield different values\nassert rates_bunched != rates_coasting  # this is True",
@@ -122,7 +175,7 @@
       "doc_lineno": 112
     },
     {
-      "source": "# Let's assume your `cpymad.madx.Madx` instance is already defined\nmadx.command.twiss()  # want the table to determine the sequence name and access its beam\nseq_name = madx.table.twiss.summary.sequence  # will give us the active sequence\n\n# Query required parameters from the beam: particle momentum, particle charge,\n# particle rest mass and number of particles in the bunch\np0c_eV = madx.sequence[seq_name].beam.pc * 1e9  # in [GeV] in MAD-X beam, but we want [eV]\nq0 = madx.sequence[seq_name].beam.charge  # electrical particle charge in units of [qp]\nmass0 = madx.sequence[seq_name].beam.mass * 1e9  # rest mass in [eV] | but in [GeV] in MAD-X\nnpart = madx.sequence[seq_name].beam.npart  # number of particles\n\n# Create an xpart.Particles object with this information\nparticle = xp.Particles(p0c=p0c_eV, q0=q0, mass0=mass0)\nbeam_params = BeamParameters(particle)\nbeam_params.n_part = int(npart)  # very important to adjust this!",
+      "source": "# Let's assume your `cpymad.madx.Madx` instance is already defined\nmadx.command.twiss()  # want the table to determine the sequence name and access its beam\nseq_name = madx.table.twiss.summary.sequence  # will give us the active sequence\n\n# Query required parameters from the beam: particle momentum, particle charge,\n# particle rest mass and number of particles in the bunch\np0c_eV = madx.sequence[seq_name].beam.pc * 1e9  # in [GeV] in MAD-X beam, but we want [eV]\nq0 = madx.sequence[seq_name].beam.charge  # electrical particle charge in units of [qp]\nmass0 = madx.sequence[seq_name].beam.mass * 1e9  # rest mass in [eV] | but in [GeV] in MAD-X\nnpart = madx.sequence[seq_name].beam.npart  # number of particles\n\n# Create an xtrack.Particles object with this information\nparticle = xp.Particles(p0c=p0c_eV, q0=q0, mass0=mass0)\nbeam_params = BeamParameters(particle)\nbeam_params.n_part = int(npart)  # very important to adjust this!",
       "names": [
         {
           "import_components": [
@@ -261,12 +314,15 @@
       "doc_lineno": 94
     }
   ],
+  "gallery/demo_analytical_auto_recompute_rates": [],
   "gallery/demo_analytical_bjorken_mtingwa_emittances": [],
   "gallery/demo_analytical_nagaitsev_emittances": [],
   "gallery/demo_compare_analyticals": [],
   "gallery/demo_compare_kicks": [],
+  "gallery/demo_kicks_auto_recompute_coefficients": [],
   "gallery/demo_kinetic_kicks": [],
   "gallery/demo_simple_kicks": [],
+  "sg_execution_times": [],
   "gallery/index": [],
   "gallery/sg_execution_times": [],
   "index": [],
@@ -421,6 +477,5 @@
       },
       "doc_lineno": 151
     }
-  ],
-  "sg_execution_times": []
+  ]
 }

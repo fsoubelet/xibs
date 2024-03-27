@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates &mdash; xibs 0.7.1 documentation</title>
+  <title>Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates &mdash; xibs 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5a057da9"></script>
+        <script src="../_static/documentation_options.js?v=486e5634"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -48,7 +48,7 @@
             
           </a>
               <div class="version">
-                0.7.1
+                0.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -71,6 +71,22 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html">Automatic Growth Rates Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#instantiate-analytical-ibs-objects">Instantiate Analytical IBS Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#preparing-for-simulation-of-evolution">Preparing for Simulation of Evolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#analytical-evolution-over-time">Analytical Evolution Over Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#takeaways">Takeaways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html">Automatic Kick Coefficients Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#preparing-for-the-tracking-simulation">Preparing for the Tracking Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#tracking-evolution-over-turns">Tracking Evolution Over Turns</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
@@ -135,6 +151,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../faq/coasting_beams.html">Bunched and Coasting Beams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq/auto_recomputing.html">Automatic Recomputation of IBS Kick Coefficients and Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq/auto_recomputing.html#auto-recomputing-for-ibs-kick-classes">Auto-Recomputing for IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq/auto_recomputing.html#auto-recomputing-for-ibs-analytical-classes">Auto-Recomputing for IBS Analytical Classes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
@@ -199,6 +220,7 @@ for a positron beam.</p>
 
 <span class="kn">from</span> <span class="nn">xibs.analytical</span> <span class="kn">import</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">NagaitsevIBS</span></a>
 <span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
+<span class="kn">from</span> <span class="nn">xibs.formulary</span> <span class="kn">import</span> <span class="n">_bunch_length</span><span class="p">,</span> <span class="n">_geom_epsx</span><span class="p">,</span> <span class="n">_geom_epsy</span><span class="p">,</span> <span class="n">_sigma_delta</span>
 <span class="kn">from</span> <span class="nn">xibs.kicks</span> <span class="kn">import</span> <span class="n">IBSKickCoefficients</span><span class="p">,</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">SimpleKickIBS</span></a>
 
 <a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>  <span class="c1"># for this tutorial&#39;s clarity</span>
@@ -214,38 +236,6 @@ for a positron beam.</p>
         <span class="s2">&quot;figure.titlesize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
-</pre></div>
-</div>
-<p>We will define here some helper functions we will regularly use later on to
-compute the emittances, bunch lengths and momentum spread from and <code class="xref py py-obj docutils literal notranslate"><span class="pre">xpart.Particles</span></code>
-object representing our particle distribution. In each, let’s make sure to filter
-for only the active particles (<code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>).</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_bunch_length</span><span class="p">(</span><span class="n">parts</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="k">return</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><span class="n">parts</span><span class="o">.</span><span class="n">zeta</span><span class="p">[</span><span class="n">parts</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-
-
-<span class="k">def</span> <span class="nf">_sigma_delta</span><span class="p">(</span><span class="n">parts</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="k">return</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><span class="n">parts</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="n">parts</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-
-
-<span class="k">def</span> <span class="nf">_geom_epsx</span><span class="p">(</span><span class="n">parts</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">,</span> <span class="n">twiss</span><span class="p">:</span> <span class="n">xt</span><span class="o">.</span><span class="n">TwissTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    We index dx and betx at 0 which corresponds to the beginning / end of</span>
-<span class="sd">    the line, since this is where / when we will be applying the kicks.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sigma_x</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><span class="n">parts</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">parts</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">sig_delta</span> <span class="o">=</span> <span class="n">_sigma_delta</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;dx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sig_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;betx&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">_geom_epsy</span><span class="p">(</span><span class="n">parts</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">,</span> <span class="n">twiss</span><span class="p">:</span> <span class="n">xt</span><span class="o">.</span><span class="n">TwissTable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    We index dy and bety at 0 which corresponds to the beginning / end of</span>
-<span class="sd">    the line, since this is where / when we will be applying the kicks.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sigma_y</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html#numpy.std" title="numpy.std" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">std</span></a><span class="p">(</span><span class="n">parts</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">parts</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">sig_delta</span> <span class="o">=</span> <span class="n">_sigma_delta</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">sigma_y</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;dy&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sig_delta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">twiss</span><span class="p">[</span><span class="s2">&quot;bety&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Let’s start by defining the line and particle information, as well as some
@@ -285,37 +275,35 @@ is going to take some time:</p>
     <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_y</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nemitt_y</span></a><span class="p">,</span>
     <a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sigma_z</span></a><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sigma_z</span></a><span class="p">,</span>
     <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span>
-    <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;single-rf-harmonic&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Loading line from dict:   0%|          | 0/71796 [00:00&lt;?, ?it/s]
-Loading line from dict:   4%|▍         | 2909/71796 [00:00&lt;00:02, 29087.60it/s]
-Loading line from dict:   8%|▊         | 5858/71796 [00:00&lt;00:02, 29310.63it/s]
-Loading line from dict:  12%|█▏        | 8806/71796 [00:00&lt;00:02, 29385.34it/s]
-Loading line from dict:  16%|█▋        | 11782/71796 [00:00&lt;00:02, 29531.48it/s]
-Loading line from dict:  21%|██        | 14736/71796 [00:00&lt;00:01, 29401.12it/s]
-Loading line from dict:  25%|██▍       | 17677/71796 [00:00&lt;00:02, 21142.20it/s]
-Loading line from dict:  29%|██▊       | 20630/71796 [00:00&lt;00:02, 23307.16it/s]
-Loading line from dict:  33%|███▎      | 23554/71796 [00:00&lt;00:01, 24905.24it/s]
-Loading line from dict:  37%|███▋      | 26512/71796 [00:01&lt;00:01, 26198.67it/s]
-Loading line from dict:  41%|████      | 29287/71796 [00:01&lt;00:01, 25879.98it/s]
-Loading line from dict:  45%|████▍     | 31982/71796 [00:01&lt;00:01, 25594.95it/s]
-Loading line from dict:  48%|████▊     | 34615/71796 [00:01&lt;00:01, 25407.57it/s]
-Loading line from dict:  52%|█████▏    | 37340/71796 [00:01&lt;00:01, 25930.24it/s]
-Loading line from dict:  56%|█████▌    | 40316/71796 [00:01&lt;00:01, 27035.94it/s]
-Loading line from dict:  60%|██████    | 43266/71796 [00:01&lt;00:01, 27755.72it/s]
-Loading line from dict:  64%|██████▍   | 46184/71796 [00:01&lt;00:00, 28170.81it/s]
-Loading line from dict:  68%|██████▊   | 49144/71796 [00:01&lt;00:00, 28589.96it/s]
-Loading line from dict:  73%|███████▎  | 52129/71796 [00:01&lt;00:00, 28963.60it/s]
-Loading line from dict:  77%|███████▋  | 55112/71796 [00:02&lt;00:00, 29221.58it/s]
-Loading line from dict:  81%|████████  | 58042/71796 [00:02&lt;00:00, 20352.46it/s]
-Loading line from dict:  85%|████████▍ | 61020/71796 [00:02&lt;00:00, 22508.48it/s]
-Loading line from dict:  89%|████████▉ | 63741/71796 [00:02&lt;00:00, 23661.87it/s]
-Loading line from dict:  92%|█████████▏| 66362/71796 [00:02&lt;00:00, 24165.78it/s]
-Loading line from dict:  96%|█████████▌| 68963/71796 [00:02&lt;00:00, 24455.00it/s]
-Loading line from dict: 100%|█████████▉| 71541/71796 [00:02&lt;00:00, 24689.90it/s]
-Loading line from dict: 100%|██████████| 71796/71796 [00:02&lt;00:00, 25592.29it/s]
+Loading line from dict:   4%|▍         | 2927/71796 [00:00&lt;00:02, 29267.93it/s]
+Loading line from dict:   8%|▊         | 5894/71796 [00:00&lt;00:02, 29501.89it/s]
+Loading line from dict:  12%|█▏        | 8886/71796 [00:00&lt;00:02, 29684.96it/s]
+Loading line from dict:  17%|█▋        | 11855/71796 [00:00&lt;00:02, 29682.85it/s]
+Loading line from dict:  21%|██        | 14858/71796 [00:00&lt;00:01, 29802.97it/s]
+Loading line from dict:  25%|██▍       | 17839/71796 [00:00&lt;00:02, 22791.75it/s]
+Loading line from dict:  29%|██▉       | 20826/71796 [00:00&lt;00:02, 24704.33it/s]
+Loading line from dict:  33%|███▎      | 23738/71796 [00:00&lt;00:01, 25930.01it/s]
+Loading line from dict:  37%|███▋      | 26663/71796 [00:00&lt;00:01, 26875.17it/s]
+Loading line from dict:  41%|████      | 29460/71796 [00:01&lt;00:01, 26442.09it/s]
+Loading line from dict:  45%|████▍     | 32180/71796 [00:01&lt;00:01, 26143.65it/s]
+Loading line from dict:  49%|████▊     | 34847/71796 [00:01&lt;00:01, 25872.16it/s]
+Loading line from dict:  52%|█████▏    | 37640/71796 [00:01&lt;00:01, 26460.59it/s]
+Loading line from dict:  57%|█████▋    | 40648/71796 [00:01&lt;00:01, 27512.38it/s]
+Loading line from dict:  61%|██████    | 43604/71796 [00:01&lt;00:01, 28110.31it/s]
+Loading line from dict:  65%|██████▍   | 46574/71796 [00:01&lt;00:00, 28578.99it/s]
+Loading line from dict:  69%|██████▉   | 49568/71796 [00:01&lt;00:00, 28978.82it/s]
+Loading line from dict:  73%|███████▎  | 52558/71796 [00:01&lt;00:00, 29251.88it/s]
+Loading line from dict:  77%|███████▋  | 55580/71796 [00:02&lt;00:00, 29530.58it/s]
+Loading line from dict:  82%|████████▏ | 58539/71796 [00:02&lt;00:00, 22368.32it/s]
+Loading line from dict:  86%|████████▌ | 61508/71796 [00:02&lt;00:00, 24153.56it/s]
+Loading line from dict:  89%|████████▉ | 64148/71796 [00:02&lt;00:00, 24642.40it/s]
+Loading line from dict:  93%|█████████▎| 66777/71796 [00:02&lt;00:00, 24825.36it/s]
+Loading line from dict:  97%|█████████▋| 69376/71796 [00:02&lt;00:00, 24992.97it/s]
+Loading line from dict: 100%|██████████| 71796/71796 [00:02&lt;00:00, 26356.70it/s]
 Done loading line from dict.
 Compiling ContextCpu kernels...
 Done compiling ContextCpu kernels.
@@ -331,458 +319,6 @@ Use simple quadrupoles
 Rebuild tracker data
 Compiling ContextCpu kernels...
 Done compiling ContextCpu kernels.
-SingleRFHarmonicMatcher: Gaussian parameter is equal to 0.002m to achieve target RMS bunch length (0.002m).
-SingleRFHarmonicMatcher: Transforming distribution: 18%
-SingleRFHarmonicMatcher: Transforming distribution: 19%
-SingleRFHarmonicMatcher: Transforming distribution: 19%
-SingleRFHarmonicMatcher: Transforming distribution: 20%
-SingleRFHarmonicMatcher: Transforming distribution: 21%
-SingleRFHarmonicMatcher: Transforming distribution: 21%
-SingleRFHarmonicMatcher: Transforming distribution: 22%
-SingleRFHarmonicMatcher: Transforming distribution: 23%
-SingleRFHarmonicMatcher: Transforming distribution: 23%
-SingleRFHarmonicMatcher: Transforming distribution: 24%
-SingleRFHarmonicMatcher: Transforming distribution: 25%
-SingleRFHarmonicMatcher: Transforming distribution: 25%
-SingleRFHarmonicMatcher: Transforming distribution: 26%
-SingleRFHarmonicMatcher: Transforming distribution: 27%
-SingleRFHarmonicMatcher: Transforming distribution: 27%
-SingleRFHarmonicMatcher: Transforming distribution: 28%
-SingleRFHarmonicMatcher: Transforming distribution: 29%
-SingleRFHarmonicMatcher: Transforming distribution: 29%
-SingleRFHarmonicMatcher: Transforming distribution: 30%
-SingleRFHarmonicMatcher: Transforming distribution: 31%
-SingleRFHarmonicMatcher: Transforming distribution: 31%
-SingleRFHarmonicMatcher: Transforming distribution: 32%
-SingleRFHarmonicMatcher: Transforming distribution: 33%
-SingleRFHarmonicMatcher: Transforming distribution: 33%
-SingleRFHarmonicMatcher: Transforming distribution: 34%
-SingleRFHarmonicMatcher: Transforming distribution: 35%
-SingleRFHarmonicMatcher: Transforming distribution: 35%
-SingleRFHarmonicMatcher: Transforming distribution: 36%
-SingleRFHarmonicMatcher: Transforming distribution: 37%
-SingleRFHarmonicMatcher: Transforming distribution: 37%
-SingleRFHarmonicMatcher: Transforming distribution: 38%
-SingleRFHarmonicMatcher: Transforming distribution: 39%
-SingleRFHarmonicMatcher: Transforming distribution: 39%
-SingleRFHarmonicMatcher: Transforming distribution: 40%
-SingleRFHarmonicMatcher: Transforming distribution: 41%
-SingleRFHarmonicMatcher: Transforming distribution: 41%
-SingleRFHarmonicMatcher: Transforming distribution: 42%
-SingleRFHarmonicMatcher: Transforming distribution: 43%
-SingleRFHarmonicMatcher: Transforming distribution: 43%
-SingleRFHarmonicMatcher: Transforming distribution: 44%
-SingleRFHarmonicMatcher: Transforming distribution: 45%
-SingleRFHarmonicMatcher: Transforming distribution: 45%
-SingleRFHarmonicMatcher: Transforming distribution: 46%
-SingleRFHarmonicMatcher: Transforming distribution: 47%
-SingleRFHarmonicMatcher: Transforming distribution: 47%
-SingleRFHarmonicMatcher: Transforming distribution: 48%
-SingleRFHarmonicMatcher: Transforming distribution: 49%
-SingleRFHarmonicMatcher: Transforming distribution: 49%
-SingleRFHarmonicMatcher: Transforming distribution: 50%
-SingleRFHarmonicMatcher: Transforming distribution: 51%
-SingleRFHarmonicMatcher: Transforming distribution: 51%
-SingleRFHarmonicMatcher: Transforming distribution: 52%
-SingleRFHarmonicMatcher: Transforming distribution: 53%
-SingleRFHarmonicMatcher: Transforming distribution: 53%
-SingleRFHarmonicMatcher: Transforming distribution: 54%
-SingleRFHarmonicMatcher: Transforming distribution: 55%
-SingleRFHarmonicMatcher: Transforming distribution: 55%
-SingleRFHarmonicMatcher: Transforming distribution: 56%
-SingleRFHarmonicMatcher: Transforming distribution: 57%
-SingleRFHarmonicMatcher: Transforming distribution: 57%
-SingleRFHarmonicMatcher: Transforming distribution: 58%
-SingleRFHarmonicMatcher: Transforming distribution: 59%
-SingleRFHarmonicMatcher: Transforming distribution: 59%
-SingleRFHarmonicMatcher: Transforming distribution: 60%
-SingleRFHarmonicMatcher: Transforming distribution: 61%
-SingleRFHarmonicMatcher: Transforming distribution: 61%
-SingleRFHarmonicMatcher: Transforming distribution: 62%
-SingleRFHarmonicMatcher: Transforming distribution: 63%
-SingleRFHarmonicMatcher: Transforming distribution: 63%
-SingleRFHarmonicMatcher: Transforming distribution: 64%
-SingleRFHarmonicMatcher: Transforming distribution: 65%
-SingleRFHarmonicMatcher: Transforming distribution: 65%
-SingleRFHarmonicMatcher: Transforming distribution: 66%
-SingleRFHarmonicMatcher: Transforming distribution: 67%
-SingleRFHarmonicMatcher: Transforming distribution: 67%
-SingleRFHarmonicMatcher: Transforming distribution: 68%
-SingleRFHarmonicMatcher: Transforming distribution: 69%
-SingleRFHarmonicMatcher: Transforming distribution: 69%
-SingleRFHarmonicMatcher: Transforming distribution: 70%
-SingleRFHarmonicMatcher: Transforming distribution: 71%
-SingleRFHarmonicMatcher: Transforming distribution: 71%
-SingleRFHarmonicMatcher: Transforming distribution: 72%
-SingleRFHarmonicMatcher: Transforming distribution: 73%
-SingleRFHarmonicMatcher: Transforming distribution: 73%
-SingleRFHarmonicMatcher: Transforming distribution: 74%
-SingleRFHarmonicMatcher: Transforming distribution: 75%
-SingleRFHarmonicMatcher: Transforming distribution: 75%
-SingleRFHarmonicMatcher: Transforming distribution: 76%
-SingleRFHarmonicMatcher: Transforming distribution: 77%
-SingleRFHarmonicMatcher: Transforming distribution: 77%
-SingleRFHarmonicMatcher: Transforming distribution: 78%
-SingleRFHarmonicMatcher: Transforming distribution: 79%
-SingleRFHarmonicMatcher: Transforming distribution: 79%
-SingleRFHarmonicMatcher: Transforming distribution: 80%
-SingleRFHarmonicMatcher: Transforming distribution: 81%
-SingleRFHarmonicMatcher: Transforming distribution: 81%
-SingleRFHarmonicMatcher: Transforming distribution: 82%
-SingleRFHarmonicMatcher: Transforming distribution: 83%
-SingleRFHarmonicMatcher: Transforming distribution: 83%
-SingleRFHarmonicMatcher: Transforming distribution: 84%
-SingleRFHarmonicMatcher: Transforming distribution: 85%
-SingleRFHarmonicMatcher: Transforming distribution: 85%
-SingleRFHarmonicMatcher: Transforming distribution: 86%
-SingleRFHarmonicMatcher: Transforming distribution: 87%
-SingleRFHarmonicMatcher: Transforming distribution: 87%
-SingleRFHarmonicMatcher: Transforming distribution: 88%
-SingleRFHarmonicMatcher: Transforming distribution: 89%
-SingleRFHarmonicMatcher: Transforming distribution: 89%
-SingleRFHarmonicMatcher: Transforming distribution: 90%
-SingleRFHarmonicMatcher: Transforming distribution: 91%
-SingleRFHarmonicMatcher: Transforming distribution: 91%
-SingleRFHarmonicMatcher: Transforming distribution: 92%
-SingleRFHarmonicMatcher: Transforming distribution: 93%
-SingleRFHarmonicMatcher: Transforming distribution: 93%
-SingleRFHarmonicMatcher: Transforming distribution: 94%
-SingleRFHarmonicMatcher: Transforming distribution: 95%
-SingleRFHarmonicMatcher: Transforming distribution: 95%
-SingleRFHarmonicMatcher: Transforming distribution: 96%
-SingleRFHarmonicMatcher: Transforming distribution: 97%
-SingleRFHarmonicMatcher: Transforming distribution: 97%
-SingleRFHarmonicMatcher: Transforming distribution: 98%
-SingleRFHarmonicMatcher: Transforming distribution: 99%
-SingleRFHarmonicMatcher: Transforming distribution: 99%
-SingleRFHarmonicMatcher: Done transforming distribution.
-SingleRFHarmonicMatcher: Sampling particles:  0%
-SingleRFHarmonicMatcher: Sampling particles:  0%
-SingleRFHarmonicMatcher: Sampling particles:  1%
-SingleRFHarmonicMatcher: Sampling particles:  1%
-SingleRFHarmonicMatcher: Sampling particles:  1%
-SingleRFHarmonicMatcher: Sampling particles:  2%
-SingleRFHarmonicMatcher: Sampling particles:  2%
-SingleRFHarmonicMatcher: Sampling particles:  2%
-SingleRFHarmonicMatcher: Sampling particles:  3%
-SingleRFHarmonicMatcher: Sampling particles:  3%
-SingleRFHarmonicMatcher: Sampling particles:  3%
-SingleRFHarmonicMatcher: Sampling particles:  3%
-SingleRFHarmonicMatcher: Sampling particles:  4%
-SingleRFHarmonicMatcher: Sampling particles:  4%
-SingleRFHarmonicMatcher: Sampling particles:  4%
-SingleRFHarmonicMatcher: Sampling particles:  5%
-SingleRFHarmonicMatcher: Sampling particles:  5%
-SingleRFHarmonicMatcher: Sampling particles:  5%
-SingleRFHarmonicMatcher: Sampling particles:  5%
-SingleRFHarmonicMatcher: Sampling particles:  6%
-SingleRFHarmonicMatcher: Sampling particles:  6%
-SingleRFHarmonicMatcher: Sampling particles:  6%
-SingleRFHarmonicMatcher: Sampling particles:  7%
-SingleRFHarmonicMatcher: Sampling particles:  7%
-SingleRFHarmonicMatcher: Sampling particles:  7%
-SingleRFHarmonicMatcher: Sampling particles:  8%
-SingleRFHarmonicMatcher: Sampling particles:  8%
-SingleRFHarmonicMatcher: Sampling particles:  8%
-SingleRFHarmonicMatcher: Sampling particles:  9%
-SingleRFHarmonicMatcher: Sampling particles:  9%
-SingleRFHarmonicMatcher: Sampling particles:  9%
-SingleRFHarmonicMatcher: Sampling particles: 10%
-SingleRFHarmonicMatcher: Sampling particles: 10%
-SingleRFHarmonicMatcher: Sampling particles: 10%
-SingleRFHarmonicMatcher: Sampling particles: 10%
-SingleRFHarmonicMatcher: Sampling particles: 11%
-SingleRFHarmonicMatcher: Sampling particles: 11%
-SingleRFHarmonicMatcher: Sampling particles: 11%
-SingleRFHarmonicMatcher: Sampling particles: 12%
-SingleRFHarmonicMatcher: Sampling particles: 12%
-SingleRFHarmonicMatcher: Sampling particles: 12%
-SingleRFHarmonicMatcher: Sampling particles: 12%
-SingleRFHarmonicMatcher: Sampling particles: 13%
-SingleRFHarmonicMatcher: Sampling particles: 13%
-SingleRFHarmonicMatcher: Sampling particles: 13%
-SingleRFHarmonicMatcher: Sampling particles: 14%
-SingleRFHarmonicMatcher: Sampling particles: 14%
-SingleRFHarmonicMatcher: Sampling particles: 14%
-SingleRFHarmonicMatcher: Sampling particles: 15%
-SingleRFHarmonicMatcher: Sampling particles: 15%
-SingleRFHarmonicMatcher: Sampling particles: 15%
-SingleRFHarmonicMatcher: Sampling particles: 16%
-SingleRFHarmonicMatcher: Sampling particles: 16%
-SingleRFHarmonicMatcher: Sampling particles: 16%
-SingleRFHarmonicMatcher: Sampling particles: 17%
-SingleRFHarmonicMatcher: Sampling particles: 17%
-SingleRFHarmonicMatcher: Sampling particles: 17%
-SingleRFHarmonicMatcher: Sampling particles: 17%
-SingleRFHarmonicMatcher: Sampling particles: 18%
-SingleRFHarmonicMatcher: Sampling particles: 18%
-SingleRFHarmonicMatcher: Sampling particles: 19%
-SingleRFHarmonicMatcher: Sampling particles: 19%
-SingleRFHarmonicMatcher: Sampling particles: 19%
-SingleRFHarmonicMatcher: Sampling particles: 19%
-SingleRFHarmonicMatcher: Sampling particles: 20%
-SingleRFHarmonicMatcher: Sampling particles: 20%
-SingleRFHarmonicMatcher: Sampling particles: 20%
-SingleRFHarmonicMatcher: Sampling particles: 21%
-SingleRFHarmonicMatcher: Sampling particles: 21%
-SingleRFHarmonicMatcher: Sampling particles: 21%
-SingleRFHarmonicMatcher: Sampling particles: 22%
-SingleRFHarmonicMatcher: Sampling particles: 22%
-SingleRFHarmonicMatcher: Sampling particles: 22%
-SingleRFHarmonicMatcher: Sampling particles: 22%
-SingleRFHarmonicMatcher: Sampling particles: 23%
-SingleRFHarmonicMatcher: Sampling particles: 23%
-SingleRFHarmonicMatcher: Sampling particles: 23%
-SingleRFHarmonicMatcher: Sampling particles: 24%
-SingleRFHarmonicMatcher: Sampling particles: 24%
-SingleRFHarmonicMatcher: Sampling particles: 24%
-SingleRFHarmonicMatcher: Sampling particles: 25%
-SingleRFHarmonicMatcher: Sampling particles: 25%
-SingleRFHarmonicMatcher: Sampling particles: 25%
-SingleRFHarmonicMatcher: Sampling particles: 26%
-SingleRFHarmonicMatcher: Sampling particles: 26%
-SingleRFHarmonicMatcher: Sampling particles: 26%
-SingleRFHarmonicMatcher: Sampling particles: 27%
-SingleRFHarmonicMatcher: Sampling particles: 27%
-SingleRFHarmonicMatcher: Sampling particles: 27%
-SingleRFHarmonicMatcher: Sampling particles: 28%
-SingleRFHarmonicMatcher: Sampling particles: 28%
-SingleRFHarmonicMatcher: Sampling particles: 28%
-SingleRFHarmonicMatcher: Sampling particles: 29%
-SingleRFHarmonicMatcher: Sampling particles: 29%
-SingleRFHarmonicMatcher: Sampling particles: 29%
-SingleRFHarmonicMatcher: Sampling particles: 29%
-SingleRFHarmonicMatcher: Sampling particles: 30%
-SingleRFHarmonicMatcher: Sampling particles: 30%
-SingleRFHarmonicMatcher: Sampling particles: 30%
-SingleRFHarmonicMatcher: Sampling particles: 31%
-SingleRFHarmonicMatcher: Sampling particles: 31%
-SingleRFHarmonicMatcher: Sampling particles: 31%
-SingleRFHarmonicMatcher: Sampling particles: 32%
-SingleRFHarmonicMatcher: Sampling particles: 32%
-SingleRFHarmonicMatcher: Sampling particles: 32%
-SingleRFHarmonicMatcher: Sampling particles: 33%
-SingleRFHarmonicMatcher: Sampling particles: 33%
-SingleRFHarmonicMatcher: Sampling particles: 33%
-SingleRFHarmonicMatcher: Sampling particles: 34%
-SingleRFHarmonicMatcher: Sampling particles: 34%
-SingleRFHarmonicMatcher: Sampling particles: 34%
-SingleRFHarmonicMatcher: Sampling particles: 35%
-SingleRFHarmonicMatcher: Sampling particles: 35%
-SingleRFHarmonicMatcher: Sampling particles: 35%
-SingleRFHarmonicMatcher: Sampling particles: 36%
-SingleRFHarmonicMatcher: Sampling particles: 36%
-SingleRFHarmonicMatcher: Sampling particles: 36%
-SingleRFHarmonicMatcher: Sampling particles: 36%
-SingleRFHarmonicMatcher: Sampling particles: 37%
-SingleRFHarmonicMatcher: Sampling particles: 37%
-SingleRFHarmonicMatcher: Sampling particles: 37%
-SingleRFHarmonicMatcher: Sampling particles: 38%
-SingleRFHarmonicMatcher: Sampling particles: 38%
-SingleRFHarmonicMatcher: Sampling particles: 38%
-SingleRFHarmonicMatcher: Sampling particles: 39%
-SingleRFHarmonicMatcher: Sampling particles: 39%
-SingleRFHarmonicMatcher: Sampling particles: 39%
-SingleRFHarmonicMatcher: Sampling particles: 40%
-SingleRFHarmonicMatcher: Sampling particles: 40%
-SingleRFHarmonicMatcher: Sampling particles: 40%
-SingleRFHarmonicMatcher: Sampling particles: 40%
-SingleRFHarmonicMatcher: Sampling particles: 41%
-SingleRFHarmonicMatcher: Sampling particles: 41%
-SingleRFHarmonicMatcher: Sampling particles: 41%
-SingleRFHarmonicMatcher: Sampling particles: 42%
-SingleRFHarmonicMatcher: Sampling particles: 42%
-SingleRFHarmonicMatcher: Sampling particles: 42%
-SingleRFHarmonicMatcher: Sampling particles: 43%
-SingleRFHarmonicMatcher: Sampling particles: 43%
-SingleRFHarmonicMatcher: Sampling particles: 43%
-SingleRFHarmonicMatcher: Sampling particles: 44%
-SingleRFHarmonicMatcher: Sampling particles: 44%
-SingleRFHarmonicMatcher: Sampling particles: 44%
-SingleRFHarmonicMatcher: Sampling particles: 45%
-SingleRFHarmonicMatcher: Sampling particles: 45%
-SingleRFHarmonicMatcher: Sampling particles: 45%
-SingleRFHarmonicMatcher: Sampling particles: 45%
-SingleRFHarmonicMatcher: Sampling particles: 46%
-SingleRFHarmonicMatcher: Sampling particles: 46%
-SingleRFHarmonicMatcher: Sampling particles: 46%
-SingleRFHarmonicMatcher: Sampling particles: 46%
-SingleRFHarmonicMatcher: Sampling particles: 47%
-SingleRFHarmonicMatcher: Sampling particles: 47%
-SingleRFHarmonicMatcher: Sampling particles: 47%
-SingleRFHarmonicMatcher: Sampling particles: 48%
-SingleRFHarmonicMatcher: Sampling particles: 48%
-SingleRFHarmonicMatcher: Sampling particles: 48%
-SingleRFHarmonicMatcher: Sampling particles: 49%
-SingleRFHarmonicMatcher: Sampling particles: 49%
-SingleRFHarmonicMatcher: Sampling particles: 49%
-SingleRFHarmonicMatcher: Sampling particles: 50%
-SingleRFHarmonicMatcher: Sampling particles: 50%
-SingleRFHarmonicMatcher: Sampling particles: 50%
-SingleRFHarmonicMatcher: Sampling particles: 51%
-SingleRFHarmonicMatcher: Sampling particles: 51%
-SingleRFHarmonicMatcher: Sampling particles: 51%
-SingleRFHarmonicMatcher: Sampling particles: 52%
-SingleRFHarmonicMatcher: Sampling particles: 52%
-SingleRFHarmonicMatcher: Sampling particles: 52%
-SingleRFHarmonicMatcher: Sampling particles: 53%
-SingleRFHarmonicMatcher: Sampling particles: 53%
-SingleRFHarmonicMatcher: Sampling particles: 53%
-SingleRFHarmonicMatcher: Sampling particles: 53%
-SingleRFHarmonicMatcher: Sampling particles: 54%
-SingleRFHarmonicMatcher: Sampling particles: 54%
-SingleRFHarmonicMatcher: Sampling particles: 54%
-SingleRFHarmonicMatcher: Sampling particles: 54%
-SingleRFHarmonicMatcher: Sampling particles: 55%
-SingleRFHarmonicMatcher: Sampling particles: 55%
-SingleRFHarmonicMatcher: Sampling particles: 55%
-SingleRFHarmonicMatcher: Sampling particles: 56%
-SingleRFHarmonicMatcher: Sampling particles: 56%
-SingleRFHarmonicMatcher: Sampling particles: 56%
-SingleRFHarmonicMatcher: Sampling particles: 57%
-SingleRFHarmonicMatcher: Sampling particles: 57%
-SingleRFHarmonicMatcher: Sampling particles: 57%
-SingleRFHarmonicMatcher: Sampling particles: 57%
-SingleRFHarmonicMatcher: Sampling particles: 58%
-SingleRFHarmonicMatcher: Sampling particles: 58%
-SingleRFHarmonicMatcher: Sampling particles: 58%
-SingleRFHarmonicMatcher: Sampling particles: 59%
-SingleRFHarmonicMatcher: Sampling particles: 59%
-SingleRFHarmonicMatcher: Sampling particles: 59%
-SingleRFHarmonicMatcher: Sampling particles: 60%
-SingleRFHarmonicMatcher: Sampling particles: 60%
-SingleRFHarmonicMatcher: Sampling particles: 60%
-SingleRFHarmonicMatcher: Sampling particles: 60%
-SingleRFHarmonicMatcher: Sampling particles: 61%
-SingleRFHarmonicMatcher: Sampling particles: 61%
-SingleRFHarmonicMatcher: Sampling particles: 62%
-SingleRFHarmonicMatcher: Sampling particles: 62%
-SingleRFHarmonicMatcher: Sampling particles: 62%
-SingleRFHarmonicMatcher: Sampling particles: 62%
-SingleRFHarmonicMatcher: Sampling particles: 63%
-SingleRFHarmonicMatcher: Sampling particles: 63%
-SingleRFHarmonicMatcher: Sampling particles: 63%
-SingleRFHarmonicMatcher: Sampling particles: 64%
-SingleRFHarmonicMatcher: Sampling particles: 64%
-SingleRFHarmonicMatcher: Sampling particles: 64%
-SingleRFHarmonicMatcher: Sampling particles: 65%
-SingleRFHarmonicMatcher: Sampling particles: 65%
-SingleRFHarmonicMatcher: Sampling particles: 65%
-SingleRFHarmonicMatcher: Sampling particles: 65%
-SingleRFHarmonicMatcher: Sampling particles: 66%
-SingleRFHarmonicMatcher: Sampling particles: 66%
-SingleRFHarmonicMatcher: Sampling particles: 66%
-SingleRFHarmonicMatcher: Sampling particles: 67%
-SingleRFHarmonicMatcher: Sampling particles: 67%
-SingleRFHarmonicMatcher: Sampling particles: 67%
-SingleRFHarmonicMatcher: Sampling particles: 68%
-SingleRFHarmonicMatcher: Sampling particles: 68%
-SingleRFHarmonicMatcher: Sampling particles: 68%
-SingleRFHarmonicMatcher: Sampling particles: 69%
-SingleRFHarmonicMatcher: Sampling particles: 69%
-SingleRFHarmonicMatcher: Sampling particles: 69%
-SingleRFHarmonicMatcher: Sampling particles: 70%
-SingleRFHarmonicMatcher: Sampling particles: 70%
-SingleRFHarmonicMatcher: Sampling particles: 70%
-SingleRFHarmonicMatcher: Sampling particles: 71%
-SingleRFHarmonicMatcher: Sampling particles: 71%
-SingleRFHarmonicMatcher: Sampling particles: 71%
-SingleRFHarmonicMatcher: Sampling particles: 71%
-SingleRFHarmonicMatcher: Sampling particles: 72%
-SingleRFHarmonicMatcher: Sampling particles: 72%
-SingleRFHarmonicMatcher: Sampling particles: 72%
-SingleRFHarmonicMatcher: Sampling particles: 72%
-SingleRFHarmonicMatcher: Sampling particles: 73%
-SingleRFHarmonicMatcher: Sampling particles: 73%
-SingleRFHarmonicMatcher: Sampling particles: 73%
-SingleRFHarmonicMatcher: Sampling particles: 74%
-SingleRFHarmonicMatcher: Sampling particles: 74%
-SingleRFHarmonicMatcher: Sampling particles: 74%
-SingleRFHarmonicMatcher: Sampling particles: 75%
-SingleRFHarmonicMatcher: Sampling particles: 75%
-SingleRFHarmonicMatcher: Sampling particles: 75%
-SingleRFHarmonicMatcher: Sampling particles: 76%
-SingleRFHarmonicMatcher: Sampling particles: 76%
-SingleRFHarmonicMatcher: Sampling particles: 76%
-SingleRFHarmonicMatcher: Sampling particles: 77%
-SingleRFHarmonicMatcher: Sampling particles: 77%
-SingleRFHarmonicMatcher: Sampling particles: 77%
-SingleRFHarmonicMatcher: Sampling particles: 77%
-SingleRFHarmonicMatcher: Sampling particles: 78%
-SingleRFHarmonicMatcher: Sampling particles: 78%
-SingleRFHarmonicMatcher: Sampling particles: 78%
-SingleRFHarmonicMatcher: Sampling particles: 79%
-SingleRFHarmonicMatcher: Sampling particles: 79%
-SingleRFHarmonicMatcher: Sampling particles: 79%
-SingleRFHarmonicMatcher: Sampling particles: 80%
-SingleRFHarmonicMatcher: Sampling particles: 80%
-SingleRFHarmonicMatcher: Sampling particles: 80%
-SingleRFHarmonicMatcher: Sampling particles: 81%
-SingleRFHarmonicMatcher: Sampling particles: 81%
-SingleRFHarmonicMatcher: Sampling particles: 81%
-SingleRFHarmonicMatcher: Sampling particles: 81%
-SingleRFHarmonicMatcher: Sampling particles: 82%
-SingleRFHarmonicMatcher: Sampling particles: 82%
-SingleRFHarmonicMatcher: Sampling particles: 82%
-SingleRFHarmonicMatcher: Sampling particles: 83%
-SingleRFHarmonicMatcher: Sampling particles: 83%
-SingleRFHarmonicMatcher: Sampling particles: 83%
-SingleRFHarmonicMatcher: Sampling particles: 84%
-SingleRFHarmonicMatcher: Sampling particles: 84%
-SingleRFHarmonicMatcher: Sampling particles: 84%
-SingleRFHarmonicMatcher: Sampling particles: 85%
-SingleRFHarmonicMatcher: Sampling particles: 85%
-SingleRFHarmonicMatcher: Sampling particles: 85%
-SingleRFHarmonicMatcher: Sampling particles: 86%
-SingleRFHarmonicMatcher: Sampling particles: 86%
-SingleRFHarmonicMatcher: Sampling particles: 86%
-SingleRFHarmonicMatcher: Sampling particles: 87%
-SingleRFHarmonicMatcher: Sampling particles: 87%
-SingleRFHarmonicMatcher: Sampling particles: 87%
-SingleRFHarmonicMatcher: Sampling particles: 87%
-SingleRFHarmonicMatcher: Sampling particles: 88%
-SingleRFHarmonicMatcher: Sampling particles: 88%
-SingleRFHarmonicMatcher: Sampling particles: 88%
-SingleRFHarmonicMatcher: Sampling particles: 89%
-SingleRFHarmonicMatcher: Sampling particles: 89%
-SingleRFHarmonicMatcher: Sampling particles: 89%
-SingleRFHarmonicMatcher: Sampling particles: 90%
-SingleRFHarmonicMatcher: Sampling particles: 90%
-SingleRFHarmonicMatcher: Sampling particles: 90%
-SingleRFHarmonicMatcher: Sampling particles: 91%
-SingleRFHarmonicMatcher: Sampling particles: 91%
-SingleRFHarmonicMatcher: Sampling particles: 91%
-SingleRFHarmonicMatcher: Sampling particles: 91%
-SingleRFHarmonicMatcher: Sampling particles: 92%
-SingleRFHarmonicMatcher: Sampling particles: 92%
-SingleRFHarmonicMatcher: Sampling particles: 92%
-SingleRFHarmonicMatcher: Sampling particles: 93%
-SingleRFHarmonicMatcher: Sampling particles: 93%
-SingleRFHarmonicMatcher: Sampling particles: 93%
-SingleRFHarmonicMatcher: Sampling particles: 94%
-SingleRFHarmonicMatcher: Sampling particles: 94%
-SingleRFHarmonicMatcher: Sampling particles: 94%
-SingleRFHarmonicMatcher: Sampling particles: 94%
-SingleRFHarmonicMatcher: Sampling particles: 95%
-SingleRFHarmonicMatcher: Sampling particles: 95%
-SingleRFHarmonicMatcher: Sampling particles: 95%
-SingleRFHarmonicMatcher: Sampling particles: 96%
-SingleRFHarmonicMatcher: Sampling particles: 96%
-SingleRFHarmonicMatcher: Sampling particles: 96%
-SingleRFHarmonicMatcher: Sampling particles: 97%
-SingleRFHarmonicMatcher: Sampling particles: 97%
-SingleRFHarmonicMatcher: Sampling particles: 97%
-SingleRFHarmonicMatcher: Sampling particles: 98%
-SingleRFHarmonicMatcher: Sampling particles: 98%
-SingleRFHarmonicMatcher: Sampling particles: 98%
-SingleRFHarmonicMatcher: Sampling particles: 98%
-SingleRFHarmonicMatcher: Sampling particles: 99%
-SingleRFHarmonicMatcher: Sampling particles: 99%
-SingleRFHarmonicMatcher: Sampling particles: 99%
-SingleRFHarmonicMatcher: Sampling particles: 100%
-SingleRFHarmonicMatcher: Sampling particles: 100%
-SingleRFHarmonicMatcher: Sampling particles: 100%
-SingleRFHarmonicMatcher: Sampled 15000 particles
 </pre></div>
 </div>
 </section>
@@ -835,8 +371,8 @@ internally in the <strong>IBS</strong> object and will be updated internally eac
 <span class="nb">print</span><span class="p">(</span><span class="n">IBS</span><span class="o">.</span><span class="n">kick_coefficients</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>IBSKickCoefficients(Kx=8.605633748344334e-09, Ky=4.40156069278551e-10, Kz=2.078608766501851e-06)
-IBSKickCoefficients(Kx=8.605633748344334e-09, Ky=4.40156069278551e-10, Kz=2.078608766501851e-06)
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>IBSKickCoefficients(Kx=8.648911930561637e-09, Ky=4.3746781201809343e-10, Kz=LinkedArrayCpu(2.10183671e-06))
+IBSKickCoefficients(Kx=8.648911930561637e-09, Ky=4.3746781201809343e-10, Kz=LinkedArrayCpu(2.10183671e-06))
 </pre></div>
 </div>
 <p>We can also manually set arbitrary values of kick coefficients through the
@@ -889,7 +425,7 @@ in the <a class="reference internal" href="demo_analytical_nagaitsev_emittances.
 <span class="n">NIBS</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/abc.html#abc.ABC" title="abc.ABC" class="sphx-glr-backref-module-abc sphx-glr-backref-type-py-class"><span class="n">NagaitsevIBS</span></a><span class="p">(</span><span class="n">beamparams</span><span class="p">,</span> <span class="n">opticsparams</span><span class="p">)</span>
 
 <span class="c1"># Re-create particles with less elements as tracking takes a while</span>
-<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_part</span></a> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">2.5e3</span><span class="p">)</span>  <span class="c1"># 2500 particles should be enough for this example</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_part</span></a> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.5e3</span><span class="p">)</span>  <span class="c1"># 1500 particles should be enough for this example</span>
 <span class="n">particles</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">generate_matched_gaussian_bunch</span><span class="p">(</span>
     <span class="n">num_particles</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">n_part</span></a><span class="p">,</span>
     <span class="n">total_intensity_particles</span><span class="o">=</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">bunch_intensity</span></a><span class="p">,</span>
@@ -900,7 +436,7 @@ in the <a class="reference internal" href="demo_analytical_nagaitsev_emittances.
 <span class="p">)</span>
 
 <span class="c1"># Define some parameters for the tracking</span>
-<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a> <span class="o">=</span> <span class="mi">1_000</span>  <span class="c1"># number of turns to loop for</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a> <span class="o">=</span> <span class="mi">750</span>  <span class="c1"># number of turns to loop for</span>
 <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ibs_step</span></a> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># frequency at which to re-compute the growth rates &amp; kick coefficients in [turns]</span>
 </pre></div>
 </div>
@@ -913,15 +449,13 @@ in the <a class="reference internal" href="demo_analytical_nagaitsev_emittances.
     <span class="n">bunch_length</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class"><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></a>
 
     <span class="k">def</span> <span class="nf">update_at_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parts</span><span class="p">:</span> <span class="n">xp</span><span class="o">.</span><span class="n">Particles</span><span class="p">,</span> <span class="n">twiss</span><span class="p">:</span> <span class="n">xt</span><span class="o">.</span><span class="n">TwissTable</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically update the records at given turn from the xpart.Particles.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_x</span><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <span class="n">_geom_epsx</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <span class="n">twiss</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_y</span><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <span class="n">_geom_epsy</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <span class="n">twiss</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_x</span><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <span class="n">_geom_epsx</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">twiss</span><span class="o">.</span><span class="n">betx</span></a><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">twiss</span><span class="o">.</span><span class="n">dx</span></a><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_y</span><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <span class="n">_geom_epsy</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">twiss</span><span class="o">.</span><span class="n">bety</span></a><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">twiss</span><span class="o">.</span><span class="n">dy</span></a><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sigma_delta</span><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <span class="n">_sigma_delta</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bunch_length</span><span class="p">[</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a><span class="p">]</span> <span class="o">=</span> <span class="n">_bunch_length</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">init_zeroes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_turns</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <a href="https://docs.python.org/3/library/typing.html#typing.Self" title="typing.Self" class="sphx-glr-backref-module-typing sphx-glr-backref-type-py-data"><span class="n">Self</span></a><span class="p">:</span>  <span class="c1"># noqa: F821</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the dataclass with arrays of zeroes.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">epsilon_x</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="n">n_turns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
             <span class="n">epsilon_y</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="n">n_turns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
@@ -930,11 +464,10 @@ in the <a class="reference internal" href="demo_analytical_nagaitsev_emittances.
         <span class="p">)</span>
 
 
-<span class="c1"># Initialize the dataclasses</span>
+<span class="c1"># Initialize the dataclasses &amp; store the initial values</span>
 <span class="n">kicked_tbt</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">init_zeroes</span><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">)</span>
 <span class="n">analytical_tbt</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">init_zeroes</span><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">)</span>
 
-<span class="c1"># Store the initial values</span>
 <span class="n">kicked_tbt</span><span class="o">.</span><span class="n">update_at_turn</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">particles</span><span class="p">,</span> <span class="n">twiss</span><span class="p">)</span>
 <span class="n">analytical_tbt</span><span class="o">.</span><span class="n">update_at_turn</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">particles</span><span class="p">,</span> <span class="n">twiss</span><span class="p">)</span>
 
@@ -951,7 +484,8 @@ in the <a class="reference internal" href="demo_analytical_nagaitsev_emittances.
 <p>Now, since <code class="docutils literal notranslate"><span class="pre">xibs</span></code> is not fully integrated into Xsuite, we will have to manually
 apply the IBS kick at each turn of tracking, and also manually trigger the turn
 of tracking. Just like in the analytical examples, we do so in a loop over the turns:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We loop here now</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ----- We loop here now ----- #</span>
+
 <span class="k">for</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">):</span>
     <span class="c1"># ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #</span>
     <span class="k">if</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">%</span> <a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ibs_step</span></a> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turn</span></a> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
@@ -1737,256 +1271,6 @@ Turn 746
 Turn 747
 Turn 748
 Turn 749
-Turn 750: re-computing growth rates and kick coefficients
-Turn 751
-Turn 752
-Turn 753
-Turn 754
-Turn 755
-Turn 756
-Turn 757
-Turn 758
-Turn 759
-Turn 760
-Turn 761
-Turn 762
-Turn 763
-Turn 764
-Turn 765
-Turn 766
-Turn 767
-Turn 768
-Turn 769
-Turn 770
-Turn 771
-Turn 772
-Turn 773
-Turn 774
-Turn 775
-Turn 776
-Turn 777
-Turn 778
-Turn 779
-Turn 780
-Turn 781
-Turn 782
-Turn 783
-Turn 784
-Turn 785
-Turn 786
-Turn 787
-Turn 788
-Turn 789
-Turn 790
-Turn 791
-Turn 792
-Turn 793
-Turn 794
-Turn 795
-Turn 796
-Turn 797
-Turn 798
-Turn 799
-Turn 800: re-computing growth rates and kick coefficients
-Turn 801
-Turn 802
-Turn 803
-Turn 804
-Turn 805
-Turn 806
-Turn 807
-Turn 808
-Turn 809
-Turn 810
-Turn 811
-Turn 812
-Turn 813
-Turn 814
-Turn 815
-Turn 816
-Turn 817
-Turn 818
-Turn 819
-Turn 820
-Turn 821
-Turn 822
-Turn 823
-Turn 824
-Turn 825
-Turn 826
-Turn 827
-Turn 828
-Turn 829
-Turn 830
-Turn 831
-Turn 832
-Turn 833
-Turn 834
-Turn 835
-Turn 836
-Turn 837
-Turn 838
-Turn 839
-Turn 840
-Turn 841
-Turn 842
-Turn 843
-Turn 844
-Turn 845
-Turn 846
-Turn 847
-Turn 848
-Turn 849
-Turn 850: re-computing growth rates and kick coefficients
-Turn 851
-Turn 852
-Turn 853
-Turn 854
-Turn 855
-Turn 856
-Turn 857
-Turn 858
-Turn 859
-Turn 860
-Turn 861
-Turn 862
-Turn 863
-Turn 864
-Turn 865
-Turn 866
-Turn 867
-Turn 868
-Turn 869
-Turn 870
-Turn 871
-Turn 872
-Turn 873
-Turn 874
-Turn 875
-Turn 876
-Turn 877
-Turn 878
-Turn 879
-Turn 880
-Turn 881
-Turn 882
-Turn 883
-Turn 884
-Turn 885
-Turn 886
-Turn 887
-Turn 888
-Turn 889
-Turn 890
-Turn 891
-Turn 892
-Turn 893
-Turn 894
-Turn 895
-Turn 896
-Turn 897
-Turn 898
-Turn 899
-Turn 900: re-computing growth rates and kick coefficients
-Turn 901
-Turn 902
-Turn 903
-Turn 904
-Turn 905
-Turn 906
-Turn 907
-Turn 908
-Turn 909
-Turn 910
-Turn 911
-Turn 912
-Turn 913
-Turn 914
-Turn 915
-Turn 916
-Turn 917
-Turn 918
-Turn 919
-Turn 920
-Turn 921
-Turn 922
-Turn 923
-Turn 924
-Turn 925
-Turn 926
-Turn 927
-Turn 928
-Turn 929
-Turn 930
-Turn 931
-Turn 932
-Turn 933
-Turn 934
-Turn 935
-Turn 936
-Turn 937
-Turn 938
-Turn 939
-Turn 940
-Turn 941
-Turn 942
-Turn 943
-Turn 944
-Turn 945
-Turn 946
-Turn 947
-Turn 948
-Turn 949
-Turn 950: re-computing growth rates and kick coefficients
-Turn 951
-Turn 952
-Turn 953
-Turn 954
-Turn 955
-Turn 956
-Turn 957
-Turn 958
-Turn 959
-Turn 960
-Turn 961
-Turn 962
-Turn 963
-Turn 964
-Turn 965
-Turn 966
-Turn 967
-Turn 968
-Turn 969
-Turn 970
-Turn 971
-Turn 972
-Turn 973
-Turn 974
-Turn 975
-Turn 976
-Turn 977
-Turn 978
-Turn 979
-Turn 980
-Turn 981
-Turn 982
-Turn 983
-Turn 984
-Turn 985
-Turn 986
-Turn 987
-Turn 988
-Turn 989
-Turn 990
-Turn 991
-Turn 992
-Turn 993
-Turn 994
-Turn 995
-Turn 996
-Turn 997
-Turn 998
-Turn 999
 </pre></div>
 </div>
 <p>Feel free to run this simulation for more turns, with a different frequency of
@@ -2041,7 +1325,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kicks</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">IBSKickCoefficients</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">SimpleKickIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_ibs_kick</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 0.503 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 10.084 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-simple-kicks-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/8266b696ee1a21b11713d48f664d0fbf/demo_simple_kicks.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_simple_kicks.ipynb</span></code></a></p>

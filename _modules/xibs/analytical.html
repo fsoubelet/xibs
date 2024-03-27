@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.analytical &mdash; xibs 0.7.1 documentation</title>
+  <title>xibs.analytical &mdash; xibs 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=5a057da9"></script>
+        <script src="../../_static/documentation_options.js?v=486e5634"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.7.1
+                0.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -68,6 +68,22 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html">Automatic Growth Rates Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#instantiate-analytical-ibs-objects">Instantiate Analytical IBS Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#preparing-for-simulation-of-evolution">Preparing for Simulation of Evolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#analytical-evolution-over-time">Analytical Evolution Over Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#takeaways">Takeaways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html">Automatic Kick Coefficients Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#preparing-for-the-tracking-simulation">Preparing for the Tracking Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#tracking-evolution-over-turns">Tracking Evolution Over Turns</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
@@ -132,6 +148,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../faq/coasting_beams.html">Bunched and Coasting Beams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq/auto_recomputing.html">Automatic Recomputation of IBS Kick Coefficients and Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq/auto_recomputing.html#auto-recomputing-for-ibs-kick-classes">Auto-Recomputing for IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq/auto_recomputing.html#auto-recomputing-for-ibs-analytical-classes">Auto-Recomputing for IBS Analytical Classes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Reference Bibliography</a></li>
@@ -198,7 +219,7 @@
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">elliprd</span>
 
-<span class="kn">from</span> <span class="nn">xibs.formulary</span> <span class="kn">import</span> <span class="n">phi</span>
+<span class="kn">from</span> <span class="nn">xibs.formulary</span> <span class="kn">import</span> <span class="n">_percent_change</span><span class="p">,</span> <span class="n">phi</span>
 <span class="kn">from</span> <span class="nn">xibs.inputs</span> <span class="kn">import</span> <span class="n">BeamParameters</span><span class="p">,</span> <span class="n">OpticsParameters</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -208,7 +229,7 @@
 
 <div class="viewcode-block" id="NagaitsevIntegrals">
 <a class="viewcode-back" href="../../modules/index.html#xibs.analytical.NagaitsevIntegrals">[docs]</a>
-<span class="nd">@dataclass</span>
+<span class="nd">@dataclass</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">NagaitsevIntegrals</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. versionadded:: 0.2.0</span>
@@ -229,7 +250,7 @@
 
 <div class="viewcode-block" id="IBSGrowthRates">
 <a class="viewcode-back" href="../../modules/index.html#xibs.analytical.IBSGrowthRates">[docs]</a>
-<span class="nd">@dataclass</span>
+<span class="nd">@dataclass</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">IBSGrowthRates</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. versionadded:: 0.2.0</span>
@@ -248,7 +269,7 @@
 
 
 
-<span class="nd">@dataclass</span>
+<span class="nd">@dataclass</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">_SynchrotronRadiationInputs</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    .. versionadded:: 0.6.0</span>
@@ -270,6 +291,26 @@
     <span class="n">tau_x</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">tau_y</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">tau_z</span><span class="p">:</span> <span class="nb">float</span>
+
+
+<span class="nd">@dataclass</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">_ReferenceValues</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. versionadded:: 0.8.0</span>
+
+<span class="sd">    Private container to store reference values for the checks in auto-recompute behaviour.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        epsx (float): horizontal emittance in [m].</span>
+<span class="sd">        epsy (float): vertical emittance in [m].</span>
+<span class="sd">        sigma_delta (float): momentum spread.</span>
+<span class="sd">        bunch_length (float): bunch length in [m].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">epsx</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">epsy</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span>
 
 
 <span class="c1"># ----- Abstract Base Class to Inherit from ----- #</span>
@@ -296,6 +337,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="p">:</span> <span class="n">OpticsParameters</span> <span class="o">=</span> <span class="n">optics</span>
         <span class="c1"># This one self-updates when computed, but can be overwritten by the user</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="p">:</span> <span class="n">IBSGrowthRates</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Private attributes relating to the auto growth rates computations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refs</span><span class="p">:</span> <span class="n">_ReferenceValues</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># updates when growth rates are computed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_number_of_growth_rates_computations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># increments when growth rates are computed</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">has_growth_rates</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span>
@@ -390,8 +434,12 @@
         <span class="n">TempeV</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">Etrans</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Compute sigmas in each dimension (start from sigma_delta to get sige needed in the formula)</span>
-        <span class="n">sigma_x_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">_bx_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dx_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">sigma_y_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">geom_epsy</span> <span class="o">*</span> <span class="n">_by_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dy_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma_x_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">_bx_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dx_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">sigma_y_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="n">geom_epsy</span> <span class="o">*</span> <span class="n">_by_bar</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dy_bar</span> <span class="o">*</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">beta_rel</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
         <span class="n">sigma_t_cm</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">bunch_length</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Calculate beam volume to get density (in cm^{-3}) then Debye length</span>
@@ -400,7 +448,9 @@
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># coasting beam</span>
             <span class="n">volume</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma_x_cm</span> <span class="o">*</span> <span class="n">sigma_y_cm</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span>
         <span class="n">density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">n_part</span> <span class="o">/</span> <span class="n">volume</span>
-        <span class="n">debyul</span> <span class="o">=</span> <span class="mf">743.4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">TempeV</span> <span class="o">/</span> <span class="n">density</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_charge</span><span class="p">)</span>  <span class="c1"># abs for negative charges!</span>
+        <span class="n">debyul</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mf">743.4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">TempeV</span> <span class="o">/</span> <span class="n">density</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beam_parameters</span><span class="o">.</span><span class="n">particle_charge</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># abs for negative charges!</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Calculate &#39;rmin&#39; as larger of classical distance of closest approach or quantum mechanical</span>
         <span class="c1"># diffraction limit from nuclear radius</span>
@@ -457,6 +507,7 @@
         <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">normalized_emittances</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">auto_recompute_rates_percent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -522,6 +573,15 @@
 <span class="sd">            bunch_length (float): the bunch length in [m].</span>
 <span class="sd">            normalized_emittances (bool): whether the provided emittances are</span>
 <span class="sd">                normalized or not. Defaults to `False` (assume geometric emittances).</span>
+<span class="sd">            auto_recompute_rates_percent (float): Optional. If given, a check is performed to</span>
+<span class="sd">                determine if an update of the growth rates is necessary, in which case it will</span>
+<span class="sd">                be done before computing the emittance evolutions. **Please provide a value as a</span>
+<span class="sd">                percentage of the emittance change since the last update of the growth rates**.</span>
+<span class="sd">                For instance, if one provides `12`, a check is made to see if any quantity would</span>
+<span class="sd">                have changed by more than 12% compared to reference values stored at the last</span>
+<span class="sd">                growth rates update, and if so the growth rates are automatically recomputed to</span>
+<span class="sd">                be as up-to-date as possible before returning the new values. Defaults to `None`</span>
+<span class="sd">                (no checks done, no auto-recomputing).</span>
 <span class="sd">            **kwargs: If keyword arguments are provided, they are considered inputs for the</span>
 <span class="sd">                inclusion of synchrotron radiation in the calculation, and the following are</span>
 <span class="sd">                expected, case-insensitively:</span>
@@ -552,14 +612,17 @@
 <span class="sd">                        the longitudinal damping time from synchrotron radiation, in [s]</span>
 <span class="sd">                        (should be the same unit as `dt`).</span>
 
-
-<span class="sd">        Raises:</span>
-<span class="sd">            AttributeError: if the ``IBS`` growth rates have not yet been computed.</span>
-
 <span class="sd">        Returns:</span>
 <span class="sd">            A tuple with the new horizontal &amp; vertical geometric emittances, the new</span>
 <span class="sd">            momentum spread and the new bunch length, after the time step has ellapsed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># Check that the IBS growth rates have been computed beforehand - compute if not</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Attempted to compute emittance evolution without growth rates, computing them.&quot;</span><span class="p">)</span>
+            <span class="n">bunched</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bunched&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># get the bunched value if provided</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">epsx</span><span class="p">,</span> <span class="n">epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">bunched</span><span class="p">,</span> <span class="n">normalized_emittances</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Computing new emittances from IBS growth rates for defined beam and optics parameters&quot;</span><span class="p">)</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Check the kwargs and potentially get the arguments to include synchrotron radiation</span>
         <span class="n">include_synchrotron_radiation</span> <span class="o">=</span> <span class="kc">False</span>
@@ -584,57 +647,65 @@
             <span class="p">)</span>
             <span class="n">sr_eq_sigma_delta</span> <span class="o">=</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">equilibrium_sigma_delta</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
-        <span class="c1"># Check that the IBS growth rates have been computed beforehand</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Attempted to compute emittance evolution without having computed growth rates.&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s2">&quot;IBS growth rates have not been computed yet, cannot compute new emittances.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;Please call the `growth_rates` method first.&quot;</span>
-            <span class="p">)</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Computing new emittances from IBS growth rates for defined beam and optics parameters&quot;</span><span class="p">)</span>
-        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Set the time step to 1 / frev if not provided</span>
         <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No time step provided, defaulting to 1 / frev&quot;</span><span class="p">)</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">revolution_frequency</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Compute new emittances and return them. Here we multiply because T = 1 / tau</span>
-        <span class="c1"># fmt: off</span>
         <span class="k">if</span> <span class="n">include_synchrotron_radiation</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>  <span class="c1"># the basic calculation</span>
-            <span class="n">new_epsx</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span><span class="p">)</span>
-            <span class="n">new_epsy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">geom_epsy</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span><span class="p">)</span>
-            <span class="n">new_sigma_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span><span class="p">)</span>
-            <span class="n">new_bunch_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">bunch_length</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span><span class="p">)</span>
+            <span class="n">new_epsx</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">,</span> <span class="n">new_sigma_delta</span><span class="p">,</span> <span class="n">new_bunch_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolution_without_sr</span><span class="p">(</span>
+                <span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">dt</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># the modified calculation with Synchrotron Radiation contribution</span>
-            <span class="n">new_epsx</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="o">-</span> <span class="n">sr_eq_geom_epsx</span>
-                <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_geom_epsx</span> <span class="o">+</span> <span class="n">geom_epsx</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_x</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
-                  <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_x</span><span class="p">))</span>
-            <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">new_epsy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="o">-</span> <span class="n">sr_eq_geom_epsy</span>
-                <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_geom_epsy</span> <span class="o">+</span> <span class="n">geom_epsy</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                  <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_y</span><span class="p">))</span>
-            <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># For longitudinal properties, compute the square to avoid too messy code</span>
-            <span class="n">new_sigma_delta_square</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="o">-</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-                <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                  <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span><span class="p">))</span>
-            <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">new_bunch_length_square</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="o">-</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-                <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">bunch_length</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                  <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span><span class="p">))</span>
-            <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># And then simply get the square root of that for the final results</span>
-            <span class="n">new_sigma_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">new_sigma_delta_square</span><span class="p">)</span>
-            <span class="n">new_bunch_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">new_bunch_length_square</span><span class="p">)</span>
-        <span class="c1"># fmt: on</span>
+            <span class="n">new_epsx</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">,</span> <span class="n">new_sigma_delta</span><span class="p">,</span> <span class="n">new_bunch_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolution_with_sr</span><span class="p">(</span>
+                <span class="n">geom_epsx</span><span class="p">,</span>
+                <span class="n">geom_epsy</span><span class="p">,</span>
+                <span class="n">sigma_delta</span><span class="p">,</span>
+                <span class="n">bunch_length</span><span class="p">,</span>
+                <span class="n">dt</span><span class="p">,</span>
+                <span class="n">sr_eq_geom_epsx</span><span class="p">,</span>
+                <span class="n">sr_eq_geom_epsy</span><span class="p">,</span>
+                <span class="n">sr_eq_sigma_delta</span><span class="p">,</span>
+                <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_x</span><span class="p">,</span>
+                <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_y</span><span class="p">,</span>
+                <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
+        <span class="c1"># If auto-recompute is on and the given threshold is exceeded, recompute the growth rates</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">auto_recompute_rates_percent</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bypassed_threshold</span><span class="p">(</span>
+            <span class="n">new_epsx</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">,</span> <span class="n">new_sigma_delta</span><span class="p">,</span> <span class="n">new_bunch_length</span><span class="p">,</span> <span class="n">auto_recompute_rates_percent</span>
+        <span class="p">):</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;One value would change by more than </span><span class="si">{</span><span class="n">auto_recompute_rates_percent</span><span class="si">}</span><span class="s2">% compared to last &quot;</span>
+                <span class="s2">&quot;update of the growth rates, updating growth rates before re-computing evolutions.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">bunched</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bunched&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># get the bunched value if provided</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">epsx</span><span class="p">,</span> <span class="n">epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">bunched</span><span class="p">,</span> <span class="n">normalized_emittances</span><span class="p">)</span>
+            <span class="c1"># And now we need to recompute the evolutions since the growth rates have been updated</span>
+            <span class="k">if</span> <span class="n">include_synchrotron_radiation</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>  <span class="c1"># the basic calculation</span>
+                <span class="n">new_epsx</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">,</span> <span class="n">new_sigma_delta</span><span class="p">,</span> <span class="n">new_bunch_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolution_without_sr</span><span class="p">(</span>
+                    <span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">,</span> <span class="n">dt</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># the modified calculation with Synchrotron Radiation contribution</span>
+                <span class="n">new_epsx</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">,</span> <span class="n">new_sigma_delta</span><span class="p">,</span> <span class="n">new_bunch_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evolution_with_sr</span><span class="p">(</span>
+                    <span class="n">geom_epsx</span><span class="p">,</span>
+                    <span class="n">geom_epsy</span><span class="p">,</span>
+                    <span class="n">sigma_delta</span><span class="p">,</span>
+                    <span class="n">bunch_length</span><span class="p">,</span>
+                    <span class="n">dt</span><span class="p">,</span>
+                    <span class="n">sr_eq_geom_epsx</span><span class="p">,</span>
+                    <span class="n">sr_eq_geom_epsy</span><span class="p">,</span>
+                    <span class="n">sr_eq_sigma_delta</span><span class="p">,</span>
+                    <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_x</span><span class="p">,</span>
+                    <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_y</span><span class="p">,</span>
+                    <span class="n">sr_inputs</span><span class="o">.</span><span class="n">tau_z</span><span class="p">,</span>
+                <span class="p">)</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="c1"># Make sure we return the same type of emittances as the user provided</span>
         <span class="n">new_epsx</span> <span class="o">=</span> <span class="n">new_epsx</span> <span class="k">if</span> <span class="n">normalized_emittances</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_emittance</span><span class="p">(</span><span class="n">new_epsx</span><span class="p">)</span>
         <span class="n">new_epsy</span> <span class="o">=</span> <span class="n">new_epsy</span> <span class="k">if</span> <span class="n">normalized_emittances</span> <span class="ow">is</span> <span class="kc">False</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_emittance</span><span class="p">(</span><span class="n">new_epsy</span><span class="p">)</span>
+        <span class="c1"># ----------------------------------------------------------------------------------------------</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_epsx</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_epsy</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_sigma_delta</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_bunch_length</span><span class="p">)</span></div>
 
 
@@ -647,8 +718,6 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            geometric_emittance (float): geometric emittance in [m].</span>
-<span class="sd">            beta_ref (float): relativistic beta.</span>
-<span class="sd">            gamma_rel (float): relativistic gamma.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The normalized emittance in [m].</span>
@@ -664,8 +733,6 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            normalized_emittance (float): normalized emittance in [m].</span>
-<span class="sd">            beta_ref (float): relativistic beta.</span>
-<span class="sd">            gamma_rel (float): relativistic gamma.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The geometric emittance in [m].</span>
@@ -708,7 +775,81 @@
             <span class="n">tau_x</span><span class="o">=</span><span class="n">lowercase_kwargs</span><span class="p">[</span><span class="s2">&quot;sr_tau_x&quot;</span><span class="p">],</span>
             <span class="n">tau_y</span><span class="o">=</span><span class="n">lowercase_kwargs</span><span class="p">[</span><span class="s2">&quot;sr_tau_y&quot;</span><span class="p">],</span>
             <span class="n">tau_z</span><span class="o">=</span><span class="n">lowercase_kwargs</span><span class="p">[</span><span class="s2">&quot;sr_tau_z&quot;</span><span class="p">],</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_evolution_without_sr</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geom_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Just the calculation, called by main method when relevant.&quot;&quot;&quot;</span>
+        <span class="n">new_epsx</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">geom_epsx</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span><span class="p">)</span>
+        <span class="n">new_epsy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">geom_epsy</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span><span class="p">)</span>
+        <span class="n">new_sigma_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sigma_delta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span><span class="p">)</span>
+        <span class="n">new_bunch_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">bunch_length</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_epsx</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_epsy</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_sigma_delta</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_bunch_length</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_evolution_with_sr</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">geom_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">geom_epsy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">bunch_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sr_eq_geom_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sr_eq_geom_epsy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sr_eq_sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sr_taux</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sr_tauy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">sr_tauz</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Just the calculation, called by main method when relevant.&quot;&quot;&quot;</span>
+        <span class="c1"># fmt: off</span>
+        <span class="n">new_epsx</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span> <span class="n">sr_eq_geom_epsx</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_geom_epsx</span> <span class="o">+</span> <span class="n">geom_epsx</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_taux</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_taux</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tx</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_taux</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">new_epsy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span> <span class="n">sr_eq_geom_epsy</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_geom_epsy</span> <span class="o">+</span> <span class="n">geom_epsy</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_tauy</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_tauy</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Ty</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_tauy</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># For longitudinal properties, compute the square to avoid too messy code</span>
+        <span class="n">new_sigma_delta_square</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_tauz</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_tauz</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_tauz</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">new_bunch_length_square</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">sr_eq_sigma_delta</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">bunch_length</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_tauz</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sr_tauz</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span><span class="o">.</span><span class="n">Tz</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sr_tauz</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># And then simply get the square root of that for the final results</span>
+        <span class="n">new_sigma_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">new_sigma_delta_square</span><span class="p">)</span>
+        <span class="n">new_bunch_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">new_bunch_length_square</span><span class="p">)</span>
+        <span class="c1"># fmt: on</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_epsx</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_epsy</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_sigma_delta</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_bunch_length</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bypassed_threshold</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">new_epsx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">new_epsy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">new_sigma_delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">new_bunch_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the new values exceed a &#39;threshold&#39;% relative change to the</span>
+<span class="sd">        reference ones stored last time growth rates were computed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>  <span class="c1"># REMEMBER: threshold is a percentage so we need to divide it by 100</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">_percent_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refs</span><span class="o">.</span><span class="n">epsx</span><span class="p">,</span> <span class="n">new_epsx</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">/</span> <span class="mi">100</span>
+            <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_percent_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refs</span><span class="o">.</span><span class="n">epsy</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">/</span> <span class="mi">100</span>
+            <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_percent_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refs</span><span class="o">.</span><span class="n">sigma_delta</span><span class="p">,</span> <span class="n">new_sigma_delta</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">/</span> <span class="mi">100</span>
+            <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">_percent_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_refs</span><span class="o">.</span><span class="n">bunch_length</span><span class="p">,</span> <span class="n">new_bunch_length</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="o">/</span> <span class="mi">100</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
 
 
@@ -960,8 +1101,10 @@
         <span class="n">Tz</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Iz</span> <span class="o">*</span> <span class="n">full_constant_term</span> <span class="o">/</span> <span class="n">sigma_delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">IBSGrowthRates</span><span class="p">(</span><span class="n">Tx</span><span class="p">,</span> <span class="n">Ty</span><span class="p">,</span> <span class="n">Tz</span><span class="p">)</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
-        <span class="c1"># Self-update the instance&#39;s attributes and then return the results</span>
+        <span class="c1"># Self-update the instance&#39;s attributes, some private flags and then return the results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refs</span> <span class="o">=</span> <span class="n">_ReferenceValues</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_number_of_growth_rates_computations</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">result</span></div>
 </div>
 
@@ -1563,6 +1706,7 @@
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Defines limits of intervals, then goes over all intervals and performs the integration</span>
 <span class="sd">            of the provided function on each one. At each step, we add the intermediate values to the</span>
 <span class="sd">            final result, which is returned.&quot;&quot;&quot;</span>
+            <span class="c1"># TODO: parallelize this?</span>
             <span class="n">nb_elements</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">size</span>
             <span class="n">result</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nb_elements</span><span class="p">)</span>
 
@@ -1607,8 +1751,10 @@
             <span class="n">Tz</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">quad</span><span class="p">(</span><span class="n">_tz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">optics</span><span class="o">.</span><span class="n">circumference</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">IBSGrowthRates</span><span class="p">(</span><span class="n">Tx</span><span class="p">,</span> <span class="n">Ty</span><span class="p">,</span> <span class="n">Tz</span><span class="p">)</span>
         <span class="c1"># ----------------------------------------------------------------------------------------------</span>
-        <span class="c1"># Self-update the instance&#39;s attributes and then return the results</span>
+        <span class="c1"># Self-update the instance&#39;s attributes, some private flags and then return the results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ibs_growth_rates</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refs</span> <span class="o">=</span> <span class="n">_ReferenceValues</span><span class="p">(</span><span class="n">geom_epsx</span><span class="p">,</span> <span class="n">geom_epsy</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_number_of_growth_rates_computations</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">result</span></div>
 </div>
 

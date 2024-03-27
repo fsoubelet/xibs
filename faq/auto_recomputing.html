@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" data-content_root="../" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Automatic Recomputation of IBS Kick Coefficients and Growth Rates — xibs 0.8.0 documentation</title>
+<link href="../_static/pygments.css?v=fa44fd50" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/theme.css?v=19f00094" rel="stylesheet" type="text/css"/>
+<link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-codeautolink.css?v=125d5c1c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery.css?v=61a4c737" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-binder.css?v=f4aeca0c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-dataframe.css?v=2082cf3c" rel="stylesheet" type="text/css"/>
+<link href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx-dropdown.css?v=995e94df" rel="stylesheet" type="text/css"/>
+<link href="../_static/panels-bootstrap.min.css?v=21c0b90a" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/custom.css?v=0a86e678" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+<script src="../_static/jquery.js?v=5d32c60e"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+<script src="../_static/documentation_options.js?v=486e5634"></script>
+<script src="../_static/doctools.js?v=888ff710"></script>
+<script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="../_static/copybutton.js?v=f281be69"></script>
+<script src="../_static/js/theme.js"></script>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../bibliography.html" rel="next" title="Reference Bibliography"/>
+<link href="coasting_beams.html" rel="prev" title="Bunched and Coasting Beams"/>
+</head>
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a href="../index.html">
+</a>
+<div class="version">
+                0.8.0
+              </div>
+<div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
+</div>
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#integration-with-xsuite">Integration with xsuite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#formalism-and-models">Formalism and Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#analytical-calculations">Analytical Calculations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#providing-kicks-to-particle-distributions">Providing Kicks to Particle Distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#formalism-dispatch">Formalism Dispatch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html">Automatic Growth Rates Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#instantiate-analytical-ibs-objects">Instantiate Analytical IBS Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#preparing-for-simulation-of-evolution">Preparing for Simulation of Evolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#analytical-evolution-over-time">Analytical Evolution Over Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#takeaways">Takeaways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html">Automatic Kick Coefficients Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#preparing-for-the-tracking-simulation">Preparing for the Tracking Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#tracking-evolution-over-turns">Tracking Evolution Over Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_bjorken_mtingwa_emittances.html#analytical-evolution-for-a-time-period">Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_analyticals.html">Comparison of Analytical IBS Growth Rates and Emittances Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_analyticals.html#comparing-analytical-evolution-for-a-time-period">Comparing Analytical Evolution for a Time Period</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_compare_kicks.html">Comparison of IBS Kicks Formalisms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#generating-the-ibs-kick-classes">Generating the IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_compare_kicks.html#comparing-beam-parameters-evolution-while-applying-ibs-kicks-in-tracking">Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html">Kinetic Kicks Formalism - IBS Kicks Based on Diffusion and Friction Terms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_kinetic_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html">Nagaitsev Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-elliptic-integrals-and-ibs-growth-rates">Computing Elliptic Integrals and IBS Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#computing-new-emittances-from-growth-rates">Computing New Emittances from Growth Rates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_analytical_nagaitsev_emittances.html#analytical-evolution-for-many-turns">Analytical Evolution for Many Turns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../gallery/demo_simple_kicks.html">Simple Kicks Formalism - IBS Kicks Based on Analytical Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gallery/demo_simple_kicks.html#applying-ibs-kicks-in-tracking">Applying IBS Kicks in Tracking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#input-data-structures">Input Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formalism-dispatch">Formalism Dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-analytical-calculations">IBS: Analytical Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#ibs-applying-kicks">IBS: Applying Kicks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#formulary">Formulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Frequently Asked Questions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="input_parameters.html">Instantiating Input Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#opticsparameters-from-an-xtrack-line">OpticsParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#opticsparameters-from-mad-x">OpticsParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#do-i-need-a-full-matched-particle-distribution-for-beamparameters">Do I need a full matched particle distribution for <code class="xref py py-obj docutils literal notranslate"><span class="pre">BeamParameters</span></code>?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#beamparameters-from-an-xtrack-line">BeamParameters from an <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="input_parameters.html#beamparameters-from-mad-x">BeamParameters from <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="emittance_types.html">Emittances: Geometric or Normalized</a></li>
+<li class="toctree-l2"><a class="reference internal" href="radiation.html">Synchrotron Radiation Contribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="radiation.html#getting-sr-parameters-from-xsuite">Getting SR Parameters from Xsuite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="radiation.html#getting-sr-parameters-from-mad-x">Getting SR Parameters from MAD-X</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="coasting_beams.html">Bunched and Coasting Beams</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Automatic Recomputation of IBS Kick Coefficients and Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#auto-recomputing-for-ibs-kick-classes">Auto-Recomputing for IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-recomputing-for-ibs-analytical-classes">Auto-Recomputing for IBS Analytical Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../index.html">xibs</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Home" class="icon icon-home" href="../index.html"></a></li>
+<li class="breadcrumb-item"><a href="index.html">Frequently Asked Questions</a></li>
+<li class="breadcrumb-item active">Automatic Recomputation of IBS Kick Coefficients and Growth Rates</li>
+<li class="wy-breadcrumbs-aside">
+<!-- User defined GitHub URL -->
+<a class="fa fa-github" href="https://github.com/fsoubelet/xibs"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
+<section id="automatic-recomputation-of-ibs-kick-coefficients-and-growth-rates">
+<span id="xibs-faq-auto-recompute-rates-kicks"></span><h1>Automatic Recomputation of IBS Kick Coefficients and Growth Rates<a class="headerlink" href="#automatic-recomputation-of-ibs-kick-coefficients-and-growth-rates" title="Link to this heading"></a></h1>
+<p>It is possible in <code class="docutils literal notranslate"><span class="pre">xibs</span></code> to have the IBS kick class or analytical class automatically recompute the kick coefficients or growth rates, respectively.
+This is done by giving a value to an optional argument, <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_coefficients_percent</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_rates_percent</span></code> respectively, in the relevant place.
+The following sections explain how to do so for each.</p>
+<section id="auto-recomputing-for-ibs-kick-classes">
+<span id="xibs-faq-auto-recompute-kick-coefficients"></span><h2>Auto-Recomputing for IBS Kick Classes<a class="headerlink" href="#auto-recomputing-for-ibs-kick-classes" title="Link to this heading"></a></h2>
+<div class="admonition-this-section-in-short admonition">
+<p class="admonition-title">This section in short</p>
+<p>To let the class automatically determine when to recompute the IBS kick coefficients, set the <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_coefficients_percent</span></code> argument to a value between 0 and 100 when instantiating the class.</p>
+</div>
+<p>It is possible to leave up to the kick class the decision of when to recompute the IBS kick coefficients, instead of doing so manually, by setting the <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_coefficients_percent</span></code> argument to a value between 0 and 100 when instantiating the class.
+In this case, after applying a kick the <code class="xref py py-obj docutils literal notranslate"><span class="pre">xtrack.Particles</span></code>’ emittances post-kick are compared to those pre-kick, and if the relative change exceeds the given percentage in any plane, an internal flag is set so that the coefficients will be automatically recomputed <em>before</em> the next kick application.</p>
+<p>The values checked are: horizontal emittance, vertical emittance, bunch length and relative momentum spread.</p>
+<p>For instance, if one provides <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_coefficients_percent=5</span></code> and any of the above quantities changes by more than 5% after a kick (compared to before), the kick coefficients will be recomputed next time the <code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_ibs_kick</span></code> method is called.
+This allows not having to manually ask for the coefficients to be recomputed, and simplifies the loop seen in the example galleries, as one can observe below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your beam and optics parameters have been instantiated</span>
+<span class="n">IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">kicks</span><span class="o">.</span><span class="n">KineticKickIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">,</span> <span class="n">auto_recompute_coefficients_percent</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># IBS = xibs.kicks.SimpleKickIBS(beam_params, optics, auto_recompute_coefficients_percent=10)</span>
+
+<span class="c1"># One should always have the initial coefficients computed</span>
+<span class="n">IBS</span><span class="o">.</span><span class="n">compute_kick_coefficients</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
+
+<span class="c1"># Let's assume your line and particles have been instantiated</span>
+<span class="k">for</span> <span class="n">turn</span> <span class="ow">in</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/stdtypes.html#range" title="range"><span class="nb">range</span></a><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_turns</span><span class="p">):</span>
+    <span class="c1"># The following (commented out) line is not necessary anymore</span>
+    <span class="c1"># IBS.compute_kick_coefficients(particles)</span>
+    <span class="n">IBS</span><span class="o">.</span><span class="n">apply_ibs_kick</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>  <span class="c1"># auto-recompute kick coefficients if needed</span>
+    <span class="n">line</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span> <span class="n">num_turns</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>One can find an example of this feature in the <a class="reference internal" href="../gallery/demo_kicks_auto_recompute_coefficients.html#demo-kicks-auto-coefficients"><span class="std std-ref">dedicated example gallery</span></a>.</p>
+</section>
+<section id="auto-recomputing-for-ibs-analytical-classes">
+<span id="xibs-faq-auto-recompute-growth-rates"></span><h2>Auto-Recomputing for IBS Analytical Classes<a class="headerlink" href="#auto-recomputing-for-ibs-analytical-classes" title="Link to this heading"></a></h2>
+<div class="admonition-this-section-in-short admonition">
+<p class="admonition-title">This section in short</p>
+<p>To let the class automatically determine when to recompute the IBS growth rates, set the <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_rates_percent</span></code> argument to a value higher than 0 when calling the <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code> method.</p>
+</div>
+<p>It is possible to leave up to the analytical class the decision to recompute or not the IBS growth rates, instead of doing so manually, by setting the <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_rates_percent</span></code> argument to a value higher than 0 when calling the <code class="xref py py-obj docutils literal notranslate"><span class="pre">emittance_evolution</span></code> method.
+In this case, the horizontal and vertical emittances, bunch length and relative momentum spread at the next time step are computed.
+A check is performed to see if the relative change of at least one of these values exceeds the given percentage compared to reference values stored at the last growth rates update.
+If so, then growth rates are re-computed and the evolution to the next time step is calculated again.
+No more check is performed, as the growth rates are then the most up-to-date they can possibly be.</p>
+<p>For instance, if one provides <code class="xref py py-obj docutils literal notranslate"><span class="pre">auto_recompute_rates_percent=5</span></code> and after the time step any of the above quantities changes by more than 5% from the reference values, the growth rates are recomputed and the evolution to the next time step is calculated once again.
+This allows not having to manually ask for the growth rates to be recomputed, and simplifies the loop seen in the example galleries, as one can observe below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's assume your beam and optics parameters have been instantiated</span>
+<span class="n">IBS</span> <span class="o">=</span> <span class="n">xibs</span><span class="o">.</span><span class="n">analytical</span><span class="o">.</span><span class="n">BjorkenMtingwaIBS</span><span class="p">(</span><span class="n">beam_params</span><span class="p">,</span> <span class="n">optics</span><span class="p">)</span>
+<span class="c1"># IBS = xibs.analytical.NagaitsevIBS(beam_params, optics)</span>
+
+<span class="c1"># One should always have the initial growth rates computed</span>
+<span class="n">IBS</span><span class="o">.</span><span class="n">growth_rates</span><span class="p">(</span><span class="n">eps_x</span><span class="p">,</span> <span class="n">eps_y</span><span class="p">,</span> <span class="n">sigma_delta</span><span class="p">,</span> <span class="n">bunch_length</span><span class="p">)</span>
+
+<span class="c1"># Let's assume the current step's properties are already known</span>
+<span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <a class="sphinx-codeautolink-a" href="https://docs.python.org/3/library/stdtypes.html#range" title="range"><span class="nb">range</span></a><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_seconds</span><span class="p">):</span>
+    <span class="c1"># The following (commented out) line is not necessary anymore</span>
+    <span class="c1"># IBS.growth_rates(eps_x, eps_y, sigma_delta, bunch_length)</span>
+    <span class="n">new_epsx</span><span class="p">,</span> <span class="n">new_epsy</span><span class="p">,</span> <span class="n">new_sigma_delta</span><span class="p">,</span> <span class="n">new_bunch_length</span> <span class="o">=</span> <span class="n">IBS</span><span class="o">.</span><span class="n">emittance_evolution</span><span class="p">(</span>
+        <span class="n">eps_x</span><span class="p">,</span>
+        <span class="n">eps_y</span><span class="p">,</span>
+        <span class="n">sigma_delta</span><span class="p">,</span>
+        <span class="n">bunch_length</span><span class="p">,</span>
+        <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">auto_recompute_rates_percent</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="c1"># auto-recompute growth rates if needed</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>One can find an example of this feature in the <a class="reference internal" href="../gallery/demo_analytical_auto_recompute_rates.html#demo-analytical-auto-growth-rates"><span class="std std-ref">dedicated example gallery</span></a>.</p>
+</section>
+</section>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="coasting_beams.html" rel="prev" title="Bunched and Coasting Beams"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="n" class="btn btn-neutral float-right" href="../bibliography.html" rel="next" title="Reference Bibliography">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2023, Felix Soubelet.</p>
+</div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+</div>
+</div>
+</section>
+</div>
+<script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+</body>
+</html>

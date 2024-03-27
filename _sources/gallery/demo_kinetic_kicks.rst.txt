@@ -36,7 +36,7 @@ It implements IBS kicks based on the formalism described in :cite:`NuclInstr:Zen
 We will demonstrate using an `xtrack.Line` of the ``CLIC`` damping ring,
 for a positron beam.
 
-.. GENERATED FROM PYTHON SOURCE LINES 21-52
+.. GENERATED FROM PYTHON SOURCE LINES 21-54
 
 .. code-block:: Python
 
@@ -54,6 +54,7 @@ for a positron beam.
     import xtrack as xt
 
     from xibs.analytical import NagaitsevIBS
+    from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
     from xibs.inputs import BeamParameters, OpticsParameters
     from xibs.kicks import DiffusionCoefficients, KineticKickIBS
 
@@ -78,63 +79,16 @@ for a positron beam.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 54-58
 
-We will define here some helper functions we will regularly use later on to
-compute the emittances, bunch lengths and momentum spread from and `xpart.Particles`
-object representing our particle distribution. In each, let's make sure to filter
-for only the active particles (``state > 0``).
-
-.. GENERATED FROM PYTHON SOURCE LINES 58-88
-
-.. code-block:: Python
-
-
-
-    def _bunch_length(parts: xp.Particles) -> float:
-        return np.std(parts.zeta[parts.state > 0])
-
-
-    def _sigma_delta(parts: xp.Particles) -> float:
-        return np.std(parts.delta[parts.state > 0])
-
-
-    def _geom_epsx(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-        """
-        We index dx and betx at 0 which corresponds to the beginning / end of
-        the line, since this is where / when we will be applying the kicks.
-        """
-        sigma_x = np.std(parts.x[parts.state > 0])
-        sig_delta = _sigma_delta(parts)
-        return (sigma_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-
-
-    def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-        """
-        We index dy and bety at 0 which corresponds to the beginning / end of
-        the line, since this is where / when we will be applying the kicks.
-        """
-        sigma_y = np.std(parts.y[parts.state > 0])
-        sig_delta = _sigma_delta(parts)
-        return (sigma_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
-
-
-
-
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 89-94
+.. GENERATED FROM PYTHON SOURCE LINES 56-61
 
 Let's start by defining the line and particle information, as well as some
 parameters for later use. Note that `bunch_intensity` is the actual number
-of particles in the bunch, and its value influences the analytical IBS growth
-rates calculation while `n_part` is the number of generated particles for
+of particles in the bunch, and its value influences the IBS kick coefficients
+calculation while `n_part` is the number of generated particles for
 tracking, which is much lower.
 
-.. GENERATED FROM PYTHON SOURCE LINES 94-102
+.. GENERATED FROM PYTHON SOURCE LINES 61-69
 
 .. code-block:: Python
 
@@ -153,7 +107,7 @@ tracking, which is much lower.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 103-108
+.. GENERATED FROM PYTHON SOURCE LINES 70-75
 
 Setting up line and particles
 -----------------------------
@@ -161,7 +115,7 @@ Let's now load the line from file, activate the accelerating cavities and
 create a context for multithreading with OpenMP, since tracking particles
 is going to take some time:
 
-.. GENERATED FROM PYTHON SOURCE LINES 108-131
+.. GENERATED FROM PYTHON SOURCE LINES 75-97
 
 .. code-block:: Python
 
@@ -185,7 +139,6 @@ is going to take some time:
         nemitt_y=nemitt_y,
         sigma_z=sigma_z,
         line=line,
-        engine="single-rf-harmonic",
     )
 
 
@@ -196,7 +149,7 @@ is going to take some time:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▍         | 2938/71796 [00:00<00:02, 29364.84it/s]    Loading line from dict:   8%|▊         | 5918/71796 [00:00<00:02, 29598.20it/s]    Loading line from dict:  12%|█▏        | 8898/71796 [00:00<00:02, 29680.91it/s]    Loading line from dict:  17%|█▋        | 11871/71796 [00:00<00:02, 29699.48it/s]    Loading line from dict:  21%|██        | 14841/71796 [00:00<00:02, 23353.38it/s]    Loading line from dict:  25%|██▍       | 17790/71796 [00:00<00:02, 25120.03it/s]    Loading line from dict:  29%|██▉       | 20750/71796 [00:00<00:01, 26421.55it/s]    Loading line from dict:  33%|███▎      | 23702/71796 [00:00<00:01, 27324.62it/s]    Loading line from dict:  37%|███▋      | 26523/71796 [00:00<00:01, 27585.53it/s]    Loading line from dict:  41%|████      | 29342/71796 [00:01<00:01, 26895.52it/s]    Loading line from dict:  45%|████▍     | 32076/71796 [00:01<00:01, 26402.38it/s]    Loading line from dict:  48%|████▊     | 34747/71796 [00:01<00:01, 26065.53it/s]    Loading line from dict:  52%|█████▏    | 37484/71796 [00:01<00:01, 26440.15it/s]    Loading line from dict:  56%|█████▋    | 40458/71796 [00:01<00:01, 27403.12it/s]    Loading line from dict:  60%|██████    | 43424/71796 [00:01<00:01, 28062.02it/s]    Loading line from dict:  65%|██████▍   | 46352/71796 [00:01<00:00, 28420.61it/s]    Loading line from dict:  69%|██████▊   | 49331/71796 [00:01<00:00, 28826.28it/s]    Loading line from dict:  73%|███████▎  | 52303/71796 [00:01<00:00, 29092.04it/s]    Loading line from dict:  77%|███████▋  | 55218/71796 [00:02<00:00, 22440.67it/s]    Loading line from dict:  81%|████████  | 58160/71796 [00:02<00:00, 24166.20it/s]    Loading line from dict:  85%|████████▌ | 61120/71796 [00:02<00:00, 25583.26it/s]    Loading line from dict:  89%|████████▉ | 63840/71796 [00:02<00:00, 25885.49it/s]    Loading line from dict:  93%|█████████▎| 66545/71796 [00:02<00:00, 25699.14it/s]    Loading line from dict:  96%|█████████▋| 69196/71796 [00:02<00:00, 25463.97it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:02<00:00, 26405.55it/s]
+    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▍         | 2904/71796 [00:00<00:02, 29038.09it/s]    Loading line from dict:   8%|▊         | 5870/71796 [00:00<00:02, 29396.71it/s]    Loading line from dict:  12%|█▏        | 8822/71796 [00:00<00:02, 29448.01it/s]    Loading line from dict:  16%|█▋        | 11793/71796 [00:00<00:02, 29550.65it/s]    Loading line from dict:  21%|██        | 14750/71796 [00:00<00:01, 29553.85it/s]    Loading line from dict:  25%|██▍       | 17706/71796 [00:00<00:02, 22852.33it/s]    Loading line from dict:  29%|██▉       | 20666/71796 [00:00<00:02, 24683.86it/s]    Loading line from dict:  33%|███▎      | 23625/71796 [00:00<00:01, 26059.46it/s]    Loading line from dict:  37%|███▋      | 26556/71796 [00:00<00:01, 26981.97it/s]    Loading line from dict:  41%|████      | 29357/71796 [00:01<00:01, 26380.63it/s]    Loading line from dict:  45%|████▍     | 32067/71796 [00:01<00:01, 25971.28it/s]    Loading line from dict:  48%|████▊     | 34714/71796 [00:01<00:01, 25757.10it/s]    Loading line from dict:  52%|█████▏    | 37488/71796 [00:01<00:01, 26320.26it/s]    Loading line from dict:  56%|█████▋    | 40479/71796 [00:01<00:01, 27362.43it/s]    Loading line from dict:  60%|██████    | 43436/71796 [00:01<00:01, 28006.65it/s]    Loading line from dict:  65%|██████▍   | 46336/71796 [00:01<00:00, 28299.78it/s]    Loading line from dict:  69%|██████▊   | 49276/71796 [00:01<00:00, 28625.32it/s]    Loading line from dict:  73%|███████▎  | 52244/71796 [00:01<00:00, 28903.57it/s]    Loading line from dict:  77%|███████▋  | 55228/71796 [00:02<00:00, 29180.13it/s]    Loading line from dict:  81%|████████  | 58151/71796 [00:02<00:00, 22042.58it/s]    Loading line from dict:  85%|████████▌ | 61098/71796 [00:02<00:00, 23844.37it/s]    Loading line from dict:  89%|████████▉ | 63755/71796 [00:02<00:00, 24547.73it/s]    Loading line from dict:  92%|█████████▏| 66379/71796 [00:02<00:00, 24772.55it/s]    Loading line from dict:  96%|█████████▌| 68977/71796 [00:02<00:00, 24932.96it/s]    Loading line from dict: 100%|█████████▉| 71556/71796 [00:02<00:00, 25016.46it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:02<00:00, 26212.81it/s]
     Done loading line from dict.           
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
@@ -212,21 +165,18 @@ is going to take some time:
     Rebuild tracker data
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
-    SingleRFHarmonicMatcher: Gaussian parameter is equal to 0.002m to achieve target RMS bunch length (0.002m).
-    SingleRFHarmonicMatcher: Transforming distribution: 18%      SingleRFHarmonicMatcher: Transforming distribution: 19%      SingleRFHarmonicMatcher: Transforming distribution: 19%      SingleRFHarmonicMatcher: Transforming distribution: 20%      SingleRFHarmonicMatcher: Transforming distribution: 21%      SingleRFHarmonicMatcher: Transforming distribution: 21%      SingleRFHarmonicMatcher: Transforming distribution: 22%      SingleRFHarmonicMatcher: Transforming distribution: 23%      SingleRFHarmonicMatcher: Transforming distribution: 23%      SingleRFHarmonicMatcher: Transforming distribution: 24%      SingleRFHarmonicMatcher: Transforming distribution: 25%      SingleRFHarmonicMatcher: Transforming distribution: 25%      SingleRFHarmonicMatcher: Transforming distribution: 26%      SingleRFHarmonicMatcher: Transforming distribution: 27%      SingleRFHarmonicMatcher: Transforming distribution: 27%      SingleRFHarmonicMatcher: Transforming distribution: 28%      SingleRFHarmonicMatcher: Transforming distribution: 29%      SingleRFHarmonicMatcher: Transforming distribution: 29%      SingleRFHarmonicMatcher: Transforming distribution: 30%      SingleRFHarmonicMatcher: Transforming distribution: 31%      SingleRFHarmonicMatcher: Transforming distribution: 31%      SingleRFHarmonicMatcher: Transforming distribution: 32%      SingleRFHarmonicMatcher: Transforming distribution: 33%      SingleRFHarmonicMatcher: Transforming distribution: 33%      SingleRFHarmonicMatcher: Transforming distribution: 34%      SingleRFHarmonicMatcher: Transforming distribution: 35%      SingleRFHarmonicMatcher: Transforming distribution: 35%      SingleRFHarmonicMatcher: Transforming distribution: 36%      SingleRFHarmonicMatcher: Transforming distribution: 37%      SingleRFHarmonicMatcher: Transforming distribution: 37%      SingleRFHarmonicMatcher: Transforming distribution: 38%      SingleRFHarmonicMatcher: Transforming distribution: 39%      SingleRFHarmonicMatcher: Transforming distribution: 39%      SingleRFHarmonicMatcher: Transforming distribution: 40%      SingleRFHarmonicMatcher: Transforming distribution: 41%      SingleRFHarmonicMatcher: Transforming distribution: 41%      SingleRFHarmonicMatcher: Transforming distribution: 42%      SingleRFHarmonicMatcher: Transforming distribution: 43%      SingleRFHarmonicMatcher: Transforming distribution: 43%      SingleRFHarmonicMatcher: Transforming distribution: 44%      SingleRFHarmonicMatcher: Transforming distribution: 45%      SingleRFHarmonicMatcher: Transforming distribution: 45%      SingleRFHarmonicMatcher: Transforming distribution: 46%      SingleRFHarmonicMatcher: Transforming distribution: 47%      SingleRFHarmonicMatcher: Transforming distribution: 47%      SingleRFHarmonicMatcher: Transforming distribution: 48%      SingleRFHarmonicMatcher: Transforming distribution: 49%      SingleRFHarmonicMatcher: Transforming distribution: 49%      SingleRFHarmonicMatcher: Transforming distribution: 50%      SingleRFHarmonicMatcher: Transforming distribution: 51%      SingleRFHarmonicMatcher: Transforming distribution: 51%      SingleRFHarmonicMatcher: Transforming distribution: 52%      SingleRFHarmonicMatcher: Transforming distribution: 53%      SingleRFHarmonicMatcher: Transforming distribution: 53%      SingleRFHarmonicMatcher: Transforming distribution: 54%      SingleRFHarmonicMatcher: Transforming distribution: 55%      SingleRFHarmonicMatcher: Transforming distribution: 55%      SingleRFHarmonicMatcher: Transforming distribution: 56%      SingleRFHarmonicMatcher: Transforming distribution: 57%      SingleRFHarmonicMatcher: Transforming distribution: 57%      SingleRFHarmonicMatcher: Transforming distribution: 58%      SingleRFHarmonicMatcher: Transforming distribution: 59%      SingleRFHarmonicMatcher: Transforming distribution: 59%      SingleRFHarmonicMatcher: Transforming distribution: 60%      SingleRFHarmonicMatcher: Transforming distribution: 61%      SingleRFHarmonicMatcher: Transforming distribution: 61%      SingleRFHarmonicMatcher: Transforming distribution: 62%      SingleRFHarmonicMatcher: Transforming distribution: 63%      SingleRFHarmonicMatcher: Transforming distribution: 63%      SingleRFHarmonicMatcher: Transforming distribution: 64%      SingleRFHarmonicMatcher: Transforming distribution: 65%      SingleRFHarmonicMatcher: Transforming distribution: 65%      SingleRFHarmonicMatcher: Transforming distribution: 66%      SingleRFHarmonicMatcher: Transforming distribution: 67%      SingleRFHarmonicMatcher: Transforming distribution: 67%      SingleRFHarmonicMatcher: Transforming distribution: 68%      SingleRFHarmonicMatcher: Transforming distribution: 69%      SingleRFHarmonicMatcher: Transforming distribution: 69%      SingleRFHarmonicMatcher: Transforming distribution: 70%      SingleRFHarmonicMatcher: Transforming distribution: 71%      SingleRFHarmonicMatcher: Transforming distribution: 71%      SingleRFHarmonicMatcher: Transforming distribution: 72%      SingleRFHarmonicMatcher: Transforming distribution: 73%      SingleRFHarmonicMatcher: Transforming distribution: 73%      SingleRFHarmonicMatcher: Transforming distribution: 74%      SingleRFHarmonicMatcher: Transforming distribution: 75%      SingleRFHarmonicMatcher: Transforming distribution: 75%      SingleRFHarmonicMatcher: Transforming distribution: 76%      SingleRFHarmonicMatcher: Transforming distribution: 77%      SingleRFHarmonicMatcher: Transforming distribution: 77%      SingleRFHarmonicMatcher: Transforming distribution: 78%      SingleRFHarmonicMatcher: Transforming distribution: 79%      SingleRFHarmonicMatcher: Transforming distribution: 79%      SingleRFHarmonicMatcher: Transforming distribution: 80%      SingleRFHarmonicMatcher: Transforming distribution: 81%      SingleRFHarmonicMatcher: Transforming distribution: 81%      SingleRFHarmonicMatcher: Transforming distribution: 82%      SingleRFHarmonicMatcher: Transforming distribution: 83%      SingleRFHarmonicMatcher: Transforming distribution: 83%      SingleRFHarmonicMatcher: Transforming distribution: 84%      SingleRFHarmonicMatcher: Transforming distribution: 85%      SingleRFHarmonicMatcher: Transforming distribution: 85%      SingleRFHarmonicMatcher: Transforming distribution: 86%      SingleRFHarmonicMatcher: Transforming distribution: 87%      SingleRFHarmonicMatcher: Transforming distribution: 87%      SingleRFHarmonicMatcher: Transforming distribution: 88%      SingleRFHarmonicMatcher: Transforming distribution: 89%      SingleRFHarmonicMatcher: Transforming distribution: 89%      SingleRFHarmonicMatcher: Transforming distribution: 90%      SingleRFHarmonicMatcher: Transforming distribution: 91%      SingleRFHarmonicMatcher: Transforming distribution: 91%      SingleRFHarmonicMatcher: Transforming distribution: 92%      SingleRFHarmonicMatcher: Transforming distribution: 93%      SingleRFHarmonicMatcher: Transforming distribution: 93%      SingleRFHarmonicMatcher: Transforming distribution: 94%      SingleRFHarmonicMatcher: Transforming distribution: 95%      SingleRFHarmonicMatcher: Transforming distribution: 95%      SingleRFHarmonicMatcher: Transforming distribution: 96%      SingleRFHarmonicMatcher: Transforming distribution: 97%      SingleRFHarmonicMatcher: Transforming distribution: 97%      SingleRFHarmonicMatcher: Transforming distribution: 98%      SingleRFHarmonicMatcher: Transforming distribution: 99%      SingleRFHarmonicMatcher: Transforming distribution: 99%      SingleRFHarmonicMatcher: Done transforming distribution.
-    SingleRFHarmonicMatcher: Sampling particles:  0%      SingleRFHarmonicMatcher: Sampling particles:  1%      SingleRFHarmonicMatcher: Sampling particles:  1%      SingleRFHarmonicMatcher: Sampling particles:  1%      SingleRFHarmonicMatcher: Sampling particles:  1%      SingleRFHarmonicMatcher: Sampling particles:  2%      SingleRFHarmonicMatcher: Sampling particles:  2%      SingleRFHarmonicMatcher: Sampling particles:  2%      SingleRFHarmonicMatcher: Sampling particles:  3%      SingleRFHarmonicMatcher: Sampling particles:  3%      SingleRFHarmonicMatcher: Sampling particles:  3%      SingleRFHarmonicMatcher: Sampling particles:  4%      SingleRFHarmonicMatcher: Sampling particles:  4%      SingleRFHarmonicMatcher: Sampling particles:  4%      SingleRFHarmonicMatcher: Sampling particles:  4%      SingleRFHarmonicMatcher: Sampling particles:  5%      SingleRFHarmonicMatcher: Sampling particles:  5%      SingleRFHarmonicMatcher: Sampling particles:  5%      SingleRFHarmonicMatcher: Sampling particles:  6%      SingleRFHarmonicMatcher: Sampling particles:  6%      SingleRFHarmonicMatcher: Sampling particles:  6%      SingleRFHarmonicMatcher: Sampling particles:  6%      SingleRFHarmonicMatcher: Sampling particles:  7%      SingleRFHarmonicMatcher: Sampling particles:  7%      SingleRFHarmonicMatcher: Sampling particles:  7%      SingleRFHarmonicMatcher: Sampling particles:  8%      SingleRFHarmonicMatcher: Sampling particles:  8%      SingleRFHarmonicMatcher: Sampling particles:  8%      SingleRFHarmonicMatcher: Sampling particles:  8%      SingleRFHarmonicMatcher: Sampling particles:  9%      SingleRFHarmonicMatcher: Sampling particles:  9%      SingleRFHarmonicMatcher: Sampling particles:  9%      SingleRFHarmonicMatcher: Sampling particles: 10%      SingleRFHarmonicMatcher: Sampling particles: 10%      SingleRFHarmonicMatcher: Sampling particles: 10%      SingleRFHarmonicMatcher: Sampling particles: 11%      SingleRFHarmonicMatcher: Sampling particles: 11%      SingleRFHarmonicMatcher: Sampling particles: 11%      SingleRFHarmonicMatcher: Sampling particles: 12%      SingleRFHarmonicMatcher: Sampling particles: 12%      SingleRFHarmonicMatcher: Sampling particles: 12%      SingleRFHarmonicMatcher: Sampling particles: 12%      SingleRFHarmonicMatcher: Sampling particles: 13%      SingleRFHarmonicMatcher: Sampling particles: 13%      SingleRFHarmonicMatcher: Sampling particles: 13%      SingleRFHarmonicMatcher: Sampling particles: 13%      SingleRFHarmonicMatcher: Sampling particles: 14%      SingleRFHarmonicMatcher: Sampling particles: 14%      SingleRFHarmonicMatcher: Sampling particles: 14%      SingleRFHarmonicMatcher: Sampling particles: 15%      SingleRFHarmonicMatcher: Sampling particles: 15%      SingleRFHarmonicMatcher: Sampling particles: 15%      SingleRFHarmonicMatcher: Sampling particles: 15%      SingleRFHarmonicMatcher: Sampling particles: 16%      SingleRFHarmonicMatcher: Sampling particles: 16%      SingleRFHarmonicMatcher: Sampling particles: 16%      SingleRFHarmonicMatcher: Sampling particles: 17%      SingleRFHarmonicMatcher: Sampling particles: 17%      SingleRFHarmonicMatcher: Sampling particles: 17%      SingleRFHarmonicMatcher: Sampling particles: 17%      SingleRFHarmonicMatcher: Sampling particles: 18%      SingleRFHarmonicMatcher: Sampling particles: 18%      SingleRFHarmonicMatcher: Sampling particles: 18%      SingleRFHarmonicMatcher: Sampling particles: 19%      SingleRFHarmonicMatcher: Sampling particles: 19%      SingleRFHarmonicMatcher: Sampling particles: 19%      SingleRFHarmonicMatcher: Sampling particles: 20%      SingleRFHarmonicMatcher: Sampling particles: 20%      SingleRFHarmonicMatcher: Sampling particles: 20%      SingleRFHarmonicMatcher: Sampling particles: 21%      SingleRFHarmonicMatcher: Sampling particles: 21%      SingleRFHarmonicMatcher: Sampling particles: 21%      SingleRFHarmonicMatcher: Sampling particles: 22%      SingleRFHarmonicMatcher: Sampling particles: 22%      SingleRFHarmonicMatcher: Sampling particles: 22%      SingleRFHarmonicMatcher: Sampling particles: 23%      SingleRFHarmonicMatcher: Sampling particles: 23%      SingleRFHarmonicMatcher: Sampling particles: 23%      SingleRFHarmonicMatcher: Sampling particles: 24%      SingleRFHarmonicMatcher: Sampling particles: 24%      SingleRFHarmonicMatcher: Sampling particles: 24%      SingleRFHarmonicMatcher: Sampling particles: 24%      SingleRFHarmonicMatcher: Sampling particles: 25%      SingleRFHarmonicMatcher: Sampling particles: 25%      SingleRFHarmonicMatcher: Sampling particles: 25%      SingleRFHarmonicMatcher: Sampling particles: 25%      SingleRFHarmonicMatcher: Sampling particles: 26%      SingleRFHarmonicMatcher: Sampling particles: 26%      SingleRFHarmonicMatcher: Sampling particles: 26%      SingleRFHarmonicMatcher: Sampling particles: 27%      SingleRFHarmonicMatcher: Sampling particles: 27%      SingleRFHarmonicMatcher: Sampling particles: 27%      SingleRFHarmonicMatcher: Sampling particles: 28%      SingleRFHarmonicMatcher: Sampling particles: 28%      SingleRFHarmonicMatcher: Sampling particles: 28%      SingleRFHarmonicMatcher: Sampling particles: 28%      SingleRFHarmonicMatcher: Sampling particles: 29%      SingleRFHarmonicMatcher: Sampling particles: 29%      SingleRFHarmonicMatcher: Sampling particles: 29%      SingleRFHarmonicMatcher: Sampling particles: 30%      SingleRFHarmonicMatcher: Sampling particles: 30%      SingleRFHarmonicMatcher: Sampling particles: 30%      SingleRFHarmonicMatcher: Sampling particles: 31%      SingleRFHarmonicMatcher: Sampling particles: 31%      SingleRFHarmonicMatcher: Sampling particles: 31%      SingleRFHarmonicMatcher: Sampling particles: 31%      SingleRFHarmonicMatcher: Sampling particles: 32%      SingleRFHarmonicMatcher: Sampling particles: 32%      SingleRFHarmonicMatcher: Sampling particles: 32%      SingleRFHarmonicMatcher: Sampling particles: 33%      SingleRFHarmonicMatcher: Sampling particles: 33%      SingleRFHarmonicMatcher: Sampling particles: 33%      SingleRFHarmonicMatcher: Sampling particles: 34%      SingleRFHarmonicMatcher: Sampling particles: 34%      SingleRFHarmonicMatcher: Sampling particles: 34%      SingleRFHarmonicMatcher: Sampling particles: 34%      SingleRFHarmonicMatcher: Sampling particles: 35%      SingleRFHarmonicMatcher: Sampling particles: 35%      SingleRFHarmonicMatcher: Sampling particles: 36%      SingleRFHarmonicMatcher: Sampling particles: 36%      SingleRFHarmonicMatcher: Sampling particles: 36%      SingleRFHarmonicMatcher: Sampling particles: 36%      SingleRFHarmonicMatcher: Sampling particles: 37%      SingleRFHarmonicMatcher: Sampling particles: 37%      SingleRFHarmonicMatcher: Sampling particles: 37%      SingleRFHarmonicMatcher: Sampling particles: 38%      SingleRFHarmonicMatcher: Sampling particles: 38%      SingleRFHarmonicMatcher: Sampling particles: 38%      SingleRFHarmonicMatcher: Sampling particles: 38%      SingleRFHarmonicMatcher: Sampling particles: 39%      SingleRFHarmonicMatcher: Sampling particles: 39%      SingleRFHarmonicMatcher: Sampling particles: 39%      SingleRFHarmonicMatcher: Sampling particles: 40%      SingleRFHarmonicMatcher: Sampling particles: 40%      SingleRFHarmonicMatcher: Sampling particles: 40%      SingleRFHarmonicMatcher: Sampling particles: 41%      SingleRFHarmonicMatcher: Sampling particles: 41%      SingleRFHarmonicMatcher: Sampling particles: 41%      SingleRFHarmonicMatcher: Sampling particles: 42%      SingleRFHarmonicMatcher: Sampling particles: 42%      SingleRFHarmonicMatcher: Sampling particles: 42%      SingleRFHarmonicMatcher: Sampling particles: 43%      SingleRFHarmonicMatcher: Sampling particles: 43%      SingleRFHarmonicMatcher: Sampling particles: 43%      SingleRFHarmonicMatcher: Sampling particles: 43%      SingleRFHarmonicMatcher: Sampling particles: 44%      SingleRFHarmonicMatcher: Sampling particles: 44%      SingleRFHarmonicMatcher: Sampling particles: 44%      SingleRFHarmonicMatcher: Sampling particles: 45%      SingleRFHarmonicMatcher: Sampling particles: 45%      SingleRFHarmonicMatcher: Sampling particles: 45%      SingleRFHarmonicMatcher: Sampling particles: 46%      SingleRFHarmonicMatcher: Sampling particles: 46%      SingleRFHarmonicMatcher: Sampling particles: 46%      SingleRFHarmonicMatcher: Sampling particles: 47%      SingleRFHarmonicMatcher: Sampling particles: 47%      SingleRFHarmonicMatcher: Sampling particles: 47%      SingleRFHarmonicMatcher: Sampling particles: 48%      SingleRFHarmonicMatcher: Sampling particles: 48%      SingleRFHarmonicMatcher: Sampling particles: 48%      SingleRFHarmonicMatcher: Sampling particles: 49%      SingleRFHarmonicMatcher: Sampling particles: 49%      SingleRFHarmonicMatcher: Sampling particles: 49%      SingleRFHarmonicMatcher: Sampling particles: 50%      SingleRFHarmonicMatcher: Sampling particles: 50%      SingleRFHarmonicMatcher: Sampling particles: 50%      SingleRFHarmonicMatcher: Sampling particles: 50%      SingleRFHarmonicMatcher: Sampling particles: 51%      SingleRFHarmonicMatcher: Sampling particles: 51%      SingleRFHarmonicMatcher: Sampling particles: 51%      SingleRFHarmonicMatcher: Sampling particles: 52%      SingleRFHarmonicMatcher: Sampling particles: 52%      SingleRFHarmonicMatcher: Sampling particles: 52%      SingleRFHarmonicMatcher: Sampling particles: 52%      SingleRFHarmonicMatcher: Sampling particles: 53%      SingleRFHarmonicMatcher: Sampling particles: 53%      SingleRFHarmonicMatcher: Sampling particles: 53%      SingleRFHarmonicMatcher: Sampling particles: 54%      SingleRFHarmonicMatcher: Sampling particles: 54%      SingleRFHarmonicMatcher: Sampling particles: 54%      SingleRFHarmonicMatcher: Sampling particles: 55%      SingleRFHarmonicMatcher: Sampling particles: 55%      SingleRFHarmonicMatcher: Sampling particles: 55%      SingleRFHarmonicMatcher: Sampling particles: 56%      SingleRFHarmonicMatcher: Sampling particles: 56%      SingleRFHarmonicMatcher: Sampling particles: 56%      SingleRFHarmonicMatcher: Sampling particles: 56%      SingleRFHarmonicMatcher: Sampling particles: 57%      SingleRFHarmonicMatcher: Sampling particles: 57%      SingleRFHarmonicMatcher: Sampling particles: 57%      SingleRFHarmonicMatcher: Sampling particles: 58%      SingleRFHarmonicMatcher: Sampling particles: 58%      SingleRFHarmonicMatcher: Sampling particles: 58%      SingleRFHarmonicMatcher: Sampling particles: 58%      SingleRFHarmonicMatcher: Sampling particles: 59%      SingleRFHarmonicMatcher: Sampling particles: 59%      SingleRFHarmonicMatcher: Sampling particles: 59%      SingleRFHarmonicMatcher: Sampling particles: 60%      SingleRFHarmonicMatcher: Sampling particles: 60%      SingleRFHarmonicMatcher: Sampling particles: 60%      SingleRFHarmonicMatcher: Sampling particles: 61%      SingleRFHarmonicMatcher: Sampling particles: 61%      SingleRFHarmonicMatcher: Sampling particles: 61%      SingleRFHarmonicMatcher: Sampling particles: 62%      SingleRFHarmonicMatcher: Sampling particles: 62%      SingleRFHarmonicMatcher: Sampling particles: 62%      SingleRFHarmonicMatcher: Sampling particles: 63%      SingleRFHarmonicMatcher: Sampling particles: 63%      SingleRFHarmonicMatcher: Sampling particles: 63%      SingleRFHarmonicMatcher: Sampling particles: 64%      SingleRFHarmonicMatcher: Sampling particles: 64%      SingleRFHarmonicMatcher: Sampling particles: 64%      SingleRFHarmonicMatcher: Sampling particles: 64%      SingleRFHarmonicMatcher: Sampling particles: 65%      SingleRFHarmonicMatcher: Sampling particles: 65%      SingleRFHarmonicMatcher: Sampling particles: 65%      SingleRFHarmonicMatcher: Sampling particles: 66%      SingleRFHarmonicMatcher: Sampling particles: 66%      SingleRFHarmonicMatcher: Sampling particles: 66%      SingleRFHarmonicMatcher: Sampling particles: 67%      SingleRFHarmonicMatcher: Sampling particles: 67%      SingleRFHarmonicMatcher: Sampling particles: 67%      SingleRFHarmonicMatcher: Sampling particles: 68%      SingleRFHarmonicMatcher: Sampling particles: 68%      SingleRFHarmonicMatcher: Sampling particles: 68%      SingleRFHarmonicMatcher: Sampling particles: 69%      SingleRFHarmonicMatcher: Sampling particles: 69%      SingleRFHarmonicMatcher: Sampling particles: 69%      SingleRFHarmonicMatcher: Sampling particles: 70%      SingleRFHarmonicMatcher: Sampling particles: 70%      SingleRFHarmonicMatcher: Sampling particles: 70%      SingleRFHarmonicMatcher: Sampling particles: 71%      SingleRFHarmonicMatcher: Sampling particles: 71%      SingleRFHarmonicMatcher: Sampling particles: 71%      SingleRFHarmonicMatcher: Sampling particles: 71%      SingleRFHarmonicMatcher: Sampling particles: 72%      SingleRFHarmonicMatcher: Sampling particles: 72%      SingleRFHarmonicMatcher: Sampling particles: 72%      SingleRFHarmonicMatcher: Sampling particles: 73%      SingleRFHarmonicMatcher: Sampling particles: 73%      SingleRFHarmonicMatcher: Sampling particles: 74%      SingleRFHarmonicMatcher: Sampling particles: 74%      SingleRFHarmonicMatcher: Sampling particles: 74%      SingleRFHarmonicMatcher: Sampling particles: 75%      SingleRFHarmonicMatcher: Sampling particles: 75%      SingleRFHarmonicMatcher: Sampling particles: 75%      SingleRFHarmonicMatcher: Sampling particles: 76%      SingleRFHarmonicMatcher: Sampling particles: 76%      SingleRFHarmonicMatcher: Sampling particles: 76%      SingleRFHarmonicMatcher: Sampling particles: 76%      SingleRFHarmonicMatcher: Sampling particles: 77%      SingleRFHarmonicMatcher: Sampling particles: 77%      SingleRFHarmonicMatcher: Sampling particles: 77%      SingleRFHarmonicMatcher: Sampling particles: 78%      SingleRFHarmonicMatcher: Sampling particles: 78%      SingleRFHarmonicMatcher: Sampling particles: 78%      SingleRFHarmonicMatcher: Sampling particles: 79%      SingleRFHarmonicMatcher: Sampling particles: 79%      SingleRFHarmonicMatcher: Sampling particles: 79%      SingleRFHarmonicMatcher: Sampling particles: 80%      SingleRFHarmonicMatcher: Sampling particles: 80%      SingleRFHarmonicMatcher: Sampling particles: 80%      SingleRFHarmonicMatcher: Sampling particles: 81%      SingleRFHarmonicMatcher: Sampling particles: 81%      SingleRFHarmonicMatcher: Sampling particles: 81%      SingleRFHarmonicMatcher: Sampling particles: 81%      SingleRFHarmonicMatcher: Sampling particles: 82%      SingleRFHarmonicMatcher: Sampling particles: 82%      SingleRFHarmonicMatcher: Sampling particles: 82%      SingleRFHarmonicMatcher: Sampling particles: 83%      SingleRFHarmonicMatcher: Sampling particles: 83%      SingleRFHarmonicMatcher: Sampling particles: 83%      SingleRFHarmonicMatcher: Sampling particles: 84%      SingleRFHarmonicMatcher: Sampling particles: 84%      SingleRFHarmonicMatcher: Sampling particles: 84%      SingleRFHarmonicMatcher: Sampling particles: 84%      SingleRFHarmonicMatcher: Sampling particles: 85%      SingleRFHarmonicMatcher: Sampling particles: 85%      SingleRFHarmonicMatcher: Sampling particles: 85%      SingleRFHarmonicMatcher: Sampling particles: 86%      SingleRFHarmonicMatcher: Sampling particles: 86%      SingleRFHarmonicMatcher: Sampling particles: 86%      SingleRFHarmonicMatcher: Sampling particles: 87%      SingleRFHarmonicMatcher: Sampling particles: 87%      SingleRFHarmonicMatcher: Sampling particles: 87%      SingleRFHarmonicMatcher: Sampling particles: 87%      SingleRFHarmonicMatcher: Sampling particles: 88%      SingleRFHarmonicMatcher: Sampling particles: 88%      SingleRFHarmonicMatcher: Sampling particles: 88%      SingleRFHarmonicMatcher: Sampling particles: 89%      SingleRFHarmonicMatcher: Sampling particles: 89%      SingleRFHarmonicMatcher: Sampling particles: 89%      SingleRFHarmonicMatcher: Sampling particles: 90%      SingleRFHarmonicMatcher: Sampling particles: 90%      SingleRFHarmonicMatcher: Sampling particles: 90%      SingleRFHarmonicMatcher: Sampling particles: 91%      SingleRFHarmonicMatcher: Sampling particles: 91%      SingleRFHarmonicMatcher: Sampling particles: 91%      SingleRFHarmonicMatcher: Sampling particles: 91%      SingleRFHarmonicMatcher: Sampling particles: 92%      SingleRFHarmonicMatcher: Sampling particles: 92%      SingleRFHarmonicMatcher: Sampling particles: 92%      SingleRFHarmonicMatcher: Sampling particles: 93%      SingleRFHarmonicMatcher: Sampling particles: 93%      SingleRFHarmonicMatcher: Sampling particles: 94%      SingleRFHarmonicMatcher: Sampling particles: 94%      SingleRFHarmonicMatcher: Sampling particles: 94%      SingleRFHarmonicMatcher: Sampling particles: 95%      SingleRFHarmonicMatcher: Sampling particles: 95%      SingleRFHarmonicMatcher: Sampling particles: 95%      SingleRFHarmonicMatcher: Sampling particles: 96%      SingleRFHarmonicMatcher: Sampling particles: 96%      SingleRFHarmonicMatcher: Sampling particles: 96%      SingleRFHarmonicMatcher: Sampling particles: 96%      SingleRFHarmonicMatcher: Sampling particles: 97%      SingleRFHarmonicMatcher: Sampling particles: 97%      SingleRFHarmonicMatcher: Sampling particles: 97%      SingleRFHarmonicMatcher: Sampling particles: 98%      SingleRFHarmonicMatcher: Sampling particles: 98%      SingleRFHarmonicMatcher: Sampling particles: 98%      SingleRFHarmonicMatcher: Sampling particles: 99%      SingleRFHarmonicMatcher: Sampling particles: 99%      SingleRFHarmonicMatcher: Sampling particles: 99%      SingleRFHarmonicMatcher: Sampling particles: 99%      SingleRFHarmonicMatcher: Sampling particles: 100%      SingleRFHarmonicMatcher: Sampling particles: 100%      SingleRFHarmonicMatcher: Sampled 15000 particles
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 132-136
+.. GENERATED FROM PYTHON SOURCE LINES 98-102
 
 Generating the IBS Kick Class
 -----------------------------
-Just as all user-facing classes in ``xibs``, the `SimpleKickIBS` :cite:`PRAB:Bruce:Simple_IBS_Kicks`
+Just as all user-facing classes in ``xibs``, the `KineticKickIBS` :cite:`NuclInstr:Zenkevich:Kinetic_IBS`
 class is instantiated by providing a `BeamParameters` and an `OpticsParameters` objects:
 
-.. GENERATED FROM PYTHON SOURCE LINES 136-149
+.. GENERATED FROM PYTHON SOURCE LINES 102-115
 
 .. code-block:: Python
 
@@ -257,7 +207,7 @@ class is instantiated by providing a `BeamParameters` and an `OpticsParameters` 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 150-159
+.. GENERATED FROM PYTHON SOURCE LINES 116-125
 
 Computing and Applying IBS Kicks
 --------------------------------
@@ -269,7 +219,7 @@ dedicated method. They correspond to the diffusion minus friction terms, and are
 returned as an `IBSKickCoefficients` object, which is stored internally in the **IBS**
 object and will be updated internally each time they are computed.
 
-.. GENERATED FROM PYTHON SOURCE LINES 159-164
+.. GENERATED FROM PYTHON SOURCE LINES 125-130
 
 .. code-block:: Python
 
@@ -286,13 +236,13 @@ object and will be updated internally each time they are computed.
 
  .. code-block:: none
 
-    IBSKickCoefficients(Kx=694.7705466043861, Ky=119.65537711877901, Kz=111.04510465436783)
-    IBSKickCoefficients(Kx=694.7705466043861, Ky=119.65537711877901, Kz=111.04510465436783)
+    IBSKickCoefficients(Kx=LinkedArrayCpu(672.40626033), Ky=LinkedArrayCpu(112.43313431), Kz=LinkedArrayCpu(118.84677336))
+    IBSKickCoefficients(Kx=LinkedArrayCpu(672.40626033), Ky=LinkedArrayCpu(112.43313431), Kz=LinkedArrayCpu(118.84677336))
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 165-174
+.. GENERATED FROM PYTHON SOURCE LINES 131-140
 
 For the kinetic formalism, the diffusion and friction coefficients are also
 stored internally (and updated each time the method above is called). They
@@ -304,7 +254,7 @@ attributes of the `KineticKickIBS` object.
     coefficients, as well as the resulting `IBSKickCoefficients`` is very different
     than the ones from the simple kicks formalism.
 
-.. GENERATED FROM PYTHON SOURCE LINES 174-178
+.. GENERATED FROM PYTHON SOURCE LINES 140-144
 
 .. code-block:: Python
 
@@ -320,13 +270,13 @@ attributes of the `KineticKickIBS` object.
 
  .. code-block:: none
 
-    DiffusionCoefficients(Dx=800.6970712731666, Dy=183.48534835165893, Dz=140.96943594575475)
-    FrictionCoefficients(Fx=105.9265246687804, Fy=63.82997123287991, Fz=29.924331291386924)
+    DiffusionCoefficients(Dx=LinkedArrayCpu(773.69214666), Dy=LinkedArrayCpu(173.76529695), Dz=LinkedArrayCpu(150.0711018))
+    FrictionCoefficients(Fx=LinkedArrayCpu(101.28588632), Fy=LinkedArrayCpu(61.33216264), Fz=LinkedArrayCpu(31.22432844))
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 179-186
+.. GENERATED FROM PYTHON SOURCE LINES 145-152
 
 We can also manually set arbitrary values through these attributes. We will do
 so here with unrealistically high diffusion values compared to the ones above,
@@ -336,7 +286,7 @@ plane, for both diffusion and friction effects, weigthed by the line density of 
 bunch. Friction terms lead to a reduction of the beam sizes, while diffusion terms
 lead to an increase.
 
-.. GENERATED FROM PYTHON SOURCE LINES 186-192
+.. GENERATED FROM PYTHON SOURCE LINES 152-158
 
 .. code-block:: Python
 
@@ -353,12 +303,12 @@ lead to an increase.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 193-195
+.. GENERATED FROM PYTHON SOURCE LINES 159-161
 
 We can have a look at the effect on the particles (see the `xsuite user guide
 <https://xsuite.readthedocs.io/en/latest/particlesmanip.html>`_ for more)
 
-.. GENERATED FROM PYTHON SOURCE LINES 195-221
+.. GENERATED FROM PYTHON SOURCE LINES 161-187
 
 .. code-block:: Python
 
@@ -400,7 +350,7 @@ We can have a look at the effect on the particles (see the `xsuite user guide
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 222-229
+.. GENERATED FROM PYTHON SOURCE LINES 188-195
 
 Applying IBS Kicks in Tracking
 ------------------------------
@@ -410,7 +360,7 @@ individual particles to speed up the tracking, and re-initialize IBS classes.
 We will also track the analytical evolution of relevant quantities - as done
 in the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` - for comparison.
 
-.. GENERATED FROM PYTHON SOURCE LINES 229-248
+.. GENERATED FROM PYTHON SOURCE LINES 195-214
 
 .. code-block:: Python
 
@@ -419,7 +369,7 @@ in the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` - for comparison.
     NIBS = NagaitsevIBS(beamparams, opticsparams)
 
     # Re-create particles with less elements as tracking takes a while
-    n_part = int(2.5e3)  # 2500 particles should be enough for this example
+    n_part = int(1.5e3)  # 1500 particles should be enough for this example
     particles = xp.generate_matched_gaussian_bunch(
         num_particles=n_part,
         total_intensity_particles=bunch_intensity,
@@ -430,7 +380,7 @@ in the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` - for comparison.
     )
 
     # Define some parameters for the tracking
-    nturns = 1_000  # number of turns to loop for
+    nturns = 750  # number of turns to loop for
     ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 
 
@@ -440,14 +390,13 @@ in the :ref:`Nagaitsev example <demo-analytical-nagaitsev>` - for comparison.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 249-250
+.. GENERATED FROM PYTHON SOURCE LINES 215-216
 
 We will also set up a dataclass conveniently to store the results:
 
-.. GENERATED FROM PYTHON SOURCE LINES 250-285
+.. GENERATED FROM PYTHON SOURCE LINES 216-256
 
 .. code-block:: Python
-
 
 
     @dataclass
@@ -458,15 +407,13 @@ We will also set up a dataclass conveniently to store the results:
         bunch_length: np.ndarray
 
         def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
-            """Automatically update the records at given turn from the xpart.Particles."""
-            self.epsilon_x[turn] = _geom_epsx(parts, twiss)
-            self.epsilon_y[turn] = _geom_epsy(parts, twiss)
+            self.epsilon_x[turn] = _geom_epsx(parts, twiss.betx[0], twiss.dx[0])
+            self.epsilon_y[turn] = _geom_epsy(parts, twiss.bety[0], twiss.dy[0])
             self.sigma_delta[turn] = _sigma_delta(parts)
             self.bunch_length[turn] = _bunch_length(parts)
 
         @classmethod
         def init_zeroes(cls, n_turns: int) -> Self:  # noqa: F821
-            """Initialize the dataclass with arrays of zeroes."""
             return cls(
                 epsilon_x=np.zeros(n_turns, dtype=float),
                 epsilon_y=np.zeros(n_turns, dtype=float),
@@ -475,14 +422,21 @@ We will also set up a dataclass conveniently to store the results:
             )
 
 
-    # Initialize the dataclasses
+    # Initialize the dataclasses & store the initial values
     kicked_tbt = Records.init_zeroes(nturns)
     analytical_tbt = Records.init_zeroes(nturns)
 
-    # Store the initial values
     kicked_tbt.update_at_turn(0, particles, twiss)
     analytical_tbt.update_at_turn(0, particles, twiss)
 
+    # Let's hide anything below WARNING level for readability
+    logging.basicConfig(
+        level=logging.WARNING,
+        stream=sys.stdout,
+        format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+        datefmt="%H:%M:%S",
+        force=True,
+    )
 
 
 
@@ -490,18 +444,20 @@ We will also set up a dataclass conveniently to store the results:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 286-289
+
+.. GENERATED FROM PYTHON SOURCE LINES 257-260
 
 Now, since ``xibs`` is not fully integrated into Xsuite, we will have to manually
 apply the IBS kick at each turn of tracking, and also manually trigger the turn
 of tracking. Just like in the analytical examples, we do so in a loop over the turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 289-326
+.. GENERATED FROM PYTHON SOURCE LINES 260-298
 
 .. code-block:: Python
 
 
-    # We loop here now
+    # ----- We loop here now ----- # 
+
     for turn in range(1, nturns):
         # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
         if (turn % ibs_step == 0) or (turn == 1):
@@ -1294,267 +1250,17 @@ of tracking. Just like in the analytical examples, we do so in a loop over the t
     Turn 747
     Turn 748
     Turn 749
-    Turn 750: re-computing diffusion and friction terms
-    Turn 751
-    Turn 752
-    Turn 753
-    Turn 754
-    Turn 755
-    Turn 756
-    Turn 757
-    Turn 758
-    Turn 759
-    Turn 760
-    Turn 761
-    Turn 762
-    Turn 763
-    Turn 764
-    Turn 765
-    Turn 766
-    Turn 767
-    Turn 768
-    Turn 769
-    Turn 770
-    Turn 771
-    Turn 772
-    Turn 773
-    Turn 774
-    Turn 775
-    Turn 776
-    Turn 777
-    Turn 778
-    Turn 779
-    Turn 780
-    Turn 781
-    Turn 782
-    Turn 783
-    Turn 784
-    Turn 785
-    Turn 786
-    Turn 787
-    Turn 788
-    Turn 789
-    Turn 790
-    Turn 791
-    Turn 792
-    Turn 793
-    Turn 794
-    Turn 795
-    Turn 796
-    Turn 797
-    Turn 798
-    Turn 799
-    Turn 800: re-computing diffusion and friction terms
-    Turn 801
-    Turn 802
-    Turn 803
-    Turn 804
-    Turn 805
-    Turn 806
-    Turn 807
-    Turn 808
-    Turn 809
-    Turn 810
-    Turn 811
-    Turn 812
-    Turn 813
-    Turn 814
-    Turn 815
-    Turn 816
-    Turn 817
-    Turn 818
-    Turn 819
-    Turn 820
-    Turn 821
-    Turn 822
-    Turn 823
-    Turn 824
-    Turn 825
-    Turn 826
-    Turn 827
-    Turn 828
-    Turn 829
-    Turn 830
-    Turn 831
-    Turn 832
-    Turn 833
-    Turn 834
-    Turn 835
-    Turn 836
-    Turn 837
-    Turn 838
-    Turn 839
-    Turn 840
-    Turn 841
-    Turn 842
-    Turn 843
-    Turn 844
-    Turn 845
-    Turn 846
-    Turn 847
-    Turn 848
-    Turn 849
-    Turn 850: re-computing diffusion and friction terms
-    Turn 851
-    Turn 852
-    Turn 853
-    Turn 854
-    Turn 855
-    Turn 856
-    Turn 857
-    Turn 858
-    Turn 859
-    Turn 860
-    Turn 861
-    Turn 862
-    Turn 863
-    Turn 864
-    Turn 865
-    Turn 866
-    Turn 867
-    Turn 868
-    Turn 869
-    Turn 870
-    Turn 871
-    Turn 872
-    Turn 873
-    Turn 874
-    Turn 875
-    Turn 876
-    Turn 877
-    Turn 878
-    Turn 879
-    Turn 880
-    Turn 881
-    Turn 882
-    Turn 883
-    Turn 884
-    Turn 885
-    Turn 886
-    Turn 887
-    Turn 888
-    Turn 889
-    Turn 890
-    Turn 891
-    Turn 892
-    Turn 893
-    Turn 894
-    Turn 895
-    Turn 896
-    Turn 897
-    Turn 898
-    Turn 899
-    Turn 900: re-computing diffusion and friction terms
-    Turn 901
-    Turn 902
-    Turn 903
-    Turn 904
-    Turn 905
-    Turn 906
-    Turn 907
-    Turn 908
-    Turn 909
-    Turn 910
-    Turn 911
-    Turn 912
-    Turn 913
-    Turn 914
-    Turn 915
-    Turn 916
-    Turn 917
-    Turn 918
-    Turn 919
-    Turn 920
-    Turn 921
-    Turn 922
-    Turn 923
-    Turn 924
-    Turn 925
-    Turn 926
-    Turn 927
-    Turn 928
-    Turn 929
-    Turn 930
-    Turn 931
-    Turn 932
-    Turn 933
-    Turn 934
-    Turn 935
-    Turn 936
-    Turn 937
-    Turn 938
-    Turn 939
-    Turn 940
-    Turn 941
-    Turn 942
-    Turn 943
-    Turn 944
-    Turn 945
-    Turn 946
-    Turn 947
-    Turn 948
-    Turn 949
-    Turn 950: re-computing diffusion and friction terms
-    Turn 951
-    Turn 952
-    Turn 953
-    Turn 954
-    Turn 955
-    Turn 956
-    Turn 957
-    Turn 958
-    Turn 959
-    Turn 960
-    Turn 961
-    Turn 962
-    Turn 963
-    Turn 964
-    Turn 965
-    Turn 966
-    Turn 967
-    Turn 968
-    Turn 969
-    Turn 970
-    Turn 971
-    Turn 972
-    Turn 973
-    Turn 974
-    Turn 975
-    Turn 976
-    Turn 977
-    Turn 978
-    Turn 979
-    Turn 980
-    Turn 981
-    Turn 982
-    Turn 983
-    Turn 984
-    Turn 985
-    Turn 986
-    Turn 987
-    Turn 988
-    Turn 989
-    Turn 990
-    Turn 991
-    Turn 992
-    Turn 993
-    Turn 994
-    Turn 995
-    Turn 996
-    Turn 997
-    Turn 998
-    Turn 999
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 327-330
+.. GENERATED FROM PYTHON SOURCE LINES 299-302
 
 Feel free to run this simulation for more turns, with a different frequency of
 the IBS kick coefficients & growth rates re-computation, or with more particles.
 After this loop is done running, we can plot the evolutions across turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 330-369
+.. GENERATED FROM PYTHON SOURCE LINES 302-341
 
 .. code-block:: Python
 
@@ -1609,7 +1315,7 @@ After this loop is done running, we can plot the evolutions across turns:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 370-378
+.. GENERATED FROM PYTHON SOURCE LINES 342-350
 
 .. admonition:: References
 
@@ -1623,7 +1329,7 @@ After this loop is done running, we can plot the evolutions across turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (4 minutes 1.868 seconds)
+   **Total running time of the script:** (2 minutes 11.268 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_kinetic_kicks.py:

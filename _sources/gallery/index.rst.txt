@@ -20,6 +20,40 @@ Click on any image thumbnail to see the corresponding example page with and acce
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the the auto recomputing functionality for growth rates in the an...">
+
+.. only:: html
+
+  .. image:: /gallery/images/thumb/sphx_glr_demo_analytical_auto_recompute_rates_thumb.svg
+    :alt:
+
+  :ref:`sphx_glr_gallery_demo_analytical_auto_recompute_rates.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Automatic Growth Rates Re-Computation</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the the auto recomputing functionality for kick coefficients in t...">
+
+.. only:: html
+
+  .. image:: /gallery/images/thumb/sphx_glr_demo_kicks_auto_recompute_coefficients_thumb.svg
+    :alt:
+
+  :ref:`sphx_glr_gallery_demo_kicks_auto_recompute_coefficients.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Automatic Kick Coefficients Re-Computation</div>
+    </div>
+
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.analytical.BjorkenMtingwaIBS class to calculate IBS gr...">
 
 .. only:: html
@@ -128,6 +162,8 @@ Click on any image thumbnail to see the corresponding example page with and acce
 .. toctree::
    :hidden:
 
+   /gallery/demo_analytical_auto_recompute_rates
+   /gallery/demo_kicks_auto_recompute_coefficients
    /gallery/demo_analytical_bjorken_mtingwa_emittances
    /gallery/demo_compare_analyticals
    /gallery/demo_compare_kicks

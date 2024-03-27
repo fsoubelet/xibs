@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gallery &mdash; xibs 0.7.1 documentation</title>
+  <title>Gallery &mdash; xibs 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -24,7 +24,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5a057da9"></script>
+        <script src="../_static/documentation_options.js?v=486e5634"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -32,7 +32,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution" href="demo_analytical_bjorken_mtingwa_emittances.html" />
+    <link rel="next" title="Automatic Growth Rates Re-Computation" href="demo_analytical_auto_recompute_rates.html" />
     <link rel="prev" title="Quickstart" href="../quickstart.html" /> 
 </head>
 
@@ -48,7 +48,7 @@
             
           </a>
               <div class="version">
-                0.7.1
+                0.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -71,6 +71,22 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html">Automatic Growth Rates Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#instantiate-analytical-ibs-objects">Instantiate Analytical IBS Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#preparing-for-simulation-of-evolution">Preparing for Simulation of Evolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#analytical-evolution-over-time">Analytical Evolution Over Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#takeaways">Takeaways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html">Automatic Kick Coefficients Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#preparing-for-the-tracking-simulation">Preparing for the Tracking Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#tracking-evolution-over-turns">Tracking Evolution Over Turns</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
@@ -135,6 +151,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../faq/coasting_beams.html">Bunched and Coasting Beams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq/auto_recomputing.html">Automatic Recomputation of IBS Kick Coefficients and Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq/auto_recomputing.html#auto-recomputing-for-ibs-kick-classes">Auto-Recomputing for IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq/auto_recomputing.html#auto-recomputing-for-ibs-analytical-classes">Auto-Recomputing for IBS Analytical Classes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Reference Bibliography</a></li>
@@ -169,7 +190,11 @@
 <span id="examples-index"></span><span id="id1"></span><h1>Gallery<a class="headerlink" href="#gallery" title="Link to this heading"></a></h1>
 <p>This page contains a gallery of examples showcasing functionality provided by <code class="xref py py-obj docutils literal notranslate"><span class="pre">xibs</span></code>.
 Click on any image thumbnail to see the corresponding example page with and access to the source code.</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.analytical.BjorkenMtingwaIBS class to calculate IBS gr..."><img alt="" src="../_images/sphx_glr_demo_analytical_bjorken_mtingwa_emittances_thumb.svg" /><p><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#sphx-glr-gallery-demo-analytical-bjorken-mtingwa-emittances-py"><span class="std std-ref">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</span></a></p>
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the the auto recomputing functionality for growth rates in the an..."><img alt="" src="../_images/sphx_glr_demo_analytical_auto_recompute_rates_thumb.svg" /><p><a class="reference internal" href="demo_analytical_auto_recompute_rates.html#sphx-glr-gallery-demo-analytical-auto-recompute-rates-py"><span class="std std-ref">Automatic Growth Rates Re-Computation</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Automatic Growth Rates Re-Computation</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the the auto recomputing functionality for kick coefficients in t..."><img alt="" src="../_images/sphx_glr_demo_kicks_auto_recompute_coefficients_thumb.svg" /><p><a class="reference internal" href="demo_kicks_auto_recompute_coefficients.html#sphx-glr-gallery-demo-kicks-auto-recompute-coefficients-py"><span class="std std-ref">Automatic Kick Coefficients Re-Computation</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Automatic Kick Coefficients Re-Computation</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="This example shows how to use the ~.xibs.analytical.BjorkenMtingwaIBS class to calculate IBS gr..."><img alt="" src="../_images/sphx_glr_demo_analytical_bjorken_mtingwa_emittances_thumb.svg" /><p><a class="reference internal" href="demo_analytical_bjorken_mtingwa_emittances.html#sphx-glr-gallery-demo-analytical-bjorken-mtingwa-emittances-py"><span class="std std-ref">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</span></a></p>
   <div class="sphx-glr-thumbnail-title">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="This example shows a comparison of the performance of ~xibs.analytical.BjorkenMtingwaIBS and ~x..."><img alt="" src="../_images/sphx_glr_demo_compare_analyticals_thumb.svg" /><p><a class="reference internal" href="demo_compare_analyticals.html#sphx-glr-gallery-demo-compare-analyticals-py"><span class="std std-ref">Comparison of Analytical IBS Growth Rates and Emittances Evolution</span></a></p>
   <div class="sphx-glr-thumbnail-title">Comparison of Analytical IBS Growth Rates and Emittances Evolution</div>
@@ -199,7 +224,7 @@ Click on any image thumbnail to see the corresponding example page with and acce
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="demo_analytical_bjorken_mtingwa_emittances.html" class="btn btn-neutral float-right" title="Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="demo_analytical_auto_recompute_rates.html" class="btn btn-neutral float-right" title="Automatic Growth Rates Re-Computation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

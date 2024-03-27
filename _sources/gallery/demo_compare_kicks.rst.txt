@@ -32,10 +32,12 @@ energy, and with some tweaked beam parameters to stimulate the IBS effects.
 
 We will demonstrate using an `xtrack.Line` of the ``SPS`` ring, for ions at top energy (450 GeV).
 
-.. GENERATED FROM PYTHON SOURCE LINES 17-45
+.. GENERATED FROM PYTHON SOURCE LINES 17-49
 
 .. code-block:: Python
 
+    import logging
+    import sys
     import warnings
 
     from dataclasses import dataclass
@@ -48,6 +50,7 @@ We will demonstrate using an `xtrack.Line` of the ``SPS`` ring, for ions at top 
     import xtrack as xt
 
     from xibs.inputs import BeamParameters, OpticsParameters
+    from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
     from xibs.kicks import KineticKickIBS, SimpleKickIBS
 
     warnings.simplefilter("ignore")  # for this tutorial's clarity
@@ -71,55 +74,8 @@ We will demonstrate using an `xtrack.Line` of the ``SPS`` ring, for ions at top 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 47-51
 
-We will define here some helper functions we will regularly use later on to
-compute the emittances, bunch lengths and momentum spread from and `xpart.Particles`
-object representing our particle distribution. In each, let's make sure to filter
-for only the active particles (``state > 0``).
-
-.. GENERATED FROM PYTHON SOURCE LINES 51-81
-
-.. code-block:: Python
-
-
-
-    def _bunch_length(parts: xp.Particles) -> float:
-        return np.std(parts.zeta[parts.state > 0])
-
-
-    def _sigma_delta(parts: xp.Particles) -> float:
-        return np.std(parts.delta[parts.state > 0])
-
-
-    def _geom_epsx(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-        """
-        We index dx and betx at 0 which corresponds to the beginning / end of
-        the line, since this is where / when we will be applying the kicks.
-        """
-        sigma_x = np.std(parts.x[parts.state > 0])
-        sig_delta = _sigma_delta(parts)
-        return (sigma_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-
-
-    def _geom_epsy(parts: xp.Particles, twiss: xt.TwissTable) -> float:
-        """
-        We index dy and bety at 0 which corresponds to the beginning / end of
-        the line, since this is where / when we will be applying the kicks.
-        """
-        sigma_y = np.std(parts.y[parts.state > 0])
-        sig_delta = _sigma_delta(parts)
-        return (sigma_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
-
-
-
-
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 82-87
+.. GENERATED FROM PYTHON SOURCE LINES 51-56
 
 Let's start by defining the line and particle information, as well as some
 parameters for later use. Note that `bunch_intensity` is the actual number
@@ -127,13 +83,14 @@ of particles in the bunch, and its value influences the analytical IBS growth
 rates calculation while `n_part` is the number of generated particles for
 tracking, which is much lower.
 
-.. GENERATED FROM PYTHON SOURCE LINES 87-94
+.. GENERATED FROM PYTHON SOURCE LINES 56-64
 
 .. code-block:: Python
 
 
+    line_file = "lines/sps_top_ions.json"
     bunch_intensity = int(5e11)
-    n_part = int(2e3)
+    n_part = int(1e3)
     sigma_z = 5e-2
     nemitt_x = 1.0e-6
     nemitt_y = 0.25e-6
@@ -145,7 +102,7 @@ tracking, which is much lower.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 95-100
+.. GENERATED FROM PYTHON SOURCE LINES 65-70
 
 Setting up line and particles
 -----------------------------
@@ -153,18 +110,15 @@ Let's now load the line from file, activate the accelerating cavities and
 create a context for multithreading with OpenMP, since tracking particles
 is going to take some time:
 
-.. GENERATED FROM PYTHON SOURCE LINES 100-127
+.. GENERATED FROM PYTHON SOURCE LINES 70-97
 
 .. code-block:: Python
 
 
+    line = xt.Line.from_json(line_file)  # includes reference particle
     context = xo.ContextCpu(omp_num_threads="auto")
-    line_file = "lines/sps_top_ions.json"
-    line = xt.Line.from_json(line_file)
-    line.build_tracker(context)
-    line.optimize_for_tracking()
-    twiss = line.twiss(method="4d")
 
+    # ----- Power accelerating cavities ----- #
     rf_voltage = 1.7e6  # 1.7MV
     harmonic_number = 4653
     cavity = "actcse.31632"
@@ -172,7 +126,11 @@ is going to take some time:
     line[cavity].voltage = rf_voltage
     line[cavity].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
 
-    # We create a particle distrubution which we clone, one for each kick formalism
+    line.build_tracker(context)
+    line.optimize_for_tracking()
+    twiss = line.twiss(method="4d")
+
+    # We create a particle distribution which we clone, one for each kick formalism
     particles = xp.generate_matched_gaussian_bunch(
         num_particles=n_part,
         total_intensity_particles=bunch_intensity,
@@ -180,7 +138,6 @@ is going to take some time:
         nemitt_y=nemitt_y,
         sigma_z=sigma_z,
         line=line,
-        engine="single-rf-harmonic",
     )
     particles2 = particles.copy()
 
@@ -192,10 +149,13 @@ is going to take some time:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  27%|██▋       | 2689/9866 [00:00<00:00, 26886.69it/s]    Loading line from dict:  55%|█████▍    | 5378/9866 [00:00<00:00, 26817.31it/s]    Loading line from dict:  82%|████████▏ | 8060/9866 [00:00<00:00, 26622.99it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 26607.49it/s]
+    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  27%|██▋       | 2671/9866 [00:00<00:00, 26666.35it/s]    Loading line from dict:  54%|█████▍    | 5338/9866 [00:00<00:00, 25989.44it/s]    Loading line from dict:  82%|████████▏ | 8057/9866 [00:00<00:00, 26517.63it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 26334.78it/s]
     Done loading line from dict.           
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
+    Compiling ContextCpu kernels...
+    Done compiling ContextCpu kernels.
+    The line already has an associated tracker
     Disable xdeps expressions
     Remove markers
     Remove inactive multipoles
@@ -210,21 +170,28 @@ is going to take some time:
     Done compiling ContextCpu kernels.
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
-    SingleRFHarmonicMatcher: Gaussian parameter is equal to 0.050m to achieve target RMS bunch length (0.050m).
-    SingleRFHarmonicMatcher: Transforming distribution:  0%      SingleRFHarmonicMatcher: Transforming distribution:  1%      SingleRFHarmonicMatcher: Transforming distribution:  1%      SingleRFHarmonicMatcher: Transforming distribution:  2%      SingleRFHarmonicMatcher: Transforming distribution:  3%      SingleRFHarmonicMatcher: Transforming distribution:  3%      SingleRFHarmonicMatcher: Transforming distribution:  4%      SingleRFHarmonicMatcher: Transforming distribution:  5%      SingleRFHarmonicMatcher: Transforming distribution:  5%      SingleRFHarmonicMatcher: Transforming distribution:  6%      SingleRFHarmonicMatcher: Transforming distribution:  7%      SingleRFHarmonicMatcher: Transforming distribution:  7%      SingleRFHarmonicMatcher: Transforming distribution:  8%      SingleRFHarmonicMatcher: Transforming distribution:  9%      SingleRFHarmonicMatcher: Transforming distribution:  9%      SingleRFHarmonicMatcher: Transforming distribution: 10%      SingleRFHarmonicMatcher: Transforming distribution: 11%      SingleRFHarmonicMatcher: Transforming distribution: 11%      SingleRFHarmonicMatcher: Transforming distribution: 12%      SingleRFHarmonicMatcher: Transforming distribution: 13%      SingleRFHarmonicMatcher: Transforming distribution: 13%      SingleRFHarmonicMatcher: Transforming distribution: 14%      SingleRFHarmonicMatcher: Transforming distribution: 15%      SingleRFHarmonicMatcher: Transforming distribution: 15%      SingleRFHarmonicMatcher: Transforming distribution: 16%      SingleRFHarmonicMatcher: Transforming distribution: 17%      SingleRFHarmonicMatcher: Transforming distribution: 17%      SingleRFHarmonicMatcher: Transforming distribution: 18%      SingleRFHarmonicMatcher: Transforming distribution: 19%      SingleRFHarmonicMatcher: Transforming distribution: 19%      SingleRFHarmonicMatcher: Transforming distribution: 20%      SingleRFHarmonicMatcher: Transforming distribution: 21%      SingleRFHarmonicMatcher: Transforming distribution: 21%      SingleRFHarmonicMatcher: Transforming distribution: 22%      SingleRFHarmonicMatcher: Transforming distribution: 23%      SingleRFHarmonicMatcher: Transforming distribution: 23%      SingleRFHarmonicMatcher: Transforming distribution: 24%      SingleRFHarmonicMatcher: Transforming distribution: 25%      SingleRFHarmonicMatcher: Transforming distribution: 25%      SingleRFHarmonicMatcher: Transforming distribution: 26%      SingleRFHarmonicMatcher: Transforming distribution: 27%      SingleRFHarmonicMatcher: Transforming distribution: 27%      SingleRFHarmonicMatcher: Transforming distribution: 28%      SingleRFHarmonicMatcher: Transforming distribution: 29%      SingleRFHarmonicMatcher: Transforming distribution: 29%      SingleRFHarmonicMatcher: Transforming distribution: 30%      SingleRFHarmonicMatcher: Transforming distribution: 31%      SingleRFHarmonicMatcher: Transforming distribution: 31%      SingleRFHarmonicMatcher: Transforming distribution: 32%      SingleRFHarmonicMatcher: Transforming distribution: 33%      SingleRFHarmonicMatcher: Transforming distribution: 33%      SingleRFHarmonicMatcher: Transforming distribution: 34%      SingleRFHarmonicMatcher: Transforming distribution: 35%      SingleRFHarmonicMatcher: Transforming distribution: 35%      SingleRFHarmonicMatcher: Transforming distribution: 36%      SingleRFHarmonicMatcher: Transforming distribution: 37%      SingleRFHarmonicMatcher: Transforming distribution: 37%      SingleRFHarmonicMatcher: Transforming distribution: 38%      SingleRFHarmonicMatcher: Transforming distribution: 39%      SingleRFHarmonicMatcher: Transforming distribution: 39%      SingleRFHarmonicMatcher: Transforming distribution: 40%      SingleRFHarmonicMatcher: Transforming distribution: 41%      SingleRFHarmonicMatcher: Transforming distribution: 41%      SingleRFHarmonicMatcher: Transforming distribution: 42%      SingleRFHarmonicMatcher: Transforming distribution: 43%      SingleRFHarmonicMatcher: Transforming distribution: 43%      SingleRFHarmonicMatcher: Transforming distribution: 44%      SingleRFHarmonicMatcher: Transforming distribution: 45%      SingleRFHarmonicMatcher: Transforming distribution: 45%      SingleRFHarmonicMatcher: Transforming distribution: 46%      SingleRFHarmonicMatcher: Transforming distribution: 47%      SingleRFHarmonicMatcher: Transforming distribution: 47%      SingleRFHarmonicMatcher: Transforming distribution: 48%      SingleRFHarmonicMatcher: Transforming distribution: 49%      SingleRFHarmonicMatcher: Transforming distribution: 49%      SingleRFHarmonicMatcher: Transforming distribution: 50%      SingleRFHarmonicMatcher: Transforming distribution: 51%      SingleRFHarmonicMatcher: Transforming distribution: 51%      SingleRFHarmonicMatcher: Transforming distribution: 52%      SingleRFHarmonicMatcher: Transforming distribution: 53%      SingleRFHarmonicMatcher: Transforming distribution: 53%      SingleRFHarmonicMatcher: Transforming distribution: 54%      SingleRFHarmonicMatcher: Transforming distribution: 55%      SingleRFHarmonicMatcher: Transforming distribution: 55%      SingleRFHarmonicMatcher: Transforming distribution: 56%      SingleRFHarmonicMatcher: Transforming distribution: 57%      SingleRFHarmonicMatcher: Transforming distribution: 57%      SingleRFHarmonicMatcher: Transforming distribution: 58%      SingleRFHarmonicMatcher: Transforming distribution: 59%      SingleRFHarmonicMatcher: Transforming distribution: 59%      SingleRFHarmonicMatcher: Transforming distribution: 60%      SingleRFHarmonicMatcher: Transforming distribution: 61%      SingleRFHarmonicMatcher: Transforming distribution: 61%      SingleRFHarmonicMatcher: Transforming distribution: 62%      SingleRFHarmonicMatcher: Transforming distribution: 63%      SingleRFHarmonicMatcher: Transforming distribution: 63%      SingleRFHarmonicMatcher: Transforming distribution: 64%      SingleRFHarmonicMatcher: Transforming distribution: 65%      SingleRFHarmonicMatcher: Transforming distribution: 65%      SingleRFHarmonicMatcher: Transforming distribution: 66%      SingleRFHarmonicMatcher: Transforming distribution: 67%      SingleRFHarmonicMatcher: Transforming distribution: 67%      SingleRFHarmonicMatcher: Transforming distribution: 68%      SingleRFHarmonicMatcher: Transforming distribution: 69%      SingleRFHarmonicMatcher: Transforming distribution: 69%      SingleRFHarmonicMatcher: Transforming distribution: 70%      SingleRFHarmonicMatcher: Transforming distribution: 71%      SingleRFHarmonicMatcher: Transforming distribution: 71%      SingleRFHarmonicMatcher: Transforming distribution: 72%      SingleRFHarmonicMatcher: Transforming distribution: 73%      SingleRFHarmonicMatcher: Transforming distribution: 73%      SingleRFHarmonicMatcher: Transforming distribution: 74%      SingleRFHarmonicMatcher: Transforming distribution: 75%      SingleRFHarmonicMatcher: Transforming distribution: 75%      SingleRFHarmonicMatcher: Transforming distribution: 76%      SingleRFHarmonicMatcher: Transforming distribution: 77%      SingleRFHarmonicMatcher: Transforming distribution: 77%      SingleRFHarmonicMatcher: Transforming distribution: 78%      SingleRFHarmonicMatcher: Transforming distribution: 79%      SingleRFHarmonicMatcher: Transforming distribution: 79%      SingleRFHarmonicMatcher: Transforming distribution: 80%      SingleRFHarmonicMatcher: Transforming distribution: 81%      SingleRFHarmonicMatcher: Transforming distribution: 81%      SingleRFHarmonicMatcher: Transforming distribution: 82%      SingleRFHarmonicMatcher: Transforming distribution: 83%      SingleRFHarmonicMatcher: Transforming distribution: 83%      SingleRFHarmonicMatcher: Transforming distribution: 84%      SingleRFHarmonicMatcher: Transforming distribution: 85%      SingleRFHarmonicMatcher: Transforming distribution: 85%      SingleRFHarmonicMatcher: Transforming distribution: 86%      SingleRFHarmonicMatcher: Transforming distribution: 87%      SingleRFHarmonicMatcher: Transforming distribution: 87%      SingleRFHarmonicMatcher: Transforming distribution: 88%      SingleRFHarmonicMatcher: Transforming distribution: 89%      SingleRFHarmonicMatcher: Transforming distribution: 89%      SingleRFHarmonicMatcher: Transforming distribution: 90%      SingleRFHarmonicMatcher: Transforming distribution: 91%      SingleRFHarmonicMatcher: Transforming distribution: 91%      SingleRFHarmonicMatcher: Transforming distribution: 92%      SingleRFHarmonicMatcher: Transforming distribution: 93%      SingleRFHarmonicMatcher: Transforming distribution: 93%      SingleRFHarmonicMatcher: Transforming distribution: 94%      SingleRFHarmonicMatcher: Transforming distribution: 95%      SingleRFHarmonicMatcher: Transforming distribution: 95%      SingleRFHarmonicMatcher: Transforming distribution: 96%      SingleRFHarmonicMatcher: Transforming distribution: 97%      SingleRFHarmonicMatcher: Transforming distribution: 97%      SingleRFHarmonicMatcher: Transforming distribution: 98%      SingleRFHarmonicMatcher: Transforming distribution: 99%      SingleRFHarmonicMatcher: Transforming distribution: 99%      SingleRFHarmonicMatcher: Done transforming distribution.
-    SingleRFHarmonicMatcher: Sampling particles: 22%      SingleRFHarmonicMatcher: Sampling particles: 43%      SingleRFHarmonicMatcher: Sampling particles: 66%      SingleRFHarmonicMatcher: Sampling particles: 86%      SingleRFHarmonicMatcher: Sampling particles: 107%      SingleRFHarmonicMatcher: Sampled 2000 particles
+    *** Maximum RMS bunch length 0.23411602660718794m.
+    ... distance to target bunch length: -5.0000e-02
+    ... distance to target bunch length: 1.7765e-01
+    ... distance to target bunch length: 5.9379e-02
+    ... distance to target bunch length: -2.0410e-03
+    ... distance to target bunch length: -4.3559e-05
+    ... distance to target bunch length: -2.8760e-08
+    ... distance to target bunch length: 2.2715e-07
+    --> Bunch length: 0.0499999712403689
+    --> Emittance: 0.05185941029070243
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 128-132
+.. GENERATED FROM PYTHON SOURCE LINES 98-102
 
 Generating the IBS Kick Classes
 -------------------------------
 Just as all user-facing classes in ``xibs``, the `SimpleKickIBS` :cite:`PRAB:Bruce:Simple_IBS_Kicks`
 class is instantiated by providing a `BeamParameters` and an `OpticsParameters` objects:
 
-.. GENERATED FROM PYTHON SOURCE LINES 132-138
+.. GENERATED FROM PYTHON SOURCE LINES 102-108
 
 .. code-block:: Python
 
@@ -241,20 +208,20 @@ class is instantiated by providing a `BeamParameters` and an `OpticsParameters` 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 139-143
+.. GENERATED FROM PYTHON SOURCE LINES 109-113
 
 Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking
 ------------------------------------------------------------------------
 We will now apply kicks with both formalism during tracking simulations.
-Let's do so for 1000 turns, and re-compute kick coefficients every 50 turns.
+Let's do so for 750 turns, and re-compute kick coefficients every 50 turns.
 
-.. GENERATED FROM PYTHON SOURCE LINES 143-148
+.. GENERATED FROM PYTHON SOURCE LINES 113-118
 
 .. code-block:: Python
 
 
     # Define some parameters for the tracking
-    nturns = 1_000  # number of turns to loop for
+    nturns = 750  # number of turns to loop for
     ibs_step = 50  # frequency at which to re-compute coefficients in [turns]
 
 
@@ -264,11 +231,11 @@ Let's do so for 1000 turns, and re-compute kick coefficients every 50 turns.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 149-150
+.. GENERATED FROM PYTHON SOURCE LINES 119-120
 
 We will also set up a dataclass conveniently to store the results:
 
-.. GENERATED FROM PYTHON SOURCE LINES 150-184
+.. GENERATED FROM PYTHON SOURCE LINES 120-162
 
 .. code-block:: Python
 
@@ -281,9 +248,9 @@ We will also set up a dataclass conveniently to store the results:
         bunch_length: np.ndarray
 
         def update_at_turn(self, turn: int, parts: xp.Particles, twiss: xt.TwissTable):
-            """Automatically update the records at given turn from the xpart.Particles."""
-            self.epsilon_x[turn] = _geom_epsx(parts, twiss)
-            self.epsilon_y[turn] = _geom_epsy(parts, twiss)
+            """Automatically update the records at given turn from the xtrack.Particles."""
+            self.epsilon_x[turn] = _geom_epsx(parts, twiss.betx[0], twiss.dx[0])
+            self.epsilon_y[turn] = _geom_epsy(parts, twiss.bety[0], twiss.dy[0])
             self.sigma_delta[turn] = _sigma_delta(parts)
             self.bunch_length[turn] = _bunch_length(parts)
 
@@ -298,14 +265,21 @@ We will also set up a dataclass conveniently to store the results:
             )
 
 
-    # Initialize the dataclasses
+    # Initialize the dataclasses & store the initial values
     kinetic_tbt = Records.init_zeroes(nturns)
     simple_tbt = Records.init_zeroes(nturns)
 
-    # Store the initial values
     kinetic_tbt.update_at_turn(0, particles, twiss)
     simple_tbt.update_at_turn(0, particles2, twiss)
 
+    # Let's hide anything below WARNING level for readability
+    logging.basicConfig(
+        level=logging.WARNING,
+        stream=sys.stdout,
+        format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
+        datefmt="%H:%M:%S",
+        force=True,
+    )
 
 
 
@@ -313,18 +287,20 @@ We will also set up a dataclass conveniently to store the results:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-188
+
+.. GENERATED FROM PYTHON SOURCE LINES 163-166
 
 Now, since ``xibs`` is not fully integrated into Xsuite, we will have to manually
 apply the IBS kick at each turn of tracking, and also manually trigger the turn
 of tracking. Just like in the analytical examples, we do so in a loop over the turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 188-210
+.. GENERATED FROM PYTHON SOURCE LINES 166-189
 
 .. code-block:: Python
 
 
-    # We loop here now
+    # ----- We loop here now ----- # 
+
     for turn in range(1, nturns):
         # ----- Potentially re-compute the IBS growth rates and kick coefficients ----- #
         if (turn % ibs_step == 0) or (turn == 1):
@@ -1102,267 +1078,17 @@ of tracking. Just like in the analytical examples, we do so in a loop over the t
     Turn 747
     Turn 748
     Turn 749
-    Turn 750: re-computing IBS kick terms
-    Turn 751
-    Turn 752
-    Turn 753
-    Turn 754
-    Turn 755
-    Turn 756
-    Turn 757
-    Turn 758
-    Turn 759
-    Turn 760
-    Turn 761
-    Turn 762
-    Turn 763
-    Turn 764
-    Turn 765
-    Turn 766
-    Turn 767
-    Turn 768
-    Turn 769
-    Turn 770
-    Turn 771
-    Turn 772
-    Turn 773
-    Turn 774
-    Turn 775
-    Turn 776
-    Turn 777
-    Turn 778
-    Turn 779
-    Turn 780
-    Turn 781
-    Turn 782
-    Turn 783
-    Turn 784
-    Turn 785
-    Turn 786
-    Turn 787
-    Turn 788
-    Turn 789
-    Turn 790
-    Turn 791
-    Turn 792
-    Turn 793
-    Turn 794
-    Turn 795
-    Turn 796
-    Turn 797
-    Turn 798
-    Turn 799
-    Turn 800: re-computing IBS kick terms
-    Turn 801
-    Turn 802
-    Turn 803
-    Turn 804
-    Turn 805
-    Turn 806
-    Turn 807
-    Turn 808
-    Turn 809
-    Turn 810
-    Turn 811
-    Turn 812
-    Turn 813
-    Turn 814
-    Turn 815
-    Turn 816
-    Turn 817
-    Turn 818
-    Turn 819
-    Turn 820
-    Turn 821
-    Turn 822
-    Turn 823
-    Turn 824
-    Turn 825
-    Turn 826
-    Turn 827
-    Turn 828
-    Turn 829
-    Turn 830
-    Turn 831
-    Turn 832
-    Turn 833
-    Turn 834
-    Turn 835
-    Turn 836
-    Turn 837
-    Turn 838
-    Turn 839
-    Turn 840
-    Turn 841
-    Turn 842
-    Turn 843
-    Turn 844
-    Turn 845
-    Turn 846
-    Turn 847
-    Turn 848
-    Turn 849
-    Turn 850: re-computing IBS kick terms
-    Turn 851
-    Turn 852
-    Turn 853
-    Turn 854
-    Turn 855
-    Turn 856
-    Turn 857
-    Turn 858
-    Turn 859
-    Turn 860
-    Turn 861
-    Turn 862
-    Turn 863
-    Turn 864
-    Turn 865
-    Turn 866
-    Turn 867
-    Turn 868
-    Turn 869
-    Turn 870
-    Turn 871
-    Turn 872
-    Turn 873
-    Turn 874
-    Turn 875
-    Turn 876
-    Turn 877
-    Turn 878
-    Turn 879
-    Turn 880
-    Turn 881
-    Turn 882
-    Turn 883
-    Turn 884
-    Turn 885
-    Turn 886
-    Turn 887
-    Turn 888
-    Turn 889
-    Turn 890
-    Turn 891
-    Turn 892
-    Turn 893
-    Turn 894
-    Turn 895
-    Turn 896
-    Turn 897
-    Turn 898
-    Turn 899
-    Turn 900: re-computing IBS kick terms
-    Turn 901
-    Turn 902
-    Turn 903
-    Turn 904
-    Turn 905
-    Turn 906
-    Turn 907
-    Turn 908
-    Turn 909
-    Turn 910
-    Turn 911
-    Turn 912
-    Turn 913
-    Turn 914
-    Turn 915
-    Turn 916
-    Turn 917
-    Turn 918
-    Turn 919
-    Turn 920
-    Turn 921
-    Turn 922
-    Turn 923
-    Turn 924
-    Turn 925
-    Turn 926
-    Turn 927
-    Turn 928
-    Turn 929
-    Turn 930
-    Turn 931
-    Turn 932
-    Turn 933
-    Turn 934
-    Turn 935
-    Turn 936
-    Turn 937
-    Turn 938
-    Turn 939
-    Turn 940
-    Turn 941
-    Turn 942
-    Turn 943
-    Turn 944
-    Turn 945
-    Turn 946
-    Turn 947
-    Turn 948
-    Turn 949
-    Turn 950: re-computing IBS kick terms
-    Turn 951
-    Turn 952
-    Turn 953
-    Turn 954
-    Turn 955
-    Turn 956
-    Turn 957
-    Turn 958
-    Turn 959
-    Turn 960
-    Turn 961
-    Turn 962
-    Turn 963
-    Turn 964
-    Turn 965
-    Turn 966
-    Turn 967
-    Turn 968
-    Turn 969
-    Turn 970
-    Turn 971
-    Turn 972
-    Turn 973
-    Turn 974
-    Turn 975
-    Turn 976
-    Turn 977
-    Turn 978
-    Turn 979
-    Turn 980
-    Turn 981
-    Turn 982
-    Turn 983
-    Turn 984
-    Turn 985
-    Turn 986
-    Turn 987
-    Turn 988
-    Turn 989
-    Turn 990
-    Turn 991
-    Turn 992
-    Turn 993
-    Turn 994
-    Turn 995
-    Turn 996
-    Turn 997
-    Turn 998
-    Turn 999
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 211-214
+.. GENERATED FROM PYTHON SOURCE LINES 190-193
 
 Feel free to run this simulation for more turns, with a different frequency
 of the IBS kick coefficients re-computation, or with more particles. After
 this loop is done running, we can plot the evolutions across turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 214-253
+.. GENERATED FROM PYTHON SOURCE LINES 193-232
 
 .. code-block:: Python
 
@@ -1417,7 +1143,7 @@ this loop is done running, we can plot the evolutions across turns:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 254-261
+.. GENERATED FROM PYTHON SOURCE LINES 233-240
 
 .. admonition:: References
 
@@ -1430,7 +1156,7 @@ this loop is done running, we can plot the evolutions across turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (10 minutes 47.369 seconds)
+   **Total running time of the script:** (10 minutes 3.600 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_compare_kicks.py:

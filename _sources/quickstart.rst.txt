@@ -37,11 +37,11 @@ Integration with xsuite
 -----------------------
 
 The ``xibs`` package is meant to integrate with ``xsuite`` simulations.
-As a first step, all classes encompassing IBS functionality are initialized from the optics of the `xtrack.Line` to simulate for, as well as the `xpart.Particles` distribution to be tracked through the line.
+As a first step, all classes encompassing IBS functionality are initialized from the optics of the `xtrack.Line` to simulate for, as well as the `xtrack.Particles` distribution to be tracked through the line.
 
 .. hint::
    
-   Please note that while tracking is not necessary to calculate IBS effects (see the Analytical section below), it is necessary to provide an `xpart.Particles` object from which to get required properties.
+   Please note that while tracking is not necessary to calculate IBS effects (see the Analytical section below), it is necessary to provide an `xtrack.Particles` object from which to get required properties.
    The object does not necessarily need to represent a full generated and matched distribution, see the :doc:`FAQ <faq/index>` for details.
 
 Initializing then requires the following steps:

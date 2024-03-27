@@ -24,6 +24,7 @@ import xpart as xp
 import xtrack as xt
 
 from xibs.analytical import NagaitsevIBS
+from xibs.formulary import _bunch_length, _geom_epsx, _geom_epsy, _sigma_delta
 from xibs.inputs import BeamParameters, OpticsParameters
 
 warnings.simplefilter("ignore")  # for this tutorial's clarity
@@ -50,9 +51,6 @@ plt.rcParams.update(
 # parameters for later use:
 
 line_file = "lines/chrom-corr_DR.newlattice_2GHz.json"
-harmonic_number = 2852
-rf_voltage = 4.5  # in MV
-energy_loss = 0  # let's pretend ;)
 bunch_intensity = 4.4e9
 sigma_z = 1.58e-3
 nemitt_x = 5.6644e-07
@@ -85,7 +83,6 @@ particles = xp.generate_matched_gaussian_bunch(
     sigma_z=sigma_z,
     particle_ref=p0,
     line=line,
-    engine="single-rf-harmonic",
 )
 
 ###############################################################################
@@ -110,16 +107,12 @@ plt.show()
 
 ###############################################################################
 # We can compute initial (geometrical) emittances as well as the bunch length
-# from the `xpart.Particles` object:
+# from the `xtrack.Particles` object:
 
-sig_x = np.std(particles.x[particles.state > 0])  # horizontal stdev
-sig_y = np.std(particles.y[particles.state > 0])  # vertical stdev
-sig_delta = np.std(particles.delta[particles.state > 0])  # momentum spread
-
-# Compute horizontal & vertical geometric emittances as well as the bunch length, all in [m]
-geom_epsx = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-geom_epsy = sig_y**2 / twiss["bety"][0]
-bunch_l = np.std(particles.zeta[particles.state > 0])
+geom_epsx = _geom_epsx(particles, twiss.betx[0], twiss.dx[0])
+geom_epsy = _geom_epsy(particles, twiss.bety[0], twiss.dy[0])
+bunch_l = _bunch_length(particles)
+sig_delta = _sigma_delta(particles)
 
 ###############################################################################
 # Computing Elliptic Integrals and IBS Growth Rates
@@ -155,10 +148,10 @@ print(growth_rates)
 print(IBS.ibs_growth_rates)
 
 ###############################################################################
-# Please note that the `IBS.growth_rates` method by default re-computes the
-# integrals before computing the growth rates. This convenient as usually, one
-# needs to update the integrals when they want to update the growth rates. It
-# can be disabled by setting the `compute_integrals` argument to `False`.
+# **Please note** that the `IBS.growth_rates` method by default re-computes the
+# integrals before computing the growth rates. This is convenient as usually,
+# one needs to update the integrals when they want to update the growth rates.
+# It can be disabled by setting the `compute_integrals` argument to `False`.
 
 ###############################################################################
 # Computing New Emittances from Growth Rates
@@ -194,27 +187,35 @@ turns = np.arange(nturns, dtype=int)  # array of turns
 class Records:
     """Dataclass to store (and update) important values through tracking."""
 
-    epsilon_x: np.ndarray
-    epsilon_y: np.ndarray
-    sig_delta: np.ndarray
-    bunch_length: np.ndarray
+    epsilon_x: np.ndarray  # geometric horizontal emittance in [m]
+    epsilon_y: np.ndarray  # geometric vertical emittance in [m]
+    sig_delta: np.ndarray  # momentum spread
+    bunch_length: np.ndarray  # bunch length in [m]
+
+    @classmethod
+    def init_zeroes(cls, n_turns: int):
+        return cls(
+            epsilon_x=np.zeros(n_turns, dtype=float),
+            epsilon_y=np.zeros(n_turns, dtype=float),
+            sig_delta=np.zeros(n_turns, dtype=float),
+            bunch_length=np.zeros(n_turns, dtype=float),
+        )
+
+    def update_at_turn(self, turn: int, epsx: float, epsy: float, sigd: float, bl: float):
+        """Works for turns / seconds, just needs the correct index to store in."""
+        self.epsilon_x[turn] = epsx
+        self.epsilon_y[turn] = epsy
+        self.sig_delta[turn] = sigd
+        self.bunch_length[turn] = bl
 
 
-# Initialize the dataclass
-turn_by_turn = Records(
-    epsilon_x=np.zeros(nturns, dtype=float),
-    epsilon_y=np.zeros(nturns, dtype=float),
-    sig_delta=np.zeros(nturns, dtype=float),
-    bunch_length=np.zeros(nturns, dtype=float),
-)
+# Initialize the dataclass & store the initial values
+turn_by_turn = Records.init_zeroes(nturns)
+turn_by_turn.update_at_turn(0, geom_epsx, geom_epsy, sig_delta, bunch_l)
 
-# Store the initial values
-turn_by_turn.bunch_length[0] = np.std(particles.zeta[particles.state > 0])
-turn_by_turn.sig_delta[0] = sig_delta
-turn_by_turn.epsilon_x[0] = (sig_x**2 - (twiss["dx"][0] * sig_delta) ** 2) / twiss["betx"][0]
-turn_by_turn.epsilon_y[0] = (sig_y**2 - (twiss["dy"][0] * sig_delta) ** 2) / twiss["bety"][0]
 
-# We loop here now
+# ----- We loop here now ----- # 
+
 for turn in range(1, nturns):
     # ----- Potentially re-compute the elliptic integrals and IBS growth rates ----- #
     if (turn % ibs_step == 0) or (turn == 1):
@@ -237,10 +238,8 @@ for turn in range(1, nturns):
     )
 
     # ----- Update the records with the new values ----- #
-    turn_by_turn.epsilon_x[turn] = new_emit_x
-    turn_by_turn.epsilon_y[turn] = new_emit_y
-    turn_by_turn.sig_delta[turn] = new_sig_delta
-    turn_by_turn.bunch_length[turn] = new_bunch_length
+    turn_by_turn.update_at_turn(turn, new_emit_x, new_emit_y, new_sig_delta, new_bunch_length)
+
 
 ###############################################################################
 # Feel free to run this simulation for more turns, or with a different frequency

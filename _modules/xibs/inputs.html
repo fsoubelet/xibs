@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xibs.inputs &mdash; xibs 0.7.1 documentation</title>
+  <title>xibs.inputs &mdash; xibs 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=5a057da9"></script>
+        <script src="../../_static/documentation_options.js?v=486e5634"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -45,7 +45,7 @@
             
           </a>
               <div class="version">
-                0.7.1
+                0.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -68,6 +68,22 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../gallery/index.html">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html">Automatic Growth Rates Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#instantiate-analytical-ibs-objects">Instantiate Analytical IBS Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#preparing-for-simulation-of-evolution">Preparing for Simulation of Evolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#analytical-evolution-over-time">Analytical Evolution Over Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_auto_recompute_rates.html#takeaways">Takeaways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html">Automatic Kick Coefficients Re-Computation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#setting-up-line-and-particles">Setting up line and particles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#generating-the-ibs-kick-class">Generating the IBS Kick Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#computing-and-applying-ibs-kicks">Computing and Applying IBS Kicks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#preparing-for-the-tracking-simulation">Preparing for the Tracking Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_kicks_auto_recompute_coefficients.html#tracking-evolution-over-turns">Tracking Evolution Over Turns</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html">Bjorken-Mtingwa Formalism - Analytical Growth Rates and Emittance Evolution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#setting-up-line-and-particles">Setting up line and particles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../gallery/demo_analytical_bjorken_mtingwa_emittances.html#computing-ibs-growth-rates">Computing IBS Growth Rates</a></li>
@@ -132,6 +148,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../faq/coasting_beams.html">Bunched and Coasting Beams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq/auto_recomputing.html">Automatic Recomputation of IBS Kick Coefficients and Growth Rates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq/auto_recomputing.html#auto-recomputing-for-ibs-kick-classes">Auto-Recomputing for IBS Kick Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq/auto_recomputing.html#auto-recomputing-for-ibs-analytical-classes">Auto-Recomputing for IBS Analytical Classes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../bibliography.html">Reference Bibliography</a></li>
@@ -171,7 +192,7 @@
 <span class="sd">Module with container dataclasses to encompass expected necessary inputs .</span>
 <span class="sd">Various parts of ``xibs`` perform calculations based on beam and optics parameters.</span>
 
-<span class="sd">The former is encompassed in a `BeamParameters` dataclass which is initiated from a generated `xpart.Particles` object.</span>
+<span class="sd">The former is encompassed in a `BeamParameters` dataclass which is initiated from a generated `xtrack.Particles` object.</span>
 <span class="sd">The latter is encompassed in an `OpticsParameters` dataclass which is initiated from the result of a ``TWISS`` call on</span>
 <span class="sd">the line (if in ``xsuite``) or the sequence (if in ``MAD-X``).</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -199,10 +220,10 @@
 <span class="sd">    .. versionadded:: 0.2.0</span>
 
 <span class="sd">    Container dataclass for necessary beam parameters. It is initiated from</span>
-<span class="sd">    the `xpart.Particles` object to track in your line with ``xsuite``.</span>
+<span class="sd">    the `xtrack.Particles` object to track in your line with ``xsuite``.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        particles (xpart.Particles): the generated particles to be tracked or used</span>
+<span class="sd">        particles (xtrack.Particles): the generated particles to be tracked or used</span>
 <span class="sd">            in the line. This is an init-only parameter used for instanciation and</span>
 <span class="sd">            it will not be kept in the instance&#39;s attributes.</span>
 
@@ -219,7 +240,7 @@
 
     <span class="c1"># ----- To be provided at initialization ----- #</span>
     <span class="c1"># Almost all is derived from these, but it is not kept!</span>
-    <span class="n">particles</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="s2">&quot;xpart.Particles&quot;</span><span class="p">]</span>  <span class="c1"># noqa: F821</span>
+    <span class="n">particles</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="s2">&quot;xtrack.Particles&quot;</span><span class="p">]</span>  <span class="c1"># noqa: F821</span>
     <span class="c1"># ----- Below are attributes derived from the Particles object ----- #</span>
     <span class="c1"># The following are Npart, Ncharg, E_rest, EnTot, gammar, betar and c_rad in Michalis&#39;s code</span>
     <span class="n">n_part</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -230,7 +251,7 @@
     <span class="n">beta_rel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">particle_classical_radius_m</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xpart.Particles&quot;</span><span class="p">):</span>  <span class="c1"># noqa: F821</span>
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">particles</span><span class="p">:</span> <span class="s2">&quot;xtrack.Particles&quot;</span><span class="p">):</span>  <span class="c1"># noqa: F821</span>
         <span class="c1"># Attributes derived from the Particles object</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initializing BeamParameters from Particles object&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_part</span> <span class="o">=</span> <span class="n">particles</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">particles</span><span class="o">.</span><span class="n">gamma0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -255,7 +276,7 @@
 <span class="sd">        .. warning::</span>
 <span class="sd">            This method will query parameters from the `~cpymad.madx.Madx` object. It will</span>
 <span class="sd">            get parameters from the current active sequence&#39;s beam, and use these to create</span>
-<span class="sd">            an `xpart.Particles` object from which to instanciate the `BeamParameters` object.</span>
+<span class="sd">            an `xtrack.Particles` object from which to instanciate the `BeamParameters` object.</span>
 <span class="sd">            Note that the `xpart` package is required to use this method.</span>
 
 <span class="sd">        Args:</span>
