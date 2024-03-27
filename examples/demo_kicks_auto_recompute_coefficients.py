@@ -16,9 +16,7 @@ Kinetic kicks example linked above and expanding on the relevant parts. Demonstr
 will be done using the CLIC Damping Ring line.
 """
 # sphinx_gallery_thumbnail_number = 1
-# import warnings
 import logging
-# import sys
 from dataclasses import dataclass
 from typing import Self
 
@@ -38,7 +36,6 @@ logging.basicConfig(
     format="[%(asctime)s] [%(levelname)s] - %(module)s.%(funcName)s:%(lineno)d - %(message)s",
     datefmt="%H:%M:%S",
 )
-# warnings.simplefilter("ignore")  # for this tutorial's clarity
 plt.rcParams.update(
     {
         "font.family": "serif",
