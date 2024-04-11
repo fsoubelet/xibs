@@ -943,8 +943,8 @@ class BjorkenMtingwaIBS(AnalyticalIBS):
         Computes :math:`\Gamma`, the 6-dimensional invariant phase space volume of a bunched beam.
 
         Args:
-            epsx (float): horizontal geometric emittance in [m].
-            epxy (float): vertical geometric emittance in [m].
+            geom_epsx (float): horizontal geometric emittance in [m].
+            geom_epsy (float): vertical geometric emittance in [m].
             sigma_delta (float): momentum spread.
             bunch_length (float): the bunch length in [m].
             bunched (bool): whether the beam is bunched or not (coasting). Defaults to `True`.
