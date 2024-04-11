@@ -110,7 +110,7 @@ Let's now load the line from file, activate the accelerating cavities and
 create a context for multithreading with OpenMP, since tracking particles
 is going to take some time:
 
-.. GENERATED FROM PYTHON SOURCE LINES 70-97
+.. GENERATED FROM PYTHON SOURCE LINES 70-98
 
 .. code-block:: Python
 
@@ -118,11 +118,12 @@ is going to take some time:
     line = xt.Line.from_json(line_file)  # includes reference particle
     context = xo.ContextCpu(omp_num_threads="auto")
 
+
     # ----- Power accelerating cavities ----- #
     rf_voltage = 1.7e6  # 1.7MV
     harmonic_number = 4653
     cavity = "actcse.31632"
-    line[cavity].lag = 180  # 0 if below transition, 180 if above
+    line[cavity].lag = 180  # 180 above transition
     line[cavity].voltage = rf_voltage
     line[cavity].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
 
@@ -149,7 +150,7 @@ is going to take some time:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  27%|██▋       | 2671/9866 [00:00<00:00, 26666.35it/s]    Loading line from dict:  54%|█████▍    | 5338/9866 [00:00<00:00, 25989.44it/s]    Loading line from dict:  82%|████████▏ | 8057/9866 [00:00<00:00, 26517.63it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 26334.78it/s]
+    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  28%|██▊       | 2723/9866 [00:00<00:00, 27211.02it/s]    Loading line from dict:  55%|█████▌    | 5455/9866 [00:00<00:00, 27265.99it/s]    Loading line from dict:  84%|████████▎ | 8244/9866 [00:00<00:00, 27549.85it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 27463.20it/s]
     Done loading line from dict.           
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
@@ -184,14 +185,14 @@ is going to take some time:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 98-102
+.. GENERATED FROM PYTHON SOURCE LINES 99-103
 
 Generating the IBS Kick Classes
 -------------------------------
 Just as all user-facing classes in ``xibs``, the `SimpleKickIBS` :cite:`PRAB:Bruce:Simple_IBS_Kicks`
 class is instantiated by providing a `BeamParameters` and an `OpticsParameters` objects:
 
-.. GENERATED FROM PYTHON SOURCE LINES 102-108
+.. GENERATED FROM PYTHON SOURCE LINES 103-109
 
 .. code-block:: Python
 
@@ -208,14 +209,14 @@ class is instantiated by providing a `BeamParameters` and an `OpticsParameters` 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 109-113
+.. GENERATED FROM PYTHON SOURCE LINES 110-114
 
 Comparing Beam Parameters Evolution While Applying IBS Kicks in Tracking
 ------------------------------------------------------------------------
 We will now apply kicks with both formalism during tracking simulations.
 Let's do so for 750 turns, and re-compute kick coefficients every 50 turns.
 
-.. GENERATED FROM PYTHON SOURCE LINES 113-118
+.. GENERATED FROM PYTHON SOURCE LINES 114-119
 
 .. code-block:: Python
 
@@ -231,11 +232,11 @@ Let's do so for 750 turns, and re-compute kick coefficients every 50 turns.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 119-120
+.. GENERATED FROM PYTHON SOURCE LINES 120-121
 
 We will also set up a dataclass conveniently to store the results:
 
-.. GENERATED FROM PYTHON SOURCE LINES 120-162
+.. GENERATED FROM PYTHON SOURCE LINES 121-163
 
 .. code-block:: Python
 
@@ -288,13 +289,13 @@ We will also set up a dataclass conveniently to store the results:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 163-166
+.. GENERATED FROM PYTHON SOURCE LINES 164-167
 
 Now, since ``xibs`` is not fully integrated into Xsuite, we will have to manually
 apply the IBS kick at each turn of tracking, and also manually trigger the turn
 of tracking. Just like in the analytical examples, we do so in a loop over the turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 166-189
+.. GENERATED FROM PYTHON SOURCE LINES 167-190
 
 .. code-block:: Python
 
@@ -1082,13 +1083,13 @@ of tracking. Just like in the analytical examples, we do so in a loop over the t
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 190-193
+.. GENERATED FROM PYTHON SOURCE LINES 191-194
 
 Feel free to run this simulation for more turns, with a different frequency
 of the IBS kick coefficients re-computation, or with more particles. After
 this loop is done running, we can plot the evolutions across turns:
 
-.. GENERATED FROM PYTHON SOURCE LINES 193-232
+.. GENERATED FROM PYTHON SOURCE LINES 194-233
 
 .. code-block:: Python
 
@@ -1143,7 +1144,7 @@ this loop is done running, we can plot the evolutions across turns:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 233-240
+.. GENERATED FROM PYTHON SOURCE LINES 234-241
 
 .. admonition:: References
 
@@ -1156,7 +1157,7 @@ this loop is done running, we can plot the evolutions across turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (10 minutes 3.600 seconds)
+   **Total running time of the script:** (10 minutes 3.216 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_compare_kicks.py:

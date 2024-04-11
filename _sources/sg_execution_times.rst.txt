@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**24:34.985** total execution time for 8 files **from all galleries**:
+**24:29.695** total execution time for 8 files **from all galleries**:
 
 .. container::
 
@@ -33,26 +33,26 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_gallery_demo_compare_kicks.py` (``../examples/demo_compare_kicks.py``)
-     - 10:03.600
+     - 10:03.216
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_kicks_auto_recompute_coefficients.py` (``../examples/demo_kicks_auto_recompute_coefficients.py``)
-     - 04:41.499
+     - 04:41.258
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_analytical_auto_recompute_rates.py` (``../examples/demo_analytical_auto_recompute_rates.py``)
-     - 02:37.595
+     - 02:33.294
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_kinetic_kicks.py` (``../examples/demo_kinetic_kicks.py``)
-     - 02:11.268
+     - 02:12.138
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_simple_kicks.py` (``../examples/demo_simple_kicks.py``)
-     - 02:10.084
+     - 02:10.618
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_compare_analyticals.py` (``../examples/demo_compare_analyticals.py``)
-     - 01:44.475
+     - 01:43.032
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_analytical_bjorken_mtingwa_emittances.py` (``../examples/demo_analytical_bjorken_mtingwa_emittances.py``)
-     - 00:42.867
+     - 00:42.399
      - 0.0
    * - :ref:`sphx_glr_gallery_demo_analytical_nagaitsev_emittances.py` (``../examples/demo_analytical_nagaitsev_emittances.py``)
-     - 00:23.596
+     - 00:23.741
      - 0.0

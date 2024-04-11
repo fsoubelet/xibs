@@ -150,7 +150,7 @@ is going to take some time:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▍         | 2860/71796 [00:00<00:02, 28597.85it/s]    Loading line from dict:   8%|▊         | 5766/71796 [00:00<00:02, 28866.47it/s]    Loading line from dict:  12%|█▏        | 8670/71796 [00:00<00:02, 28944.39it/s]    Loading line from dict:  16%|█▌        | 11620/71796 [00:00<00:02, 29161.81it/s]    Loading line from dict:  20%|██        | 14537/71796 [00:00<00:02, 21468.05it/s]    Loading line from dict:  24%|██▍       | 17438/71796 [00:00<00:02, 23537.85it/s]    Loading line from dict:  28%|██▊       | 20358/71796 [00:00<00:02, 25131.58it/s]    Loading line from dict:  32%|███▏      | 23250/71796 [00:00<00:01, 26218.76it/s]    Loading line from dict:  36%|███▋      | 26198/71796 [00:00<00:01, 27157.81it/s]    Loading line from dict:  40%|████      | 29008/71796 [00:01<00:01, 26403.83it/s]    Loading line from dict:  44%|████▍     | 31716/71796 [00:01<00:01, 25721.93it/s]    Loading line from dict:  48%|████▊     | 34336/71796 [00:01<00:01, 25287.92it/s]    Loading line from dict:  52%|█████▏    | 36988/71796 [00:01<00:01, 25637.63it/s]    Loading line from dict:  56%|█████▌    | 39934/71796 [00:01<00:01, 26735.68it/s]    Loading line from dict:  60%|█████▉    | 42868/71796 [00:01<00:01, 27493.77it/s]    Loading line from dict:  64%|██████▍   | 45776/71796 [00:01<00:00, 27950.67it/s]    Loading line from dict:  68%|██████▊   | 48703/71796 [00:01<00:00, 28340.77it/s]    Loading line from dict:  72%|███████▏  | 51648/71796 [00:01<00:00, 28665.58it/s]    Loading line from dict:  76%|███████▌  | 54523/71796 [00:02<00:00, 21379.41it/s]    Loading line from dict:  80%|███████▉  | 57427/71796 [00:02<00:00, 23223.48it/s]    Loading line from dict:  84%|████████▍ | 60348/71796 [00:02<00:00, 24753.43it/s]    Loading line from dict:  88%|████████▊ | 63101/71796 [00:02<00:00, 25490.88it/s]    Loading line from dict:  92%|█████████▏| 65794/71796 [00:02<00:00, 24635.49it/s]    Loading line from dict:  95%|█████████▌| 68362/71796 [00:02<00:00, 24513.50it/s]    Loading line from dict:  99%|█████████▊| 70886/71796 [00:02<00:00, 24622.87it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:02<00:00, 25547.32it/s]
+    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▍         | 2918/71796 [00:00<00:02, 29138.76it/s]    Loading line from dict:   8%|▊         | 5874/71796 [00:00<00:02, 29384.40it/s]    Loading line from dict:  12%|█▏        | 8862/71796 [00:00<00:02, 29607.61it/s]    Loading line from dict:  16%|█▋        | 11834/71796 [00:00<00:02, 29645.37it/s]    Loading line from dict:  21%|██        | 14799/71796 [00:00<00:02, 23272.64it/s]    Loading line from dict:  25%|██▍       | 17768/71796 [00:00<00:02, 25119.88it/s]    Loading line from dict:  29%|██▉       | 20738/71796 [00:00<00:01, 26449.04it/s]    Loading line from dict:  33%|███▎      | 23714/71796 [00:00<00:01, 27421.33it/s]    Loading line from dict:  37%|███▋      | 26638/71796 [00:00<00:01, 27955.14it/s]    Loading line from dict:  41%|████      | 29497/71796 [00:01<00:01, 27138.83it/s]    Loading line from dict:  45%|████▍     | 32259/71796 [00:01<00:01, 26611.84it/s]    Loading line from dict:  49%|████▊     | 34954/71796 [00:01<00:01, 26282.33it/s]    Loading line from dict:  53%|█████▎    | 37785/71796 [00:01<00:01, 26865.87it/s]    Loading line from dict:  57%|█████▋    | 40780/71796 [00:01<00:01, 27764.98it/s]    Loading line from dict:  61%|██████    | 43748/71796 [00:01<00:00, 28323.45it/s]    Loading line from dict:  65%|██████▌   | 46736/71796 [00:01<00:00, 28782.83it/s]    Loading line from dict:  69%|██████▉   | 49697/71796 [00:01<00:00, 29027.76it/s]    Loading line from dict:  73%|███████▎  | 52607/71796 [00:01<00:00, 22647.58it/s]    Loading line from dict:  77%|███████▋  | 55583/71796 [00:02<00:00, 24419.21it/s]    Loading line from dict:  82%|████████▏ | 58556/71796 [00:02<00:00, 25812.53it/s]    Loading line from dict:  86%|████████▌ | 61551/71796 [00:02<00:00, 26939.99it/s]    Loading line from dict:  90%|████████▉ | 64364/71796 [00:02<00:00, 26718.77it/s]    Loading line from dict:  93%|█████████▎| 67119/71796 [00:02<00:00, 26297.04it/s]    Loading line from dict:  97%|█████████▋| 69807/71796 [00:02<00:00, 26023.17it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:02<00:00, 26596.73it/s]
     Done loading line from dict.           
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
@@ -285,10 +285,10 @@ the particles's distribution properties from before to after.
 
  .. code-block:: none
 
-    Geom. epsx: 9.76e-11 -> 9.76e-11 | (1.33e-06% change)
-    Geom. epsy: 5.90e-13 -> 5.90e-13 | (0.00e+00% change)
-    Sigma delta: 1.65e-03 -> 1.65e-03 | (-6.61e-01% change)
-    Bunch length: 1.5459e-03 -> 1.5459e-03 | (0.00e+00% change)
+    Geom. epsx: 9.67e-11 -> 9.67e-11 | (7.06e-06% change)
+    Geom. epsy: 5.96e-13 -> 5.96e-13 | (0.00e+00% change)
+    Sigma delta: 1.71e-03 -> 1.71e-03 | (-3.27e+00% change)
+    Bunch length: 1.4925e-03 -> 1.4925e-03 | (0.00e+00% change)
 
 
 
@@ -410,139 +410,138 @@ Let's now loop and let the auto-recomputing do its job.
     Turn 1: Fixed interval re-computing of coefficients
     At turn 2 - Auto re-computed coefficients
     At turn 8 - Auto re-computed coefficients
-    At turn 10 - Auto re-computed coefficients
-    At turn 12 - Auto re-computed coefficients
-    At turn 22 - Auto re-computed coefficients
+    At turn 9 - Auto re-computed coefficients
+    At turn 11 - Auto re-computed coefficients
+    At turn 14 - Auto re-computed coefficients
+    At turn 15 - Auto re-computed coefficients
+    At turn 25 - Auto re-computed coefficients
     At turn 26 - Auto re-computed coefficients
-    At turn 30 - Auto re-computed coefficients
-    At turn 36 - Auto re-computed coefficients
+    At turn 29 - Auto re-computed coefficients
+    At turn 35 - Auto re-computed coefficients
     At turn 39 - Auto re-computed coefficients
-    At turn 40 - Auto re-computed coefficients
-    At turn 42 - Auto re-computed coefficients
+    At turn 43 - Auto re-computed coefficients
+    At turn 45 - Auto re-computed coefficients
+    At turn 48 - Auto re-computed coefficients
     Turn 50: Fixed interval re-computing of coefficients
-    At turn 50 - Auto re-computed coefficients
-    At turn 53 - Auto re-computed coefficients
-    At turn 67 - Auto re-computed coefficients
-    At turn 69 - Auto re-computed coefficients
-    At turn 79 - Auto re-computed coefficients
+    At turn 62 - Auto re-computed coefficients
+    At turn 66 - Auto re-computed coefficients
     At turn 85 - Auto re-computed coefficients
+    At turn 86 - Auto re-computed coefficients
     At turn 94 - Auto re-computed coefficients
     Turn 100: Fixed interval re-computing of coefficients
-    At turn 101 - Auto re-computed coefficients
     At turn 102 - Auto re-computed coefficients
+    At turn 107 - Auto re-computed coefficients
     At turn 108 - Auto re-computed coefficients
-    At turn 112 - Auto re-computed coefficients
-    At turn 114 - Auto re-computed coefficients
-    At turn 120 - Auto re-computed coefficients
-    At turn 122 - Auto re-computed coefficients
-    At turn 141 - Auto re-computed coefficients
-    At turn 146 - Auto re-computed coefficients
+    At turn 113 - Auto re-computed coefficients
+    At turn 117 - Auto re-computed coefficients
+    At turn 127 - Auto re-computed coefficients
+    At turn 131 - Auto re-computed coefficients
+    At turn 134 - Auto re-computed coefficients
+    At turn 145 - Auto re-computed coefficients
     At turn 147 - Auto re-computed coefficients
-    At turn 149 - Auto re-computed coefficients
+    At turn 148 - Auto re-computed coefficients
     Turn 150: Fixed interval re-computing of coefficients
+    At turn 158 - Auto re-computed coefficients
     At turn 161 - Auto re-computed coefficients
-    At turn 163 - Auto re-computed coefficients
+    At turn 162 - Auto re-computed coefficients
+    At turn 168 - Auto re-computed coefficients
     At turn 170 - Auto re-computed coefficients
-    At turn 172 - Auto re-computed coefficients
-    At turn 188 - Auto re-computed coefficients
-    At turn 190 - Auto re-computed coefficients
+    At turn 176 - Auto re-computed coefficients
+    At turn 184 - Auto re-computed coefficients
+    At turn 198 - Auto re-computed coefficients
     Turn 200: Fixed interval re-computing of coefficients
-    At turn 230 - Auto re-computed coefficients
-    At turn 242 - Auto re-computed coefficients
+    At turn 201 - Auto re-computed coefficients
+    At turn 206 - Auto re-computed coefficients
+    At turn 208 - Auto re-computed coefficients
+    At turn 231 - Auto re-computed coefficients
+    At turn 248 - Auto re-computed coefficients
     Turn 250: Fixed interval re-computing of coefficients
-    At turn 252 - Auto re-computed coefficients
-    At turn 263 - Auto re-computed coefficients
-    At turn 264 - Auto re-computed coefficients
-    At turn 268 - Auto re-computed coefficients
-    At turn 280 - Auto re-computed coefficients
-    At turn 287 - Auto re-computed coefficients
-    At turn 298 - Auto re-computed coefficients
+    At turn 250 - Auto re-computed coefficients
+    At turn 254 - Auto re-computed coefficients
+    At turn 266 - Auto re-computed coefficients
+    At turn 275 - Auto re-computed coefficients
     Turn 300: Fixed interval re-computing of coefficients
-    At turn 301 - Auto re-computed coefficients
-    At turn 303 - Auto re-computed coefficients
-    At turn 304 - Auto re-computed coefficients
-    At turn 307 - Auto re-computed coefficients
-    At turn 318 - Auto re-computed coefficients
-    At turn 320 - Auto re-computed coefficients
-    At turn 323 - Auto re-computed coefficients
-    At turn 335 - Auto re-computed coefficients
-    At turn 339 - Auto re-computed coefficients
-    At turn 340 - Auto re-computed coefficients
-    At turn 342 - Auto re-computed coefficients
-    At turn 343 - Auto re-computed coefficients
-    At turn 347 - Auto re-computed coefficients
+    At turn 302 - Auto re-computed coefficients
+    At turn 308 - Auto re-computed coefficients
+    At turn 310 - Auto re-computed coefficients
+    At turn 311 - Auto re-computed coefficients
+    At turn 312 - Auto re-computed coefficients
+    At turn 332 - Auto re-computed coefficients
+    At turn 334 - Auto re-computed coefficients
     Turn 350: Fixed interval re-computing of coefficients
-    At turn 357 - Auto re-computed coefficients
-    At turn 370 - Auto re-computed coefficients
-    At turn 376 - Auto re-computed coefficients
-    At turn 382 - Auto re-computed coefficients
+    At turn 356 - Auto re-computed coefficients
+    At turn 362 - Auto re-computed coefficients
+    At turn 365 - Auto re-computed coefficients
     At turn 388 - Auto re-computed coefficients
+    At turn 389 - Auto re-computed coefficients
+    At turn 395 - Auto re-computed coefficients
+    At turn 398 - Auto re-computed coefficients
     Turn 400: Fixed interval re-computing of coefficients
-    At turn 400 - Auto re-computed coefficients
-    At turn 401 - Auto re-computed coefficients
-    At turn 406 - Auto re-computed coefficients
-    At turn 408 - Auto re-computed coefficients
-    At turn 427 - Auto re-computed coefficients
+    At turn 416 - Auto re-computed coefficients
+    At turn 417 - Auto re-computed coefficients
+    At turn 422 - Auto re-computed coefficients
+    At turn 438 - Auto re-computed coefficients
+    At turn 441 - Auto re-computed coefficients
     At turn 445 - Auto re-computed coefficients
-    At turn 447 - Auto re-computed coefficients
+    At turn 448 - Auto re-computed coefficients
     Turn 450: Fixed interval re-computing of coefficients
-    At turn 475 - Auto re-computed coefficients
-    At turn 487 - Auto re-computed coefficients
-    At turn 488 - Auto re-computed coefficients
-    At turn 491 - Auto re-computed coefficients
+    At turn 451 - Auto re-computed coefficients
+    At turn 452 - Auto re-computed coefficients
+    At turn 460 - Auto re-computed coefficients
+    At turn 465 - Auto re-computed coefficients
+    At turn 486 - Auto re-computed coefficients
+    At turn 495 - Auto re-computed coefficients
     Turn 500: Fixed interval re-computing of coefficients
-    At turn 500 - Auto re-computed coefficients
-    At turn 508 - Auto re-computed coefficients
-    At turn 524 - Auto re-computed coefficients
-    At turn 526 - Auto re-computed coefficients
-    At turn 534 - Auto re-computed coefficients
+    At turn 521 - Auto re-computed coefficients
     Turn 550: Fixed interval re-computing of coefficients
-    At turn 562 - Auto re-computed coefficients
-    At turn 572 - Auto re-computed coefficients
+    At turn 566 - Auto re-computed coefficients
+    At turn 573 - Auto re-computed coefficients
+    At turn 577 - Auto re-computed coefficients
+    At turn 583 - Auto re-computed coefficients
     At turn 598 - Auto re-computed coefficients
+    At turn 599 - Auto re-computed coefficients
     Turn 600: Fixed interval re-computing of coefficients
-    At turn 605 - Auto re-computed coefficients
-    At turn 608 - Auto re-computed coefficients
-    At turn 613 - Auto re-computed coefficients
-    At turn 621 - Auto re-computed coefficients
-    At turn 626 - Auto re-computed coefficients
-    At turn 628 - Auto re-computed coefficients
-    At turn 638 - Auto re-computed coefficients
-    At turn 644 - Auto re-computed coefficients
+    At turn 607 - Auto re-computed coefficients
+    At turn 625 - Auto re-computed coefficients
+    At turn 635 - Auto re-computed coefficients
+    At turn 639 - Auto re-computed coefficients
+    At turn 643 - Auto re-computed coefficients
+    At turn 645 - Auto re-computed coefficients
     Turn 650: Fixed interval re-computing of coefficients
-    At turn 663 - Auto re-computed coefficients
-    At turn 669 - Auto re-computed coefficients
-    At turn 670 - Auto re-computed coefficients
-    At turn 681 - Auto re-computed coefficients
-    At turn 686 - Auto re-computed coefficients
+    At turn 658 - Auto re-computed coefficients
+    At turn 693 - Auto re-computed coefficients
     Turn 700: Fixed interval re-computing of coefficients
-    At turn 709 - Auto re-computed coefficients
-    At turn 712 - Auto re-computed coefficients
-    At turn 716 - Auto re-computed coefficients
-    At turn 733 - Auto re-computed coefficients
+    At turn 703 - Auto re-computed coefficients
+    At turn 717 - Auto re-computed coefficients
+    At turn 729 - Auto re-computed coefficients
+    At turn 735 - Auto re-computed coefficients
+    At turn 738 - Auto re-computed coefficients
+    At turn 740 - Auto re-computed coefficients
     Turn 750: Fixed interval re-computing of coefficients
-    At turn 758 - Auto re-computed coefficients
-    At turn 772 - Auto re-computed coefficients
-    At turn 773 - Auto re-computed coefficients
-    At turn 786 - Auto re-computed coefficients
-    At turn 792 - Auto re-computed coefficients
-    At turn 793 - Auto re-computed coefficients
     Turn 800: Fixed interval re-computing of coefficients
-    At turn 803 - Auto re-computed coefficients
+    At turn 806 - Auto re-computed coefficients
+    At turn 811 - Auto re-computed coefficients
+    At turn 812 - Auto re-computed coefficients
+    At turn 818 - Auto re-computed coefficients
+    At turn 821 - Auto re-computed coefficients
+    At turn 838 - Auto re-computed coefficients
+    At turn 839 - Auto re-computed coefficients
     At turn 840 - Auto re-computed coefficients
-    At turn 847 - Auto re-computed coefficients
-    At turn 848 - Auto re-computed coefficients
+    At turn 841 - Auto re-computed coefficients
+    At turn 845 - Auto re-computed coefficients
     Turn 850: Fixed interval re-computing of coefficients
-    At turn 858 - Auto re-computed coefficients
-    At turn 864 - Auto re-computed coefficients
-    At turn 885 - Auto re-computed coefficients
-    At turn 897 - Auto re-computed coefficients
+    At turn 867 - Auto re-computed coefficients
+    At turn 868 - Auto re-computed coefficients
+    At turn 877 - Auto re-computed coefficients
+    At turn 878 - Auto re-computed coefficients
     Turn 900: Fixed interval re-computing of coefficients
-    At turn 904 - Auto re-computed coefficients
-    At turn 934 - Auto re-computed coefficients
+    At turn 919 - Auto re-computed coefficients
+    At turn 921 - Auto re-computed coefficients
+    At turn 932 - Auto re-computed coefficients
+    At turn 940 - Auto re-computed coefficients
     Turn 950: Fixed interval re-computing of coefficients
-    At turn 951 - Auto re-computed coefficients
-    At turn 954 - Auto re-computed coefficients
+    At turn 950 - Auto re-computed coefficients
+    At turn 991 - Auto re-computed coefficients
 
 
 
@@ -568,7 +567,7 @@ Let's see how many recomputes happened in total for each scenario:
  .. code-block:: none
 
     Fixed re-computes: 21
-    Auto re-computes: 117
+    Auto re-computes: 116
 
 
 
@@ -732,7 +731,7 @@ itself to the actual changes in the particle distribution.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (4 minutes 41.499 seconds)
+   **Total running time of the script:** (4 minutes 41.258 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_kicks_auto_recompute_coefficients.py:

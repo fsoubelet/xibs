@@ -71,11 +71,12 @@ nemitt_y = 0.25e-6
 line = xt.Line.from_json(line_file)  # includes reference particle
 context = xo.ContextCpu(omp_num_threads="auto")
 
+
 # ----- Power accelerating cavities ----- #
 rf_voltage = 1.7e6  # 1.7MV
 harmonic_number = 4653
 cavity = "actcse.31632"
-line[cavity].lag = 180  # 0 if below transition, 180 if above
+line[cavity].lag = 180  # 180 above transition
 line[cavity].voltage = rf_voltage
 line[cavity].frequency = OpticsParameters.from_line(line).revolution_frequency * harmonic_number
 
