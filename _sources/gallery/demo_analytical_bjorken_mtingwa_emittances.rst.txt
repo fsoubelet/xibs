@@ -141,7 +141,7 @@ generating a matched Gaussian bunch:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  27%|██▋       | 2631/9866 [00:00<00:00, 26302.75it/s]    Loading line from dict:  54%|█████▍    | 5363/9866 [00:00<00:00, 26887.92it/s]    Loading line from dict:  82%|████████▏ | 8118/9866 [00:00<00:00, 27188.67it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 27007.22it/s]
+    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  29%|██▊       | 2829/9866 [00:00<00:00, 28269.00it/s]    Loading line from dict:  57%|█████▋    | 5660/9866 [00:00<00:00, 28292.53it/s]    Loading line from dict:  86%|████████▌ | 8499/9866 [00:00<00:00, 28325.08it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 28356.71it/s]
     Done loading line from dict.           
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
@@ -273,8 +273,8 @@ internally each time they are computed.
 
  .. code-block:: none
 
-    IBSGrowthRates(Tx=6.221283631283522e-05, Ty=-4.926117264676193e-08, Tz=2.6371567323099494e-05)
-    IBSGrowthRates(Tx=6.221283631283522e-05, Ty=-4.926117264676193e-08, Tz=2.6371567323099494e-05)
+    IBSGrowthRates(Tx=5.47506883312483e-05, Ty=-4.4373184230917304e-08, Tz=2.4603547613462322e-05)
+    IBSGrowthRates(Tx=5.47506883312483e-05, Ty=-4.4373184230917304e-08, Tz=2.4603547613462322e-05)
 
 
 
@@ -308,10 +308,10 @@ is the default value used if none is provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 3.915846740307701e-09 m
-    Next time step geometrical epsilon_y = 5.06670498939828e-09 m
-    Next time step sigma_delta = 0.00030704731877671766
-    Next time step bunch length = 0.22435298070379808 m
+    Next time step geometrical epsilon_x = 4.218400187597119e-09 m
+    Next time step geometrical epsilon_y = 5.199742256658529e-09 m
+    Next time step sigma_delta = 0.0003087866435017332
+    Next time step bunch length = 0.2254043267331872 m
 
 
 
@@ -501,7 +501,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 42.399 seconds)
+   **Total running time of the script:** (0 minutes 41.789 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_bjorken_mtingwa_emittances.py:

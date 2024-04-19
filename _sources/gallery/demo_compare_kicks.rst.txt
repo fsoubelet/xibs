@@ -150,7 +150,7 @@ is going to take some time:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  28%|██▊       | 2723/9866 [00:00<00:00, 27211.02it/s]    Loading line from dict:  55%|█████▌    | 5455/9866 [00:00<00:00, 27265.99it/s]    Loading line from dict:  84%|████████▎ | 8244/9866 [00:00<00:00, 27549.85it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 27463.20it/s]
+    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  29%|██▊       | 2826/9866 [00:00<00:00, 28257.06it/s]    Loading line from dict:  57%|█████▋    | 5652/9866 [00:00<00:00, 28244.19it/s]    Loading line from dict:  86%|████████▌ | 8488/9866 [00:00<00:00, 28288.97it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 28327.05it/s]
     Done loading line from dict.           
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
@@ -1157,7 +1157,7 @@ this loop is done running, we can plot the evolutions across turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (10 minutes 3.216 seconds)
+   **Total running time of the script:** (9 minutes 58.716 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_compare_kicks.py:
