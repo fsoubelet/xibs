@@ -99,7 +99,7 @@ typing: format
 # ----- Tests Targets ----- #
 
 tests: clean
-	@python -m pytest -n auto -v
+	@python -m pytest -n auto -v --dist worksteal
 
 testrepos:  # git cloning the necessary repos for tests files - specify branch, could also specify tag to make sure we are static
 	@echo "Cloning acc-models-ps repo, 2023 branch."
