@@ -691,9 +691,9 @@ class KineticKickIBS(KickBasedIBS):
         lbd1_: ArrayLike = context.nparray_from_context_array(lambda_1)  # on CPU
         lbd2_: ArrayLike = context.nparray_from_context_array(lambda_2)  # on CPU
         lbd3_: ArrayLike = context.nparray_from_context_array(lambda_3)  # on CPU
-        R1_: ArrayLike = elliprd(1 / lbd2_, 1 / lbd3_, 1 / lbd1_) / context.nparray_from_context_array(lambda_1)  # on CPU
-        R2_: ArrayLike = elliprd(1 / lbd3_, 1 / lbd1_, 1 / lbd2_) / context.nparray_from_context_array(lambda_2)  # on CPU
-        R3_: ArrayLike = 3 * np.sqrt(lbd1_ * lbd2_ / lbd3_) - lbd1_ * R1_ / lbd3_ - lbd2_ * R2_ / lbd3_           # on CPU
+        R1_: ArrayLike = elliprd(1 / lbd2_, 1 / lbd3_, 1 / lbd1_) / lbd1_  # on CPU
+        R2_: ArrayLike = elliprd(1 / lbd3_, 1 / lbd1_, 1 / lbd2_) / lbd2_  # on CPU
+        R3_: ArrayLike = 3 * np.sqrt(lbd1_ * lbd2_ / lbd3_) - lbd1_ * R1_ / lbd3_ - lbd2_ * R2_ / lbd3_  # on CPU
         # We transport these results back to device
         R1: ArrayLike = context.nparray_to_context_array(R1_)  # on device
         R2: ArrayLike = context.nparray_to_context_array(R2_)  # on device
@@ -718,10 +718,10 @@ class KineticKickIBS(KickBasedIBS):
         # ----------------------------------------------------------------------------------------------
         # Computing integrands for the diffusion and friction terms from the above (also from Michalis,
         # see slide 18 of his presentation for instance) - all of these are on device as all dependent terms are
-        Dx_integrand: ArrayLike = betx / (circumference * sigma_x * sigma_y) * (Dxx + Dzz * (dx**2 / betx**2 + phix**2) + Dxz)  # on device
-        Fx_integrand: ArrayLike = betx / (circumference * sigma_x * sigma_y) * (Kx + Kz * (dx**2 / betx**2 + phix**2))          # on device
-        Dy_integrand: ArrayLike = bety / (circumference * sigma_x * sigma_y) * (R2 + R3)                                        # on device
-        Fy_integrand: ArrayLike = bety / (circumference * sigma_x * sigma_y) * (2 * R1)                                         # on device
+        Dx_integrand: ArrayLike = betx * (Dxx + Dzz * (dx**2 / betx**2 + phix**2) + Dxz) / (circumference * sigma_x * sigma_y)  # on device
+        Fx_integrand: ArrayLike = betx * (Kx + Kz * (dx**2 / betx**2 + phix**2)) / (circumference * sigma_x * sigma_y)          # on device
+        Dy_integrand: ArrayLike = bety * (R2 + R3) / (circumference * sigma_x * sigma_y)                                        # on device
+        Fy_integrand: ArrayLike = bety * (2 * R1)  / (circumference * sigma_x * sigma_y)                                        # on device
         Dz_integrand: ArrayLike = Dzz / (circumference * sigma_x * sigma_y)                                                     # on device
         Fz_integrand: ArrayLike = Kz / (circumference * sigma_x * sigma_y)                                                      # on device
         # ----------------------------------------------------------------------------------------------
@@ -793,6 +793,9 @@ class KineticKickIBS(KickBasedIBS):
         sigma_py_normalized: float = nplike.std(particles.py[particles.state > 0]) / nplike.sqrt(1 + self.optics.alfy[0]**2)  # on device
         # ----------------------------------------------------------------------------------------------
         # Determining kicks from the friction forces (see referenced Michalis presentation)
+        # Friction term is in absolute and depends on the momentum. If we have a distribution then
+        # the friction term is with respect to the center -> if the beam is off-center we need to
+        # compensate for this so we use deviation of particle p[xy] from distribution mean
         LOGGER.debug("Determining friction kicks")
         dev_px: ArrayLike = particles.px[particles.state > 0] - nplike.mean(particles.px[particles.state > 0])           # on device
         dev_py: ArrayLike = particles.py[particles.state > 0] - nplike.mean(particles.py[particles.state > 0])           # on device
