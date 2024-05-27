@@ -150,14 +150,11 @@ is going to take some time:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  29%|██▊       | 2826/9866 [00:00<00:00, 28257.06it/s]    Loading line from dict:  57%|█████▋    | 5652/9866 [00:00<00:00, 28244.19it/s]    Loading line from dict:  86%|████████▌ | 8488/9866 [00:00<00:00, 28288.97it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 28327.05it/s]
+    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  20%|█▉        | 1949/9866 [00:00<00:00, 19483.28it/s]    Loading line from dict:  40%|████      | 3982/9866 [00:00<00:00, 19974.74it/s]    Loading line from dict:  61%|██████▏   | 6063/9866 [00:00<00:00, 20354.59it/s]    Loading line from dict:  82%|████████▏ | 8099/9866 [00:00<00:00, 20156.50it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 20085.97it/s]
     Done loading line from dict.           
-    Compiling ContextCpu kernels...
-    Done compiling ContextCpu kernels.
-    Compiling ContextCpu kernels...
-    Done compiling ContextCpu kernels.
     The line already has an associated tracker
     Disable xdeps expressions
+    Replance slices with equivalent elements
     Remove markers
     Remove inactive multipoles
     Merge consecutive multipoles
@@ -167,11 +164,7 @@ is going to take some time:
     Use simple bends
     Use simple quadrupoles
     Rebuild tracker data
-    Compiling ContextCpu kernels...
-    Done compiling ContextCpu kernels.
-    Compiling ContextCpu kernels...
-    Done compiling ContextCpu kernels.
-    *** Maximum RMS bunch length 0.23411602660718794m.
+    *** Maximum RMS bunch length 0.23411602660718525m.
     ... distance to target bunch length: -5.0000e-02
     ... distance to target bunch length: 1.7765e-01
     ... distance to target bunch length: 5.9379e-02
@@ -179,8 +172,8 @@ is going to take some time:
     ... distance to target bunch length: -4.3559e-05
     ... distance to target bunch length: -2.8760e-08
     ... distance to target bunch length: 2.2715e-07
-    --> Bunch length: 0.0499999712403689
-    --> Emittance: 0.05185941029070243
+    --> Bunch length: 0.04999997124036891
+    --> Emittance: 0.05185941029070264
 
 
 
@@ -1157,7 +1150,7 @@ this loop is done running, we can plot the evolutions across turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (9 minutes 58.716 seconds)
+   **Total running time of the script:** (10 minutes 35.898 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_compare_kicks.py:

@@ -278,17 +278,15 @@ is going to take some time:</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Loading line from dict:   0%|          | 0/9866 [00:00&lt;?, ?it/s]
-Loading line from dict:  29%|██▊       | 2826/9866 [00:00&lt;00:00, 28257.06it/s]
-Loading line from dict:  57%|█████▋    | 5652/9866 [00:00&lt;00:00, 28244.19it/s]
-Loading line from dict:  86%|████████▌ | 8488/9866 [00:00&lt;00:00, 28288.97it/s]
-Loading line from dict: 100%|██████████| 9866/9866 [00:00&lt;00:00, 28327.05it/s]
+Loading line from dict:  20%|█▉        | 1949/9866 [00:00&lt;00:00, 19483.28it/s]
+Loading line from dict:  40%|████      | 3982/9866 [00:00&lt;00:00, 19974.74it/s]
+Loading line from dict:  61%|██████▏   | 6063/9866 [00:00&lt;00:00, 20354.59it/s]
+Loading line from dict:  82%|████████▏ | 8099/9866 [00:00&lt;00:00, 20156.50it/s]
+Loading line from dict: 100%|██████████| 9866/9866 [00:00&lt;00:00, 20085.97it/s]
 Done loading line from dict.
-Compiling ContextCpu kernels...
-Done compiling ContextCpu kernels.
-Compiling ContextCpu kernels...
-Done compiling ContextCpu kernels.
 The line already has an associated tracker
 Disable xdeps expressions
+Replance slices with equivalent elements
 Remove markers
 Remove inactive multipoles
 Merge consecutive multipoles
@@ -298,11 +296,7 @@ Merge consecutive drifts
 Use simple bends
 Use simple quadrupoles
 Rebuild tracker data
-Compiling ContextCpu kernels...
-Done compiling ContextCpu kernels.
-Compiling ContextCpu kernels...
-Done compiling ContextCpu kernels.
-*** Maximum RMS bunch length 0.23411602660718794m.
+*** Maximum RMS bunch length 0.23411602660718525m.
 ... distance to target bunch length: -5.0000e-02
 ... distance to target bunch length: 1.7765e-01
 ... distance to target bunch length: 5.9379e-02
@@ -310,8 +304,8 @@ Done compiling ContextCpu kernels.
 ... distance to target bunch length: -4.3559e-05
 ... distance to target bunch length: -2.8760e-08
 ... distance to target bunch length: 2.2715e-07
---&gt; Bunch length: 0.0499999712403689
---&gt; Emittance: 0.05185941029070243
+--&gt; Bunch length: 0.04999997124036891
+--&gt; Emittance: 0.05185941029070264
 </pre></div>
 </div>
 </section>
@@ -1159,7 +1153,7 @@ Turn 749
 of the IBS kick coefficients re-computation, or with more particles. After
 this loop is done running, we can plot the evolutions across turns:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">nturns</span></a><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># array of turns</span>
-<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html#matplotlib.pyplot.subplot_mosaic" title="matplotlib.pyplot.subplot_mosaic" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span></a><span class="p">([[</span><span class="s2">&quot;epsx&quot;</span><span class="p">,</span> <span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">,</span> <span class="s2">&quot;bl&quot;</span><span class="p">]],</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">fig</span></a><span class="p">,</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html#matplotlib.pyplot.subplot_mosaic" title="matplotlib.pyplot.subplot_mosaic" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot_mosaic</span></a><span class="p">([[</span><span class="s2">&quot;epsx&quot;</span><span class="p">,</span> <span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">,</span> <span class="s2">&quot;bl&quot;</span><span class="p">]],</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 
 <span class="c1"># Plot from kinetic kicks</span>
 <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">turns</span></a><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="numpy.ndarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">kinetic_tbt</span><span class="o">.</span><span class="n">epsilon_x</span></a> <span class="o">*</span> <span class="mf">1e10</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Kinetic&quot;</span><span class="p">)</span>
@@ -1190,8 +1184,8 @@ this loop is done running, we can plot the evolutions across turns:</p>
     <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axis.Axis.set_major_locator.html#matplotlib.axis.Axis.set_major_locator" title="matplotlib.axis.Axis.set_major_locator" class="sphx-glr-backref-module-matplotlib-axis sphx-glr-backref-type-py-method"><span class="n">axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span></a><span class="p">(</span><a href="https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.MaxNLocator" title="matplotlib.ticker.MaxNLocator" class="sphx-glr-backref-module-matplotlib-ticker sphx-glr-backref-type-py-class"><span class="n">plt</span><span class="o">.</span><span class="n">MaxNLocator</span></a><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
     <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.legend.html#matplotlib.axes.Axes.legend" title="matplotlib.axes.Axes.legend" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axis</span><span class="o">.</span><span class="n">legend</span></a><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.align_ylabels" title="matplotlib.figure.Figure.align_ylabels" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span></a><span class="p">((</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">]))</span>
-<a href="https://matplotlib.org/stable/api/figure_api.html#matplotlib.figure.Figure.align_ylabels" title="matplotlib.figure.Figure.align_ylabels" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span></a><span class="p">((</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]))</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.align_ylabels.html#matplotlib.figure.Figure.align_ylabels" title="matplotlib.figure.Figure.align_ylabels" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span></a><span class="p">((</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsx&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;sigd&quot;</span><span class="p">]))</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.align_ylabels.html#matplotlib.figure.Figure.align_ylabels" title="matplotlib.figure.Figure.align_ylabels" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-method"><span class="n">fig</span><span class="o">.</span><span class="n">align_ylabels</span></a><span class="p">((</span><a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;epsy&quot;</span><span class="p">],</span> <a href="https://docs.python.org/3/library/stdtypes.html#dict" title="builtins.dict" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axs</span></a><span class="p">[</span><span class="s2">&quot;bl&quot;</span><span class="p">]))</span>
 
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
@@ -1206,7 +1200,7 @@ in this example:</p>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kicks</span></code>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">KineticKickIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">SimpleKickIBS</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_ibs_kick</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_kick_coefficients</span></code></p></li>
 </ul>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (9 minutes 58.716 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (10 minutes 35.898 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-gallery-demo-compare-kicks-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/201dbebd0ba146c9ddb0c8c9b8df9217/demo_compare_kicks.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">demo_compare_kicks.ipynb</span></code></a></p>

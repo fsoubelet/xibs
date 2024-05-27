@@ -140,10 +140,8 @@ generating a matched Gaussian bunch:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▍         | 3033/71796 [00:00<00:02, 30325.98it/s]    Loading line from dict:   9%|▊         | 6142/71796 [00:00<00:02, 30770.65it/s]    Loading line from dict:  13%|█▎        | 9266/71796 [00:00<00:02, 30979.79it/s]    Loading line from dict:  17%|█▋        | 12364/71796 [00:00<00:01, 30967.85it/s]    Loading line from dict:  22%|██▏       | 15518/71796 [00:00<00:01, 31163.69it/s]    Loading line from dict:  26%|██▌       | 18635/71796 [00:00<00:02, 24490.33it/s]    Loading line from dict:  30%|███       | 21746/71796 [00:00<00:01, 26310.30it/s]    Loading line from dict:  35%|███▍      | 24855/71796 [00:00<00:01, 27661.10it/s]    Loading line from dict:  39%|███▊      | 27751/71796 [00:00<00:01, 27996.62it/s]    Loading line from dict:  43%|████▎     | 30643/71796 [00:01<00:01, 27463.73it/s]    Loading line from dict:  47%|████▋     | 33454/71796 [00:01<00:01, 27195.63it/s]    Loading line from dict:  50%|█████     | 36218/71796 [00:01<00:01, 27027.26it/s]    Loading line from dict:  55%|█████▍    | 39331/71796 [00:01<00:01, 28213.32it/s]    Loading line from dict:  59%|█████▉    | 42464/71796 [00:01<00:01, 29119.27it/s]    Loading line from dict:  64%|██████▎   | 45651/71796 [00:01<00:00, 29929.40it/s]    Loading line from dict:  68%|██████▊   | 48878/71796 [00:01<00:00, 30621.57it/s]    Loading line from dict:  73%|███████▎  | 52082/71796 [00:01<00:00, 31042.16it/s]    Loading line from dict:  77%|███████▋  | 55368/71796 [00:01<00:00, 31578.41it/s]    Loading line from dict:  82%|████████▏ | 58533/71796 [00:02<00:00, 24344.20it/s]    Loading line from dict:  86%|████████▌ | 61728/71796 [00:02<00:00, 26221.51it/s]    Loading line from dict:  90%|████████▉ | 64570/71796 [00:02<00:00, 26433.23it/s]    Loading line from dict:  94%|█████████▍| 67369/71796 [00:02<00:00, 26381.33it/s]    Loading line from dict:  98%|█████████▊| 70116/71796 [00:02<00:00, 26369.81it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:02<00:00, 27821.33it/s]
+    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▎         | 2585/71796 [00:00<00:02, 25848.73it/s]    Loading line from dict:   7%|▋         | 5222/71796 [00:00<00:02, 26152.73it/s]    Loading line from dict:  11%|█         | 7838/71796 [00:00<00:02, 26020.77it/s]    Loading line from dict:  15%|█▍        | 10470/71796 [00:00<00:02, 26129.76it/s]    Loading line from dict:  18%|█▊        | 13090/71796 [00:00<00:02, 26151.97it/s]    Loading line from dict:  22%|██▏       | 15714/71796 [00:00<00:02, 26174.40it/s]    Loading line from dict:  26%|██▌       | 18332/71796 [00:00<00:02, 18394.45it/s]    Loading line from dict:  29%|██▉       | 20826/71796 [00:00<00:02, 20008.06it/s]    Loading line from dict:  33%|███▎      | 23426/71796 [00:01<00:02, 21567.40it/s]    Loading line from dict:  36%|███▋      | 26078/71796 [00:01<00:01, 22910.26it/s]    Loading line from dict:  40%|███▉      | 28527/71796 [00:01<00:01, 22698.83it/s]    Loading line from dict:  43%|████▎     | 30906/71796 [00:01<00:01, 22780.62it/s]    Loading line from dict:  46%|████▋     | 33261/71796 [00:01<00:01, 22928.96it/s]    Loading line from dict:  50%|████▉     | 35608/71796 [00:01<00:01, 22968.05it/s]    Loading line from dict:  53%|█████▎    | 38200/71796 [00:01<00:01, 23821.68it/s]    Loading line from dict:  57%|█████▋    | 40873/71796 [00:01<00:01, 24672.54it/s]    Loading line from dict:  61%|██████    | 43504/71796 [00:01<00:01, 25150.82it/s]    Loading line from dict:  64%|██████▍   | 46092/71796 [00:01<00:01, 25366.30it/s]    Loading line from dict:  68%|██████▊   | 48673/71796 [00:02<00:00, 25496.87it/s]    Loading line from dict:  71%|███████▏  | 51236/71796 [00:02<00:00, 25532.10it/s]    Loading line from dict:  75%|███████▌  | 53852/71796 [00:02<00:00, 25708.57it/s]    Loading line from dict:  79%|███████▊  | 56428/71796 [00:02<00:00, 18117.71it/s]    Loading line from dict:  82%|████████▏ | 58976/71796 [00:02<00:00, 19816.03it/s]    Loading line from dict:  86%|████████▌ | 61540/71796 [00:02<00:00, 21258.50it/s]    Loading line from dict:  89%|████████▉ | 63884/71796 [00:02<00:00, 21594.22it/s]    Loading line from dict:  92%|█████████▏| 66200/71796 [00:02<00:00, 21958.05it/s]    Loading line from dict:  95%|█████████▌| 68510/71796 [00:02<00:00, 22181.12it/s]    Loading line from dict:  99%|█████████▊| 70809/71796 [00:03<00:00, 22333.93it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:03<00:00, 22867.97it/s]
     Done loading line from dict.           
-    Compiling ContextCpu kernels...
-    Done compiling ContextCpu kernels.
 
 
 
@@ -257,8 +255,8 @@ object and will be updated internally each time they are computed.
 
  .. code-block:: none
 
-    NagaitsevIntegrals(Ix=8.086835088033967e+19, Iy=1.5092530205187414e+17, Iz=6.0325356795434126e+23)
-    NagaitsevIntegrals(Ix=8.086835088033967e+19, Iy=1.5092530205187414e+17, Iz=6.0325356795434126e+23)
+    NagaitsevIntegrals(Ix=7.960540075994472e+19, Iy=1.4549911618983245e+17, Iz=5.8996751120888807e+23)
+    NagaitsevIntegrals(Ix=7.960540075994472e+19, Iy=1.4549911618983245e+17, Iz=5.8996751120888807e+23)
 
 
 
@@ -288,8 +286,8 @@ are computed.
 
  .. code-block:: none
 
-    IBSGrowthRates(Tx=370.6264156506234, Ty=106.49624313657692, Tz=87.01055361087455)
-    IBSGrowthRates(Tx=370.6264156506234, Ty=106.49624313657692, Tz=87.01055361087455)
+    IBSGrowthRates(Tx=362.3684017991221, Ty=102.56352700686323, Tz=91.1914017627678)
+    IBSGrowthRates(Tx=362.3684017991221, Ty=102.56352700686323, Tz=91.1914017627678)
 
 
 
@@ -330,10 +328,10 @@ is the default value used if it is not provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 9.863604502224669e-11 m
-    Next time step geometrical epsilon_y = 6.404092907988679e-13 m
-    Next time step sigma_delta = 0.0017699984202813742
-    Next time step bunch length = 0.0016073564228652843 m
+    Next time step geometrical epsilon_x = 1.0218725922914882e-10 m
+    Next time step geometrical epsilon_y = 6.59646177296362e-13 m
+    Next time step sigma_delta = 0.001734424509112317
+    Next time step bunch length = 0.0015668931501972283 m
 
 
 
@@ -541,7 +539,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 23.257 seconds)
+   **Total running time of the script:** (0 minutes 16.271 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_nagaitsev_emittances.py:

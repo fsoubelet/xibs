@@ -149,11 +149,12 @@ is going to take some time:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▍         | 2997/71796 [00:00<00:02, 29967.89it/s]    Loading line from dict:   8%|▊         | 6074/71796 [00:00<00:02, 30428.92it/s]    Loading line from dict:  13%|█▎        | 9206/71796 [00:00<00:02, 30814.74it/s]    Loading line from dict:  17%|█▋        | 12303/71796 [00:00<00:01, 30874.94it/s]    Loading line from dict:  22%|██▏       | 15482/71796 [00:00<00:01, 31192.98it/s]    Loading line from dict:  26%|██▌       | 18602/71796 [00:00<00:02, 24592.11it/s]    Loading line from dict:  30%|███       | 21814/71796 [00:00<00:01, 26672.38it/s]    Loading line from dict:  35%|███▍      | 25034/71796 [00:00<00:01, 28229.72it/s]    Loading line from dict:  39%|███▉      | 27990/71796 [00:00<00:01, 28209.14it/s]    Loading line from dict:  43%|████▎     | 30903/71796 [00:01<00:01, 27583.39it/s]    Loading line from dict:  47%|████▋     | 33725/71796 [00:01<00:01, 27141.95it/s]    Loading line from dict:  51%|█████     | 36483/71796 [00:01<00:01, 27154.10it/s]    Loading line from dict:  55%|█████▌    | 39596/71796 [00:01<00:01, 28291.61it/s]    Loading line from dict:  60%|█████▉    | 42744/71796 [00:01<00:00, 29220.71it/s]    Loading line from dict:  64%|██████▍   | 45888/71796 [00:01<00:00, 29869.69it/s]    Loading line from dict:  68%|██████▊   | 49148/71796 [00:01<00:00, 30671.41it/s]    Loading line from dict:  73%|███████▎  | 52300/71796 [00:01<00:00, 30921.67it/s]    Loading line from dict:  77%|███████▋  | 55564/71796 [00:01<00:00, 31427.72it/s]    Loading line from dict:  82%|████████▏ | 58714/71796 [00:02<00:00, 23848.36it/s]    Loading line from dict:  86%|████████▌ | 61803/71796 [00:02<00:00, 25568.48it/s]    Loading line from dict:  90%|████████▉ | 64593/71796 [00:02<00:00, 25779.02it/s]    Loading line from dict:  94%|█████████▍| 67337/71796 [00:02<00:00, 25908.80it/s]    Loading line from dict:  98%|█████████▊| 70059/71796 [00:02<00:00, 26266.83it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:02<00:00, 27769.08it/s]
+    Loading line from dict:   0%|          | 0/71796 [00:00<?, ?it/s]    Loading line from dict:   4%|▎         | 2566/71796 [00:00<00:02, 25640.10it/s]    Loading line from dict:   7%|▋         | 5201/71796 [00:00<00:02, 26055.49it/s]    Loading line from dict:  11%|█         | 7807/71796 [00:00<00:02, 26046.84it/s]    Loading line from dict:  15%|█▍        | 10412/71796 [00:00<00:02, 26010.82it/s]    Loading line from dict:  18%|█▊        | 13014/71796 [00:00<00:02, 25973.70it/s]    Loading line from dict:  22%|██▏       | 15612/71796 [00:00<00:02, 25491.16it/s]    Loading line from dict:  25%|██▌       | 18202/71796 [00:00<00:02, 25620.95it/s]    Loading line from dict:  29%|██▉       | 20766/71796 [00:00<00:02, 18118.68it/s]    Loading line from dict:  33%|███▎      | 23350/71796 [00:01<00:02, 19982.76it/s]    Loading line from dict:  36%|███▌      | 25978/71796 [00:01<00:02, 21594.47it/s]    Loading line from dict:  39%|███▉      | 28345/71796 [00:01<00:01, 21998.56it/s]    Loading line from dict:  43%|████▎     | 30694/71796 [00:01<00:01, 22027.84it/s]    Loading line from dict:  46%|████▌     | 33001/71796 [00:01<00:01, 22273.75it/s]    Loading line from dict:  49%|████▉     | 35303/71796 [00:01<00:01, 22457.92it/s]    Loading line from dict:  53%|█████▎    | 37828/71796 [00:01<00:01, 23263.76it/s]    Loading line from dict:  56%|█████▋    | 40432/71796 [00:01<00:01, 24073.89it/s]    Loading line from dict:  60%|█████▉    | 42992/71796 [00:01<00:01, 24517.28it/s]    Loading line from dict:  64%|██████▎   | 45605/71796 [00:01<00:01, 24994.12it/s]    Loading line from dict:  67%|██████▋   | 48148/71796 [00:02<00:00, 25118.65it/s]    Loading line from dict:  71%|███████   | 50752/71796 [00:02<00:00, 25391.97it/s]    Loading line from dict:  74%|███████▍  | 53370/71796 [00:02<00:00, 25627.01it/s]    Loading line from dict:  78%|███████▊  | 55940/71796 [00:02<00:00, 25638.17it/s]    Loading line from dict:  81%|████████▏ | 58508/71796 [00:02<00:00, 25397.53it/s]    Loading line from dict:  85%|████████▌ | 61052/71796 [00:02<00:00, 17194.49it/s]    Loading line from dict:  88%|████████▊ | 63485/71796 [00:02<00:00, 18786.88it/s]    Loading line from dict:  91%|█████████▏| 65666/71796 [00:02<00:00, 19476.16it/s]    Loading line from dict:  95%|█████████▍| 67890/71796 [00:03<00:00, 20183.42it/s]    Loading line from dict:  98%|█████████▊| 70180/71796 [00:03<00:00, 20904.03it/s]    Loading line from dict: 100%|██████████| 71796/71796 [00:03<00:00, 22551.14it/s]
     Done loading line from dict.           
     Compiling ContextCpu kernels...
     Done compiling ContextCpu kernels.
     Disable xdeps expressions
+    Replance slices with equivalent elements
     Remove markers
     Remove inactive multipoles
     Merge consecutive multipoles
@@ -266,8 +267,8 @@ internally in the **IBS** object and will be updated internally each time they a
 
  .. code-block:: none
 
-    IBSKickCoefficients(Kx=8.814567556163397e-09, Ky=4.398453407256656e-10, Kz=LinkedArrayCpu(2.10559134e-06))
-    IBSKickCoefficients(Kx=8.814567556163397e-09, Ky=4.398453407256656e-10, Kz=LinkedArrayCpu(2.10559134e-06))
+    IBSKickCoefficients(Kx=8.801380822586426e-09, Ky=4.395418128930836e-10, Kz=LinkedArrayCpu(2.11731188e-06))
+    IBSKickCoefficients(Kx=8.801380822586426e-09, Ky=4.395418128930836e-10, Kz=LinkedArrayCpu(2.11731188e-06))
 
 
 
@@ -1323,7 +1324,7 @@ After this loop is done running, we can plot the evolutions across turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (2 minutes 10.079 seconds)
+   **Total running time of the script:** (2 minutes 20.188 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_simple_kicks.py:

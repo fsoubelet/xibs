@@ -141,10 +141,8 @@ generating a matched Gaussian bunch:
 
  .. code-block:: none
 
-    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  29%|██▊       | 2829/9866 [00:00<00:00, 28269.00it/s]    Loading line from dict:  57%|█████▋    | 5660/9866 [00:00<00:00, 28292.53it/s]    Loading line from dict:  86%|████████▌ | 8499/9866 [00:00<00:00, 28325.08it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 28356.71it/s]
+    Loading line from dict:   0%|          | 0/9866 [00:00<?, ?it/s]    Loading line from dict:  20%|█▉        | 1943/9866 [00:00<00:00, 19405.13it/s]    Loading line from dict:  40%|████      | 3959/9866 [00:00<00:00, 19833.43it/s]    Loading line from dict:  62%|██████▏   | 6109/9866 [00:00<00:00, 20592.50it/s]    Loading line from dict:  83%|████████▎ | 8169/9866 [00:00<00:00, 20406.06it/s]    Loading line from dict: 100%|██████████| 9866/9866 [00:00<00:00, 20293.95it/s]
     Done loading line from dict.           
-    Compiling ContextCpu kernels...
-    Done compiling ContextCpu kernels.
     *** Maximum RMS bunch length 0.2362552188928956m.
     ... distance to target bunch length: -2.2500e-01
     ... distance to target bunch length: 4.7282e-03
@@ -273,8 +271,8 @@ internally each time they are computed.
 
  .. code-block:: none
 
-    IBSGrowthRates(Tx=5.47506883312483e-05, Ty=-4.4373184230917304e-08, Tz=2.4603547613462322e-05)
-    IBSGrowthRates(Tx=5.47506883312483e-05, Ty=-4.4373184230917304e-08, Tz=2.4603547613462322e-05)
+    IBSGrowthRates(Tx=5.329099045857178e-05, Ty=-4.331193333931547e-08, Tz=2.4611429040329924e-05)
+    IBSGrowthRates(Tx=5.329099045857178e-05, Ty=-4.331193333931547e-08, Tz=2.4611429040329924e-05)
 
 
 
@@ -308,10 +306,10 @@ is the default value used if none is provided.
 
  .. code-block:: none
 
-    Next time step geometrical epsilon_x = 4.218400187597119e-09 m
-    Next time step geometrical epsilon_y = 5.199742256658529e-09 m
-    Next time step sigma_delta = 0.0003087866435017332
-    Next time step bunch length = 0.2254043267331872 m
+    Next time step geometrical epsilon_x = 4.305114724065974e-09 m
+    Next time step geometrical epsilon_y = 5.269322341827096e-09 m
+    Next time step sigma_delta = 0.0003074640579169585
+    Next time step bunch length = 0.2238161688455976 m
 
 
 
@@ -501,7 +499,7 @@ the evolutions across the turns:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 41.789 seconds)
+   **Total running time of the script:** (0 minutes 32.191 seconds)
 
 
 .. _sphx_glr_download_gallery_demo_analytical_bjorken_mtingwa_emittances.py:
