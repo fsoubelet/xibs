@@ -98,7 +98,7 @@ docs = [
   "sphinx-prompt >= 1.5",
   "sphinx-codeautolink < 1.0",
   "sphinx-panels < 1.0",
-  "sphinx-gallery < 1.0",
+  "sphinx-gallery>=0.14.0, < 0.16.0",
 ]
 
 [project.urls]
