@@ -400,12 +400,6 @@ class MichalisIBS:
         D_Sx = 0.5 * (2 * R1 + R2 * (1 - a2 / denom) + R3 * (1 + a2 / denom))
         F_Sx = 1.0 * (R2 * (1 + a2 / denom) + R3 * (1 - a2 / denom))
         D_Sxp = 3.0 * self.gammar**2 * self.phi_x**2 * ax * (R3 - R2) / denom
-        
-        
-        
-        
-        
-        
         Dxi = (
             self.bet_x
             / (self.Circu * sigx * sigy)
