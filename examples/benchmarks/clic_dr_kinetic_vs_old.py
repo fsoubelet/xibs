@@ -58,13 +58,6 @@ particles = xp.generate_matched_gaussian_bunch(
 )
 particles2 = particles.copy()
 
-# ----- Compute initial (geometrical) emittances & bunch length all in [m] ----- #
-
-sig_delta = _sigma_delta(particles)
-bunch_l = _bunch_length(particles)
-geom_epsx = _geom_epsx(particles, twiss.betx[0], twiss.dx[0])
-geom_epsy = _geom_epsy(particles, twiss.bety[0], twiss.dy[0])
-
 # ----- Dataclass to store results ----- #
 
 @dataclass
