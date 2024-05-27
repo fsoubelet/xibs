@@ -1,5 +1,9 @@
 # XIBS
 
+> [!WARNING]
+> This repository's functionality has been ported directly into [Xsuite](https://github.com/xsuite).
+> Please refer to the [Xsuite documentation](https://xsuite.readthedocs.io/en/latest/) and avoid using xibs from now on.
+
 <p>
   <!-- Github Release -->
   <a href="https://github.com/fsoubelet/xibs/releases">
