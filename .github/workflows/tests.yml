@@ -39,7 +39,7 @@ jobs:
         run: python -m pip install ".[test]"
 
       - name: Install xsuite and pre-compile kernels  # avoids recompiling in every test
-        run: python -m pip install xsuite xcoll && xsuite-prebuild
+        run: python -m pip install xsuite xcoll && xsuite-prebuild regenerate
 
       - name: Make directory for plots
         run: mkdir .plots
